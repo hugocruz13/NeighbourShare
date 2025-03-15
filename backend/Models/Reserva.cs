@@ -8,7 +8,7 @@
 **/
 using System;
 
-namespace ObjetosNegocio
+namespace Models
 {
     /// <summary>
     /// Purpose: Classe que representa uma Reserva

@@ -9,7 +9,7 @@
 using System;
 using System.Security.Cryptography;
 
-namespace ObjetosNegocio
+namespace Models
 {
     /// <summary>
     /// Purpose: Classe que representa uma entidade externa

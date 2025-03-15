@@ -10,7 +10,7 @@ using Microsoft.SqlServer.Server;
 using System;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace ObjetosNegocio
+namespace Models
 {
     /// <summary>
     /// Purpose: Classe que representa um orçamento
