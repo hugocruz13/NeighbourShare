@@ -96,26 +96,26 @@ namespace BLL
             {
                 if (VerificarDados(utilizador))
                 {
-                    return false;
+                    utilizador.Nome = FormatarString(utilizador.Nome);
+                    utilizador.Email = FormatarString(utilizador.Email);
+                    utilizador.Role = FormatarString(utilizador.Role);
+                    var hash = PasswordHasher.HashPassword(utilizador.Password);
+                    utilizador.Password = hash.hash;
+
+
+                    if (await AuthDAL.Instance.VerificaEmail(utilizador.Email))
+                    {
+                        return false;
+                    }
+
+                    //verificar se inseriu img se não colocar uma defaut ou converter 
+
+                    byte[] img = img1;
+
+                    return await AuthDAL.Instance.InserirUtilizador(utilizador, hash.salt, img);
                 }
 
-                utilizador.Nome = FormatarString(utilizador.Nome);
-                utilizador.Email = FormatarString(utilizador.Email);
-                utilizador.Role = FormatarString(utilizador.Role);
-                var hash = PasswordHasher.HashPassword(utilizador.Password);
-                utilizador.Password = hash.hash;
-
-
-                if (await AuthDAL.Instance.VerificaEmail(utilizador.Email))
-                {
-                    return false;
-                }
-
-                //verificar se inseriu img se não colocar uma defaut ou converter 
-
-                byte[] img = img1;
-
-                return await AuthDAL.Instance.InserirUtilizador(utilizador, hash.salt, img);
+                return false;
 
             }
             catch (Exception ex)
