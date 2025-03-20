@@ -1,13 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
+from db.session import SessionLocal
+from controllers import *
+
 
 app = FastAPI()
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+for router in routers:
+    app.include_router(router, prefix="/api")
