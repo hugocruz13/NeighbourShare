@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from db.session import Base
+from sqlalchemy import LargeBinary
 
 class Utilizador(Base):
     __tablename__ = "Utilizador"
@@ -12,7 +13,7 @@ class Utilizador(Base):
     Email = Column(String, index=True)
     PasswordHash = Column(String)
     Salt = Column(String)
-    Foto = Column(String)
+    Foto = Column(LargeBinary)
     TUID = Column(Integer, ForeignKey("TipoUtilizador.TUID"))
 
     TipoUtilizador = relationship("TipoUtilizador", back_populates="Utilizadores")

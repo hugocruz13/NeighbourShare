@@ -1,8 +1,5 @@
-from fastapi import Depends, FastAPI
-from sqlalchemy.orm import Session
-from db.session import SessionLocal
+from fastapi import FastAPI
 from controllers import *
-
 
 app = FastAPI()
 
