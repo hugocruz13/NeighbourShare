@@ -30,8 +30,9 @@ build/
 .vscode/
 
 # Secrets and environment variables
-.env
-*.env
+backend/.env
+backend/*.env
+backend/.env
 
 # Cache
 # PyCharm
