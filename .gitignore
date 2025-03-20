@@ -87,3 +87,5 @@ htmlcov/
 
 # Ignore database files
 *.sqlite3
+/backend/.env
+/backend/.idea
