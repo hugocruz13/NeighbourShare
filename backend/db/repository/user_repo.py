@@ -11,8 +11,8 @@ def get_user_by_email(db: Session, user: UserBase):
     )
     return response
 
-def create_user(db: Session, user: UserRegistar, id_role: int, salt:str, foto_bytes: bytes):
-    new_user = Utilizador(NomeUtilizador=user.nome,DataNasc=user.data_nasc,Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, Foto=foto_bytes, TUID=id_role)
+def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
+    new_user = Utilizador(NomeUtilizador=user.nome,DataNasc=user.data_nasc,Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

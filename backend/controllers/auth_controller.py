@@ -10,9 +10,9 @@ router = APIRouter()
 
 
 @router.post("/registar")
-async def registar(user: UserRegistar = Depends(), foto: Optional[UploadFile] = File(None), db: Session = Depends(get_db)):
+async def registar(user: UserRegistar,  db: Session = Depends(get_db)):
     try:
-        if await registar_utilizador(user, foto, db):
+        if await registar_utilizador(user, db):
             return {"message": "Registo realizado com sucesso"}
         else:
             return {"message": "Cliente já está registado"}
