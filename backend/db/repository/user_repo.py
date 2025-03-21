@@ -11,17 +11,26 @@ def get_user_by_email(db: Session, user: UserBase):
     )
     return response
 
-def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
-    new_user = Utilizador(NomeUtilizador=user.nome,DataNasc=user.data_nasc,Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
+    try:
+        new_user = Utilizador(NomeUtilizador=user.nome, DataNasc=user.data_nasc, Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return True
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao criar usuário: {e}")
 
 async def get_id_role(db: Session, role: str):
-    query = db.query(TipoUtilizador).filter(TipoUtilizador.DescTU == role).first()
-    print(query.TUID)
-    return query.TUID
+    try:
+        query = db.query(TipoUtilizador).filter(TipoUtilizador.DescTU == role).first()
+        return query.TUID if query else None
+    except Exception as e:
+        raise RuntimeError(f"Erro ao obter ID do papel: {e}")
 
 async def user_exists(db: Session, email: str):
-    return db.query(Utilizador).filter(Utilizador.Email == email).first()
+    try:
+        return db.query(Utilizador).filter(Utilizador.Email == email).first() is not None
+    except Exception as e:
+        raise RuntimeError(f"Erro ao verificar usuário: {e}")

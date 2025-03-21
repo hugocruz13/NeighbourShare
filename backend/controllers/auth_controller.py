@@ -10,12 +10,13 @@ router = APIRouter()
 
 
 @router.post("/registar")
-async def registar(user: UserRegistar,  db: Session = Depends(get_db)):
+async def registar(user: UserRegistar, db: Session = Depends(get_db)):
     try:
-        if await registar_utilizador(user, db):
+        sucesso, mensagem = await registar_utilizador(user, db)
+        if sucesso:
             return {"message": "Registo realizado com sucesso"}
         else:
-            return {"message": "Cliente já está registado"}
+            return {"message": mensagem}
     except Exception as e:
         return {"error": str(e)}
 
