@@ -1,0 +1,91 @@
+ Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+backend/.venv/
+
+# Distribution / packaging
+.Python
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Secrets and environment variables
+*.env
+.env
+
+# Cache
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Secrets and environment variables
+.env
+*.env
+
+# Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# MyPy
+.mypy_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+*.pyo
+
+# MyPy
+.mypy_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# Docker
+*.dockerignore
+
+# pytest
+.cache/
+
+# Profiling data
+*.prof
+
+# Ignore database files
+*.sqlite3
+# Docker
+*.dockerignore
+
+# pytest
+.cache/
+
+# Profiling data
+*.prof
+
+# Ignore database files
+*.sqlite3
+
+.env
+.idea
