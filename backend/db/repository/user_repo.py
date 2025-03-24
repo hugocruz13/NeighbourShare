@@ -2,15 +2,6 @@ from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
 from schemas.user_schemas import *
 
-def get_user_by_email(db: Session, user: UserBase):
-    query = db.query(Utilizador).filter(Utilizador.Email == user.email).first()
-    response = UserResponse(
-        email=query.Email,
-        tipo=query.TUID,
-        id=query.UtilizadorID
-    )
-    return response
-
 async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
     try:
         new_user = Utilizador(NomeUtilizador=user.nome, DataNasc=user.data_nasc, Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
@@ -34,3 +25,19 @@ async def user_exists(db: Session, email: str):
         return db.query(Utilizador).filter(Utilizador.Email == email).first() is not None
     except Exception as e:
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+
+async def get_user_by_email(db: Session, email: EmailStr):
+    try:
+        user = db.query(Utilizador).filter(Utilizador.Email == email).first()
+        if user:
+            role = user.TipoUtilizador_.DescTU if user.TipoUtilizador_ else None
+            return User(
+                utilizadorID=user.UtilizadorID,
+                email=user.Email,
+                passwordHash = user.PasswordHash,
+                salt=user.Salt,
+                role=role
+            )
+        return None
+    except Exception as e:
+        raise RuntimeError(f"Erro ao obter utilizador: {e}")
