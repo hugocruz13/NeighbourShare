@@ -1,3 +1,7 @@
-from .user_schemas import UserBase, UserResponse, UserRegistar, UserCreate
+from .user_schemas import UserRegistar, UserLogin
 
-__all__ = ['UserBase', 'UserResponse', 'UserRegistar', 'UserCreate']
+__all__ = [ 'UserRegistar', 'UserLogin']
+
+
+class UserLogin:
+    pass

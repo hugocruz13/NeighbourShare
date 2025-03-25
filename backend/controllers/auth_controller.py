@@ -1,26 +1,44 @@
-import schemas
-from fastapi import APIRouter, Depends, File, UploadFile
+import os
+from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from schemas import *
-from typing import Optional
-from services.auth_service import registar_utilizador
+from schemas.user_schemas import UserRegistar, UserLogin
+from services.auth_service import registar_utilizador, user_valido
+
+# Define o tempo do token
+EXPIRE_MINUTES = int(os.getenv("EXPIRE_MINUTES", 30))
 
 router = APIRouter()
 
-
 @router.post("/registar")
-async def registar(user: UserRegistar = Depends(), foto: Optional[UploadFile] = File(None), db: Session = Depends(get_db)):
+async def registar(user: UserRegistar, db: Session = Depends(get_db)):
     try:
-        if await registar_utilizador(user, foto, db):
+        sucesso, mensagem = await registar_utilizador(user, db)
+        if sucesso:
             return {"message": "Registo realizado com sucesso"}
         else:
-            return {"message": "Cliente já está registado"}
+            raise HTTPException(status_code=401, detail=mensagem)  # Erro
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail= {str(e)})
 
+@router.post("/login")
+async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
+    try:
+        sucesso, mensagem = await user_valido(db, user)
+        if sucesso:
+            # Define o cookie de login com o tempo de expiração
+            response.set_cookie(
+                key="access_token",
+                value=mensagem,
+                httponly=True,  # Impede acesso via JavaScript
+                secure=True,  # Garante que o cookie seja enviado apenas por HTTPS
+                samesite="Strict",  # Controle de onde o cookie é enviado (Lax ou Strict)
+                expires=datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES),  # Expiração
+            )
 
-
-#@router.post("/", response_model=UserResponse)
-#def get_user(user_email:UserBase, db: Session = Depends(get_db)):
-#    return get_user_by_email(db, user_email)
+            return {"message": "Login com sucesso"}
+        else:
+            raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
