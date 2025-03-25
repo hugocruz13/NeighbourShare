@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
 from schemas.user_schemas import UserRegistar, UserLogin
-from services.auth_service import registar_utilizador, user_valido
+from services.auth_service import registar_utilizador, user_valido, verificar_token_cookie
 
 # Define o tempo do token
 EXPIRE_MINUTES = int(os.getenv("EXPIRE_MINUTES", 30))
@@ -42,3 +42,7 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
             raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
+
+@router.get("/dados_protegidos")
+async def dados_protegidos(user: dict = Depends(verificar_token_cookie)):
+    return {"message": "Acesso autorizado!", "user": user}

@@ -1,12 +1,12 @@
-from fastapi import HTTPException
+from fastapi import  HTTPException, Request
 from sqlalchemy.orm import Session
 from schemas import UserRegistar, UserLogin
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
 from utils.PasswordHasher import hash_password, verificar_password
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
+from jose import JWTError, jwt
 import os
-import jwt
 
 # Load environment variables
 load_dotenv()
@@ -35,6 +35,18 @@ def generate_jwt_token(user_id: int, email: str, role: str) -> str:
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
+# Função para verificar o token no cookie
+def verificar_token_cookie(request: Request):
+    token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(status_code=403, detail="Token não encontrado")
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload  # Retorna o conteúdo do token se for válido
+    except JWTError:
+        raise HTTPException(status_code=403, detail="Token inválido ou expirado")
 
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:
