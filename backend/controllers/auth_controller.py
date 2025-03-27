@@ -3,8 +3,9 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
+from middleware.auth_middleware import jwt_middleware
 from schemas.user_schemas import UserRegistar, UserLogin
-from services.auth_service import registar_utilizador, user_valido, verificar_token_cookie
+from services.auth_service import registar_utilizador, user_valido
 
 # Define o tempo do token
 EXPIRE_MINUTES = int(os.getenv("EXPIRE_MINUTES", 30))
@@ -22,12 +23,15 @@ async def registar(user: UserRegistar, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail= {str(e)})
 
+# Controller login
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
     try:
         sucesso, mensagem = await user_valido(db, user)
+
         if sucesso:
-            # Define o cookie de login com o tempo de expiração
+
+            # Define o cookie de login
             response.set_cookie(
                 key="access_token",
                 value=mensagem,
@@ -36,7 +40,6 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
                 samesite="Strict",  # Controle de onde o cookie é enviado (Lax ou Strict)
                 expires=datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES),  # Expiração
             )
-
             return {"message": "Login com sucesso"}
         else:
             raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
@@ -44,5 +47,5 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/dados_protegidos")
-async def dados_protegidos(user: dict = Depends(verificar_token_cookie)):
+async def dados_protegidos(user: dict = Depends(jwt_middleware)):
     return {"message": "Acesso autorizado!", "user": user}

@@ -1,5 +1,4 @@
 from typing import List
-
 from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, Table
 from sqlalchemy.dialects.mssql import IMAGE
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship

@@ -1,52 +1,11 @@
-from fastapi import  HTTPException, Request
-from sqlalchemy.orm import Session
-from schemas import UserRegistar, UserLogin
-from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
+from fastapi import  HTTPException
+from schemas import  UserLogin
+from db.repository.user_repo import *
 from utils.PasswordHasher import hash_password, verificar_password
-from dotenv import load_dotenv
-from datetime import datetime, timezone, timedelta
-from jose import JWTError, jwt
-import os
-
-# Load environment variables
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
-EXPIRE_MINUTES = int(os.getenv("EXPIRE_MINUTES", 30))
-
+from services.jwt_services import generate_jwt_token
 
 def formatar_string(word: str) -> str:
     return word.strip()
-
-
-def generate_jwt_token(user_id: int, email: str, role: str) -> str:
-    expiration_time = datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES)
-
-    # Claims token JWT
-    payload = {
-        "id": user_id,
-        "email": email,
-        "role": role,
-        "exp": expiration_time
-    }
-
-    # Cria o token
-    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-    return token
-
-# Função para verificar o token no cookie
-def verificar_token_cookie(request: Request):
-    token = request.cookies.get("access_token")
-
-    if not token:
-        raise HTTPException(status_code=403, detail="Token não encontrado")
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload  # Retorna o conteúdo do token se for válido
-    except JWTError:
-        raise HTTPException(status_code=403, detail="Token inválido ou expirado")
 
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:
@@ -56,37 +15,42 @@ async def registar_utilizador(user: UserRegistar, db: Session):
 
         # Verifica se o utilizador já existe
         if await user_exists(db, user.email):
-            return False, "Email já está em uso"
+            return False, "Email registado"
 
-        # Obtém ID do cargo
+        # Obtém ID do role
         role_id = await get_id_role(db, user.role)
         if role_id is None:
-            return False, "Cargo não encontrado"
+            return False, "Permissões não existe"
 
+        # Converte a password num hash e salt
         user.password, salt = hash_password(user.password)
 
-        # Adicionar o utilizador na base de dados
+        # Adicionar o utilizador a db
         if await create_user(db, user, role_id, salt):
-            return True, "Utilizador criado com sucesso"
+            return True, "Registo realizado com sucesso"
         else:
             return False, "Erro ao criar o Utilizador"
-
     except Exception as e:
         raise RuntimeError(f"Erro registar_utilizador: {e}")
 
-async def user_valido(db: Session, userL: UserLogin):
-    userL.email = formatar_string(userL.email)
+async def user_valido(db: Session, user_login: UserLogin):
+
+    # Remove os espaços do email
+    user_login.email = formatar_string(user_login.email)
 
     # Verifica se o email existe
-    if not await user_exists(db, userL.email):
+    if not await user_exists(db, user_login.email):
         return False, "Email não registado"
 
-    user = await get_user_by_email(db, userL.email)
+    # Vai a db buscar informações do utilizador
+    user = await get_user_by_email(db, user_login.email)
+
+    # Confirma se o utilizador foi encontrado
     if not user:
         raise HTTPException(status_code=500, detail="Erro ao encontar utilizador")
 
     # Verifica a password e o salt
-    if verificar_password(userL.password, user.passwordHash, user.salt):
+    if verificar_password(user_login.password, user.passwordHash, user.salt):
         # Gera o token JWT
         return True, generate_jwt_token(user.utilizadorID, user.email, user.role)
     else:

@@ -1,6 +1,7 @@
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import *
+from schemas.user_schemas import UserRegistar, User
 
 async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
     try:
