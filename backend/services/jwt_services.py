@@ -27,24 +27,3 @@ def generate_jwt_token(user_id: int, email: str, role: str) -> str:
     # Cria o token
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
-
-def decode_jwt_token(token: str):
-    try:
-        # Descodifica o token e extrai o type e o exp
-        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        type = payload.get("type")
-        exp = payload.get("exp")
-
-        if type != "access":
-            raise jwt.InvalidSignatureError
-
-        # Verifica se token é válido (tempo) ou se existe
-        if not exp or exp < datetime.now(timezone.utc).timestamp():
-            raise jwt.ExpiredSignatureError
-
-        return payload
-
-    except jwt.ExpiredSignatureError:
-        raise ValueError("Token expirado")
-    except jwt.InvalidSignatureError:
-        raise ValueError("Token inválido")

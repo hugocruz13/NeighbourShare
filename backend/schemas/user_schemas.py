@@ -18,3 +18,8 @@ class UserRegistar(UserLogin):
     data_nasc: date
     contacto: int
     role: str
+
+class UserJWT(BaseModel):
+    id: int
+    email: EmailStr
+    role: str

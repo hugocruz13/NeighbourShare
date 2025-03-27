@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import jwt_middleware
-from schemas.user_schemas import UserRegistar, UserLogin
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT
 from services.auth_service import registar_utilizador, user_valido
 
 # Define o tempo do token
@@ -47,5 +47,10 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/dados_protegidos")
-async def dados_protegidos(user: dict = Depends(jwt_middleware)):
-    return {"message": "Acesso autorizado!", "user": user}
+async def dados_protegidos(user: UserJWT = Depends(jwt_middleware)):
+
+    # Gerir Pemissões
+    if user.role == "admin":
+        return {"message": "Admin"}
+    else:
+        return {"message": "User"}

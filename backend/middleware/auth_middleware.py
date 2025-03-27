@@ -1,5 +1,7 @@
 from fastapi import HTTPException, Request, Response
 from fastapi.security import HTTPBearer
+
+from schemas.user_schemas import UserJWT
 from services.jwt_services import generate_jwt_token
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
@@ -45,16 +47,20 @@ async def jwt_middleware(request: Request, response: Response):
 
     # Verifica se o token é valido
     if not verify_token(token):
-        raise HTTPException(status_code=403, detail="token invalido")
+        raise HTTPException(status_code=403, detail="Token invalido")
 
     # Descodifica e extrai o tempo
     payload = verify_token(token)
     exp = payload.get("exp")
 
+    # Converte o token num objeto
+    user_id = payload["id"]
+    email = payload["email"]
+    role = payload["role"]
+    user=UserJWT(id=user_id, email=email, role=role)
+
     if exp - datetime.now(timezone.utc).timestamp() < 5 * 60:
-        user_id = payload["id"]
-        email = payload["email"]
-        role = payload["role"]
+
         new_token = generate_jwt_token(user_id, email, role)
 
         response.set_cookie(
@@ -66,4 +72,4 @@ async def jwt_middleware(request: Request, response: Response):
             expires=datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES),  # Expiração
         )
 
-    return payload
+    return user
