@@ -17,7 +17,7 @@ def listar_recursos_disponiveis(
     """
     recursos_disponiveis = (
         db.query(Recurso)
-        .filter(Recurso.DispID == 1)
+        .filter(Recurso.Disponibilidade_ == 1)
         .all()
     )
 
