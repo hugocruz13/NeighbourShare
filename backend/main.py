@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from controllers import *
+from backend.controllers import *
 
 app = FastAPI()
 
 for router in routers:
-    app.include_router(router, prefix="/api")
+    app.include_router(router)
+
+

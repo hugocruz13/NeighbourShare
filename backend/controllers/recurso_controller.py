@@ -26,7 +26,7 @@ def listar_recursos(
     )
 
     if not recursos:
-        raise HTTPException(status_code=404, detail="Nenhum recurso disponível encontrado")
+        raise HTTPException(status_code=404, detail="Nenhum recurso encontrado")
 
     return recursos
 @router.get("/disponiveis", response_model=List[RecursoSchema])
@@ -71,6 +71,6 @@ def listar_recursos_indisponiveis(
     )
 
     if not recursos_indisponiveis:
-        raise HTTPException(status_code=404, detail="Nenhum recurso disponível encontrado")
+        raise HTTPException(status_code=404, detail="Nenhum recurso indisponível encontrado")
 
     return recursos_indisponiveis

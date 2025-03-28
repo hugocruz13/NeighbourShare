@@ -9,6 +9,7 @@ import decimal
 class Base(DeclarativeBase):
     pass
 
+
 class Categoria(Base):
     __tablename__ = 'Categoria'
     __table_args__ = (
@@ -28,7 +29,7 @@ class Disponibilidade(Base):
     )
 
     DispID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    DescDispo: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    DescDisponibilidade: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
 
     Recurso: Mapped[List['Recurso']] = relationship('Recurso', back_populates='Disponibilidade_')
 
@@ -89,7 +90,7 @@ class EstadoPedidoNovoRecurso(Base):
     )
 
     EstadoPedNovoRecID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    DescEstadoPedidoRecurso: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    DescEstadoPedidoNovoRecurso: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
 
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', back_populates='EstadoPedidoNovoRecurso_')
 
@@ -241,7 +242,7 @@ class PedidoManutencao(Base):
     PMID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
     UtilizadorID: Mapped[int] = mapped_column(Integer)
     RecComumID: Mapped[int] = mapped_column(Integer)
-    DescPedido: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    DescPedidoManutencao: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     DataPedido: Mapped[datetime.date] = mapped_column(Date)
     EstadoPedManuID: Mapped[int] = mapped_column(Integer)
 
@@ -325,7 +326,7 @@ class Manutencao(Base):
     PMID: Mapped[int] = mapped_column(Integer)
     EntidadeID: Mapped[int] = mapped_column(Integer)
     DataManutencao: Mapped[datetime.date] = mapped_column(Date)
-    DescMan: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    DescManutencao: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     EstadoManuID: Mapped[int] = mapped_column(Integer)
 
     EntidadeExterna_: Mapped['EntidadeExterna'] = relationship('EntidadeExterna', back_populates='Manutencao')
