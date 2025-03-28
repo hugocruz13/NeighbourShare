@@ -1,11 +1,11 @@
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import UserRegistar, User
+from schemas.user_schemas import UserRegistar, User, NewUserUpdate
 
-async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
+async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
-        new_user = Utilizador(NomeUtilizador=user.nome, DataNasc=user.data_nasc, Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
+        new_user = Utilizador(Email=user.email, TUID=id_role, Verificado=False)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -13,6 +13,23 @@ async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
     except Exception as e:
         db.rollback()
         raise RuntimeError(f"Erro ao criar utilizador: {e}")
+
+async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
+    try:
+        new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
+        if new_user:
+            new_user.NomeUtilizador = user.nome
+            new_user.DataNasc=user.data_nascimento
+            new_user.Contacto=user.contacto
+            new_user.PasswordHash = password_hashed
+            new_user.Salt = salt
+            new_user.Verificado = True
+            db.commit()
+        else:
+            raise RuntimeError("ID do utilizador inválido!")
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
 
 async def get_id_role(db: Session, role: str):
     try:
