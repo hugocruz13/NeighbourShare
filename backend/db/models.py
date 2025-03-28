@@ -208,6 +208,7 @@ class Utilizador(Base):
     Email: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     PasswordHash: Mapped[str] = mapped_column(String(64, 'SQL_Latin1_General_CP1_CI_AS'))
     Salt: Mapped[str] = mapped_column(String(32, 'SQL_Latin1_General_CP1_CI_AS'))
+    Verificado: Mapped[bool] = mapped_column(Boolean)
     TUID: Mapped[int] = mapped_column(Integer)
 
     Notificacao_: Mapped[List['Notificacao']] = relationship('Notificacao', secondary='NotificacaoUser', back_populates='Utilizador')
