@@ -4,24 +4,24 @@ from typing import Optional
 
 class CategoriaSchema(BaseModel):
     CatID: int
-    Desc: str
+    DescCategoria: str
 
     class Config:
         from_attributes = True
 
 class DisponibilidadeSchema(BaseModel):
     DispID: int
-    Desc: str
+    DescDisponibilidade: str
 
     class Config:
-        from_attriutes = True
+        from_attributes = True
 
 class UtilizadorSchema(BaseModel):
     UtilizadorID: int
     NomeUtilizador: str
 
     class Config:
-        from_attriutes = True
+        from_attributes = True
 
 class RecursoSchema(BaseModel):
     RecursoID: int
@@ -29,9 +29,9 @@ class RecursoSchema(BaseModel):
     DescRecurso: str
     Caucao: decimal.Decimal
     Image: Optional[bytes] = None
-    utilizador : UtilizadorSchema
-    categoria: CategoriaSchema
-    disponibilidade: DisponibilidadeSchema
+    Utilizador_ : UtilizadorSchema
+    Categoria_ : CategoriaSchema
+    Disponibilidade_ : DisponibilidadeSchema
 
     class Config:
-        from_attriutes = True
+        from_attributes = True
