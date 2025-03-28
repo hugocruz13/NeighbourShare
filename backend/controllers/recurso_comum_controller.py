@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session, joinedload
 from typing import List
 
 from backend.db.session import get_db
-from backend.models.models import PedidoNovoRecurso
-from backend.schemas.recurso_comum_schema import PedidoNovoRecursoSchema
+from backend.models.models import PedidoNovoRecurso, PedidoManutencao
+from backend.schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
 
 router = APIRouter(prefix="/recursoscomum", tags=["Recursos Comuns"])
 
@@ -72,3 +72,75 @@ def listar_pedidos_novos_recursos_aprovado(
         raise HTTPException(status_code=404, detail="Nenhum pedido de um novo recurso aceite encontrado")
 
     return pedidos_novos_recursos_aprovados
+
+@router.get("/pedidosmanutencao", response_model=List[PedidoManutencaoSchema])
+def listar_pedidos_manutencao(
+        db:Session = Depends(get_db)
+):
+    """
+    Endpoint para consultar todos os pedidos de manutenção de recursos comuns
+    """
+
+    pedidos_manutencao = (
+        db.query(PedidoManutencao)
+        .options(
+            joinedload(PedidoManutencao.Utilizador_),
+            joinedload(PedidoManutencao.EstadoPedidoManutencao_),
+            joinedload(PedidoManutencao.RecursoComun_)
+        )
+        .all()
+    )
+
+    if not pedidos_manutencao:
+        raise HTTPException(status_code=404, detail="Nenhum pedido de manutenção encontrado")
+
+    return pedidos_manutencao
+
+
+@router.get("/pedidosmanutencao/progresso", response_model=List[PedidoManutencaoSchema])
+def listar_pedidos_manutencao_em_progresso(
+        db: Session = Depends(get_db)
+):
+    """
+    Endpoint para consultar todos os pedidos de manutenção de recursos comuns em progresso (EstadoPedManuID == 1)
+    """
+
+    pedidos_manutencao_em_progresso = (
+        db.query(PedidoManutencao)
+        .options(
+            joinedload(PedidoManutencao.Utilizador_),
+            joinedload(PedidoManutencao.EstadoPedidoManutencao_),
+            joinedload(PedidoManutencao.RecursoComun_)
+        )
+        .filter(PedidoManutencao.EstadoPedManuID == 1)
+        .all()
+    )
+
+    if not pedidos_manutencao_em_progresso:
+        raise HTTPException(status_code=404, detail="Nenhum pedido de manutenção em progresso encontrado")
+
+    return pedidos_manutencao_em_progresso
+
+@router.get("/pedidosmanutencao/finalizado", response_model=List[PedidoManutencaoSchema])
+def listar_pedidos_manutencao_finalizado(
+        db: Session = Depends(get_db)
+):
+    """
+    Endpoint para consultar todos os pedidos de manutenção de recursos comuns em progresso (EstadoPedManuID == 2)
+    """
+
+    pedidos_manutencao_finalizado = (
+        db.query(PedidoManutencao)
+        .options(
+            joinedload(PedidoManutencao.Utilizador_),
+            joinedload(PedidoManutencao.EstadoPedidoManutencao_),
+            joinedload(PedidoManutencao.RecursoComun_)
+        )
+        .filter(PedidoManutencao.EstadoPedManuID == 2)
+        .all()
+    )
+
+    if not pedidos_manutencao_finalizado:
+        raise HTTPException(status_code=404, detail="Nenhum pedido de manutenção em progresso encontrado")
+
+    return pedidos_manutencao_finalizado

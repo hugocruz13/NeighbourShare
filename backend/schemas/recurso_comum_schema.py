@@ -9,9 +9,23 @@ class UtilizadorSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class RecursoComunSchema(BaseModel):
+    RecComumID: int
+    Nome: str
+    DescRecursoComum: str
+    class Config:
+        from_attributes = True
+
 class EstadoPedNovoRecursoSchema(BaseModel):
     EstadoPedNovoRecID: int
     DescEstadoPedidoNovoRecurso: str
+
+    class Config:
+        from_attributes = True
+
+class EstadoPedManuSchema(BaseModel):
+    EstadoPedManuID: int
+    DescEstadoPedidoManutencao: str
 
     class Config:
         from_attributes = True
@@ -22,6 +36,17 @@ class PedidoNovoRecursoSchema(BaseModel):
     DescPedidoNovoRecurso: str
     DataPedido: datetime.date
     EstadoPedidoNovoRecurso_: EstadoPedNovoRecursoSchema
+
+    class Config:
+        from_attributes = True
+
+class PedidoManutencaoSchema(BaseModel):
+    PMID: int
+    Utilizador_: UtilizadorSchema
+    RecursoComun_: RecursoComunSchema
+    DescPedidoManutencao: str
+    DataPedido: datetime.date
+    EstadoPedidoManutencao_: EstadoPedManuSchema
 
     class Config:
         from_attributes = True
