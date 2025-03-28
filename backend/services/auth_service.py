@@ -1,9 +1,10 @@
 from fastapi import  HTTPException
 from schemas import  UserLogin
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT
+from schemas.user_schemas import UserJWT, User
 from utils.PasswordHasher import hash_password, verificar_password
-from services.jwt_services import generate_jwt_token_login
+from services.jwt_services import generate_jwt_token_login, generate_jwt_token_registo
+from services.email_service import send_verification_email
 
 def formatar_string(word: str) -> str:
     return word.strip()
@@ -25,6 +26,10 @@ async def registar_utilizador(user: UserRegistar, db: Session):
 
         # Adicionar o utilizador a db
         if await create_user(db, user, role_id):
+            #Situação delicada, utilizador é inserido na base de dados mas qualquer seguinte método falhar, o utilizador nunca vai conseguir verificar com o mesmo email
+            temp = get_user_by_email(db, user.email)
+            jwt_token = generate_jwt_token_registo(str(user.email), user.role, temp.utilizador_ID)
+            send_verification_email(str(user.email), jwt_token)
             return True, "Registo realizado com sucesso"
         else:
             return False, "Erro ao criar o Utilizador"
@@ -33,9 +38,9 @@ async def registar_utilizador(user: UserRegistar, db: Session):
 
 async def atualizar_novo_utilizador(user: NewUserUpdate, token:UserJWT, db: Session):
     try:
-        if user_exists(db, user.email):
+        if user_exists(db, token.email):
             password_hashed, salt = hash_password(user.password)
-            await update_new_user(db, user, token.utilizadorID, password_hashed, salt)
+            await update_new_user(db, user, token.id, password_hashed, salt)
             user.password = ""
             return True, "Utilizador verificado e atualizado com sucesso"
         else:
@@ -52,18 +57,18 @@ async def user_valido(db: Session, user_login: UserLogin):
         return False, "Email não registado"
 
     # Vai a db buscar informações do utilizador
-    user = await get_user_by_email(db, user_login.email)
+    user = get_user_by_email(db, user_login.email)
 
     # Confirma se o utilizador foi encontrado
     if not user:
         raise HTTPException(status_code=500, detail="Erro ao encontar utilizador")
 
     # Verifica a password e o salt
-    if verificar_password(user_login.password, user.passwordHash, user.salt):
+    if verificar_password(user_login.password, user.password_hash, user.salt):
         # Gera o token JWT
-        return True, generate_jwt_token_login(user.utilizadorID, user.email, user.role)
+        return True, generate_jwt_token_login(user.utilizador_ID, user.email, user.role)
     else:
         return False, "Password incorreta"
 
-async def verificao_novo_utilizador(db: Session, user: UserJWT):
-    return await user_exists(db, user.email)
+def verificao_novo_utilizador(db: Session, user: UserJWT):
+    return user_exists(db, user.email)

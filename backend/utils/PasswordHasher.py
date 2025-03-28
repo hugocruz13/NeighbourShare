@@ -30,3 +30,5 @@ def verificar_password(password: str, stored_hash: str, stored_salt: str) -> boo
 
     # Converte para base64 para comparar
     return base64.b64encode(hashed_password).decode() == stored_hash
+
+print(hash_password("123456"))

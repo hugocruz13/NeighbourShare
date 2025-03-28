@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
@@ -5,7 +7,8 @@ from schemas.user_schemas import UserRegistar, User, NewUserUpdate
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
-        new_user = Utilizador(Email=user.email, TUID=id_role, Verificado=False)
+        date = datetime.date.today()
+        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=user.email, Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -44,15 +47,15 @@ async def user_exists(db: Session, email: str):
     except Exception as e:
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
 
-async def get_user_by_email(db: Session, email: EmailStr):
+def get_user_by_email(db: Session, email: EmailStr):
     try:
         user = db.query(Utilizador).filter(Utilizador.Email == email).first()
         if user:
             role = user.TipoUtilizador_.DescTU if user.TipoUtilizador_ else None
             return User(
-                utilizadorID=user.UtilizadorID,
+                utilizador_ID=user.UtilizadorID,
                 email=user.Email,
-                passwordHash = user.PasswordHash,
+                password_hash = user.PasswordHash,
                 salt=user.Salt,
                 role=role
             )

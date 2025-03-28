@@ -52,13 +52,14 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
 @router.get("/verification/{token}")
 async def verification(token, db:Session = Depends(get_db)):
     try:
+        print(token)
         payload = verify_token_signup(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
         if verificao_novo_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
-            return RedirectResponse(url="http://127.0.0.1:8000/docs#/default/registar_atualizar_dados_api_registar_atualizar_dados_post?{token}") #TODO ALTERAR A URL
+            return RedirectResponse(url=f"http://127.0.0.1:8000/docs#/default/registar_atualizar_dados_api_registar_atualizar_dados_post?{token}") #TODO ALTERAR A URL
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise e
 
 @router.post("/registar/atualizar_dados")
 async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session = Depends(get_db)):

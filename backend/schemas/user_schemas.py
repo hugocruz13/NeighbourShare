@@ -26,5 +26,4 @@ class NewUserUpdate(BaseModel):
     data_nascimento: date
     contacto: int
     password: str
-    verificado: bool
 
