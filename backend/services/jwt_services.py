@@ -6,14 +6,14 @@ import os
 # Load environment variables
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
-EXPIRE_MINUTES = int(os.getenv("EXPIRE_MINUTES", 30))
+SECRET_KEY = os.getenv("SECRET_KEY_LOGIN")
+ALGORITHM = os.getenv("ALGORITHM")
+EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
-def generate_jwt_token(user_id: int, email: str, role: str) -> str:
+def generate_jwt_token_login(user_id: int, email: str, role: str) -> str:
 
     # Define o tempo do token
-    expiration_time = datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES)
+    expiration_time = datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES_LOGIN)
 
     # Claims token JWT (informação util)
     payload = {
@@ -25,5 +25,17 @@ def generate_jwt_token(user_id: int, email: str, role: str) -> str:
     }
 
     # Cria o token
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return token
+
+def generate_jwt_token_registo(user_id: int, email: str, role: str) -> str:
+    expiration_time = datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES_LOGIN)
+    payload = {
+        "id": user_id,
+        "email": email,
+        "role": role,
+        "type": "verification",
+        "exp": expiration_time
+    }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
