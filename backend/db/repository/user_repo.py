@@ -17,6 +17,13 @@ async def create_user(db: Session, user: UserRegistar, id_role: int):
         db.rollback()
         raise RuntimeError(f"Erro ao criar utilizador: {e}")
 
+async def rollback_user(db: Session, email: EmailStr):
+    try:
+        db.query(Utilizador).filter(Utilizador.Email == email).delete()
+        db.commit()
+    except Exception as e:
+        raise RuntimeError(f"Erro ao rollback utilizador: {e}")
+
 async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
     try:
         new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()

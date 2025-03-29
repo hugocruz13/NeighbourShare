@@ -26,11 +26,16 @@ async def registar_utilizador(user: UserRegistar, db: Session):
 
         # Adicionar o utilizador a db
         if await create_user(db, user, role_id):
-            #Situação delicada, utilizador é inserido na base de dados mas qualquer seguinte método falhar, o utilizador nunca vai conseguir verificar com o mesmo email
-            temp = get_user_by_email(db, user.email)
-            jwt_token = generate_jwt_token_registo(str(user.email), user.role, temp.utilizador_ID)
-            send_verification_email(str(user.email), jwt_token)
-            return True, "Registo realizado com sucesso"
+            try:
+                temp = get_user_by_email(db, user.email)
+                if not temp:
+                    raise RuntimeError("Erro ao obter utilizador")
+                jwt_token = generate_jwt_token_registo(str(user.email), user.role, temp.utilizador_ID)
+                send_verification_email(str(user.email), jwt_token)
+                return True, "Registo realizado com sucesso"
+            except Exception as e:
+                await rollback_user(db, user.email)
+                return False, f"Erro durante o envio de email ou geração do token: {e}"
         else:
             return False, "Erro ao criar o Utilizador"
     except Exception as e:
