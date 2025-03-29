@@ -191,7 +191,7 @@ class Notificacao(Base):
     TipoProcID: Mapped[int] = mapped_column(Integer)
 
     TipoProcesso_: Mapped['TipoProcesso'] = relationship('TipoProcesso', back_populates='Notificacao')
-    Utilizador: Mapped[List['Utilizador']] = relationship('Utilizador', secondary='NotificacaoUser', back_populates='Notificacao_')
+    Utilizador_: Mapped[List['Utilizador']] = relationship('NotificacaoUser', back_populates='Notificacao_')
 
 
 class Utilizador(Base):
@@ -211,7 +211,7 @@ class Utilizador(Base):
     Salt: Mapped[str] = mapped_column(String(32, 'SQL_Latin1_General_CP1_CI_AS'))
     TUID: Mapped[int] = mapped_column(Integer)
 
-    Notificacao_: Mapped[List['Notificacao']] = relationship('Notificacao', secondary='NotificacaoUser', back_populates='Utilizador')
+    Notificacao_: Mapped[List['Notificacao']] = relationship('NotificacaoUser', back_populates='Utilizador')
     TipoUtilizador_: Mapped['TipoUtilizador'] = relationship('TipoUtilizador', back_populates='Utilizador')
     PedidoManutencao: Mapped[List['PedidoManutencao']] = relationship('PedidoManutencao', back_populates='Utilizador_')
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', back_populates='Utilizador_')
@@ -220,14 +220,28 @@ class Utilizador(Base):
     PedidoReserva: Mapped[List['PedidoReserva']] = relationship('PedidoReserva', back_populates='Utilizador_')
 
 
-t_NotificacaoUser = Table(
-    'NotificacaoUser', Base.metadata,
-    Column('NotificacaoID', Integer, primary_key=True, nullable=False),
-    Column('UtilizadorID', Integer, primary_key=True, nullable=False),
-    ForeignKeyConstraint(['NotificacaoID'], ['Notificacao.NotificacaoID'], name='FKNotificaca868180'),
-    ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKNotificaca496296'),
-    PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F6408A5AAE8B')
-)
+#t_NotificacaoUser = Table(
+#    'NotificacaoUser', Base.metadata,
+#    Column('NotificacaoID', Integer, primary_key=True, nullable=False),
+#    Column('UtilizadorID', Integer, primary_key=True, nullable=False),
+#    ForeignKeyConstraint(['NotificacaoID'], ['Notificacao.NotificacaoID'], name='FKNotificaca868180'),
+#    ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKNotificaca496296'),
+#    PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F6408A5AAE8B')
+#)
+
+class NotificacaoUser(Base):
+    __tablename__ = 'NotificacaoUser'
+    __table_args__ = (
+        ForeignKeyConstraint(['NotificacaoID'], ['Notificacao.NotificacaoID'], name='FKNotificaca868180'),
+        ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKNotificaca496296'),
+        PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F6408A5AAE8B')
+    )
+
+    NotificacaoID: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
+    UtilizadorID: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
+
+    Notificacao_: Mapped['Notificacao'] = relationship('Notificacao', back_populates='Utilizador_')
+    Utilizador: Mapped['Utilizador'] = relationship('Utilizador', back_populates='Notificacao_')
 
 
 class PedidoManutencao(Base):

@@ -1,15 +1,14 @@
-from fastapi import FastAPI,Depends, HTTPException,APIRouter
+from fastapi import Depends, HTTPException,APIRouter
+
 from sqlalchemy.orm import Session
 from backend.db.session import get_db
-from backend.models.models import Notificacao,Utilizador,t_NotificacaoUser,TipoProcesso, TipoUtilizador
+from backend.models.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador, NotificacaoUser
 from backend.controllers.websockets_controller import send_notification
 from datetime import datetime
 
-app = FastAPI()
-
 router = APIRouter(tags=["Notificacao"])
 
-@app.post("/notificacao/")
+@router.post("/notificacao/")
 async def cria_notificacao(
     mensagem: str,
     processoid : int,
@@ -33,21 +32,20 @@ async def cria_notificacao(
     db.commit()
     db.refresh(nova_notificao)
 
-    utilizadores_notificacao = []
+    utilizadores_ids = []
 
     if tipo_processo.DescTipoProcesso == 'Individual' and user_id:
         utilizador = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_id).first()
         if utilizador:
-            utilizadores_notificacao.append(utilizador)
+            utilizadores_ids = [utilizador.UtilizadorID]
     elif tipo_processo.DescTipoProcesso == 'Todos':
-        utilizadores_notificacao = db.query(Utilizador).all()
+        utilizadores_ids = [u[0] for u in db.query(Utilizador.UtilizadorID).all()]
     elif tipo_processo.DescTipoProcesso == 'Gestores':
-        utilizadores_notificacao = db.query(Utilizador).filter(TipoUtilizador.DescTU == 'Gestor').all()
+        utilizadores_ids =  [u[0] for u in db.query(Utilizador.UtilizadorID).filter(TipoUtilizador.DescTU == 'Gestor').all()]
 
-    for utilizador in utilizadores_notificacao:
-        nova_relacao = t_NotificacaoUser(NotificacaoID=nova_notificao.NotificacaoID, UtilizadorID=utilizador.UtilizadorID)
+    for utilizadorID in utilizadores_ids:
+        nova_relacao = NotificacaoUser(NotificacaoID=nova_notificao.NotificacaoID, UtilizadorID=utilizadorID)
         db.add(nova_relacao)
-        await send_notification(utilizador.UtilizadorID, nova_notificao.Mensagem)
-
+        await send_notification(utilizadorID, nova_notificao.Mensagem)
     db.commit()
-    return {"status": "Nova notificação enviadad com sucesso"}
+    return {"status": "Nova notificação enviada com sucesso"}
