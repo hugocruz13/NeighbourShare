@@ -11,7 +11,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
     try:
         while True:
             await websocket.receive_text()
-    except RuntimeError:
+    except WebSocketDisconnect:
         del active_connections[user_id]
 
 async def send_notification(user_id: int, message: str):
