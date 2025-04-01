@@ -1,6 +1,7 @@
 import os
+from fastapi import HTTPException
+
 import resend
-from urllib.parse import urlencode
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
@@ -28,4 +29,4 @@ def send_verification_email(user_email: str, token: str):
         return email_response
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
-        return None
+        raise HTTPException(status_code=500, detail=str(e))

@@ -12,10 +12,11 @@ from fastapi.responses import RedirectResponse
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
 router = APIRouter()
-#
+
+#Controler login, protegido
 @router.post("/registar")
 async def registar(user: UserRegistar, token:UserJWT=Depends(jwt_middleware), db: Session = Depends(get_db)):
-    if token.role != "admin":
+    if token.role != "admin": #Verificar se o token tem incluído o cargo admin
          raise HTTPException(status_code=403, detail="Acesso negado")
     try:
         sucesso, mensagem = await registar_utilizador(user, db)
@@ -23,6 +24,8 @@ async def registar(user: UserRegistar, token:UserJWT=Depends(jwt_middleware), db
             return {"message": "Registo realizado com sucesso"}
         else:
             raise HTTPException(status_code=400, detail=mensagem)  # Erro
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail= {str(e)})
 
@@ -46,30 +49,35 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
             return {"message": "Login com sucesso"}
         else:
             raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/verification/{token}")
-async def verification(token, db:Session = Depends(get_db)):
+async def verificacao(token, db:Session = Depends(get_db)):
     try:
         print(token)
         payload = verify_token_signup(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
-        if verificao_novo_utilizador(db, user):
+        if await verificao_novo_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
             return RedirectResponse(url=f"http://127.0.0.1:8000/docs#/default/registar_atualizar_dados_api_registar_atualizar_dados_post?{token}") #TODO ALTERAR A URL
+        else:
+            raise HTTPException(status_code=400, detail="Token de verificação de email inválido")
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        raise e
+        raise HTTPException(status_code=500, detail={str(e)})
 
 @router.post("/registar/atualizar_dados")
 async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session = Depends(get_db)):
     try:
         payload = verify_token_signup(token)
         user_jwt = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
-    except Exception as e:
-        raise HTTPException(status_code=400, detail={str(e)})
-    try:
         return await atualizar_novo_utilizador(user, user_jwt, db)
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
