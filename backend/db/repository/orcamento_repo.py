@@ -14,8 +14,8 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
         db.commit()
         db.refresh(novo_orcamento)
 
-        return True
+        return True, {'Inserção do orçamento realizada com sucesso!'}
 
     except SQLAlchemyError as e:
         db.rollback()
-        return False
+        return False, {'details': str(e)}
