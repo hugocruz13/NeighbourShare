@@ -1,10 +1,14 @@
+import datetime
+
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import *
+from schemas.user_schemas import UserRegistar, User, NewUserUpdate
 
-async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
+async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
-        new_user = Utilizador(NomeUtilizador=user.nome, DataNasc=user.data_nasc, Email=user.email, Contacto=user.contacto, PasswordHash=user.password, Salt=salt, TUID=id_role)
+        date = datetime.date.today()
+        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=user.email, Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -12,6 +16,30 @@ async def create_user(db: Session, user: UserRegistar, id_role: int, salt:str):
     except Exception as e:
         db.rollback()
         raise RuntimeError(f"Erro ao criar utilizador: {e}")
+
+async def rollback_user(db: Session, email: EmailStr):
+    try:
+        db.query(Utilizador).filter(Utilizador.Email == email).delete()
+        db.commit()
+    except Exception as e:
+        raise RuntimeError(f"Erro ao rollback utilizador: {e}")
+
+async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
+    try:
+        new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
+        if new_user:
+            new_user.NomeUtilizador = user.nome
+            new_user.DataNasc=user.data_nascimento
+            new_user.Contacto=user.contacto
+            new_user.PasswordHash = password_hashed
+            new_user.Salt = salt
+            new_user.Verificado = True
+            db.commit()
+        else:
+            raise RuntimeError("ID do utilizador inválido!")
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
 
 async def get_id_role(db: Session, role: str):
     try:
@@ -26,15 +54,15 @@ async def user_exists(db: Session, email: str):
     except Exception as e:
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
 
-async def get_user_by_email(db: Session, email: EmailStr):
+def get_user_by_email(db: Session, email: EmailStr):
     try:
         user = db.query(Utilizador).filter(Utilizador.Email == email).first()
         if user:
             role = user.TipoUtilizador_.DescTU if user.TipoUtilizador_ else None
             return User(
-                utilizadorID=user.UtilizadorID,
+                utilizador_ID=user.UtilizadorID,
                 email=user.Email,
-                passwordHash = user.PasswordHash,
+                password_hash = user.PasswordHash,
                 salt=user.Salt,
                 role=role
             )
