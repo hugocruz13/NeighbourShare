@@ -1,0 +1,5 @@
+.home-container {
+    background: linear-gradient(180deg, #F2F1EE 25%, #8BC9E0 100%);
+    height: 100vh; /* Garantir que ocupe toda a altura da tela */
+}
+  

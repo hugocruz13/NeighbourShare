@@ -1,0 +1,35 @@
+.navbar {
+    height: 150px;
+    background-color: #F2F1EE; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 155px 0 450px;
+}
+
+.links{
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+}
+
+.link {
+    text-decoration: none;
+    margin: 20px;
+    font-size: 25px;
+    color: rgba(51, 51, 51, 0.5);
+}
+
+
+.login-button {
+    width: 180px;
+    height: 55px;
+    border-radius: 60px;
+    background-color: #108DAB;
+    color: #FFFFFF;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+
+}
+
