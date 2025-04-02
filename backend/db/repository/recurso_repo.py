@@ -1,7 +1,7 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import joinedload
-from backend.db import session
-from backend.db.models import Recurso
+from db import session
+from db.models import Recurso
 from sqlalchemy.exc import SQLAlchemyError
 
 async def listar_recursos_db(db:session):

@@ -1,5 +1,5 @@
-import backend.db.repository.recurso_comum_repo as recurso_comum_repo
-import backend.db.session as session
+import db.repository.recurso_comum_repo as recurso_comum_repo
+import db.session as session
 from fastapi import HTTPException
 
 async def listar_pedidos_novos_recursos_service(db:session):

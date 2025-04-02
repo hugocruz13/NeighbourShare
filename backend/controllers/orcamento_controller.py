@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.session import get_db
-from backend.schemas.orcamento_schema import OrcamentoSchema
-import backend.services.orcamento_service as orcamento_service
+from db.session import get_db
+from schemas.orcamento_schema import OrcamentoSchema
+import services.orcamento_service as orcamento_service
 
 router = APIRouter(prefix="/orcamentos", tags=["Orcamentos"])
 

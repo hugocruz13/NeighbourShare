@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.db.models import Orcamento
-from backend.schemas.orcamento_schema import OrcamentoSchema
+from db.models import Orcamento
+from schemas.orcamento_schema import OrcamentoSchema
 from sqlalchemy.exc import SQLAlchemyError
 
 async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):

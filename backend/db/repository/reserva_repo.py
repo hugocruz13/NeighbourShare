@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
-from backend.db import session
-from backend.db.models import PedidoReserva
+from db import session
+from db.models import PedidoReserva
 from sqlalchemy.exc import SQLAlchemyError
 
 async def lista_pedidos_reserva_db(db:session):

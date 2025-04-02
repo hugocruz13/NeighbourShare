@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.session import get_db
-from backend.schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
-from backend.services.recurso_comum_service import *
+from db.session import get_db
+from schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
+from services.recurso_comum_service import *
 from typing import List
 
 router = APIRouter(prefix="/recursoscomum", tags=["Recursos Comuns"])

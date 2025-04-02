@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from schemas import UserRegistar, UserLogin
+from schemas.user_schemas import UserRegistar, UserLogin
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
 from utils.PasswordHasher import hash_password, verificar_password
 from dotenv import load_dotenv

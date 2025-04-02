@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.db.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador, NotificacaoUser
-from backend.controllers.websockets_controller import send_notification
+from db.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador, NotificacaoUser
+from controllers.websockets_controller import send_notification
 from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError

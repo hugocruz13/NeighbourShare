@@ -1,5 +1,5 @@
-import backend.db.repository.reserva_repo as reserva_repo
-import backend.db.session as session
+import db.repository.reserva_repo as reserva_repo
+import db.session as session
 from fastapi import HTTPException
 
 async def lista_pedidos_reserva_service(db:session):

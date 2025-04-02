@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
-from backend.db.session import get_db
+from db.session import get_db
 from sqlalchemy.orm import Session
-from backend.schemas.recurso_schema import RecursoSchema
+from schemas.recurso_schema import RecursoSchema
 from typing import List
 
-from backend.services.recurso_service import *
+from services.recurso_service import *
 
 router = APIRouter(prefix="/recursos", tags=["Recursos"])
 

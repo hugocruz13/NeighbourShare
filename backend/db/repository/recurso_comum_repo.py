@@ -1,8 +1,7 @@
 from sqlalchemy.orm import joinedload
-from backend.db.session import get_db
-from backend.db.models import RecursoComun, PedidoNovoRecurso, PedidoManutencao
+from db.models import PedidoNovoRecurso, PedidoManutencao
 from sqlalchemy.exc import SQLAlchemyError
-import backend.db.session as session
+import db.session as session
 
 async def listar_pedidos_novos_recursos_db(db:session):
     try:

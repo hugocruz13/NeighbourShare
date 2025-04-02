@@ -1,6 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from typing import Dict
 
+from starlette.websockets import WebSocketDisconnect #Não sei se é este import para corrigir a missing module na linha 16
+
 app = FastAPI()
 active_connections: Dict[int, WebSocket] = {}
 

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.controllers import *
+from controllers import *
 
 app = FastAPI()
 

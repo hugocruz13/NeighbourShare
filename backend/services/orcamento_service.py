@@ -1,6 +1,6 @@
-import backend.db.repository.orcamento_repo as orcamento_repo
-import backend.schemas.orcamento_schema as orcamentoschema
-import backend.db.session as session
+import db.repository.orcamento_repo as orcamento_repo
+import schemas.orcamento_schema as orcamentoschema
+import db.session as session
 
 async def inserir_orcamento_service(db:session, orcamento:orcamentoschema):
     try:

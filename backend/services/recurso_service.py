@@ -1,5 +1,5 @@
-import backend.db.repository.recurso_repo as recurso_repo
-import backend.db.session as session
+import db.repository.recurso_repo as recurso_repo
+import db.session as session
 from fastapi import HTTPException
 
 async def lista_recursos_service(db:session):
