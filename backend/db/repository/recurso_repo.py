@@ -17,7 +17,7 @@ async def listar_recursos_db(db:session):
         )
         return recursos
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_recursos_disponiveis_db(db:session):
     try:
@@ -30,9 +30,9 @@ async def listar_recursos_disponiveis_db(db:session):
                 joinedload(Recurso.Disponibilidade_)
             )
         )
-        return recursos_disponiveis , {"Consulta efetuada com sucesso!"}
+        return recursos_disponiveis
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_recursos_indisponiveis(db:session):
     try:
@@ -45,6 +45,6 @@ async def listar_recursos_indisponiveis(db:session):
                 joinedload(Recurso.Disponibilidade_)
             )
         )
-        return recursos_indisponiveis , {"Consulta efetuada com sucesso!"}
+        return recursos_indisponiveis
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))

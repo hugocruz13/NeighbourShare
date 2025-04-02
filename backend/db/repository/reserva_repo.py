@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import joinedload
 from backend.db import session
 from backend.db.models import PedidoReserva
@@ -15,9 +14,9 @@ async def lista_pedidos_reserva_db(db:session):
             )
             .all()
         )
-        return pedidos_reserva, {'Consulta efetuada com sucesso!'}
+        return pedidos_reserva
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def lista_pedidos_reserva_ativos_repo(db:session):
     try:
@@ -30,9 +29,9 @@ async def lista_pedidos_reserva_ativos_repo(db:session):
             )
             .filter(PedidoReserva.EstadoID == 1)
         )
-        return pedidos_reserva_ativos, {'Consulta efetuada com sucesso!'}
+        return pedidos_reserva_ativos
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def lista_pedidos_reserva_cancelados_repo(db:session):
     try:
@@ -45,6 +44,6 @@ async def lista_pedidos_reserva_cancelados_repo(db:session):
             )
             .filter(PedidoReserva.EstadoID == 2)
         )
-        return pedidos_reserva_cancelados, {'Consulta efetuada com sucesso!'}
+        return pedidos_reserva_cancelados
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))

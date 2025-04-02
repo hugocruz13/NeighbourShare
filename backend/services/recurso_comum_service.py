@@ -11,7 +11,7 @@ async def listar_pedidos_novos_recursos_service(db:session):
 
     return pedidos_novos_recursos
 
-async def listar_pedidos_novos_recursos_pendentes(db:session):
+async def listar_pedidos_novos_recursos_pendentes_service(db:session):
 
     pedidos_novos_recursos_pendentes = await recurso_comum_repo.listar_pedidos_novos_recursos_pendentes_db(db)
 
@@ -20,7 +20,7 @@ async def listar_pedidos_novos_recursos_pendentes(db:session):
 
     return pedidos_novos_recursos_pendentes
 
-async def listar_pedidos_novos_recursos_aprovados(db:session):
+async def listar_pedidos_novos_recursos_aprovados_service(db:session):
 
     pedidos_novos_recursos_aprovados = await recurso_comum_repo.listar_pedidos_novos_recursos_aprovados_db(db)
 
@@ -29,7 +29,7 @@ async def listar_pedidos_novos_recursos_aprovados(db:session):
 
     return pedidos_novos_recursos_aprovados
 
-async def listar_pedidos_manutencao(db:session):
+async def listar_pedidos_manutencao_service(db:session):
 
     pedidos_manutencao = await recurso_comum_repo.listar_pedidos_manutencao_db(db)
 

@@ -14,10 +14,10 @@ async def listar_pedidos_novos_recursos_db(db:session):
             )
             .all()
         )
-        return pedidos_novos_recursos , {"Consulta efetuada com sucesso!"}
+        return pedidos_novos_recursos
 
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_pedidos_novos_recursos_pendentes_db(db:session):
     try:
@@ -31,9 +31,9 @@ async def listar_pedidos_novos_recursos_pendentes_db(db:session):
             .all()
         )
 
-        return pedidos_novos_recursos_pendentes, {"Consulta efetuada com sucesso!"}
+        return pedidos_novos_recursos_pendentes
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_pedidos_novos_recursos_aprovados_db(db:session):
     try:
@@ -47,10 +47,10 @@ async def listar_pedidos_novos_recursos_aprovados_db(db:session):
             .all()
         )
 
-        return pedidos_novos_recursos_aprovados, {"Consulta efetuada com sucesso!"}
+        return pedidos_novos_recursos_aprovados
 
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_pedidos_manutencao_db(db:session):
 
@@ -65,10 +65,10 @@ async def listar_pedidos_manutencao_db(db:session):
             .all()
         )
 
-        return pedidos_manutencao, {"Consulta efetuada com sucesso!"}
+        return pedidos_manutencao
 
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_pedidos_manutencao_em_progresso_db(db:session):
 
@@ -84,10 +84,10 @@ async def listar_pedidos_manutencao_em_progresso_db(db:session):
             .all()
         )
 
-        return pedidos_manutencao_em_progresso, {"Consulta efetuada com sucesso!"}
+        return pedidos_manutencao_em_progresso
 
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
 
 async def listar_pedidos_manutencao_finalizados_db(db:session):
     try:
@@ -102,7 +102,7 @@ async def listar_pedidos_manutencao_finalizados_db(db:session):
             .all()
         )
 
-        return pedidos_manutencao_finalizado, {"Consulta efetuada com sucesso!"}
+        return pedidos_manutencao_finalizado
 
     except SQLAlchemyError as e:
-        return False, {'details': str(e)}
+        raise SQLAlchemyError(str(e))
