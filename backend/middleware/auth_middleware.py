@@ -1,11 +1,13 @@
-from fastapi import HTTPException, Request, Response
+from fastapi import HTTPException, Request, Response, Depends
 from fastapi.security import HTTPBearer
 from schemas.user_schemas import UserJWT
 from services.jwt_services import generate_jwt_token_login
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
+from typing import List
 import jwt
 import os
+
 
 # Load environment variables
 load_dotenv()
@@ -91,3 +93,10 @@ async def jwt_middleware(request: Request, response: Response):
         )
 
     return user
+
+def role_required(roles: List[str]):
+    def role_check(user: UserJWT = Depends(jwt_middleware)):
+        if user.role not in roles:
+            raise HTTPException(status_code=403, detail="Acesso negado")
+        return user
+    return role_check

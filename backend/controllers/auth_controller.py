@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import jwt_middleware, verify_token_signup
+from middleware.auth_middleware import jwt_middleware, verify_token_signup, role_required
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate
 from services.auth_service import registar_utilizador, user_valido, verificao_novo_utilizador, atualizar_novo_utilizador
 from fastapi.responses import RedirectResponse
@@ -15,9 +15,7 @@ router = APIRouter()
 
 #Controler login, protegido
 @router.post("/registar")
-async def registar(user: UserRegistar, token:UserJWT=Depends(jwt_middleware), db: Session = Depends(get_db)):
-    if token.role != "admin": #Verificar se o token tem incluído o cargo admin
-         raise HTTPException(status_code=403, detail="Acesso negado")
+async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
     try:
         sucesso, mensagem = await registar_utilizador(user, db)
         if sucesso:
@@ -36,7 +34,6 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
         sucesso, mensagem = await user_valido(db, user)
 
         if sucesso:
-
             # Define o cookie de login
             response.set_cookie(
                 key="access_token",
@@ -80,12 +77,3 @@ async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session 
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
-
-@router.get("/dados_protegidos")
-async def dados_protegidos(user: UserJWT = Depends(jwt_middleware)):
-
-    # Gerir Pemissões
-    if user.role == "admin":
-        return {"message": "Admin"}
-    else:
-        return {"message": "User"}
