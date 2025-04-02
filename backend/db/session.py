@@ -5,8 +5,8 @@ from sqlalchemy import create_engine
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+DATABASE_URL = str(os.getenv("DATABASE_URL"))
+engine = create_engine(str(DATABASE_URL), connect_args={"check_same_thread": False})
 connection = engine.connect()
 if connection:
     print("Conexão estabelecida com a Base de Dados")

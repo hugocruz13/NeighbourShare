@@ -1,7 +1,9 @@
 from fastapi import  HTTPException
-from schemas import  UserLogin
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, User
+from schemas.user_schemas import UserJWT, User, UserLogin
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
+from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
 from utils.PasswordHasher import hash_password, verificar_password
 from services.jwt_services import generate_jwt_token_login, generate_jwt_token_registo
 from services.email_service import send_verification_email
