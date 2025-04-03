@@ -15,8 +15,7 @@ async def verifica_tipo_processo(db:Session,tipo_processo_id: int = None):
 #Cria uma notificação com destino somente um utilizador
 async def cria_notificacao_individual_db(db: Session, notificacao: Notificacao, user_id: int = None):
     try:
-        if verifica_tipo_processo(db, notificacao.TipoProcID):
-
+        if await verifica_tipo_processo(db, notificacao.TipoProcID):
             nova_notificao = Notificacao(
                 Mensagem=notificacao.Mensagem,
                 DataHora=datetime.now(),
