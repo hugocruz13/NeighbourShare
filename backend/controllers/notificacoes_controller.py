@@ -10,4 +10,4 @@ router = APIRouter(prefix='/notificacoes', tags=['Notificacoes'])
 
 @router.get('/', response_model=List[NotificacaoSchema])
 async def listar_notificacoes(db:Session = Depends(get_db), token : UserJWT = Depends(auth_middleware.jwt_middleware)):
-    return await listar_notificacoes_service(db, UserJWT.id)
+    return await listar_notificacoes_service(db, token.id)
