@@ -8,7 +8,7 @@ from schemas.user_schemas import UserRegistar, User, NewUserUpdate
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
         date = datetime.date.today()
-        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=user.email, Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
+        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=str(user.email), Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -24,15 +24,31 @@ async def rollback_user(db: Session, email: EmailStr):
     except Exception as e:
         raise RuntimeError(f"Erro ao rollback utilizador: {e}")
 
+async def update_new_password(db: Session, user_identifier: int, password_hashed: str,salt: str):
+    try:
+        new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
+        if new_user:
+            new_user.PasswordHash = password_hashed
+            new_user.Salt = salt
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao atualizar password utilizador: {e}")
+
 async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
     try:
         new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
         if new_user:
-            new_user.NomeUtilizador = user.nome
-            new_user.DataNasc=user.data_nascimento
-            new_user.Contacto=user.contacto
-            new_user.PasswordHash = password_hashed
-            new_user.Salt = salt
+            if user.nome is not None:
+                new_user.NomeUtilizador = user.nome
+            if user.data_nascimento is not None:
+                new_user.DataNasc=user.data_nascimento
+            if user.contacto is not None:
+                new_user.Contacto=user.contacto
+            if password_hashed is not None:
+                new_user.PasswordHash = password_hashed
+            if salt is not None:
+                new_user.Salt = salt
             new_user.Verificado = True
             db.commit()
         else:
