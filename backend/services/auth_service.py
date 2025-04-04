@@ -1,6 +1,5 @@
-from fastapi import  HTTPException
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, User, UserLogin
+from schemas.user_schemas import UserJWT, UserLogin,AuthResult
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
@@ -62,21 +61,23 @@ async def user_valido(db: Session, user_login: UserLogin):
 
         # Verifica se o email existe
         if not await user_exists(db, user_login.email):
-            return False, "Email não registado"
+            raise HTTPException(status_code=401, detail="Email não registado")
 
         # Vai a db buscar informações do utilizador
         user = get_user_by_email(db, user_login.email)
 
         # Confirma se o utilizador foi encontrado
         if not user:
-            raise HTTPException(status_code=400, detail="Erro ao encontar utilizador")
+            raise HTTPException(status_code=404, detail="Erro ao encontar utilizador")
 
         # Verifica a password e o salt
         if verificar_password(user_login.password, user.password_hash, user.salt):
             # Gera o token JWT
-            return True, generate_jwt_token_login(user.utilizador_ID, user.email, user.role)
+            token = generate_jwt_token_login(user.email, user.role, user.utilizador_ID)
+
+            return AuthResult(token=token, role=user.role)
         else:
-            return False, "Password incorreta"
+            raise HTTPException(status_code=401, detail="Password incorreta")
     except Exception as e:
         raise e
 

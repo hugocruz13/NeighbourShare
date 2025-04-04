@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import jwt_middleware, verify_token_signup, role_required
-from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, AuthResult
 from services.auth_service import registar_utilizador, user_valido, verificao_novo_utilizador, atualizar_novo_utilizador
 from fastapi.responses import RedirectResponse
 
@@ -31,21 +31,19 @@ async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
     try:
-        sucesso, mensagem = await user_valido(db, user)
+        data = await user_valido(db, user)
 
-        if sucesso:
-            # Define o cookie de login
-            response.set_cookie(
+        # Define o cookie de login
+        response.set_cookie(
                 key="access_token",
-                value=mensagem,
+                value=data.token,
                 httponly=True,  # Impede acesso via JavaScript
                 secure=True,  # Garante que o cookie seja enviado apenas por HTTPS
                 samesite="strict",  # Controle de onde o cookie é enviado (Lax ou Strict)
                 expires=datetime.now(timezone.utc) + timedelta(minutes=int(EXPIRE_MINUTES_LOGIN)),  # Expiração
-            )
-            return {"message": "Login com sucesso"}
-        else:
-            raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
+        )
+        return {"message": "Login com sucesso", "role": data.role}
+
     except HTTPException as he:
         raise he
     except Exception as e:

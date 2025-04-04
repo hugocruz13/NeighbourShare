@@ -27,3 +27,7 @@ class NewUserUpdate(BaseModel):
     contacto: int
     password: str
 
+class AuthResult\
+            (BaseModel):
+    token: str
+    role: str
