@@ -73,7 +73,7 @@ async def user_valido(db: Session, user_login: UserLogin):
         # Verifica a password e o salt
         if verificar_password(user_login.password, user.password_hash, user.salt):
             # Gera o token JWT
-            token = generate_jwt_token_login(user.email, user.role, user.utilizador_ID)
+            token = generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
 
             return AuthResult(token=token, role=user.role)
         else:
