@@ -57,7 +57,7 @@ def verify_token_verification(token: str):
         raise HTTPException(status_code=401, detail="Token inválido")
 
 # Função que realiza a verificação do token de recuperação password
-def verify_token_recupercao(token: str):
+def verify_token_recuperacao(token: str):
     try:
         # Descodifica o token
         payload = jwt.decode(token, SECRET_KEY_RECOVERY, algorithms=[ALGORITHM])
