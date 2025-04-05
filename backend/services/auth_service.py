@@ -69,7 +69,7 @@ async def user_login(db: Session, user: UserLogin):
 
         # Confirma se o utilizador foi encontrado
         if not dados:
-            raise HTTPException(status_code=400, detail="Erro ao encontar utilizador")
+            raise HTTPException(status_code=400, detail="Erro ao encontrar o utilizador")
 
         # Verifica a password e o salt
         if verificar_password(user.password, dados.password_hash, dados.salt):
