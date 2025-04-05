@@ -20,7 +20,7 @@ async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
 
         load_dotenv()
 
-        pastapdfs = os.getenv('UPLOAD_DIR')
+        pastapdfs = os.getenv('UPLOAD_DIR_ORCAMENTO')
 
         orcamento_path = os.path.join(pastapdfs, str(orcamento_id))
 
