@@ -9,6 +9,11 @@ async def get_disponibilidade_id_service(db:session, disponibilidade:str):
 
     return disponibilidade_id
 
+async def get_categoria_id_service(db:session, categoria:str):
+    categoria_id = recurso_repo.get_categoria_id_db(db, categoria)
+
+    return categoria_id
+
 async def inserir_recurso_service(db:session, novo_recurso, imagem_recurso:UploadFile):
     try:
         recurso_id, mensagem = await recurso_repo.inserir_recurso_db(db, novo_recurso)

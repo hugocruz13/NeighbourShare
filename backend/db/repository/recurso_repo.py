@@ -1,7 +1,7 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import joinedload
 from db import session
-from db.models import Recurso, Disponibilidade
+from db.models import Recurso, Disponibilidade, Categoria
 from sqlalchemy.exc import SQLAlchemyError
 
 def get_disponibilidade_id_db(disponibilidade:str, db:session):
@@ -11,6 +11,16 @@ def get_disponibilidade_id_db(disponibilidade:str, db:session):
                 return disponibilidade_id
             else:
                 raise Exception("Nenhuma disponibilidade encontrada com o nome informado")
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+def get_categoria_id_db(categoria:str, db:session):
+    try:
+        categoria_id = db.query(Categoria).filter(Categoria.DescCategoria == categoria).first().CategoriaID
+        if categoria_id:
+            return categoria_id
+        else:
+            raise Exception("Nenhuma categoria encontrada com o nome informado")
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
