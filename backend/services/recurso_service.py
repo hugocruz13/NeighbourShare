@@ -5,12 +5,12 @@ import os
 
 async def get_disponibilidade_id_service(db:session, disponibilidade:str):
 
-    disponibilidade_id = recurso_repo.get_disponibilidade_id_db(db, disponibilidade)
+    disponibilidade_id = recurso_repo.get_disponibilidade_id_db(disponibilidade,db)
 
     return disponibilidade_id
 
 async def get_categoria_id_service(db:session, categoria:str):
-    categoria_id = recurso_repo.get_categoria_id_db(db, categoria)
+    categoria_id = recurso_repo.get_categoria_id_db(categoria,db)
 
     return categoria_id
 

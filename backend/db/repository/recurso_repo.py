@@ -1,4 +1,3 @@
-from fastapi.params import Depends
 from sqlalchemy.orm import joinedload
 from db import session
 from db.models import Recurso, Disponibilidade, Categoria
@@ -6,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 def get_disponibilidade_id_db(disponibilidade:str, db:session):
     try:
-            disponibilidade_id = db.query(Disponibilidade).filter(Disponibilidade.DescDisponibilidade == disponibilidade).first().DisponibilidadeID
+            disponibilidade_id = db.query(Disponibilidade).filter(Disponibilidade.DescDisponibilidade == disponibilidade).first().DispID
             if disponibilidade_id:
                 return disponibilidade_id
             else:
@@ -16,7 +15,7 @@ def get_disponibilidade_id_db(disponibilidade:str, db:session):
 
 def get_categoria_id_db(categoria:str, db:session):
     try:
-        categoria_id = db.query(Categoria).filter(Categoria.DescCategoria == categoria).first().CategoriaID
+        categoria_id = db.query(Categoria).filter(Categoria.DescCategoria == categoria).first().CatID
         if categoria_id:
             return categoria_id
         else:
@@ -31,7 +30,7 @@ async def inserir_recurso_db(db:session, recurso:Recurso):
             DescRecurso=recurso.DescRecurso,
             Caucao=recurso.Caucao,
             UtilizadorID=recurso.UtilizadorID,
-            DispID= recurso.DispID,
+            DispID = recurso.DispID,
             CatID=recurso.CatID
         )
         db.add(novo_recurso)

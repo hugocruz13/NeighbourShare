@@ -28,8 +28,8 @@ class RecursoSchema(BaseModel):
     DescRecurso: str
     Caucao: decimal.Decimal
     UtilizadorID: int
-    CategoriaID: int
-    DisponibilidadeID: int
+    CatID: int
+    DispID: int
 
     class Config:
         from_attributes = True

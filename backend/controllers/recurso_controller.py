@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 
 from db.session import get_db
 from sqlalchemy.orm import Session
@@ -18,15 +18,15 @@ async def inserir_recurso(
         recurso_disponivel: str = Form(...),
         categoria_recurso: str = Form(...),
         utilizador_recurso: int = Form(...), #TODO Colocar o id do utilizador pelo token
-        fotos_recurso: UploadFile = Form(...),
+        fotos_recurso: UploadFile = File(...),
         db: Session = Depends(get_db)
 ):
     try:
         recurso_data = RecursoSchema(Nome=nome_recurso,
-        DescRecurso=descricao_recurso,
-        Caucao=caucao_recurso,
-        CategoriaID= await get_categoria_id_service(db, categoria_recurso),
-        DisponibilidadeID = await get_disponibilidade_id_service(db, recurso_disponivel),
+        DescRecurso= descricao_recurso,
+        Caucao= caucao_recurso,
+        CatID= await get_categoria_id_service(db, categoria_recurso),
+        DispID = await get_disponibilidade_id_service(db, recurso_disponivel),
         UtilizadorID = utilizador_recurso)
 
         sucesso, msg = await inserir_recurso_service(db, recurso_data, fotos_recurso)
