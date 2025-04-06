@@ -304,7 +304,6 @@ class Recurso(Base):
     UtilizadorID: Mapped[int] = mapped_column(Integer)
     DispID: Mapped[int] = mapped_column(Integer)
     CatID: Mapped[int] = mapped_column(Integer)
-    Imagem: Mapped[Optional[bytes]] = mapped_column(IMAGE)
 
     Categoria_: Mapped['Categoria'] = relationship('Categoria', back_populates='Recurso')
     Disponibilidade_: Mapped['Disponibilidade'] = relationship('Disponibilidade', back_populates='Recurso')

@@ -1,8 +1,37 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import joinedload
 from db import session
-from db.models import Recurso
+from db.models import Recurso, Disponibilidade
 from sqlalchemy.exc import SQLAlchemyError
+
+def get_disponibilidade_id_db(disponibilidade:str, db:session):
+    try:
+            disponibilidade_id = db.query(Disponibilidade).filter(Disponibilidade.DescDisponibilidade == disponibilidade).first().DisponibilidadeID
+            if disponibilidade_id:
+                return disponibilidade_id
+            else:
+                raise Exception("Nenhuma disponibilidade encontrada com o nome informado")
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def inserir_recurso_db(db:session, recurso:Recurso):
+    try:
+        novo_recurso = Recurso(
+            Nome=recurso.Nome,
+            DescRecurso=recurso.DescRecurso,
+            Caucao=recurso.Caucao,
+            UtilizadorID=recurso.UtilizadorID,
+            DispID= recurso.DispID,
+            CatID=recurso.CatID
+        )
+        db.add(novo_recurso)
+        db.commit()
+        db.refresh(novo_recurso)
+
+        return novo_recurso.RecursoID, {'Inserção do recurso realizada com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False, {'details': str(e)}
 
 async def listar_recursos_db(db:session):
     try:
