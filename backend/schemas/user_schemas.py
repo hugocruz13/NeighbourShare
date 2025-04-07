@@ -27,3 +27,8 @@ class NewUserUpdate(BaseModel):
     contacto: int
     password: str
 
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetPassword(BaseModel):
+    password: str

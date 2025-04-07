@@ -15,6 +15,7 @@ load_dotenv()
 # Recolhe os dados armazenados no ficheiro .env
 SECRET_KEY_LOGIN = os.getenv("SECRET_KEY_LOGIN")
 SECRET_KEY_SIGNUP = os.getenv("SECRET_KEY_SIGNUP")
+SECRET_KEY_RECOVERY = os.getenv("SECRET_KEY_RECOVERY")
 ALGORITHM = os.getenv("ALGORITHM")
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 EXPIRE_MINUTES_SIGNUP = int(os.getenv("EXPIRE_MINUTES_SIGNUP"))
@@ -38,14 +39,31 @@ def verify_token_login(token: str):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
-# Função que realiza a verificação do token de registo
-def verify_token_signup(token: str):
+# Função que realiza a verificação do token de verificação email
+def verify_token_verification(token: str):
     try:
         # Descodifica o token
         payload = jwt.decode(token, SECRET_KEY_SIGNUP, algorithms=[ALGORITHM])
         type = payload.get("type")
 
         if type != "verification":
+            raise HTTPException(status_code=401,detail="Token inválido")
+
+        return payload
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+# Função que realiza a verificação do token de recuperação password
+def verify_token_recuperacao(token: str):
+    try:
+        # Descodifica o token
+        payload = jwt.decode(token, SECRET_KEY_RECOVERY, algorithms=[ALGORITHM])
+        type = payload.get("type")
+
+        if type != "recovery":
             raise HTTPException(status_code=401,detail="Token inválido")
 
         return payload
