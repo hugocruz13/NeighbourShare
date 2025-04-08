@@ -26,8 +26,3 @@ class NewUserUpdate(BaseModel):
     data_nascimento: date
     contacto: int
     password: str
-
-class AuthResult\
-            (BaseModel):
-    token: str
-    role: str

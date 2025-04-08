@@ -3,8 +3,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import jwt_middleware, verify_token_signup, role_required
-from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, AuthResult
+from middleware.auth_middleware import verify_token_signup, role_required
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate
 from services.auth_service import registar_utilizador, user_valido, verificao_novo_utilizador, atualizar_novo_utilizador
 from fastapi.responses import RedirectResponse
 
@@ -31,18 +31,18 @@ async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
     try:
-        data = await user_valido(db, user)
+        token = await user_valido(db, user)
 
         # Define o cookie de login
         response.set_cookie(
                 key="access_token",
-                value=data.token,
+                value=token,
                 httponly=True,  # Impede acesso via JavaScript
                 secure=True,  # Garante que o cookie seja enviado apenas por HTTPS
                 samesite="strict",  # Controle de onde o cookie é enviado (Lax ou Strict)
                 expires=datetime.now(timezone.utc) + timedelta(minutes=int(EXPIRE_MINUTES_LOGIN)),  # Expiração
         )
-        return {"message": "Login com sucesso", "role": data.role}
+        return {"message": "Login com sucesso"}
 
     except HTTPException as he:
         raise he
@@ -73,5 +73,12 @@ async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session 
         return await atualizar_novo_utilizador(user, user_jwt, db)
     except HTTPException as he:
         raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
+
+@router.get("/me")
+async def about_me(user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
+    try:
+        return {"id": user.id, "email": user.email, "role": user.role}
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})

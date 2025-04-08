@@ -1,5 +1,5 @@
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, UserLogin,AuthResult
+from schemas.user_schemas import UserJWT, UserLogin
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
@@ -73,9 +73,7 @@ async def user_valido(db: Session, user_login: UserLogin):
         # Verifica a password e o salt
         if verificar_password(user_login.password, user.password_hash, user.salt):
             # Gera o token JWT
-            token = generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
-
-            return AuthResult(token=token, role=user.role)
+            return generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
         else:
             raise HTTPException(status_code=401, detail="Password incorreta")
     except Exception as e:
