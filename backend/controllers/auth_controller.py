@@ -3,9 +3,9 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import verify_token_signup, role_required
-from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate
-from services.auth_service import registar_utilizador, user_valido, verificao_novo_utilizador, atualizar_novo_utilizador
+from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword
+from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, verificao_utilizador, atualizar_nova_password
 from fastapi.responses import RedirectResponse
 
 # Define o tempo do token
@@ -31,7 +31,7 @@ async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
     try:
-        token = await user_valido(db, user)
+        token = await user_auth(db, user)
 
         # Define o cookie de login
         response.set_cookie(
@@ -88,7 +88,7 @@ async def esqueceu_password(user:ForgotPassword, db: Session = Depends(get_db)):
 async def recuperar_password(token, db: Session = Depends(get_db)):
     try:
         # print(token)
-        payload = verify_token_recupercao(token)
+        payload = verify_token_recuperacao(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role="")
         if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
@@ -104,7 +104,7 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
 @router.post("/password/reset")
 async def resetar_password(senha: ResetPassword, token: str, db: Session = Depends(get_db)):
     try:
-        payload = verify_token_recupercao(token)
+        payload = verify_token_recuperacao(token)
         user_jwt = UserJWT(id=payload["id"], email=payload["email"], role="")
         return await atualizar_nova_password(db, senha, user_jwt)
     except HTTPException as e:

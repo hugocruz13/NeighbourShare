@@ -52,4 +52,4 @@ def generate_jwt_token_recovery(user_id: int, email: str) -> str:
         "exp": expiration_time
     }
     token = jwt.encode(payload, SECRET_KEY_RECOVERY, algorithm=ALGORITHM)
-    return token
+    return token, expiration_time
