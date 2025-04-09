@@ -26,3 +26,9 @@ class NewUserUpdate(BaseModel):
     data_nascimento: date
     contacto: int
     password: str
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetPassword(BaseModel):
+    password: str
