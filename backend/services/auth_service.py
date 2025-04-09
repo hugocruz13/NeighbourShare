@@ -61,8 +61,8 @@ async def user_login(db: Session, user: UserLogin):
         user.email = formatar_string(user.email)
 
         # Verifica se o email existe
-        if not await user_exists(db, user.email):
-            return False, "Email não registado"
+        if not await user_exists(db, user_login.email):
+            raise HTTPException(status_code=401, detail="Email não registado")
 
         # Vai a dbase buscar informações do utilizador
         dados = get_user_by_email(db, user.email)
@@ -76,7 +76,7 @@ async def user_login(db: Session, user: UserLogin):
             # Gera o token JWT
             return True, generate_jwt_token_login(dados.utilizador_ID, dados.email, dados.role)
         else:
-            return False, "Password incorreta"
+            raise HTTPException(status_code=401, detail="Password incorreta")
     except Exception as e:
         raise e
 

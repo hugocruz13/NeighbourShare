@@ -3,9 +3,9 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import jwt_middleware, verify_token_verification, role_required, verify_token_recupercao
-from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ForgotPassword, ResetPassword
-from services.auth_service import registar_utilizador, user_login, verificao_utilizador, atualizar_novo_utilizador, verificar_forgot, atualizar_nova_password
+from middleware.auth_middleware import verify_token_signup, role_required
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate
+from services.auth_service import registar_utilizador, user_valido, verificao_novo_utilizador, atualizar_novo_utilizador
 from fastapi.responses import RedirectResponse
 
 # Define o tempo do token
@@ -31,21 +31,19 @@ async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db), response: Response = Response):
     try:
-        sucesso, mensagem = await user_login(db, user)
+        token = await user_valido(db, user)
 
-        if sucesso:
-            # Define o cookie de login
-            response.set_cookie(
+        # Define o cookie de login
+        response.set_cookie(
                 key="access_token",
-                value=mensagem,
+                value=token,
                 httponly=True,  # Impede acesso via JavaScript
                 secure=True,  # Garante que o cookie seja enviado apenas por HTTPS
                 samesite="strict",  # Controle de onde o cookie é enviado (Lax ou Strict)
                 expires=datetime.now(timezone.utc) + timedelta(minutes=int(EXPIRE_MINUTES_LOGIN)),  # Expiração
-            )
-            return {"message": "Login com sucesso"}
-        else:
-            raise HTTPException(status_code=401, detail=mensagem)  # Erro de login
+        )
+        return {"message": "Login com sucesso"}
+
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -111,5 +109,12 @@ async def resetar_password(senha: ResetPassword, token: str, db: Session = Depen
         return await atualizar_nova_password(db, senha, user_jwt)
     except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
+
+@router.get("/me")
+async def about_me(user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
+    try:
+        return {"id": user.id, "email": user.email, "role": user.role}
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
