@@ -152,3 +152,28 @@ async def confirma_rececao_caucao_db(db:session, reserva_id: int):
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
+
+#Insere justificação relativa ao mau estado do produto e não entrega da caução
+async def inserir_justificacao_caucao_db(db:session, reserva_id: int, justificacao: str):
+    try:
+        reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
+        reserva.JustificacaoMauEstado = justificacao
+        db.commit()
+
+        return {'Justificação registada com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+#Indicação do bom estado do produto e que a caução será entregue
+async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id: int):
+    try:
+        reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
+        reserva.DevolucaoCaucao = True
+        reserva.EstadoRecurso = True
+        db.commit()
+
+        return {'Confirmação do bom estado do produto e notificação da devolução da caução registada com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}

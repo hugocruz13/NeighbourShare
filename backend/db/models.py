@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, Table
+from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, Table, Text
 from sqlalchemy.dialects.mssql import IMAGE
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
@@ -424,6 +424,7 @@ class Reserva(Base):
     RecursoEntregueVizinho: Mapped[bool] = mapped_column(Boolean)
     DevolucaoCaucao: Mapped[bool] = mapped_column(Boolean)
     EstadoRecurso: Mapped[bool] = mapped_column(Boolean)
+    JustificacaoEstadoProduto: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     PedidoReserva_: Mapped['PedidoReserva'] = relationship('PedidoReserva', back_populates='Reserva')
 
