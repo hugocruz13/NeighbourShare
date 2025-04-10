@@ -115,3 +115,24 @@ async def atualizar_nova_password(db: Session, user:ResetPassword, token:UserJWT
             return False, "Erro ao verificar utilizador"
     except Exception as e:
         raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+async def eliminar_utilizador(db: Session, email: str):
+    try:
+        # Remove os espaços do email
+        email_new= formatar_string(email)
+
+        # Verifica se o email existe
+        if not await user_exists(db, email_new):
+            raise HTTPException(status_code=404, detail="Utilizador não existe.")
+
+        # Vai a db buscar informações do utilizador
+        user = get_user_by_email(db, email_new)
+
+        # Confirma se o utilizador foi encontrado
+        if not user:
+            raise HTTPException(status_code=404, detail="Erro ao encontar utilizador")
+        teste= apagar(db, user.utilizador_ID)
+
+        return teste
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

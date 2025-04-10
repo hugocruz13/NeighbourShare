@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword
-from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, verificao_utilizador, atualizar_nova_password
+from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, \
+    verificao_utilizador, atualizar_nova_password, eliminar_utilizador
 from fastapi.responses import RedirectResponse
 from utils.tokens_record import validate_token_entry, mark_token_as_used
 # Define o tempo do token
@@ -131,5 +132,17 @@ async def resetar_password(senha: ResetPassword, token: str, db: Session = Depen
 async def about_me(user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:
         return {"id": user.id, "email": user.email, "role": user.role}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
+
+@router.delete("/delete")
+async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
+    try:
+        if await eliminar_utilizador(db, email):
+            return {"message": "Utilizador eliminado com sucesso."}
+        else:
+            return {"message": "Erro ao eliminar utilizador."}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})

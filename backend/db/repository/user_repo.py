@@ -85,3 +85,14 @@ def get_user_by_email(db: Session, email: EmailStr):
         return None
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
+
+def apagar(db: Session, id: int):
+    try:
+        utilizador = db.query(Utilizador).filter(Utilizador.UtilizadorID == id).first()
+        if utilizador:
+            db.delete(utilizador)
+            db.commit()
+            return True
+        return False
+    except Exception as e:
+        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
