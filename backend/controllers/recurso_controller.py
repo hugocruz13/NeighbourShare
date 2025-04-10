@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from middleware.auth_middleware import *
 from db.session import get_db
 from sqlalchemy.orm import Session
-from schemas.recurso_schema import RecursoSchema, RecursoGetTodosSchema
+from schemas.recurso_schema import *
 from typing import List
 import decimal
 
@@ -23,7 +23,7 @@ async def inserir_recurso(
         db: Session = Depends(get_db)
 ):
     try:
-        recurso_data = RecursoSchema(Nome=nome_recurso,
+        recurso_data = RecursoInserirSchema(Nome=nome_recurso,
         DescRecurso= descricao_recurso,
         Caucao= caucao_recurso,
         CatID= await get_categoria_id_service(db, categoria_recurso),
@@ -59,7 +59,7 @@ async def listar_recursos_pessoais(
     return await lista_recursos_utilizador_service(db, token.id)
 
 #Lista todos os recursos disponíveis
-@router.get("/disponiveis", response_model=List[RecursoSchema])
+@router.get("/disponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_disponiveis(
     db:Session = Depends(get_db)
 ):
@@ -69,7 +69,7 @@ async def listar_recursos_disponiveis(
     return await lista_recursos_disponiveis_service(db)
 
 #Lista todos os recursos indisponíveis
-@router.get("/indisponiveis", response_model=List[RecursoSchema])
+@router.get("/indisponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_indisponiveis(
     db:Session = Depends(get_db)
 ):
