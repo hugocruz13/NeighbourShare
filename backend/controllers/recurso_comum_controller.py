@@ -9,7 +9,7 @@ from middleware.auth_middleware import *
 router = APIRouter(prefix="/recursoscomum", tags=["Recursos Comuns"])
 
 #Inserção de um pedido de um novo recurso comum
-@router.post("/inserir")
+@router.post("/pedidosnovos/inserir")
 async def inserir_recurso_comum(
     desc_pedido_novo_recurso: str,
     db:Session = Depends(get_db),
