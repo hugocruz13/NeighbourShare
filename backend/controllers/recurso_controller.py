@@ -53,8 +53,8 @@ async def listar_recursos(
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
 async def listar_recursos_pessoais(
-    token: UserJWT = Depends(jwt_middleware),
-    db:Session = Depends(get_db)
+        token: UserJWT = Depends(jwt_middleware),
+        db:Session = Depends(get_db)
 ):
     return await lista_recursos_utilizador_service(db, token.id)
 

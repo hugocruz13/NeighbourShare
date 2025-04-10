@@ -40,6 +40,11 @@ class PedidoNovoRecursoSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class PedidoNovoRecursoSchemaCreate(BaseModel):
+    UtilizadorID: int
+    DescPedidoNovoRecurso: str
+    DataPedido: datetime.date
+
 class PedidoManutencaoSchema(BaseModel):
     PMID: int
     Utilizador_: UtilizadorSchema

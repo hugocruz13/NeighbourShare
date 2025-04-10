@@ -4,8 +4,24 @@ from db.session import get_db
 from schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
 from services.recurso_comum_service import *
 from typing import List
+from middleware.auth_middleware import *
 
 router = APIRouter(prefix="/recursoscomum", tags=["Recursos Comuns"])
+
+#Inserção de um pedido de um novo recurso comum
+@router.post("/inserir")
+async def inserir_recurso_comum(
+    desc_pedido_novo_recurso: str,
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(jwt_middleware)
+):
+    novo_pedido = PedidoNovoRecursoSchemaCreate(
+        DescPedidoNovoRecurso=desc_pedido_novo_recurso,
+        UtilizadorID=token.id,
+        DataPedido = datetime.date.today()
+    )
+
+    return await inserir_pedido_novo_recurso_service(db,novo_pedido)
 
 @router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
 async def listar_pedidos_novos_recursos(
