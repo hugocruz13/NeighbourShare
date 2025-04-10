@@ -6,6 +6,11 @@ import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext.js";
 import "./App.css";
+import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";
+import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.js";
+import PedidosReserva from "./pages/PedidosReserva.js";
+import Perfil from "./pages/Perfil.js";
+import MeusRecursos from "./pages/MeusRecursos.js";
 
 function App() {
   return (
@@ -17,6 +22,11 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><Admin /></ProtectedRoute>}/>
             <Route path="/menu" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Menu /></ProtectedRoute>}/>
+            <Route path="/recursosDisponiveis" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RecursosDisponiveis /></ProtectedRoute>}/>
+            <Route path="/pedidosNovosRecursos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosNovosRecursos /></ProtectedRoute>}/>
+            <Route path="/pedidosReserva" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosReserva /></ProtectedRoute>}/>
+            <Route path="/perfil" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Perfil /></ProtectedRoute>}/>
+            <Route path="/meusRecursos" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><MeusRecursos /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>

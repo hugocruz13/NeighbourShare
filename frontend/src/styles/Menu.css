@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.home-container {
+  background: linear-gradient(180deg, #F2F1EE 25%, #8BC9E0 100%);
+  height: 100vh; /* Garantir que ocupe toda a altura da tela */
+}
+
+.botoes{
+  display: flex;
+  gap: 12%;
+  margin: 15px;
+  margin-top: 0px;
+}
+
+.btnMenu{
+  margin-top: 20px;
+  background-color: #8BC9E0;
+  padding: 10px;
+  border-radius: 25px;
+  transition: 0.3s;
+}
+
+.btnMenu:hover{
+  background-color: #6694a5;
+}
+
+.textBtn
+{
+  text-decoration: none;
+  color: #F2F1EE;
+}
