@@ -16,6 +16,18 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.rollback()
         return {'details': str(e)}
 
+#Inserção de um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return {'Pedido de manutenção inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
 async def listar_pedidos_novos_recursos_db(db:session):
     try:
         pedidos_novos_recursos = (

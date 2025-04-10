@@ -55,3 +55,9 @@ class PedidoManutencaoSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PedidoManutencaoSchemaCreate(BaseModel):
+    UtilizadorID: int
+    RecursoComumID: int
+    DescPedidoManutencao: str
+    DataPedido: datetime.date
