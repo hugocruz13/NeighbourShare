@@ -11,7 +11,7 @@ from utils.tokens_record import validate_token_entry, mark_token_as_used
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
-router = APIRouter()
+router = APIRouter(tags=['Autenticação'])
 
 #Controler login, protegido
 @router.post("/registar")
@@ -90,7 +90,6 @@ async def esqueceu_password(user:ForgotPassword, db: Session = Depends(get_db)):
         return await verificar_forgot(db, str(user.email))
     except HTTPException as e:
         raise e
-
 
 @router.get("/password/{token}")
 async def recuperar_password(token, db: Session = Depends(get_db)):
