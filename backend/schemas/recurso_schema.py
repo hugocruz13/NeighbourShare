@@ -34,7 +34,7 @@ class RecursoInserirSchema(BaseModel):
     Image: Optional[bytes] = None
 
     class Config:
-        from_atributes = True
+        from_attributes = True
 
 #Informações passadas aquando a amostragem de todos os recurso registados
 class RecursoGetTodosSchema(BaseModel):
