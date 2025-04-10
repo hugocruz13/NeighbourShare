@@ -32,7 +32,7 @@ class RecursoGetTodosSchema(BaseModel):
     Caucao: decimal.Decimal
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
-    Image: File
+    Image: Optional[File] = None
 
     class Config:
         from_attributes = True

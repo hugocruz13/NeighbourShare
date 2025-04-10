@@ -95,6 +95,12 @@ async def lista_imagens_recursos_service(lista_recursos:list):
     lista_recursos_imagens = []
 
     for recurso in lista_recursos:
+
+        foto_recurso = carrega_imagem_recurso_service(recurso.RecursoID)
+
+        if not foto_recurso:
+            foto_recurso = None
+
         novo_recurso = RecursoGetTodosSchema(
             RecursoID = recurso.RecursoID,
             Nome = recurso.Nome,
@@ -102,7 +108,7 @@ async def lista_imagens_recursos_service(lista_recursos:list):
             Caucao = recurso.Caucao,
             Categoria_ = CategoriaSchema(CatID = recurso.CatID, DescCategoria= recurso.DescCategoria),
             Disponibilidade_ = DisponibilidadeSchema(DispID = recurso.DispID, DescDisponibilidade= recurso.DescDisponibilidade),
-            Image = carrega_imagem_recurso_service(recurso.RecursoID)
+            Image =
         )
 
         lista_recursos_imagens.append(novo_recurso)
