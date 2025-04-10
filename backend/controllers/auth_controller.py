@@ -7,7 +7,7 @@ from middleware.auth_middleware import role_required, verify_token_verification,
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword
 from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, verificao_utilizador, atualizar_nova_password
 from fastapi.responses import RedirectResponse
-
+from utils.tokens_record import validate_token_entry, mark_token_as_used
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
@@ -52,7 +52,9 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
 @router.get("/verification/{token}")
 async def verificacao(token, db:Session = Depends(get_db)):
     try:
-        #print(token)
+        b, message = validate_token_entry(token)
+        if b is False:
+            raise HTTPException(status_code=403, detail=message)
         payload = verify_token_verification(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
         if await verificao_utilizador(db, user):
@@ -68,9 +70,15 @@ async def verificacao(token, db:Session = Depends(get_db)):
 @router.post("/registar/atualizar_dados")
 async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session = Depends(get_db)):
     try:
+        b, message = validate_token_entry(token)
+        if b is False:
+            raise HTTPException(status_code=403, detail=message)
         payload = verify_token_verification(token)
         user_jwt = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
-        return await atualizar_novo_utilizador(user, user_jwt, db)
+        a, message = await atualizar_novo_utilizador(user, user_jwt, db)
+        if a is True:
+            mark_token_as_used(token)
+        return a, message
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -87,10 +95,12 @@ async def esqueceu_password(user:ForgotPassword, db: Session = Depends(get_db)):
 @router.get("/password/{token}")
 async def recuperar_password(token, db: Session = Depends(get_db)):
     try:
-        # print(token)
+        b, message = validate_token_entry(token)
+        if b is False:
+            raise HTTPException(status_code=403, detail=message)
         payload = verify_token_recuperacao(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role="")
-        if await verificao_utilizador(db, user):
+        if await verificao_utilizador(db, token):
             # Redirecionar para página de atualizar dados para completar registo
             return RedirectResponse(
                 url=f"http://127.0.0.1:8000?{token}")  # TODO ALTERAR A URL
@@ -104,9 +114,15 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
 @router.post("/password/reset")
 async def resetar_password(senha: ResetPassword, token: str, db: Session = Depends(get_db)):
     try:
+        b, message = validate_token_entry(token)
+        if b is False:
+            raise HTTPException(status_code=403, detail=message)
         payload = verify_token_recuperacao(token)
         user_jwt = UserJWT(id=payload["id"], email=payload["email"], role="")
-        return await atualizar_nova_password(db, senha, user_jwt)
+        a, message = await atualizar_nova_password(db, senha, user_jwt)
+        if a is True:
+            mark_token_as_used(token)
+        return a, message
     except HTTPException as e:
         raise e
     except Exception as e:

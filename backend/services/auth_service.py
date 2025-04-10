@@ -35,8 +35,9 @@ async def registar_utilizador(user: UserRegistar, db: Session):
                 temp = get_user_by_email(db, user.email)
                 if not temp:
                     raise RuntimeError("Erro ao obter utilizador")
-                jwt_token = generate_jwt_token_registo(str(user.email), user.role, temp.utilizador_ID)
+                jwt_token, exp = generate_jwt_token_registo(str(user.email), user.role, temp.utilizador_ID)
                 send_verification_email(str(user.email), jwt_token)
+                add_save_token(jwt_token, temp.utilizador_ID, str(user.email), "verification", exp)
                 return True, "Registo realizado com sucesso"
             except Exception as e:
                 await rollback_user(db, user.email)
@@ -48,7 +49,7 @@ async def registar_utilizador(user: UserRegistar, db: Session):
 
 async def atualizar_novo_utilizador(user: NewUserUpdate, token:UserJWT, db: Session):
     try:
-        if user_exists(db, str(token.email)):
+        if await user_exists(db, str(token.email)):
             password_hashed, salt = hash_password(user.password)
             await update_new_user(db, user, token.id, password_hashed, salt)
             user.password = ""

@@ -41,7 +41,7 @@ def generate_jwt_token_registo(email: str, role: str, id_utilizador: int) -> str
         "exp": expiration_time
     }
     token = jwt.encode(payload, SECRET_KEY_SIGNUP, algorithm=ALGORITHM)
-    return token
+    return token, expiration_time
 
 def generate_jwt_token_recovery(user_id: int, email: str) -> str:
     expiration_time = datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES_LOGIN)
