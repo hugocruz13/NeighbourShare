@@ -108,7 +108,7 @@ async def lista_imagens_recursos_service(lista_recursos:list):
             Caucao = recurso.Caucao,
             Categoria_ = CategoriaSchema(CatID = recurso.CatID, DescCategoria= recurso.DescCategoria),
             Disponibilidade_ = DisponibilidadeSchema(DispID = recurso.DispID, DescDisponibilidade= recurso.DescDisponibilidade),
-            Image =
+            Image = foto_recurso
         )
 
         lista_recursos_imagens.append(novo_recurso)
