@@ -1,23 +1,24 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
-
+from middleware.auth_middleware import *
 from db.session import get_db
 from sqlalchemy.orm import Session
 from schemas.recurso_schema import RecursoSchema
 from typing import List
 import decimal
 
+from schemas.user_schemas import UserJWT
 from services.recurso_service import *
 
 router = APIRouter(prefix="/recursos", tags=["Recursos"])
 
 @router.post("/inserir")
 async def inserir_recurso(
+        token : UserJWT = Depends(jwt_middleware),
         nome_recurso: str = Form(...),
         descricao_recurso: str = Form(...),
         caucao_recurso: decimal.Decimal = Form(...),
         recurso_disponivel: str = Form(...),
         categoria_recurso: str = Form(...),
-        utilizador_recurso: int = Form(...), #TODO Colocar o id do utilizador pelo token
         fotos_recurso: UploadFile = File(...),
         db: Session = Depends(get_db)
 ):
@@ -27,7 +28,7 @@ async def inserir_recurso(
         Caucao= caucao_recurso,
         CatID= await get_categoria_id_service(db, categoria_recurso),
         DispID = await get_disponibilidade_id_service(db, recurso_disponivel),
-        UtilizadorID = utilizador_recurso)
+        UtilizadorID = token.id)
 
         sucesso, msg = await inserir_recurso_service(db, recurso_data, fotos_recurso)
 
