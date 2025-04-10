@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
-router = APIRouter(tags=['Autenticação'])
+router = APIRouter()
 
 #Controler login, protegido
 @router.post("/registar")
