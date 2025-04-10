@@ -96,10 +96,10 @@ async def lista_imagens_recursos_service(lista_recursos:list):
 
     for recurso in lista_recursos:
 
-        foto_recurso = carrega_imagem_recurso_service(recurso.RecursoID)
+        caminho_foto_recurso = carrega_imagem_recurso_service(recurso.RecursoID)
 
-        if not foto_recurso:
-            foto_recurso = None
+        if not caminho_foto_recurso:
+            caminho_foto_recurso = None
 
         novo_recurso = RecursoGetTodosSchema(
             RecursoID = recurso.RecursoID,
@@ -108,7 +108,7 @@ async def lista_imagens_recursos_service(lista_recursos:list):
             Caucao = recurso.Caucao,
             Categoria_ = CategoriaSchema(CatID = recurso.CatID, DescCategoria= recurso.DescCategoria),
             Disponibilidade_ = DisponibilidadeSchema(DispID = recurso.DispID, DescDisponibilidade= recurso.DescDisponibilidade),
-            Image = foto_recurso
+            Image = caminho_foto_recurso
         )
 
         lista_recursos_imagens.append(novo_recurso)
@@ -128,18 +128,9 @@ async def carrega_imagem_recurso_service(recurso_id:int):
     if not arquivos:
         raise FileNotFoundError("Nenhuma foto encontrada")
 
-    imagem_path = arquivos[0]
+    imagem_path = str(arquivos[0])
 
-    temp_file = SpooledTemporaryFile()
-
-    with open(imagem_path, 'rb') as f:
-        temp_file.write(f.read())
-        temp_file.seek(0)
-
-    return UploadFile(
-        filename=imagem_path.name,
-        file=temp_file
-    )
+    return imagem_path
 
 async def lista_recursos_disponiveis_service(db:session):
 
