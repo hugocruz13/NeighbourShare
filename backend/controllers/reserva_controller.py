@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from db.session import get_db
 from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
@@ -35,7 +35,7 @@ async def confirma_entrega_recurso(
         db:Session = Depends(get_db)
 ):
     try:
-        return confirma_entrega_recurso_service(db, reserva_id)
+        return await confirma_entrega_recurso_service(db, reserva_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -46,7 +46,7 @@ async def confirma_rececao_recurso(
         db:Session = Depends(get_db)
 ):
     try:
-        return confirma_rececao_recurso_service(db, reserva_id)
+        return await confirma_rececao_recurso_service(db, reserva_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -57,7 +57,7 @@ async def confirma_entrega_caucao(
         db:Session = Depends(get_db)
 ):
     try:
-        return confirma_entrega_caucao_service(db, reserva_id)
+        return await confirma_entrega_caucao_service(db, reserva_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -68,7 +68,7 @@ async def confirma_rececao_caucao(
         db:Session = Depends(get_db)
 ):
     try:
-        return confirma_rececao_caucao_service(db, reserva_id)
+        return await confirma_rececao_caucao_service(db, reserva_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
