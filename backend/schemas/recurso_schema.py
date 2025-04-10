@@ -1,6 +1,7 @@
 import decimal
 from pydantic import BaseModel
 from typing import Optional
+from fastapi import File
 
 class CategoriaSchema(BaseModel):
     CatID: int
@@ -23,13 +24,26 @@ class UtilizadorSchema(BaseModel):
     class Config:
         from_attributes = True
 
-class RecursoSchema(BaseModel):
+#Informações passadas aquando a amostragem de todos os recurso registados
+class RecursoGetTodosSchema(BaseModel):
+    RecursoID: int
     Nome: str
     DescRecurso: str
     Caucao: decimal.Decimal
-    UtilizadorID: int
-    CatID: int
-    DispID: int
+    Categoria_: CategoriaSchema
+    Disponibilidade_: DisponibilidadeSchema
+    Image: File
+
+    class Config:
+        from_attributes = True
+
+#Informação passada aquando da amostragem dos recursos de um utilizador
+class RecursoGetUtilizadorSchema(BaseModel):
+    RecursoID: int
+    Nome: str
+    Caucao: decimal.Decimal
+    Categoria_: CategoriaSchema
+    Disponibilidade_: DisponibilidadeSchema
 
     class Config:
         from_attributes = True

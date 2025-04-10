@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from middleware.auth_middleware import *
 from db.session import get_db
 from sqlalchemy.orm import Session
-from schemas.recurso_schema import RecursoSchema
+from schemas.recurso_schema import RecursoSchema, RecursoGetTodosSchema
 from typing import List
 import decimal
 
@@ -40,7 +40,8 @@ async def inserir_recurso(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/", response_model=List[RecursoSchema])
+#Lista todos os recursos registados
+@router.get("/", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos(
         db:Session = Depends(get_db)
 ):
@@ -49,6 +50,15 @@ async def listar_recursos(
     """
     return await lista_recursos_service(db)
 
+#Lista os recursos de um utilizador
+@router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
+async def listar_recursos_pessoais(
+    token: UserJWT = Depends(jwt_middleware),
+    db:Session = Depends(get_db)
+):
+    return await lista_recursos_utilizador_service(db, token.id)
+
+#Lista todos os recursos disponíveis
 @router.get("/disponiveis", response_model=List[RecursoSchema])
 async def listar_recursos_disponiveis(
     db:Session = Depends(get_db)
@@ -58,6 +68,7 @@ async def listar_recursos_disponiveis(
     """
     return await lista_recursos_disponiveis_service(db)
 
+#Lista todos os recursos indisponíveis
 @router.get("/indisponiveis", response_model=List[RecursoSchema])
 async def listar_recursos_indisponiveis(
     db:Session = Depends(get_db)
