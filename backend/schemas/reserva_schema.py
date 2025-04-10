@@ -35,3 +35,13 @@ class PedidoReservaSchema(BaseModel):
     DataInicio: datetime.date
     DataFim: datetime.date
     EstadoPedidoReserva_: EstadoReservaSchema
+
+class PedidoReservaSchemaCreate(BaseModel):
+    UtilizadorID: int
+    RecursoID: int
+    DataInicio: datetime.date
+    DataFim: datetime.date
+
+class ReservaSchemaCreate(BaseModel):
+    PedidoReservaID: int
+

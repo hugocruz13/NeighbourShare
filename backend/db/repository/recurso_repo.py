@@ -42,10 +42,28 @@ async def inserir_recurso_db(db:session, recurso:Recurso):
         db.rollback()
         return False, {'details': str(e)}
 
+#Lista todos os recursos registados no sistema
 async def listar_recursos_db(db:session):
     try:
         recursos = (
             db.query(Recurso)
+            .options(
+                joinedload(Recurso.Utilizador_),
+                joinedload(Recurso.Categoria_),
+                joinedload(Recurso.Disponibilidade_)
+            )
+            .all()
+        )
+        return recursos
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+#Lista os recursos pertencentes a um utilizador (utilizador_id)
+async def listar_recursos_utilizador_db(db:session, utilizador_id:int):
+    try:
+        recursos = (
+            db.query(Recurso)
+            .filter(Recurso.UtilizadorID == utilizador_id)
             .options(
                 joinedload(Recurso.Utilizador_),
                 joinedload(Recurso.Categoria_),
