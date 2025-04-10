@@ -4,12 +4,15 @@ from db.session import get_db
 from schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
 from services.recurso_comum_service import *
 from typing import List
+from middleware.auth_middleware import role_required
+from schemas.user_schemas import UserJWT
 
 router = APIRouter(prefix="/recursoscomum", tags=["Recursos Comuns"])
 
 @router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
 async def listar_pedidos_novos_recursos(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns
@@ -18,7 +21,8 @@ async def listar_pedidos_novos_recursos(
 
 @router.get("/pedidosnovos/pendentes", response_model=List[PedidoNovoRecursoSchema])
 async def listar_pedidos_novos_recursos_pendentes(
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns pendentes (EstadoPedidoNovoRec == 1)
@@ -27,7 +31,8 @@ async def listar_pedidos_novos_recursos_pendentes(
 
 @router.get("/pedidosnovos/aprovados", response_model=List[PedidoNovoRecursoSchema])
 async def listar_pedidos_novos_recursos_aprovados(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns aprovados (EstadoPedidoNovoRec == 2)
@@ -36,7 +41,8 @@ async def listar_pedidos_novos_recursos_aprovados(
 
 @router.get("/pedidosmanutencao", response_model=List[PedidoManutencaoSchema])
 async def listar_pedidos_manutencao(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns
@@ -47,7 +53,8 @@ async def listar_pedidos_manutencao(
 
 @router.get("/pedidosmanutencao/progresso", response_model=List[PedidoManutencaoSchema])
 async def listar_pedidos_manutencao_em_progresso(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns em progresso (EstadoPedManuID == 1)
@@ -57,7 +64,8 @@ async def listar_pedidos_manutencao_em_progresso(
 
 @router.get("/pedidosmanutencao/finalizados", response_model=List[PedidoManutencaoSchema])
 async def listar_pedidos_manutencao_finalizados(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns em progresso (EstadoPedManuID == 2)
