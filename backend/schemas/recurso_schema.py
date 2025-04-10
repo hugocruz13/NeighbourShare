@@ -44,11 +44,10 @@ class RecursoGetTodosSchema(BaseModel):
     Caucao: decimal.Decimal
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
-    Image: Optional[File] = None
+    Image: Optional[str] = None
 
     class Config:
         from_attributes = True
-        arbitrary_types_allowed = True
 
 #Informação passada aquando da amostragem dos recursos de um utilizador
 class RecursoGetUtilizadorSchema(BaseModel):
