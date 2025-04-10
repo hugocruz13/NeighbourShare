@@ -117,6 +117,7 @@ class Orcamento(Base):
     Fornecedor: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     Valor: Mapped[decimal.Decimal] = mapped_column(DECIMAL(19, 0))
     DescOrcamento: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    NomePDF: Mapped[str] = mapped_column(String(255,'SQL_Latin1_General_CP1_CI_AS'))
 
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', secondary='OrcamentoPedidoNovoRecurso', back_populates='Orcamento_')
     Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', secondary='OrcamentoPedidoManutencao', back_populates='Orcamento_')
@@ -303,7 +304,6 @@ class Recurso(Base):
     UtilizadorID: Mapped[int] = mapped_column(Integer)
     DispID: Mapped[int] = mapped_column(Integer)
     CatID: Mapped[int] = mapped_column(Integer)
-    Imagem: Mapped[Optional[bytes]] = mapped_column(IMAGE)
 
     Categoria_: Mapped['Categoria'] = relationship('Categoria', back_populates='Recurso')
     Disponibilidade_: Mapped['Disponibilidade'] = relationship('Disponibilidade', back_populates='Recurso')

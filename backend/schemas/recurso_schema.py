@@ -24,14 +24,12 @@ class UtilizadorSchema(BaseModel):
         from_attributes = True
 
 class RecursoSchema(BaseModel):
-    RecursoID: int
     Nome: str
     DescRecurso: str
     Caucao: decimal.Decimal
-    Image: Optional[bytes] = None
-    Utilizador_ : UtilizadorSchema
-    Categoria_ : CategoriaSchema
-    Disponibilidade_ : DisponibilidadeSchema
+    UtilizadorID: int
+    CatID: int
+    DispID: int
 
     class Config:
         from_attributes = True
