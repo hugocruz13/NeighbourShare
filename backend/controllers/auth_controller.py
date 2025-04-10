@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
-router = APIRouter()
+router = APIRouter(tags=['Autenticação'])
 
 #Controler login, protegido
 @router.post("/registar")
@@ -52,7 +52,6 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
 @router.get("/verification/{token}")
 async def verificacao(token, db:Session = Depends(get_db)):
     try:
-        #print(token)
         payload = verify_token_verification(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
         if await verificao_utilizador(db, user):
@@ -82,7 +81,6 @@ async def esqueceu_password(user:ForgotPassword, db: Session = Depends(get_db)):
         return await verificar_forgot(db, str(user.email))
     except HTTPException as e:
         raise e
-
 
 @router.get("/password/{token}")
 async def recuperar_password(token, db: Session = Depends(get_db)):

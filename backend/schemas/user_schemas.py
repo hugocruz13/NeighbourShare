@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 from datetime import date
+from utils.PasswordHasher import validate_password_strength
 
 class User(BaseModel):
     utilizador_ID: int
@@ -26,9 +27,15 @@ class NewUserUpdate(BaseModel):
     data_nascimento: date
     contacto: int
     password: str
+    @validator('password')
+    def validate_password(cls, value):
+        return validate_password_strength(value)
 
 class ForgotPassword(BaseModel):
     email: EmailStr
 
 class ResetPassword(BaseModel):
     password: str
+    @validator('password')
+    def validate_password(cls, value):
+        return validate_password_strength(value)
