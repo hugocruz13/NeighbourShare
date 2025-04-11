@@ -67,6 +67,16 @@ async def lista_recursos_service(db:session):
 
     return lista_recursos_imagens
 
+#Lista as informações relativas a um recurso registado no sistema
+async def lista_recurso_service(db:session, recurso_id:int):
+
+    recurso = await recurso_repo.listar_recurso_db(db, recurso_id)
+
+    if not recurso:
+        raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
+
+    return recurso
+
 #Lista os recursos de um utilizador
 async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
 
