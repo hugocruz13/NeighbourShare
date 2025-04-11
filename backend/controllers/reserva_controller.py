@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from db.session import get_db
 from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
@@ -72,6 +72,27 @@ async def confirma_rececao_caucao(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+#Submissão da justificação do mau estado do produto e não entrega da caução
+@router.post("/submissao/justificacao")
+async def inserir_justificacao_caucao(
+        reserva_id: int,
+        justificacao: str,
+        db:Session = Depends(get_db)
+):
+    try:
+        return await inserir_justificacao_caucao_service(db, reserva_id, justificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Confirmação do bom estado do produto e da devolução da caução
+async def confirma_bom_estado_produto_e_devolucao_caucao(
+        db:Session, reserva_id: int
+):
+    try:
+        return await inserir_bom_estado_produto_e_devolucao_caucao(db, reserva_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/pedidosreserva", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva(
     token: UserJWT = Depends(jwt_middleware),
@@ -102,9 +123,9 @@ async def lista_pedidos_reserva_cancelados(
 
 @router.post("/pedidosreserva/criar")
 async def criar_pedido_reserva(
-    recurso_id: int,
-    data_inicio: datetime.date,
-    data_fim: datetime.date,
+    recurso_id: int = Form(...),
+    data_inicio: datetime.date = Form(...),
+    data_fim: datetime.date = Form(...),
     db:Session = Depends(get_db),
     token: UserJWT = Depends(jwt_middleware),
 ):

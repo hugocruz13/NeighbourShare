@@ -2,6 +2,31 @@ from sqlalchemy.orm import joinedload
 from db.models import PedidoNovoRecurso, PedidoManutencao
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
+from schemas.recurso_comum_schema import *
+
+#Inserção de um novo pedido de um novo recurso comum
+async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return {'Pedido de novo recurso inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+#Inserção de um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return {'Pedido de manutenção inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
 
 async def listar_pedidos_novos_recursos_db(db:session):
     try:

@@ -94,3 +94,19 @@ async def confirma_rececao_caucao_service(db:session, reserva_id:int):
         return mensagem
     except Exception as e:
         return {'details: '+ str(e)}
+
+#Submete a justificação da não entrega da caução e mau estado do produto
+async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justificacao:str):
+    try:
+        mensagem = await reserva_repo.inserir_justificacao_caucao_db(db,reserva_id,justificacao)
+        return mensagem
+    except Exception as e:
+        return {'details: '+ str(e)}
+
+#Indica o bom estado do produto e que a caução será entregue
+async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id:int):
+    try:
+        mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao(db,reserva_id)
+        return mensagem
+    except Exception as e:
+        return {'details: '+ str(e)}
