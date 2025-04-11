@@ -30,3 +30,27 @@ def send_verification_email(user_email: str, token: str):
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+def send_recovery_password_email(user_email: str, token: str):
+    """Envia um e-mail de recuperação do password com um link contendo o token."""
+
+    # Criar URL de verificação com o token
+    rec_link = f"{URL}/api/password/{token}"
+
+    # Conteúdo do e-mail
+    params: resend.Emails.SendParams = {
+        "from": "NeighbourShare <no-reply@verification.igorcosta.pt>",
+        "to": [user_email],
+        "subject": "Recuperação de Password",
+        "html": f"""
+            <p>Olá,</p>
+            <p>Clique no link abaixo para alterar a password</p>
+            <p><a href="{rec_link}">{rec_link}</a></p>
+        """,
+    }
+    try:
+        email_response = resend.Emails.send(params)
+        return email_response
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

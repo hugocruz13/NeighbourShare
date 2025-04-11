@@ -32,7 +32,6 @@ async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
         with open(pdf_path,'wb+') as f:
             f.write(pdforcamento.file.read())
 
-        return True, {'Inserção feita com sucesso'}
+        return True, {'message': 'Inserção feita com sucesso'}
     except Exception as e:
-        return False, {'details: '+ str(e)}
-
+        return False, {'details': str(e)}
