@@ -97,7 +97,9 @@ async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
             Disponibilidade_=DisponibilidadeSchema(DispID=recurso.DispID,DescDisponibilidade=recurso.DescDisponibilidade),
         )
 
-    return lista_recursos
+        lista_recursos_utilizador.append(recurso_utilizador)
+
+    return lista_recursos_utilizador
 
 #Obtem as imagens referentes a uma lista de recursos
 async def lista_imagens_recursos_service(lista_recursos:list):
