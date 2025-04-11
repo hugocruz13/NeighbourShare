@@ -137,7 +137,7 @@ async def criar_pedido_reserva(
             DataFim = data_fim
         )
 
-        return cria_pedido_reserva_service(db,pedido_reserva)
+        return await cria_pedido_reserva_service(db,pedido_reserva)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
