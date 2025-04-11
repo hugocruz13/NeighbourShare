@@ -58,6 +58,14 @@ async def listar_recursos_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+#Lista as informações referentes a um recurso registado no sistema
+async def listar_recurso_db(db:session, recurso_id:int):
+    try:
+        recurso = db.query(Recurso).filter(Recurso.RecursoID == recurso_id).first()
+        return recurso
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
 #Lista os recursos pertencentes a um utilizador (utilizador_id)
 async def listar_recursos_utilizador_db(db:session, utilizador_id:int):
     try:
