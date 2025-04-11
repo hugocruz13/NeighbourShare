@@ -12,10 +12,9 @@ router = APIRouter(tags=['Votação'])
 @router.post("/criarvotacao")
 async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
     try:
-        if await gerir_votacao(db, votacao):
-            return {"message": "Votacao criada com sucesso!"}
-        else:
-            return {"message": "Erro ao criar votacao"}
+        vot =await gerir_votacao(db, votacao)
+        return {"id": vot.id, "titulo": vot.titulo, "descricao": vot.descricao, "data_inicio": vot.data_str, "data_fim": vot.data_end}
+
     except HTTPException as he:
         raise he
     except Exception as e:
