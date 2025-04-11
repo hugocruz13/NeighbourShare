@@ -9,3 +9,7 @@ class Criar_Votacao(BaseModel):
 
 class Return_Votacao(Criar_Votacao):
     id:int
+
+class Pedido_Novo_Recurso(BaseModel):
+    id_votacao:int
+    id_pedido:int
