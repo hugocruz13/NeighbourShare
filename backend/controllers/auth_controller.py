@@ -3,7 +3,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao
+from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao, \
+    jwt_middleware
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword
 from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, \
     verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador
@@ -52,7 +53,7 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
 
 # Controller para obter a informação de um utilizador
 @router.get("/perfil")
-async def perfil(user: UserJWT = Depends(role_required(["admin","residente","gestor"])), db: Session = Depends(get_db)):
+async def perfil(user: UserJWT = Depends(jwt_middleware), db: Session = Depends(get_db)):
     try:
         return await get_dados_utilizador(db, user.id)
     except Exception as e:
