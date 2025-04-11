@@ -146,3 +146,16 @@ async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
+
+@router.get("/logout")
+async def logout(response: Response):
+    try:
+        response.delete_cookie("access_token")
+        return {"message": "Sessão terminada com sucesso."}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
