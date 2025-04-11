@@ -3,12 +3,12 @@ import datetime
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import UserRegistar, User, NewUserUpdate
+from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserData
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
         date = datetime.date.today()
-        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=user.email, Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
+        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=str(user.email), Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -24,15 +24,31 @@ async def rollback_user(db: Session, email: EmailStr):
     except Exception as e:
         raise RuntimeError(f"Erro ao rollback utilizador: {e}")
 
+async def update_new_password(db: Session, user_identifier: int, password_hashed: str,salt: str):
+    try:
+        new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
+        if new_user:
+            new_user.PasswordHash = password_hashed
+            new_user.Salt = salt
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao atualizar password utilizador: {e}")
+
 async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
     try:
         new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
         if new_user:
-            new_user.NomeUtilizador = user.nome
-            new_user.DataNasc=user.data_nascimento
-            new_user.Contacto=user.contacto
-            new_user.PasswordHash = password_hashed
-            new_user.Salt = salt
+            if user.nome is not None:
+                new_user.NomeUtilizador = user.nome
+            if user.data_nascimento is not None:
+                new_user.DataNasc=user.data_nascimento
+            if user.contacto is not None:
+                new_user.Contacto=user.contacto
+            if password_hashed is not None:
+                new_user.PasswordHash = password_hashed
+            if salt is not None:
+                new_user.Salt = salt
             new_user.Verificado = True
             db.commit()
         else:
@@ -67,5 +83,31 @@ def get_user_by_email(db: Session, email: EmailStr):
                 role=role
             )
         return None
+    except Exception as e:
+        raise RuntimeError(f"Erro ao obter utilizador: {e}")
+
+def apagar(db: Session, id: int):
+    try:
+        utilizador = db.query(Utilizador).filter(Utilizador.UtilizadorID == id).first()
+        if utilizador:
+            db.delete(utilizador)
+            db.commit()
+            return True
+        return False
+    except Exception as e:
+        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+
+#Função para obter os dados aquando da consulta de perfil do utilizador
+def get_dados_utilizador(db:Session, id_user:int):
+    try:
+        utilizador = db.query(Utilizador).filter(Utilizador.UtilizadorID == id_user).first()
+        if utilizador:
+            return UserData(
+                nome=str(utilizador.NomeUtilizador),
+                email=str(utilizador.Email),
+                contacto= utilizador.Contacto
+            )
+        else:
+            return None
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
