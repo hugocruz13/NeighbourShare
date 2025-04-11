@@ -75,6 +75,10 @@ async def lista_recurso_service(db:session, recurso_id:int):
     if not recurso:
         raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
 
+    image_path = await carrega_imagem_recurso_service(recurso_id)
+
+    recurso.Image = image_path
+
     return recurso
 
 #Lista os recursos de um utilizador
@@ -93,8 +97,8 @@ async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
             RecursoID= recurso.RecursoID,
             Nome=recurso.Nome,
             Caucao=recurso.Caucao,
-            Categoria_=CategoriaSchema(CatID=recurso.CatID, DescCategoria=recurso.DescCategoria),
-            Disponibilidade_=DisponibilidadeSchema(DispID=recurso.DispID,DescDisponibilidade=recurso.DescDisponibilidade),
+            Categoria_=recurso.Categoria_,
+            Disponibilidade_=recurso.Disponibilidade_,
         )
 
         lista_recursos_utilizador.append(recurso_utilizador)
@@ -108,7 +112,7 @@ async def lista_imagens_recursos_service(lista_recursos:list):
 
     for recurso in lista_recursos:
 
-        caminho_foto_recurso = carrega_imagem_recurso_service(recurso.RecursoID)
+        caminho_foto_recurso = await carrega_imagem_recurso_service(recurso.RecursoID)
 
         if not caminho_foto_recurso:
             caminho_foto_recurso = None
@@ -118,8 +122,8 @@ async def lista_imagens_recursos_service(lista_recursos:list):
             Nome = recurso.Nome,
             DescRecurso = recurso.DescRecurso,
             Caucao = recurso.Caucao,
-            Categoria_ = CategoriaSchema(CatID = recurso.CatID, DescCategoria= recurso.DescCategoria),
-            Disponibilidade_ = DisponibilidadeSchema(DispID = recurso.DispID, DescDisponibilidade= recurso.DescDisponibilidade),
+            Categoria_ = recurso.Categoria_,
+            Disponibilidade_ = recurso.Disponibilidade_,
             Image = caminho_foto_recurso
         )
 

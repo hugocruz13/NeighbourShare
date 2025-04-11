@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
 from db import session
-from db.models import PedidoReserva, Reserva
+from db.models import PedidoReserva, Reserva, Recurso, Utilizador
 from schemas.reserva_schema import *
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -8,10 +8,11 @@ async def criar_pedido_reserva_db(db:session, pedido_reserva : PedidoReservaSche
 
     try:
         novo_pedido_reserva = PedidoReserva(
-            UtilizadorID= pedido_reserva.Utilizador_.UtilizadorID,
-            RecursoID= pedido_reserva.Recurso_.RecursoID,
+            UtilizadorID= pedido_reserva.UtilizadorID,
+            RecursoID= pedido_reserva.RecursoID,
             DataInicio= pedido_reserva.DataInicio,
-            DataFim= pedido_reserva.DataFim
+            DataFim= pedido_reserva.DataFim,
+            EstadoID=1 #Estado do pedido de reserva -> Em análise (ID : 1)
         )
 
         db.add(novo_pedido_reserva)
@@ -72,7 +73,13 @@ async def lista_pedidos_reserva_cancelados_db(db:session):
 async def cria_reserva_db(db:session, reserva:ReservaSchemaCreate):
     try:
         nova_reserva = Reserva(
-            PedidoResevaID=reserva.PedidoReserva_.PedidoResevaID
+            PedidoResevaID=reserva.PedidoReservaID,
+            ConfirmarCaucaoDono= False,
+            ConfirmarCaucaoVizinho= False,
+            RecursoEntregueDono= False,
+            RecursoEntregueVizinho= False,
+            DevolucaoCaucao= False,
+            EstadoRecurso= False
         )
 
         db.add(nova_reserva)
@@ -91,18 +98,51 @@ async def get_reserva_db(db:session, reserva_id: int):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
-# Mostra as reservas onde o utilizador (utilizador_id) contêm um recurso emprestado consigo
+# Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 async def lista_reservas_db(db:session, utilizador_id: int):
     try:
-        reservas = (
-            db.query(Reserva)
-            .options(
-                joinedload(Reserva.PedidoReserva_)
-            )
-            .filter(PedidoReserva.UtilizadorID == utilizador_id, PedidoReserva.EstadoID == 1)
-        )
+        reservas_dono = db.session.query(
+        Reserva.ReservaID,
+        Utilizador.NomeUtilizador.label('NomeUtilizador'),  # Alias para o nome do utilizador relacionado ao PedidoReserva
+        PedidoReserva.DataInicio,
+        PedidoReserva.DataFim,
+        Recurso.Nome,
+        Reserva.RecursoEntregueDono,
+        Reserva.ConfirmarCaucaoDono
+        ).join(
+            PedidoReserva, PedidoReserva.PedidoResevaID == Reserva.PedidoResevaID
+        ).join(
+            Recurso, Recurso.RecursoID == PedidoReserva.RecursoID
+        ).join(
+            Utilizador, Utilizador.UtilizadorID == Recurso.UtilizadorID
+        ).join(
+            Utilizador, Utilizador.UtilizadorID == PedidoReserva.UtilizadorID
+        ).filter(
+            Utilizador.UtilizadorID == utilizador_id
+        ).all()
 
-        return reservas
+        reservas_solicitante = db.session.query(
+            Reserva.ReservaID,
+            Utilizador.NomeUtilizador.label('NomeUtilizador'),  # Alias para o nome do utilizador
+            PedidoReserva.DataInicio,
+            PedidoReserva.DataFim,
+            Recurso.Nome,
+            Reserva.RecursoEntregueVizinho,
+            Reserva.ConfirmarCaucaoVizinho,
+            PedidoReserva.EstadoID
+        ).join(
+            PedidoReserva, PedidoReserva.PedidoResevaID == Reserva.PedidoResevaID
+        ).join(
+            Recurso, Recurso.RecursoID == PedidoReserva.RecursoID
+        ).join(
+            Utilizador, Utilizador.UtilizadorID == PedidoReserva.UtilizadorID
+        .filter(
+                PedidoReserva.UtilizadorID == utilizador_id
+        )
+        ).all()
+
+        return reservas_dono, reservas_solicitante
+
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
@@ -157,7 +197,7 @@ async def confirma_rececao_caucao_db(db:session, reserva_id: int):
 async def inserir_justificacao_caucao_db(db:session, reserva_id: int, justificacao: str):
     try:
         reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
-        reserva.JustificacaoMauEstado = justificacao
+        reserva.JustificacaoEstadoProduto = justificacao
         db.commit()
 
         return {'Justificação registada com sucesso!'}

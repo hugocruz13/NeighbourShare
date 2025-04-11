@@ -53,15 +53,43 @@ async def get_reserva_service(db:session, reserva_id:int):
     except Exception as e:
         return {'details: '+ str(e)}
 
-#Mostra as reservas onde o utilizador (utilizador_id) contêm um recurso emprestado consigo
+#Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 async def lista_reservas_service(db:session, utilizador_id:int):
 
-    lista_reservas = await reserva_repo.lista_reservas_db(db, utilizador_id)
+    reservas_dono, reservas_solicitante = await reserva_repo.lista_reservas_db(db, utilizador_id)
 
-    if not lista_reservas:
+    if not reservas_dono and not reservas_solicitante :
         raise HTTPException(status_code=400, detail="Nenhuma reserva encontrada")
 
-    return lista_reservas
+    lista_reservas_dono = []
+    lista_reservas_solicitante = []
+
+    for reserva in reservas_dono:
+
+        lista_reservas_dono.append(ReservaGetDonoSchema(
+            ReservaID = reserva.ReservaID,
+            Solicitante = reserva.Utilizador_.NomeUtilizador,
+            DataInicio = reserva.DataInicio,
+            DataFim = reserva.DataFim,
+            NomeRecurso = reserva.Recurso_.NomeRecurso,
+            RecursoEntregueDono = reserva.RecursoEntregueDono,
+            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono
+        ))
+
+    for reserva in reservas_solicitante:
+
+        lista_reservas_solicitante.append(ReservaGetSolicitanteSchema(
+            ReservaID = reserva.ReservaID,
+            Dono= reserva.Utilizador_.NomeUtilizador,
+            DataInicio = reserva.DataInicio,
+            DataFim = reserva.DataFim,
+            NomeRecurso = reserva.Recurso_.NomeRecurso,
+            RecursoEntregueSolicitante = reserva.RecursoEntregueSolicitante,
+            ConfirmarCaucaoSolicitante = reserva.ConfirmarCaucaoSolicitante,
+            EstadoReserva_ = reserva.EstadoReserva_
+        ))
+
+    return lista_reservas_dono, lista_reservas_solicitante
 
 #Confirma a entrega de um recurso para empréstimo (dono)
 async def confirma_entrega_recurso_service(db:session, reserva_id:int):

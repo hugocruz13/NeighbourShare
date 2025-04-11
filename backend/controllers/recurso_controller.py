@@ -50,13 +50,6 @@ async def listar_recursos(
     """
     return await lista_recursos_service(db)
 
-@router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
-async def listar_recurso(
-        recurso_id: int,
-        db:Session = Depends(get_db)
-):
-    return await lista_recurso_service(db, recurso_id)
-
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
 async def listar_recursos_pessoais(
@@ -84,3 +77,10 @@ async def listar_recursos_indisponiveis(
     Endpoint para consultar os recursos indisponíveis (ID Disponibilidade = 2)
     """
     return await lista_recursos_indisponiveis_service(db)
+
+@router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
+async def listar_recurso(
+        recurso_id: int,
+        db:Session = Depends(get_db)
+):
+    return await lista_recurso_service(db, recurso_id)

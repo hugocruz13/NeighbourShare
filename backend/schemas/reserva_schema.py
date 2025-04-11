@@ -45,3 +45,23 @@ class PedidoReservaSchemaCreate(BaseModel):
 class ReservaSchemaCreate(BaseModel):
     PedidoReservaID: int
 
+class ReservaGetDonoSchema(BaseModel):
+    ReservaID: int
+    Solicitante: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    NomeRecurso: str
+    RecursoEntregueDono: bool
+    ConfirmarCaucaoDono: bool
+
+class ReservaGetSolicitanteSchema(BaseModel):
+    ReservaID: int
+    Dono: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    NomeRecurso: str
+    RecursoEntregueSolicitante: bool
+    ConfirmarCaucaoSolicitante: bool
+    EstadoReserva_: EstadoReservaSchema
+
+

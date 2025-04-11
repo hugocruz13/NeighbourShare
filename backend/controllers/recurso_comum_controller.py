@@ -1,3 +1,4 @@
+from datetime import date
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.session import get_db
@@ -7,6 +8,20 @@ from typing import List
 from middleware.auth_middleware import *
 
 router = APIRouter(prefix="/recursoscomuns", tags=["Recursos Comuns"])
+
+#Inserção de um novo recurso comum
+@router.post("/inserir")
+async def inserir_recurso_comum(
+        nome_recurso:str,
+        descricao_recurso:str,
+        db:Session = Depends(get_db)
+):
+    novo_recurso_comum = RecursoComumSchemaCreate(
+        Nome=nome_recurso,
+        DescRecursoComum=descricao_recurso
+    )
+
+    return await inserir_recurso_comum_service(db, novo_recurso_comum)
 
 #Inserção de um pedido de um novo recurso comum
 @router.post("/pedidosnovos/inserir")
@@ -18,7 +33,8 @@ async def inserir_recurso_comum(
     novo_pedido = PedidoNovoRecursoSchemaCreate(
         DescPedidoNovoRecurso=desc_pedido_novo_recurso,
         UtilizadorID=token.id,
-        DataPedido = datetime.date.today()
+        DataPedido = date.today(),
+        EstadoPedNovoRecID= 1 # Referente ao estado 'Pendente'
     )
 
     return await inserir_pedido_novo_recurso_service(db,novo_pedido)
@@ -33,12 +49,13 @@ async def inserir_manutencao_recurso_comum(
 ):
     novo_pedido_manutencao = PedidoManutencaoSchemaCreate(
         UtilizadorID=token.id,
-        RecursoComumID=recurso_comum_id,
-        DescPedidoManutencao=desc_manutencao_recurso_comum,
-        DataPedido = datetime.date.today()
+        RecComumID=recurso_comum_id,
+        DescPedido=desc_manutencao_recurso_comum,
+        DataPedido = date.today(),
+        EstadoPedManuID= 1 # Relativo ao estado 'Em análise'
     )
 
-    return inserir_pedido_manutencao_service(db, novo_pedido_manutencao)
+    return await inserir_pedido_manutencao_service(db, novo_pedido_manutencao)
 
 @router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
 async def listar_pedidos_novos_recursos(

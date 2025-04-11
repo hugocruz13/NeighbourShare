@@ -16,17 +16,21 @@ async def criar_reserva(
 
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
 
-        return cria_reserva_service(db, reserva)
+        return await cria_reserva_service(db, reserva)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+#Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 @router.get("/lista")
 async def lista_reservas(
         token: UserJWT = Depends(jwt_middleware),
         db:Session = Depends(get_db)
 ):
-    return await lista_reservas_service(db, token.id)
+    try:
+        return await lista_reservas_service(db, token.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Confirma a entrega de um recurso para empréstimo (dono)
 @router.post("/confirma/entrega/recurso")
@@ -85,8 +89,10 @@ async def inserir_justificacao_caucao(
         raise HTTPException(status_code=500, detail=str(e))
 
 #Confirmação do bom estado do produto e da devolução da caução
+@router.post("/confirma/bomestado")
 async def confirma_bom_estado_produto_e_devolucao_caucao(
-        db:Session, reserva_id: int
+        reserva_id: int,
+        db:Session = Depends(get_db)
 ):
     try:
         return await inserir_bom_estado_produto_e_devolucao_caucao(db, reserva_id)
