@@ -3,7 +3,7 @@ from db.session import get_db
 from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
 from services.reserva_service import *
-from typing import List
+from typing import List, Tuple
 
 router = APIRouter(prefix="/reserva", tags=["Reservas"])
 
@@ -22,7 +22,7 @@ async def criar_reserva(
         raise HTTPException(status_code=500, detail=str(e))
 
 #Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
-@router.get("/lista")
+@router.get("/lista", response_model=Tuple[List[ReservaGetDonoSchema],List[ReservaGetSolicitanteSchema]])
 async def lista_reservas(
         token: UserJWT = Depends(jwt_middleware),
         db:Session = Depends(get_db)
@@ -99,15 +99,16 @@ async def confirma_bom_estado_produto_e_devolucao_caucao(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pedidosreserva", response_model=List[PedidoReservaSchema])
+#Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
+@router.get("/pedidosreserva/lista", response_model=Tuple[List[PedidoReservaGetDonoSchema],List[PedidoReservaGetSolicitanteSchema]])
 async def lista_pedidos_reserva(
-    token: UserJWT = Depends(jwt_middleware),
-    db:Session = Depends(get_db)
+        token: UserJWT = Depends(jwt_middleware),
+        db:Session = Depends(get_db)
 ):
-    """
-    Endpoint para consultar todos os pedidos de reserva efetuados pelo utilizador
-    """
-    return await lista_pedidos_reserva_service(db, token.id)
+    try:
+        return await lista_pedidos_reserva_service(db, token.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pedidosreserva/ativos", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva_ativos(

@@ -62,6 +62,24 @@ class ReservaGetSolicitanteSchema(BaseModel):
     NomeRecurso: str
     RecursoEntregueSolicitante: bool
     ConfirmarCaucaoSolicitante: bool
-    EstadoReserva_: EstadoReservaSchema
+    EstadoReserva: str
+
+class PedidoReservaGetDonoSchema(BaseModel):
+    PedidoReservaID: int
+    RecursoID: int
+    RecursoNome: str
+    UtilizadorNome: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    EstadoPedidoReserva: str
+
+class PedidoReservaGetSolicitanteSchema(BaseModel):
+    PedidoReservaID: int
+    RecursoID: int
+    RecursoNome: str
+    NomeDono: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    EstadoPedidoReserva: str
 
 
