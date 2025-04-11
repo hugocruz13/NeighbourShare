@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from db.session import get_db
 from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
@@ -123,9 +123,9 @@ async def lista_pedidos_reserva_cancelados(
 
 @router.post("/pedidosreserva/criar")
 async def criar_pedido_reserva(
-    recurso_id: int,
-    data_inicio: datetime.date,
-    data_fim: datetime.date,
+    recurso_id: int = Form(...),
+    data_inicio: datetime.date = Form(...),
+    data_fim: datetime.date = Form(...),
     db:Session = Depends(get_db),
     token: UserJWT = Depends(jwt_middleware),
 ):
