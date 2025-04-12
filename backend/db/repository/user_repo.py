@@ -3,7 +3,8 @@ import datetime
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import UserRegistar, User, NewUserUpdate
+from datetime import date
+from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserUpdateInfo
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
@@ -95,4 +96,21 @@ def apagar(db: Session, id: int):
             return True
         return False
     except Exception as e:
-        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+        raise RuntimeError(f"Erro ao apagar utilizador: {e}")
+
+def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
+    try:
+        user = db.query(Utilizador).filter(Utilizador.UtilizadorID == id).first()
+        if not user:
+            return False
+        if dados.nome is not None and dados.nome != "":
+            user.NomeUtilizador = dados.nome
+        if dados.contacto is not None and dados.contacto != 0:
+            user.Contacto = dados.contacto
+        if dados.data_nascimento is not None and dados.data_nascimento != date.today():
+            user.DataNasc = dados.data_nascimento
+        db.commit()
+        db.refresh(user)
+        return True
+    except Exception as e:
+        raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
