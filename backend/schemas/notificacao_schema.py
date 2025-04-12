@@ -9,20 +9,19 @@ class TipoProcessoSchema(BaseModel):
         from_attributes = True
 
 class NotificacaoUtilizadorSchema(BaseModel):
-    NotificacaoID: int
     UtilizadorID: int
+    NomeUtilizador: str
 
     class Config:
         from_attributes = True
 
 class NotificacaoSchema(BaseModel):
-    NotificacaoID: int
+    Titulo: str
     Mensagem: str
     DataHora: datetime.date
     ProcessoID: int
-    Estado: int
-    TipoProcesso_: TipoProcessoSchema
-    Utilizador_: NotificacaoUtilizadorSchema
+    TipoProcessoID : int
+    UtilizadorID: int
 
     class Config:
         from_attributes = True

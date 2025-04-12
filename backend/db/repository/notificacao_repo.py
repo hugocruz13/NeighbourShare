@@ -4,6 +4,7 @@ from controllers.websockets_controller import send_notification
 from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
+from schemas.notificacao_schema import *
 
 # Verifica se o tipo de processo (ID) existe
 async def verifica_tipo_processo(db:Session,tipo_processo_id: int = None):
@@ -37,7 +38,7 @@ async def cria_notificacao_individual_db(db: Session, notificacao: Notificacao, 
         return False ,{'details': str(e)}
 
 # Cria notificação para somente os gestores/admins
-async def cria_notificacao_admin_db(db: Session, notificacao: Notificacao):
+async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema):
 
     try:
         if verifica_tipo_processo(db, notificacao.TipoProcID):

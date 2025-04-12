@@ -2,11 +2,12 @@ from sqlalchemy.orm import Session
 import db.repository.notificacao_repo as notificacao_repo
 from db.models import Notificacao
 from fastapi import HTTPException
+from schemas.notificacao_schema import *
 
 async def cria_notificacao_individual_service(db:Session, notificacao:Notificacao, user_id:int):
     return await notificacao_repo.cria_notificacao_individual_db(db, notificacao, user_id)
 
-async def cria_notificacao_admin_service(db:Session, notificacao:Notificacao):
+async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSchema):
     return await notificacao_repo.cria_notificacao_admin_db(db, notificacao)
 
 async def cria_notificacao_todos_service(db:Session, notificacao:Notificacao):

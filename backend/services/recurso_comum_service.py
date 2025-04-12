@@ -1,6 +1,10 @@
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
+from schemas.notificacao_schema import *
+from auth_service import get_user_data
+
+from db.models import Notificacao
 from schemas.recurso_comum_schema import *
 
 #Inserir um novo recurso comum
@@ -8,10 +12,31 @@ async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSc
 
     return await recurso_comum_repo.inserir_recurso_comum_db(db,recurso_comum)
 
-#Inserir um pedido de um novo recurso comum
+#Inserir um pedido de aquisição de um novo recurso comum
 async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
 
-    return await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+    msg = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+
+    notificacao = NotificacaoSchema(
+        Titulo="Novo Pedido de Aquisição de Recurso Comum Submetido",
+        Mensagem= f"""
+            O residente {} submeteu um novo pedido de aquisição de recurso comum.
+            
+                ID do Pedido: {pedido_id}
+                Data de Submissão: {data_submissao}
+            
+            Solicita-se a análise e o início do processo de votação, conforme o fluxo definido para aprovação de novos recursos.
+            
+            Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
+            """
+
+        DataHora: datetime.date
+        ProcessoID: int
+        TipoProcessoID: int
+        UtilizadorID: int
+    )
+
+    return msg
 
 #Inserir um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
