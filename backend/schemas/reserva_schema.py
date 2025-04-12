@@ -35,3 +35,51 @@ class PedidoReservaSchema(BaseModel):
     DataInicio: datetime.date
     DataFim: datetime.date
     EstadoPedidoReserva_: EstadoReservaSchema
+
+class PedidoReservaSchemaCreate(BaseModel):
+    UtilizadorID: int
+    RecursoID: int
+    DataInicio: datetime.date
+    DataFim: datetime.date
+
+class ReservaSchemaCreate(BaseModel):
+    PedidoReservaID: int
+
+class ReservaGetDonoSchema(BaseModel):
+    ReservaID: int
+    Solicitante: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    NomeRecurso: str
+    RecursoEntregueDono: bool
+    ConfirmarCaucaoDono: bool
+
+class ReservaGetSolicitanteSchema(BaseModel):
+    ReservaID: int
+    Dono: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    NomeRecurso: str
+    RecursoEntregueSolicitante: bool
+    ConfirmarCaucaoSolicitante: bool
+    EstadoReserva: str
+
+class PedidoReservaGetDonoSchema(BaseModel):
+    PedidoReservaID: int
+    RecursoID: int
+    RecursoNome: str
+    UtilizadorNome: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    EstadoPedidoReserva: str
+
+class PedidoReservaGetSolicitanteSchema(BaseModel):
+    PedidoReservaID: int
+    RecursoID: int
+    RecursoNome: str
+    NomeDono: str
+    DataInicio: datetime.date
+    DataFim: datetime.date
+    EstadoPedidoReserva: str
+
+

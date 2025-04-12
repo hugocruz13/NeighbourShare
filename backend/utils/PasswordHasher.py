@@ -1,6 +1,9 @@
 import hashlib
 import os
 import base64
+import re
+
+from fastapi import HTTPException
 
 
 def hash_password(password: str) -> tuple[str, str]:
@@ -32,3 +35,13 @@ def verificar_password(password: str, stored_hash: str, stored_salt: str) -> boo
     return base64.b64encode(hashed_password).decode() == stored_hash
 
 print(hash_password("123456"))
+
+def validate_password_strength(password: str) -> str:
+    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])([^\s]){8,}$'
+    if not re.match(pattern, password):
+        raise HTTPException(
+            status_code=400,
+            detail="Senha inválida: deve ter no mínimo 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um caractere especial."
+        )
+    return password
+
