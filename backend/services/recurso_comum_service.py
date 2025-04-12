@@ -2,10 +2,12 @@ import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
-from auth_service import get_user_data
-
+from db.repository.notificacao_repo import get_tipo_processo_id
+from datetime import date
 from db.models import Notificacao
 from schemas.recurso_comum_schema import *
+from services.notificacao_service import *
+
 
 #Inserir um novo recurso comum
 async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSchemaCreate):
@@ -14,34 +16,26 @@ async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSc
 
 #Inserir um pedido de aquisição de um novo recurso comum
 async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    try:
+        msg, novo_pedido = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
 
-    msg = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+        await cria_notificacao_insercao_pedido_novo_recurso_comum_service(db, novo_pedido) #Criação da notificação
 
-    notificacao = NotificacaoSchema(
-        Titulo="Novo Pedido de Aquisição de Recurso Comum Submetido",
-        Mensagem= f"""
-            O residente {} submeteu um novo pedido de aquisição de recurso comum.
-            
-                ID do Pedido: {pedido_id}
-                Data de Submissão: {data_submissao}
-            
-            Solicita-se a análise e o início do processo de votação, conforme o fluxo definido para aprovação de novos recursos.
-            
-            Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
-            """
-
-        DataHora: datetime.date
-        ProcessoID: int
-        TipoProcessoID: int
-        UtilizadorID: int
-    )
-
-    return msg
+        return msg
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Inserir um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
+    try:
 
-    return await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
+        msg, novo_pedido = await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
+
+        await cria_notificacao_insercao_pedido_manutencao_service(db, novo_pedido) #Criação da notificação
+
+        return msg
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def listar_pedidos_novos_recursos_service(db:session):
 

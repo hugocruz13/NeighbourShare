@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import datetime
+from enum import Enum
 
 class TipoProcessoSchema(BaseModel):
     TipoProcessoID: int
@@ -18,10 +19,14 @@ class NotificacaoUtilizadorSchema(BaseModel):
 class NotificacaoSchema(BaseModel):
     Titulo: str
     Mensagem: str
-    DataHora: datetime.date
     ProcessoID: int
     TipoProcessoID : int
-    UtilizadorID: int
 
     class Config:
         from_attributes = True
+
+class TipoProcessoOpcoes(Enum):
+    AQUISICAO = "Aquisição"
+    MANUTENCAO = "Manutenção"
+    RESERVA = "Reserva"
+    VOTACAO = "Votação"

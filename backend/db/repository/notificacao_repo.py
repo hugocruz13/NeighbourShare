@@ -6,18 +6,11 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.notificacao_schema import *
 
-# Verifica se o tipo de processo (ID) existe
-async def verifica_tipo_processo(db:Session,tipo_processo_id: int = None):
-    tipo_processo = db.query(TipoProcesso).filter(TipoProcesso.TipoProcID == tipo_processo_id).first()
-    if not tipo_processo:
-        raise HTTPException(status_code=404, detail="Tipo de processo não existe")
-    return True
-
 #Cria uma notificação com destino somente um utilizador
 async def cria_notificacao_individual_db(db: Session, notificacao: Notificacao, user_id: int = None):
     try:
-        if await verifica_tipo_processo(db, notificacao.TipoProcID):
             nova_notificao = Notificacao(
+                Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
                 DataHora=datetime.now(),
                 TipoProcID=notificacao.TipoProcID,
@@ -41,9 +34,8 @@ async def cria_notificacao_individual_db(db: Session, notificacao: Notificacao, 
 async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema):
 
     try:
-        if verifica_tipo_processo(db, notificacao.TipoProcID):
-
             nova_notificao = Notificacao(
+                Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
                 DataHora=datetime.now(),
                 TipoProcID=notificacao.TipoProcID,
@@ -67,8 +59,8 @@ async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema)
 # Cria notificação para todos os utilizadores
 async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificacao):
     try:
-        if verifica_tipo_processo(db, notificao.TipoProcID):
             nova_notificao = Notificacao(
+                Titulo=notificao.Titulo,
                 Mensagem=notificao.Mensagem,
                 DataHora=datetime.now(),
                 TipoProcID=notificao.TipoProcID,
@@ -100,6 +92,19 @@ async def listar_notificacoes_db(db: Session, user_id: int = None):
             .order_by(Notificacao.DataHora.desc())
         )
         return lista_notificacoes
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+#Obtêm o id de um tipo de processo a associar a uma notificação
+async def get_tipo_processo_id(db:Session, tipoprocesso: TipoProcessoOpcoes):
+    try:
+        resultado = db.query(TipoProcesso.TipoProcID) \
+            .filter(TipoProcesso.DescTipoProcesso == tipoprocesso.value) \
+            .first()
+        if resultado is not None:
+            return int(resultado.TipoProcID)
+        else:
+            raise ValueError("Tipo de processo não encontrado.")
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 

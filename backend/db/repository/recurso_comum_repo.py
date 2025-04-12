@@ -25,7 +25,7 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de novo recurso inserido com sucesso!'}
+        return {'Pedido de novo recurso inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -38,7 +38,7 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}
+        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
