@@ -98,7 +98,7 @@ def apagar(db: Session, id: int):
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
 
 #Função para obter os dados aquando da consulta de perfil do utilizador
-def get_dados_utilizador(db:Session, id_user:int):
+async def get_dados_utilizador(db:Session, id_user:int):
     try:
         utilizador = db.query(Utilizador).filter(Utilizador.UtilizadorID == id_user).first()
         if utilizador:

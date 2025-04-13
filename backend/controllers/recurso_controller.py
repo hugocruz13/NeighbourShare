@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 from schemas.recurso_schema import *
 from typing import List
 import decimal
-
-from schemas.user_schemas import UserJWT
 from services.recurso_service import *
+from middleware.auth_middleware import role_required
+from schemas.user_schemas import UserJWT
 
 router = APIRouter(prefix="/recursos", tags=["Recursos"])
 
@@ -43,19 +43,13 @@ async def inserir_recurso(
 #Lista todos os recursos registados
 @router.get("/", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos(
-        db:Session = Depends(get_db)
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os recursos
     """
     return await lista_recursos_service(db)
-
-@router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
-async def listar_recurso(
-        recurso_id: int,
-        db:Session = Depends(get_db)
-):
-    return await lista_recurso_service(db, recurso_id)
 
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
@@ -68,7 +62,8 @@ async def listar_recursos_pessoais(
 #Lista todos os recursos disponíveis
 @router.get("/disponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_disponiveis(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar os recursos disponíveis (ID Disponibilidade = 1)
@@ -78,9 +73,17 @@ async def listar_recursos_disponiveis(
 #Lista todos os recursos indisponíveis
 @router.get("/indisponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_indisponiveis(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar os recursos indisponíveis (ID Disponibilidade = 2)
     """
     return await lista_recursos_indisponiveis_service(db)
+
+@router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
+async def listar_recurso(
+        recurso_id: int,
+        db:Session = Depends(get_db)
+):
+    return await lista_recurso_service(db, recurso_id)

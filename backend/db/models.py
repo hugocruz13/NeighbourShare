@@ -258,7 +258,7 @@ class PedidoManutencao(Base):
     PMID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
     UtilizadorID: Mapped[int] = mapped_column(Integer)
     RecComumID: Mapped[int] = mapped_column(Integer)
-    DescPedidoManutencao: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    DescPedido: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     DataPedido: Mapped[datetime.date] = mapped_column(Date)
     EstadoPedManuID: Mapped[int] = mapped_column(Integer)
 

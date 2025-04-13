@@ -13,16 +13,6 @@ async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReserva
     except Exception as e:
         return {'details: '+ str(e)}
 
-# Mostra os pedidos de reserva efetuados por um utilizador (utilizador_id)
-async def lista_pedidos_reserva_service(db:session, utilizador_id:int):
-
-    lista_pedidos = await reserva_repo.lista_pedidos_reserva_db(db, utilizador_id)
-
-    if not lista_pedidos:
-        raise HTTPException(status_code=400, detail="Nenhum pedido de reserva encontrado")
-
-    return lista_pedidos
-
 async def lista_pedidos_reserva_ativos_service(db: session):
     lista_pedidos_ativos = await reserva_repo.lista_pedidos_reserva_ativos_db(db)
 
@@ -53,15 +43,80 @@ async def get_reserva_service(db:session, reserva_id:int):
     except Exception as e:
         return {'details: '+ str(e)}
 
-#Mostra as reservas onde o utilizador (utilizador_id) contêm um recurso emprestado consigo
+#Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 async def lista_reservas_service(db:session, utilizador_id:int):
 
-    lista_reservas = await reserva_repo.lista_reservas_db(db, utilizador_id)
+    reservas_dono, reservas_solicitante = await reserva_repo.lista_reservas_db(db, utilizador_id)
 
-    if not lista_reservas:
+    if not reservas_dono and not reservas_solicitante :
         raise HTTPException(status_code=400, detail="Nenhuma reserva encontrada")
 
-    return lista_reservas
+    lista_reservas_dono = []
+    lista_reservas_solicitante = []
+
+    for reserva in reservas_dono:
+
+        lista_reservas_dono.append(ReservaGetDonoSchema(
+            ReservaID = reserva.ReservaID,
+            Solicitante = reserva.NomeUtilizador,
+            DataInicio = reserva.DataInicio,
+            DataFim = reserva.DataFim,
+            NomeRecurso = reserva.Nome,
+            RecursoEntregueDono = reserva.RecursoEntregueDono,
+            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono
+        ))
+
+    for reserva in reservas_solicitante:
+
+        lista_reservas_solicitante.append(ReservaGetSolicitanteSchema(
+            ReservaID = reserva.ReservaID,
+            Dono= reserva.NomeUtilizador,
+            DataInicio = reserva.DataInicio,
+            DataFim = reserva.DataFim,
+            NomeRecurso = reserva.Nome,
+            RecursoEntregueSolicitante = reserva.RecursoEntregueVizinho,
+            ConfirmarCaucaoSolicitante = reserva.ConfirmarCaucaoVizinho,
+            EstadoReserva = reserva.DescEstadoPedidoReserva
+        ))
+
+    return lista_reservas_dono, lista_reservas_solicitante
+
+#Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
+async def lista_pedidos_reserva_service(db:session, utilizador_id:int):
+
+    pedidos_reserva_dono, pedidos_reserva_solicitante = await reserva_repo.lista_pedidos_reserva_db(db, utilizador_id)
+
+    if not pedidos_reserva_dono and not pedidos_reserva_solicitante :
+        raise HTTPException(status_code=400, detail="Nenhum pedido de reserva encontrado")
+
+    lista_pedidos_reserva_dono = []
+    lista_pedidos_reserva_solicitante = []
+
+    for pedido_reserva in pedidos_reserva_dono:
+
+        lista_pedidos_reserva_dono.append(PedidoReservaGetDonoSchema(
+            PedidoReservaID= pedido_reserva.PedidoResevaID,
+            RecursoID= pedido_reserva.RecursoID,
+            RecursoNome= pedido_reserva.Nome,
+            UtilizadorNome= pedido_reserva.NomeUtilizador,
+            DataInicio= pedido_reserva.DataInicio,
+            DataFim= pedido_reserva.DataFim,
+            EstadoPedidoReserva= pedido_reserva.DescEstadoPedidoReserva
+        ))
+
+    for pedido_reserva in pedidos_reserva_solicitante:
+
+        lista_pedidos_reserva_solicitante.append(PedidoReservaGetSolicitanteSchema(
+            PedidoReservaID= pedido_reserva.PedidoResevaID,
+            RecursoID = pedido_reserva.RecursoID,
+            RecursoNome = pedido_reserva.Nome,
+            NomeDono = pedido_reserva.NomeUtilizador,
+            DataInicio = pedido_reserva.DataInicio,
+            DataFim= pedido_reserva.DataFim,
+            EstadoPedidoReserva = pedido_reserva.DescEstadoPedidoReserva
+        ))
+
+    return lista_pedidos_reserva_dono, lista_pedidos_reserva_solicitante
 
 #Confirma a entrega de um recurso para empréstimo (dono)
 async def confirma_entrega_recurso_service(db:session, reserva_id:int):

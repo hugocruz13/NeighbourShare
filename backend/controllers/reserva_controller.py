@@ -3,7 +3,9 @@ from db.session import get_db
 from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
 from services.reserva_service import *
-from typing import List
+from typing import List, Tuple
+from middleware.auth_middleware import role_required
+from schemas.user_schemas import UserJWT
 
 router = APIRouter(prefix="/reserva", tags=["Reservas"])
 
@@ -16,17 +18,21 @@ async def criar_reserva(
 
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
 
-        return cria_reserva_service(db, reserva)
+        return await cria_reserva_service(db, reserva)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/lista")
+#Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
+@router.get("/lista", response_model=Tuple[List[ReservaGetDonoSchema],List[ReservaGetSolicitanteSchema]])
 async def lista_reservas(
         token: UserJWT = Depends(jwt_middleware),
         db:Session = Depends(get_db)
 ):
-    return await lista_reservas_service(db, token.id)
+    try:
+        return await lista_reservas_service(db, token.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Confirma a entrega de um recurso para empréstimo (dono)
 @router.post("/confirma/entrega/recurso")
@@ -85,27 +91,30 @@ async def inserir_justificacao_caucao(
         raise HTTPException(status_code=500, detail=str(e))
 
 #Confirmação do bom estado do produto e da devolução da caução
+@router.post("/confirma/bomestado")
 async def confirma_bom_estado_produto_e_devolucao_caucao(
-        db:Session, reserva_id: int
+        reserva_id: int,
+        db:Session = Depends(get_db)
 ):
     try:
         return await inserir_bom_estado_produto_e_devolucao_caucao(db, reserva_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pedidosreserva", response_model=List[PedidoReservaSchema])
+#Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
+@router.get("/pedidosreserva/lista", response_model=Tuple[List[PedidoReservaGetDonoSchema],List[PedidoReservaGetSolicitanteSchema]])
 async def lista_pedidos_reserva(
-    token: UserJWT = Depends(jwt_middleware),
-    db:Session = Depends(get_db)
-):
-    """
-    Endpoint para consultar todos os pedidos de reserva efetuados pelo utilizador
-    """
-    return await lista_pedidos_reserva_service(db, token.id)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
+    try:
+        return await lista_pedidos_reserva_service(db, token.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pedidosreserva/ativos", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva_ativos(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de reserva ativos (EstadoID == 1)
@@ -114,7 +123,8 @@ async def lista_pedidos_reserva_ativos(
 
 @router.get("/pedidosreserva/cancelados", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva_cancelados(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de reserva cancelados (EstadoID == 2)
@@ -137,7 +147,7 @@ async def criar_pedido_reserva(
             DataFim = data_fim
         )
 
-        return cria_pedido_reserva_service(db,pedido_reserva)
+        return await cria_pedido_reserva_service(db,pedido_reserva)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

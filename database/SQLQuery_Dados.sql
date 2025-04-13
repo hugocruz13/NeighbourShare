@@ -28,31 +28,20 @@ VALUES ('Aprovado para compra');
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
 VALUES ('Concluído');
 
-/*Estado Manutenção de um recurso comum*/
+/*Estado Pedido de Manutenção de um recurso comum*/
 
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
-VALUES ('Pendente');
-
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Em análise');
 
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Aprovado para execução interna');
 
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
-VALUES ('Aguardando resposta de uma entidade externa');
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
+VALUES ('Aprovado para execução externa');
 
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
-VALUES ('Em votação');
-
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
-VALUES ('Aprovado para execução');
-
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Rejeitado');
 
-INSERT INTO EstadoManutencao (DescEstadoManutencao)
-VALUES ('Concluído');
 
 /*Tipo Utilizador*/
 
