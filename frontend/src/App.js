@@ -11,6 +11,8 @@ import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.js";
 import PedidosReserva from "./pages/PedidosReserva.js";
 import Perfil from "./pages/Perfil.js";
 import MeusRecursos from "./pages/MeusRecursos.js";
+import ListaPedidosReserva from "./pages/ListaPedidosReserva.js";
+import ListaReserva from "./pages/ListaReservas.js";
 
 function App() {
   return (
@@ -24,9 +26,11 @@ function App() {
             <Route path="/menu" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Menu /></ProtectedRoute>}/>
             <Route path="/recursosDisponiveis" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RecursosDisponiveis /></ProtectedRoute>}/>
             <Route path="/pedidosNovosRecursos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosNovosRecursos /></ProtectedRoute>}/>
-            <Route path="/pedidosReserva" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosReserva /></ProtectedRoute>}/>
+            <Route path="/pedidosReserva/:id" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosReserva /></ProtectedRoute>}/>
             <Route path="/perfil" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Perfil /></ProtectedRoute>}/>
             <Route path="/meusRecursos" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><MeusRecursos /></ProtectedRoute>}/>
+            <Route path="/listaPedidosReserva" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ListaPedidosReserva /></ProtectedRoute>}/>
+            <Route path="/listaReserva" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ListaReserva /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>

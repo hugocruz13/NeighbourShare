@@ -10,11 +10,13 @@ const RecursosDisponiveis = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursos/disponiveis');
+        const res = await fetch('http://localhost:8000/api/recursos/disponiveis', {
+          method: 'GET',
+          credentials: 'include' 
+        });
         const data = await res.json();
         console.log(data)
         setProducts(data);
-        setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
         setLoading(false);
@@ -33,7 +35,7 @@ const RecursosDisponiveis = () => {
       <div className="grid-recursos">
         {products.map((product) => (
           <div key={product.RecursoID}>
-            <Link to={`/reservar/${product.RecursoID}`}>
+            <Link to={`/pedidosReserva/${product.RecursoID}`}>
               <img src={product.Image} alt={product.name} style={{ width: '100%' }} />
             </Link>
             <h2>{product.Nome}</h2>

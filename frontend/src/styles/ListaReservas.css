@@ -61,7 +61,7 @@
 
 
 
-.fundoMeusRecursos {
+.fundoListaReserva {
   max-width: 1000px;
   margin: 40px auto 0 auto;
   padding: 30px 30px 40px 30px;
@@ -123,4 +123,57 @@ th {
 .deleteIcon{
   width: 20px;
   height: 20px;
+}
+
+.tituloReserva{
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.btnSimReserva{
+  width: 50%;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btnSimReserva:hover{
+  background-color: #45a049;
+}
+
+.btnNaoReserva{
+  width: 50%;
+  background-color: #f44336;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btnNaoReserva:hover{
+
+  background-color: #d32f2f;
+
+}
+
+.btnConfirmacoes{
+  width: 100%;
+  background-color: #00b4d8;
+  border: none;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btnConfirmacoes:hover{
+  background-color: #0077b6;
 }

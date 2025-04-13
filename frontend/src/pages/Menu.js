@@ -21,6 +21,12 @@ function Residente() {
           <div className="btnMenu">
             <Link className="textBtn" to="/meusRecursos">Meus Recursos</Link><br></br>
           </div>
+          <div className="btnMenu">
+            <Link className="textBtn" to="/listaPedidosReserva">Pedidos de Reserva</Link><br></br>
+          </div>
+          <div className="btnMenu">
+            <Link className="textBtn" to="/listaReserva">Lista Reservas</Link><br></br>
+          </div>
 
           {user?.role === "gestor" || user?.role === "admin" && (
             

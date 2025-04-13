@@ -21,12 +21,14 @@ const MeusRecursos = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursos', {
+        const res = await fetch('http://localhost:8000/api/recursos/pessoais', {
+          
           credentials: 'include',
         });
 
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
+        console.log(data);
         setUsers(data);
       } catch (error) {
         setErro(error.message);
@@ -126,13 +128,15 @@ const MeusRecursos = () => {
         </thead>
         <tbody>
           {recurso.map((recurso) => (
-            <tr key={recurso.id}>
-              <td>{recurso.nome}</td>
-              <td>{recurso.caucao}</td>
-              <td>{recurso.disp}</td>
-              <td>{recurso.catg}</td>
-              <td>{recurso.catg}</td>
-              <td>{recurso.catg}</td>
+            <tr key={recurso.RecursoID}>
+              <td>{recurso.RecursoID}</td>
+              <td>{recurso.Nome}</td>
+              <td>{recurso.Caucao}</td>
+              <td>{recurso.Categoria_.DescCategoria}</td>
+              <td>{recurso.Disponibilidade_.DescDisponibilidade}</td>
+              <td>
+                <img className='deleteIcon' src="img/delete.png"></img>
+              </td>
             </tr>
           ))}
         </tbody>

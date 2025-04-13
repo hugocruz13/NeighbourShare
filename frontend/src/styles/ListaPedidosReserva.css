@@ -61,7 +61,7 @@
 
 
 
-.fundoMeusRecursos {
+.fundoListaPedidosReserva {
   max-width: 1000px;
   margin: 40px auto 0 auto;
   padding: 30px 30px 40px 30px;
@@ -123,4 +123,42 @@ th {
 .deleteIcon{
   width: 20px;
   height: 20px;
+}
+
+.tituloPedidosReserva{
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.btnSimPedidoReserva{
+  width: 50%;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btnSimPedidoReserva:hover{
+  background-color: #45a049;
+}
+
+.btnNaoPedidoReserva{
+  width: 50%;
+  background-color: #f44336;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btnNaoPedidoReserva:hover{
+
+  background-color: #d32f2f;
+
 }
