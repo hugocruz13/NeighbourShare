@@ -27,8 +27,9 @@ const RecursosDisponiveis = () => {
   }, []);
 
   return (
+    <div className="page-content">
+
     <div className='home-container'>
-      <Navbar2 />
 
       <div className='fundoRecursos'>
       <p className='p-Recursos'>Recursos Disponíveis ({products.length})</p>
@@ -45,6 +46,8 @@ const RecursosDisponiveis = () => {
       </div>
       </div>
     </div>
+</div>
+
   );
 };
 

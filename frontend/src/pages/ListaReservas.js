@@ -5,6 +5,7 @@ import "../styles/ListaReservas.css";
 import Navbar2 from "../components/Navbar2.js";
 
 const MeusPedidosReserva = () => {
+  const [disabledButtons, setDisabledButtons] = useState(new Set());
   const [comoSolicitante, setComoSolicitante] = useState([]); // data[1]
   const [comoDono, setComoDono] = useState([]);               // data[0]
   const [showModal, setShowModal] = useState(false);
@@ -35,8 +36,7 @@ const MeusPedidosReserva = () => {
 
 
   const handleUpdate = async (id, field, value, origem) => {
-     let apiEndpoint = '';
-     const fieldMap = {
+    const fieldMap = {
       recursoEntregue: 'RecursoEntregueSolicitante',
       caucaoEntregue: 'ConfirmarCaucaoSolicitante',
       recursoEntregue2: 'RecursoEntregueDono',
@@ -44,42 +44,47 @@ const MeusPedidosReserva = () => {
       bomEstado: 'bomEstado'
     };
     const fieldName = fieldMap[field];
-
-     switch (field) {
-     case 'recursoEntregue':
-     apiEndpoint = `http://localhost:8000/api/reserva/confirma/rececao/recurso?reserva_id=${id}`;
-     break;
-     case 'caucaoEntregue':
-     apiEndpoint = `http://localhost:8000/api/reserva/confirma/entrega/caucao?reserva_id=${id}`;
-     break;
-     case 'recursoEntregue2':
-      apiEndpoint = `http://localhost:8000/api/reserva/confirma/entrega/recurso?reserva_id=${id}`;
-      break;
+  
+    // Mostrar confirmação se for uma ação irreversível
+    if (['recursoEntregue', 'caucaoEntregue', 'recursoEntregue2', 'caucaoEntregue2'].includes(field)) {
+      const confirmar = window.confirm("Esta operação é irreversível. Tens a certeza que queres continuar?");
+      if (!confirmar) return;
+    }
+  
+    let apiEndpoint = '';
+  
+    switch (field) {
+      case 'recursoEntregue':
+        apiEndpoint = `http://localhost:8000/api/reserva/confirma/rececao/recurso?reserva_id=${id}`;
+        break;
+      case 'caucaoEntregue':
+        apiEndpoint = `http://localhost:8000/api/reserva/confirma/entrega/caucao?reserva_id=${id}`;
+        break;
+      case 'recursoEntregue2':
+        apiEndpoint = `http://localhost:8000/api/reserva/confirma/entrega/recurso?reserva_id=${id}`;
+        break;
       case 'caucaoEntregue2':
         apiEndpoint = `http://localhost:8000/api/reserva/confirma/rececao/caucao?reserva_id=${id}`;
         break;
       case 'bomEstado':
         apiEndpoint = `http://localhost:8000/api/reserva/confirma/bomestado?reserva_id=${id}`;
         break;
+      default:
+        console.error('Campo desconhecido:', field);
+        return;
+    }
   
-     default:
-     console.error('Campo desconhecido:', field);
-     return;
-     }
-    
-
-     try {
+    try {
       const response = await fetch(apiEndpoint, {
-       method: 'POST',
-       headers: {
-       'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({ reserva_id: id, value }),
-       });
-       const result = await response.json();
-       console.log('API response:', result);
-      
-       if (response.ok) {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reserva_id: id, value }),
+      });
+  
+      const result = await response.json();
+      console.log('API response:', result);
+  
+      if (response.ok) {
         const updateState = (prev) =>
           prev.map((reservation) =>
             reservation.ReservaID === id
@@ -92,13 +97,17 @@ const MeusPedidosReserva = () => {
         } else if (origem === 'dono') {
           setComoDono(updateState);
         }
-       } else {
-       console.error('Erro na resposta da API:', result);
-       }
-      } catch (error) {
-       console.error('Erro ao atualizar pedido de reserva:', error);
-       }
+  
+        // Adiciona o botão desativado
+        setDisabledButtons(prev => new Set(prev).add(`${field}-${id}`));
+      } else {
+        console.error('Erro na resposta da API:', result);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar pedido de reserva:', error);
+    }
   };
+  
       
    
 const handleJustification = (id) => {
@@ -133,8 +142,8 @@ const handleJustification = (id) => {
    
 
   return (
+    <div className="page-content">
     <div className="home-container">
-      <Navbar2 />
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Os Meus Pedidos de Reserva de Recursos</p>
 
@@ -159,14 +168,20 @@ const handleJustification = (id) => {
               <td>{reservation.DataFim}</td>
               <td>{reservation.NomeRecurso}</td>
               <td>
-               <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue', !reservation.RecursoEntregueSolicitante, 'solicitante')}>
-                  {reservation.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
-                </button>
+              <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue', !reservation.RecursoEntregueSolicitante, 'solicitante')}
+                disabled={disabledButtons.has(`recursoEntregue-${reservation.ReservaID}`)}
+                >
+                {reservation.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
+              </button>
               </td>
               <td>
-                 <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue', !reservation.ConfirmarCaucaoSolicitante, 'solicitante')}>
-                   {reservation.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
-                  </button>
+              <button
+                className='btnConfirmacoes'
+                onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue', !reservation.ConfirmarCaucaoSolicitante, 'solicitante')}
+                disabled={disabledButtons.has(`caucaoEntregue-${reservation.ReservaID}`)}
+                >
+                {reservation.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
+              </button>
               </td>
             </tr>
           ))}
@@ -199,14 +214,22 @@ const handleJustification = (id) => {
               <td>{reservation.DataFim}</td>
               <td>{reservation.NomeRecurso}</td>
               <td>
-               <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue2', !reservation.RecursoEntregueDono, 'dono')}>
-                  {reservation.RecursoEntregueDono ? 'Sim' : 'Não'}
-                </button>
+              <button
+              className='btnConfirmacoes'
+              onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue2', !reservation.RecursoEntregueDono, 'dono')}
+              disabled={disabledButtons.has(`recursoEntregue2-${reservation.ReservaID}`)}
+              >
+              {reservation.RecursoEntregueDono ? 'Sim' : 'Não'}
+              </button>
               </td>
               <td>
-                 <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue2', !reservation.ConfirmarCaucaoDono, 'dono')}>
-                   {reservation.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
-                  </button>
+              <button
+              className='btnConfirmacoes'
+              onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue2', !reservation.ConfirmarCaucaoDono, 'dono')}
+              disabled={disabledButtons.has(`caucaoEntregue2-${reservation.ReservaID}`)}
+              >
+              {reservation.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
+              </button>
               </td>
               <td>
                  <button className='btnSimReserva' onClick={() => handleUpdate(reservation.ReservaID, 'bomEstado', true, 'dono')}>Sim</button>
@@ -225,10 +248,10 @@ const handleJustification = (id) => {
       <>
         <div className="modal-backdrop" onClick={() => setShowModal(false)} />
           <div className="modal-content">
-            <h2>Adicionar Recurso</h2>
+            <h2>Enviar Justificação</h2>
             <textarea placeholder="Descrição" value={newResource.justification} onChange={(e) => setNewResource({ ...newResource, justification: e.target.value })}/>
             <div>
-              <button onClick={() => handleJustification(selectedReservaID)}>Adicionar</button>
+              <button onClick={() => handleJustification(selectedReservaID)}>Enviar</button>
               <button onClick={() => setShowModal(false)}>Cancelar</button>
             </div>
           </div>
@@ -237,7 +260,7 @@ const handleJustification = (id) => {
 
 
     </div>
-
+    </div>
 
     
   );

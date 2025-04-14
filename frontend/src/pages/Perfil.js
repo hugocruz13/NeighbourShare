@@ -59,8 +59,9 @@ const ProfilePage = () => {
   };
 
   return (
+    <div className="page-content">
+
     <div className="home-container">
-      <Navbar2 />
 
       <div className='fundoPerfil'>
 
@@ -107,6 +108,8 @@ const ProfilePage = () => {
 
 
     </div>
+</div>
+
   );
 };
 

@@ -48,13 +48,37 @@ const ReservarRecurso = ({ match }) => {
        console.error('Erro ao enviar reserva:', error);
        alert('Erro ao enviar reserva.');
       }
-      };
+    };
     
+    
+    const handleReject = async (PedidoReservaID) => {
+      try {
+        const res = await fetch(`http://localhost:8000/api/reserva/pedidosreserva/recusar?pedido_reserva_id=${PedidoReservaID}`, {
+          method: 'POST',
+          credentials: 'include', // Enviar cookies
+        });
+        console.log(res);
+  
+        if (res.ok) {
+          alert('Pedido de reserva recusado com sucesso!');
+        } else {
+          alert('Erro ao recusar pedido de reserva.');
+        }
+      } catch (error) {
+        console.error('Erro ao recusar pedido de reserva:', error);
+        alert('Erro ao recusar pedido de reserva.');
+      }
+    };
+  
+      
+    const pedidosEmAnaliseSolicitante = comoSolicitante.filter(reservation => reservation.EstadoPedidoReserva === "Em anásile");
+    const pedidosEmAnaliseDono = comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em anásile");
+
 
     return (
+      <div className="page-content">
 
       <div className="home-container">
-        <Navbar2 />
         <div className='fundoListaPedidosReserva'>
           <p className='tituloPedidosReserva'>Os Meus Pedidos de Reserva Feitos</p>
           <table>
@@ -69,7 +93,7 @@ const ReservarRecurso = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-            {comoSolicitante.map((reservation) => (
+            {pedidosEmAnaliseSolicitante.map((reservation) => (
             <tr key={reservation.PedidoReservaID}>
               <td>{reservation.PedidoReservaID}</td>
               <td>{reservation.RecursoNome}</td>
@@ -98,7 +122,7 @@ const ReservarRecurso = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-              {comoDono.map((reservation) => (
+              {pedidosEmAnaliseDono.map((reservation) => (
               <tr key={reservation.PedidoReservaID}>
                 <td>{reservation.PedidoReservaID}</td>
                 <td>{reservation.UtilizadorNome}</td>
@@ -107,13 +131,14 @@ const ReservarRecurso = ({ match }) => {
                 <td>{reservation.DataFim}</td>
                 <td>
                   <button className='btnSimPedidoReserva' onClick={() => handleReserve(reservation.PedidoReservaID)}>Sim</button>
-                  <button className='btnNaoPedidoReserva'>Não</button>
+                  <button className='btnNaoPedidoReserva' onClick={() => handleReject(reservation.PedidoReservaID)}>Não</button>
                 </td>
               </tr>
               ))}
             </tbody>
           </table>
         </div>
+    </div>
     </div>
     
     );

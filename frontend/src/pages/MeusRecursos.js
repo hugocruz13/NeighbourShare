@@ -82,8 +82,9 @@ const MeusRecursos = () => {
 
 
   return (
+    <div className="page-content">
+
     <div className="home-container">
-      <Navbar2 />
       
       <div className='fundoMeusRecursos'>
 
@@ -143,6 +144,7 @@ const MeusRecursos = () => {
       </table>
       </div>
     </div>
+</div>
   );
 };
 
