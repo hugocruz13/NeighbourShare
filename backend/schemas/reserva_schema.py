@@ -1,5 +1,5 @@
 import decimal
-
+from enum import Enum
 from pydantic import BaseModel
 from typing import Optional
 import datetime
@@ -41,6 +41,11 @@ class PedidoReservaSchemaCreate(BaseModel):
     RecursoID: int
     DataInicio: datetime.date
     DataFim: datetime.date
+
+class PedidoReservaEstadosSchema(Enum):
+    EMANALISE = "Em análise"
+    APROVADO = "Aprovado"
+    REJEITADO = "Rejeitado"
 
 class ReservaSchemaCreate(BaseModel):
     PedidoReservaID: int
