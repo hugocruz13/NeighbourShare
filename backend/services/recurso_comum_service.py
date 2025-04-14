@@ -34,6 +34,7 @@ async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoS
         await cria_notificacao_insercao_pedido_manutencao_service(db, novo_pedido) #Criação da notificação
 
         return msg
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

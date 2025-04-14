@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from schemas.notificacao_schema import *
 
 #Cria uma notificação com destino somente um utilizador
-async def cria_notificacao_individual_db(db: Session, notificacao: Notificacao, user_id: int = None):
+async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSchema, user_id: int = None):
     try:
             nova_notificao = Notificacao(
                 Titulo=notificacao.Titulo,
@@ -57,7 +57,7 @@ async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema)
         return False ,{'details': str(e)}
 
 # Cria notificação para todos os utilizadores
-async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificacao):
+async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:NotificacaoSchema):
     try:
             nova_notificao = Notificacao(
                 Titulo=notificao.Titulo,
