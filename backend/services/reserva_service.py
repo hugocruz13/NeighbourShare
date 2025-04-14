@@ -30,9 +30,18 @@ async def lista_pedidos_reserva_cancelados_service(db:session):
 
     return lista_pedidos_cancelados
 
+#Muda o estado de um pedido de reserva
+async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int, estado:PedidoReservaEstadosSchema):
+    try:
+        return await reserva_repo.muda_estado_pedido_reserva_db(db,pedido_reserva_id,estado)
+    except Exception as e:
+        return {'details: '+ str(e)}
+
 async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
     try:
+
         mensagem = await reserva_repo.cria_reserva_db(db,reserva)
+        await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
         return mensagem
     except Exception as e:
         return {'details: '+ str(e)}

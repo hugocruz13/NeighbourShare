@@ -54,6 +54,20 @@ async def lista_pedidos_reserva_cancelados_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+# Muda o estado de um pedido de reserva
+async def muda_estado_pedido_reserva_db(db:session, pedido_reserva_id:int, estado:PedidoReservaEstadosSchema):
+    try:
+        estado_id = db.query(EstadoPedidoReserva).filter(EstadoPedidoReserva.DescEstadoPedidoReserva == estado).first().EstadoID
+
+        if not estado_id:
+            return {'Estado de pedido de reserva não encontrado!'}
+
+        pedido_reserva = db.query(PedidoReserva).filter(PedidoReserva.PedidoResevaID == pedido_reserva_id).first()
+        pedido_reserva.EstadoID = estado_id
+        db.commit()
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
 async def cria_reserva_db(db:session, reserva:ReservaSchemaCreate):
     try:
         nova_reserva = Reserva(
