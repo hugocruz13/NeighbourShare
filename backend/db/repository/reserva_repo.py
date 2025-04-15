@@ -19,7 +19,7 @@ async def criar_pedido_reserva_db(db:session, pedido_reserva : PedidoReservaSche
         db.commit()
         db.refresh(novo_pedido_reserva)
 
-        return {'Pedido de reserva criado com sucesso!'}
+        return {'Pedido de reserva criado com sucesso!'}, pedido_reserva
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -66,7 +66,7 @@ async def muda_estado_pedido_reserva_db(db:session, pedido_reserva_id:int, estad
         pedido_reserva.EstadoID = estado_id
         db.commit()
 
-        return {'Estado do pedido de reserva alterado com sucesso!'}
+        return {'Estado do pedido de reserva alterado com sucesso!'}, pedido_reserva
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
@@ -91,10 +91,19 @@ async def cria_reserva_db(db:session, reserva:ReservaSchemaCreate):
         db.rollback()
         return {'details': str(e)}
 
+#Obtem os dados de uma reserva através do seu ID
 async def get_reserva_db(db:session, reserva_id: int):
     try:
         reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
         return reserva
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+#Obtêm um pedido de reserva através do seu ID
+async def get_pedido_reserva_db(db:session, pedido_reserva_id: int):
+    try:
+        pedido_reserva = db.query(PedidoReserva).filter(PedidoReserva.PedidoResevaID == pedido_reserva_id).first()
+        return pedido_reserva
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 

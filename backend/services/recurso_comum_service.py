@@ -114,6 +114,8 @@ async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_est
             raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado manutenção")
         if tipo_estado_manutencao in estados:
             await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
+            # if tipo_estado_manutencao == 2: #Estado -> Concluída
+
             return True
         else:
             return False
@@ -128,6 +130,12 @@ async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao
         for e in estados:
             if e.EstadoPedManuID == tipo_estado_pedido_manutencao:
                 await recurso_comum_repo.alterar_estado_pedido_manutencao(db, id_pedido_manutencao, tipo_estado_pedido_manutencao)
+                if e.EstadoPedManuID == 2:  # Estado -> Aprovado para manutenção interna
+                    await cria_notificacao_nao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
+                elif e.EstadoPedManuID == 3: # Estado -> Em negociação com entidades externas
+                    await cria_notificacao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
+                elif e.EstadoPedManuID == 5: # Estado -> Rejeitado
+                    await cria_notificacao_rejeicao_manutencao_recurso_comum(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
                 return True
             else:
                 return False

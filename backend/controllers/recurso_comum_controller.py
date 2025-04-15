@@ -23,7 +23,7 @@ async def inserir_recurso_comum(
 
 #Inserção de um pedido de um novo recurso comum
 @router.post("/pedidosnovos/inserir")
-async def inserir_recurso_comum(
+async def inserir_pedido_novo_recurso_comum(
     desc_pedido_novo_recurso: str,
     db:Session = Depends(get_db),
     token: UserJWT = Depends(jwt_middleware)

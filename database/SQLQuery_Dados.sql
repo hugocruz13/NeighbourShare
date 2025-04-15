@@ -37,10 +37,23 @@ INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Aprovado para execução interna');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
-VALUES ('Aprovado para execução externa');
+VALUES ('Em negociação com entidades externas');
+
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
+VALUES ('Em votação');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Rejeitado');
+
+
+/*Estado Manutenção de um recurso comum*/
+
+
+INSERT INTO EstadoManutencao (DescEstadoManutencao)
+VALUES ('Em progresso');
+
+INSERT INTO EstadoManutencao (DescEstadoManutencao)
+VALUES ('Concluída');
 
 
 /*Tipo Utilizador*/

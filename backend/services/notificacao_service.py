@@ -6,6 +6,8 @@ from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
+from services.recurso_comum_service import obter_pedido_manutencao
+
 
 #Cria uma notificação direcionada somente a um utilizador específico
 async def cria_notificacao_individual_service(db:Session, notificacao:NotificacaoSchema, user_id:int):
@@ -63,7 +65,6 @@ async def cria_notificacao_insercao_pedido_manutencao_service(db:Session,pedido:
 #Cria notificação a indicar a não necessidade de intervenção de uma entidade externa
 async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:PedidoManutencaoSchema):
     try:
-
         notificacao = NotificacaoSchema(
             Titulo= "Atualização sobre o seu pedido de manutenção",
             Mensagem= f"""
@@ -84,6 +85,52 @@ async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:Pe
 
         return await cria_notificacao_individual_db(db,notificacao,pedido.Utilizador_.UtilizadorID)
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação a indicar a necessidade de intervenção de uma entidade externa
+async def cria_notificacao_necessidade_entidade_externa(db:Session,pedido:PedidoManutencaoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Atualização sobre o seu pedido de manutenção",
+            Mensagem=f"""
+
+                    Prezados moradores,
+
+                    Depois de analisarmos um pedido de manutenção (Nº: {pedido.PMID}) efetuado por um morador, verificamos a necessidade da intervenção de uma entidade externa.
+
+                    Por isso informamos que será feito um estudo de orçamentos para a resolução do problema, onde surgirá uma votação para a escolha do melhor orçamento.
+
+                    Com isto agradecemos a indicação do problema existente e fiquem a aguardar a votação.
+                    """,
+            ProcessoID=pedido.PMID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+        )
+
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação a rejeitar a manutenção de um recurso comum
+async def cria_notificacao_rejeicao_manutencao_recurso_comum(db:Session,pedido:PedidoManutencaoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Atualização sobre o seu pedido de manutenção",
+            Mensagem=f"""
+
+                    Olá {pedido.Utilizador_.Nome},
+
+                    Agradecemos o seu pedido de manutenção referente a {pedido.DescPedido}.
+
+                    Contudo depois de uma análise à situaçao reportado, não foi verificado uma intervenção no recurso em questão, seja a mesma inerna ou externa.
+                    
+                    Com isto agradecemos a sua intervenção, contudo o pedido será dado como rejeitado.
+                    """,
+            ProcessoID=pedido.PMID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+        )
+
+        return await cria_notificacao_individual_db(db, notificacao, pedido.Utilizador_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -114,9 +161,9 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar a conclusão da manutenção do recurso comum
-async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,pedido:PedidoManutencaoSchema, orcamento:OrcamentoSchema):
+async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,manutencao:ManutencaoSchema, orcamento:OrcamentoSchema):
     try:
-
+        pedido = await obter_pedido_manutencao(db,manutencao.PMID)
         notificacao = NotificacaoSchema(
             Titulo= "Manutenção concluída com sucesso",
             Mensagem= f"""
