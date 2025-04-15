@@ -122,3 +122,9 @@ async def obter_pedido_manutencao(db:Session, id_manutencao:int):
         return await recurso_comum_repo.obter_pedido_manutencao_db(db, id_manutencao)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_manutencao(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

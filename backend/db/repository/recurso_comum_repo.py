@@ -191,3 +191,10 @@ async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
         return pedido_manutencao
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
+
+async def obter_manutencao_db(db:session, id_manutencao:int):
+    try:
+        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
+        return manutencao
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
