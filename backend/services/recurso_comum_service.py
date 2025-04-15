@@ -76,6 +76,13 @@ async def listar_pedidos_manutencao_finalizados_service(db:session):
 
     return pedidos_manutencao_finalizados
 
+async def visualizar_manutencoes(db:session):
+    manutencoes = await recurso_comum_repo.listar_manutencoes(db)
+
+    if not manutencoes:
+        raise HTTPException(status_code=400, detail="Nenhuma manutenção encontrada")
+    return manutencoes
+
 async def obter_all_tipo_estado_pedido_manutencao(db:session):
     try:
         return await recurso_comum_repo.obter_all_tipo_estado_pedido_manutencao(db)
@@ -126,5 +133,23 @@ async def obter_pedido_manutencao(db:Session, id_manutencao:int):
 async def obter_manutencao(db:Session, id_manutencao:int):
     try:
         return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def update_pedido_manutencao(db:Session, u_pedido:PedidoManutencaoUpdateSchema):
+    try:
+        if u_pedido.DataPedido is None or u_pedido.DescPedido is None or u_pedido.PMID is None or u_pedido.RecursoComun_ is None:
+            return False, "Erro, um dos campos não foi preenchido"
+        return await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def update_manutencao(db:Session, u_pedido:ManutencaoUpdateSchema):
+    try:
+        if u_pedido.ManutencaoID is None or u_pedido.PMID is None or u_pedido.EntidadeID is None or u_pedido.DataManutencao is None or u_pedido.DescManutencao is None:
+            return False, "Erro, um dos campos não foi preenchido"
+        a = await recurso_comum_repo.update_manutencao_db(db, u_pedido)
+        if a is None:
+            return HTTPException(status_code=400)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
