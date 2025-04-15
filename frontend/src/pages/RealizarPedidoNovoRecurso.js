@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import "../styles/RealizarPedidoNovoRecurso.css";
 const RealizarPedidoNovoRecurso = () => {
   const [descricao, setDescricao] = useState('');
 
@@ -24,22 +24,27 @@ const RealizarPedidoNovoRecurso = () => {
 
   return (
     <div className="page-content">
-      <div>
-        <h1>Realizar Pedido de Novo Recurso</h1>
+      <div className="home-container">
+        <div className='fundoNovosRecursos'>
+        <div className='textoEsquerda'>
+        <p className='p-NovosRecursos'>Realizar Pedido de Novo Recurso</p>
         <form onSubmit={handleSubmit}>
           <div>
-            <label>
-              Descrição:
-              <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} required/>
-            </label>
+            <label>Descrição:</label><br></br>
+            <textarea className='inputNovoRecurso' value={descricao} onChange={(e) => setDescricao(e.target.value)} required/>
+
           </div>
-          <button type="submit">Realizar Pedido</button>
+          <button className='btnNovoRecurso' type="submit">Realizar Pedido</button>
         </form>
       </div>
-      <div>
-        <img src="URL_DA_IMAGEM" alt="Imagem de um complexo de apartamentos moderno com piscina" style={{ width: '400px', height: 'auto' }} />
+
+      <div className='imagemDireita'>
+        <img className='imgNovosRecursos' src="./img/fundo2.png" alt="Imagem"/>
         <p>Se achas que é necessário novos recursos realiza o pedido aqui.</p>
       </div>
+        </div>
+      </div>
+
     </div>
   );
 };

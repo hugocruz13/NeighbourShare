@@ -18,7 +18,8 @@ import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.js";
 import PedidosManutencao from "./pages/PedidosManutencao.js";
 import Notificacoes from "./pages/Notificacoes.js";
 import Navbar2 from "./components/Navbar2";
-
+import EntidadeExterna from "./pages/EntidadeExterna.js";
+import Orcamentos from "./pages/Orcamentos.js";
 
 function App() {
   return (
@@ -42,6 +43,8 @@ function App() {
             <Route path="/realizarPedidoManutencao" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RealizarPedidoManutencao /></ProtectedRoute>}/>
             <Route path="/pedidosManutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosManutencao /></ProtectedRoute>}/>
             <Route path="/notificacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Notificacoes /></ProtectedRoute>}/>
+            <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
+            <Route path="/orcamentos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Orcamentos /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>

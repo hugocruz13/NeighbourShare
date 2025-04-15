@@ -19,10 +19,15 @@ function Residente() {
             <Link className="btnMenu" to="/listaReserva">Lista Reservas</Link><br></br>
             <Link className="btnMenu" to="/realizarPedidoNovoRecurso">Realizar Pedido Novo Recurso</Link><br></br>
             <Link className="btnMenu" to="/notificacoes">Notificações</Link><br></br>
+            <Link className="btnMenu" to="/realizarPedidoManutencao">Realizar Pedido Manutenção</Link><br></br>
 
             {user?.role === "gestor" || user?.role === "admin" && (
-            
-              <Link className="btnMenu" to="/pedidosNovosRecursos">Pedidos Novos Recursos (Pendentes)</Link>
+              <>
+              <Link className="btnMenu" to="/pedidosNovosRecursos">Pedidos Novos Recursos (Pendentes)</Link><br></br>
+              <Link className="btnMenu" to="/pedidosManutencao">Pedidos Manutenção (Pendentes)</Link><br></br>
+              <Link className="btnMenu" to="/orcamentos">Orçamentos</Link><br></br>
+              </>
+              
             
           )}
           </div>
