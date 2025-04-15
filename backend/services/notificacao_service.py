@@ -149,14 +149,14 @@ async def cria_notificacao_insercao_pedido_novo_recurso_comum_service(db:Session
             Mensagem=f"""
                     O residente Nº:{pedido.Utilizador_.UtilizadorID} submeteu um novo pedido de aquisição de recurso comum.
 
-                        ID do Pedido: {pedido.PedidoNovoRecursoID}
-                        Data de Submissão: {pedido.DataHora}
+                        ID do Pedido: {pedido.PedidoNovoRecID}
+                        Data de Submissão: {pedido.DataPedido}
 
                     Solicita-se a análise e o início do processo de votação, conforme o fluxo definido para aprovação de novos recursos.
 
                     Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
                     """,
-            ProcessoID=pedido.PedidoNovoRecursoID,
+            ProcessoID=pedido.PedidoNovoRecID,
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.AQUISICAO)
         )
 

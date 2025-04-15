@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from db.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador, NotificacaoUser
 from controllers.websockets_controller import send_notification
-from datetime import datetime
+import datetime
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.notificacao_schema import *
@@ -12,8 +12,8 @@ async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSc
             nova_notificao = Notificacao(
                 Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
-                DataHora=datetime.now(),
-                TipoProcID=notificacao.TipoProcID,
+                DataHora=datetime.datetime.now(),
+                TipoProcID=notificacao.TipoProcessoID,
                 ProcessoID=notificacao.ProcessoID,
                 Estado=False
             )
@@ -32,13 +32,12 @@ async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSc
 
 # Cria notificação para somente os gestores/admins
 async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema):
-
     try:
             nova_notificao = Notificacao(
                 Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
-                DataHora=datetime.now(),
-                TipoProcID=notificacao.TipoProcID,
+                DataHora=datetime.datetime.now(),
+                TipoProcID=notificacao.TipoProcessoID,
                 ProcessoID=notificacao.ProcessoID,
                 Estado=False
             )
@@ -51,7 +50,7 @@ async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema)
             for admin in admins:
                 db.add(NotificacaoUser(UtilizadorID=admin.UtilizadorID, NotificacaoID=nova_notificao.NotificacaoID))
                 db.commit()
-            return True, {'Inserção de notifcações para os admins realizada com sucesso!'}
+            return True, {'Inserção de notificações para os admins realizada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
         return False ,{'details': str(e)}
@@ -62,8 +61,8 @@ async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificac
             nova_notificao = Notificacao(
                 Titulo=notificao.Titulo,
                 Mensagem=notificao.Mensagem,
-                DataHora=datetime.now(),
-                TipoProcID=notificao.TipoProcID,
+                DataHora=datetime.datetime.now(),
+                TipoProcID=notificao.TipoProcessoID,
                 ProcessoID=notificao.ProcessoID,
                 Estado=False
             )

@@ -19,9 +19,9 @@ async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecur
     try:
         msg, novo_pedido = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
 
-        await cria_notificacao_insercao_pedido_novo_recurso_comum_service(db, novo_pedido) #Criação da notificação
+        msg_noti = await cria_notificacao_insercao_pedido_novo_recurso_comum_service(db, novo_pedido) #Criação da notificação
 
-        return msg
+        return msg, msg_noti
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -31,9 +31,9 @@ async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoS
 
         msg, novo_pedido = await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
 
-        await cria_notificacao_insercao_pedido_manutencao_service(db, novo_pedido) #Criação da notificação
+        msg_noti = await cria_notificacao_insercao_pedido_manutencao_service(db, novo_pedido) #Criação da notificação
 
-        return msg
+        return msg, msg_noti
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
