@@ -1,26 +1,38 @@
-from requests import Session
-
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
-
-from db.models import PedidoManutencao
 from schemas.recurso_comum_schema import *
+from services.notificacao_service import *
+
 
 #Inserir um novo recurso comum
 async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSchemaCreate):
 
     return await recurso_comum_repo.inserir_recurso_comum_db(db,recurso_comum)
 
-#Inserir um pedido de um novo recurso comum
+#Inserir um pedido de aquisição de um novo recurso comum
 async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    try:
+        msg, novo_pedido = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
 
-    return await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+        msg_noti = await cria_notificacao_insercao_pedido_novo_recurso_comum_service(db, novo_pedido) #Criação da notificação
+
+        return msg, msg_noti
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Inserir um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
+    try:
 
-    return await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
+        msg, novo_pedido = await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
+
+        msg_noti = await cria_notificacao_insercao_pedido_manutencao_service(db, novo_pedido) #Criação da notificação
+
+        return msg, msg_noti
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def listar_pedidos_novos_recursos_service(db:session):
 
