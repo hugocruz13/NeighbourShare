@@ -71,3 +71,6 @@ class PedidoManutencaoSchemaCreate(BaseModel):
     DescPedido: str
     DataPedido: datetime.date
     EstadoPedManuID: int
+
+class EstadoUpdate(BaseModel):
+    novo_estado_id: int

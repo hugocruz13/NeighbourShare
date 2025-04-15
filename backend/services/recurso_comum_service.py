@@ -1,6 +1,10 @@
+from requests import Session
+
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
+
+from db.models import PedidoManutencao
 from schemas.recurso_comum_schema import *
 
 #Inserir um novo recurso comum
@@ -71,3 +75,50 @@ async def listar_pedidos_manutencao_finalizados_service(db:session):
         raise HTTPException(status_code=400, detail="Nenhum pedido de manutenção finalizado encontrado")
 
     return pedidos_manutencao_finalizados
+
+async def obter_all_tipo_estado_pedido_manutencao(db:session):
+    try:
+        return await recurso_comum_repo.obter_all_tipo_estado_pedido_manutencao(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_all_tipo_estado_manutencao(db:session):
+    try:
+        return await recurso_comum_repo.obter_all_tipo_estado_manutencao(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_estado_manutencao:int):
+    try:
+        estados = await obter_all_tipo_estado_manutencao(db)
+        if estados is None:
+            raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado manutenção")
+        if tipo_estado_manutencao in estados:
+            await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
+            return True
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, tipo_estado_pedido_manutencao:int):
+    try:
+        estados = await obter_all_tipo_estado_pedido_manutencao(db)
+        if estados is None:
+            raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado de pedido manutenção")
+        for e in estados:
+            if e.EstadoPedManuID == tipo_estado_pedido_manutencao:
+                await recurso_comum_repo.alterar_estado_pedido_manutencao(db, id_pedido_manutencao, tipo_estado_pedido_manutencao)
+                return True
+            else:
+                return False
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_pedido_manutencao(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.obter_pedido_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
