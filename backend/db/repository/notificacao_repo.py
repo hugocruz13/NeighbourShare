@@ -12,7 +12,7 @@ async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSc
                 Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
                 DataHora=datetime.datetime.now(),
-                TipoProcID=notificacao.TipoProcessoID,
+                TipoProcID=notificacao.TipoProcID,
                 ProcessoID=notificacao.ProcessoID,
                 Estado=False
             )
@@ -36,7 +36,7 @@ async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema)
                 Titulo=notificacao.Titulo,
                 Mensagem=notificacao.Mensagem,
                 DataHora=datetime.datetime.now(),
-                TipoProcID=notificacao.TipoProcessoID,
+                TipoProcID=notificacao.TipoProcID,
                 ProcessoID=notificacao.ProcessoID,
                 Estado=False
             )
@@ -62,7 +62,7 @@ async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificac
                 Titulo=notificao.Titulo,
                 Mensagem=notificao.Mensagem,
                 DataHora=datetime.datetime.now(),
-                TipoProcID=notificao.TipoProcessoID,
+                TipoProcID=notificao.TipoProcID,
                 ProcessoID=notificao.ProcessoID,
                 Estado=False
             )
