@@ -43,6 +43,21 @@ class NotificacaoOutSchema(BaseModel):
     Estado : bool
     TipoProcID : int
 
+<<<<<<< HEAD
+=======
+    class Config:
+        from_attributes = True
+
+class NotificacaoOutSchema(BaseModel):
+    NotificacaoID: int
+    Titulo: str
+    Mensagem: str
+    DataHora: datetime.datetime
+    ProcessoID: int
+    Estado : bool
+    TipoProcID : int
+
+>>>>>>> d732c2c (Add NotificacaoOutSchema and update response model in endpoint)
 class TipoProcessoOpcoes(Enum):
     AQUISICAO = "Aquisição"
     MANUTENCAO = "Manutenção"
