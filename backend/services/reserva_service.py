@@ -15,8 +15,8 @@ async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReserva
         if pedido_reserva.DataInicio > pedido_reserva.DataFim:
             raise HTTPException(status_code=500, detail='Data de inicio é depois da data de fim')
         else:
-            mensagem, pedido_reserva = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
-            msg_noti = await cria_notificacao_recebimento_pedido_reserva(db,pedido_reserva)
+            mensagem, pedido_reserva_1 = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
+            msg_noti = await cria_notificacao_recebimento_pedido_reserva(db,pedido_reserva_1)
             return mensagem, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}
@@ -53,7 +53,7 @@ async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
     try:
 
         mensagem = await reserva_repo.cria_reserva_db(db,reserva)
-        msg_muda_estado_pedido, pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
+        msg_muda_estado_pedido, msg_noti ,pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
         msg_noti = await cria_notificacao_aceitacao_pedido_reserva(db,pedido_reserva)
 
         return mensagem, msg_muda_estado_pedido, msg_noti

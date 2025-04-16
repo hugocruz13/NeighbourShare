@@ -6,6 +6,7 @@ from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from services.recurso_comum_service import obter_pedido_manutencao
+from db.models import PedidoReserva
 
 
 #Cria uma notificação direcionada somente a um utilizador específico
@@ -250,7 +251,7 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
 #region Reserva de Recursos entre Vizinhos
 
 #Cria notificação para notificar o recebimento de um novo pedido de reserva de um recurso
-async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReservaSchema):
+async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReserva):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Novo pedido de reserva recebido",
@@ -259,7 +260,7 @@ async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoR
 
             Detalhes do pedido:
             
-            Solicitado por: {pedido.Utilizador_.Nome}
+            Solicitado por: {pedido.Utilizador_.NomeUtilizador}
             
             Período: {pedido.DataInicio} até {pedido.DataFim}
             
@@ -312,7 +313,7 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação para indicar que a caução será devolvida
-async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int):
+async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução será devolvida",
@@ -329,11 +330,13 @@ async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:Pe
             ProcessoID=pedido.PedidoResevaID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db,notificacao,pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que a caução não será devolvida
-async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int, justificativa:str):
+async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int, justificativa:str):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução não será devolvida",
@@ -349,6 +352,8 @@ async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedid
             ProcessoID= pedido.PedidoResevaID,
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db, notificacao, pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

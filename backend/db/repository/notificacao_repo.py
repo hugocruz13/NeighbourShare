@@ -82,12 +82,12 @@ async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificac
         return False ,{'details': str(e)}
 
 # Lista as notificações de um utilizador por ordem descrescente de data
-async def listar_notificacoes_db(db: Session, user_id: int = None):
+async def listar_notificacoes_db(db: Session, user_id: int):
     try:
         lista_notificacoes = (
             db.query(Notificacao)
-            .filter(NotificacaoUser.UtilizadorID == user_id)
             .join(NotificacaoUser)
+            .filter(NotificacaoUser.UtilizadorID == user_id)
             .order_by(Notificacao.DataHora.desc())
         )
         return lista_notificacoes

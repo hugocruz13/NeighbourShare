@@ -159,7 +159,7 @@ async def recusar_pedido_reserva(
     db:session = Depends(get_db)
 ):
     try:
-        msg, msg_noti, pedido_reserva =  muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
+        msg, msg_noti, pedido_reserva = await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
 
         return msg, msg_noti
     except Exception as e:
