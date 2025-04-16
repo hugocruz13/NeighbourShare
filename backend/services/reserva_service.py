@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
 from services import notificacao_service
-from notificacao_service import *
+from services.notificacao_service import *
 
 
 async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReservaSchemaCreate):
@@ -41,9 +41,10 @@ async def lista_pedidos_reserva_cancelados_service(db:session):
 #Muda o estado de um pedido de reserva
 async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int, estado:PedidoReservaEstadosSchema, motivo_recusa:str = None):
     try:
+        msg_noti = None
         msg, pedido_reserva =  await reserva_repo.muda_estado_pedido_reserva_db(db,pedido_reserva_id,estado)
-        msg_noti = await cria_notificacao_recusa_pedido_reserva(db,pedido_reserva,motivo_recusa)
-
+        if estado == PedidoReservaEstadosSchema.REJEITADO:
+            msg_noti = await cria_notificacao_recusa_pedido_reserva(db,pedido_reserva,motivo_recusa)
         return msg, msg_noti, pedido_reserva
     except Exception as e:
         return {'details: '+ str(e)}
