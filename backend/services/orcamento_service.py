@@ -4,14 +4,22 @@ import db.repository.orcamento_repo as orcamento_repo
 import db.repository.entidade_repo as entidade_repo
 import schemas.orcamento_schema as orcamentoschema
 import db.session as session
+<<<<<<< HEAD
 from fastapi import UploadFile, HTTPException
+=======
+from fastapi import UploadFile
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 from schemas.orcamento_schema import OrcamentoUpdateSchema, OrcamentoGetSchema
 import shutil
 from pathlib import Path
 
 
 #Service para inserir um novo orçamento
+<<<<<<< HEAD
 async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.OrcamentoSchema, pdforcamento:UploadFile):
+=======
+async def inserir_orcamento_service(db:session, orcamento:orcamentoschema, pdforcamento:UploadFile):
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
     try:
 
         #Verifica se a entidade externa existe!
@@ -58,8 +66,12 @@ async def listar_orcamentos_service(db:session):
         for orcamento in orcamentos:
             orcamentos_caminhospdf.append(OrcamentoGetSchema(
                 OrcamentoID = orcamento.OrcamentoID,
+<<<<<<< HEAD
                 IDEntidade= orcamento.EntidadeExternaEntidadeID,
                 Entidade= orcamento.EntidadeExterna_.Nome,
+=======
+                Fornecedor = orcamento.Fornecedor,
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
                 Valor = orcamento.Valor,
                 DescOrcamento = orcamento.DescOrcamento,
                 CaminhoPDF = os.path.join(pastapdfs, str(orcamento.OrcamentoID), orcamento.NomePDF)

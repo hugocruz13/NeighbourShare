@@ -29,6 +29,7 @@ async def ver_entidades(db: Session = Depends(get_db)):
 #Service para eliminar uma entidade externa
 async def eliminar_entidade_service(id_entidade: int, db: Session = Depends(get_db)):
     try:
+<<<<<<< HEAD
         val, msg = await remover_entidade_db(id_entidade, db)
         if val is False:
             raise HTTPException(status_code=400, detail="ID da entidade não existe ou inválido")
@@ -40,10 +41,16 @@ async def eliminar_entidade_service(id_entidade: int, db: Session = Depends(get_
                 raise e
         except:
             raise HTTPException(status_code=500, detail=str(e))
+=======
+        return await remover_entidade_db(id_entidade, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 
 #Service para realizar um update a uma entidade externa
 async def update_entidade_service(entidade: EntidadeUpdateSchema, db: Session = Depends(get_db)):
     try:
+<<<<<<< HEAD
         val, msg = await update_entidade_db(entidade, db)
         if val is False:
             raise HTTPException(status_code=400, detail="Dados inválidos ou a entidade não existe")
@@ -55,3 +62,8 @@ async def update_entidade_service(entidade: EntidadeUpdateSchema, db: Session = 
                 raise e
         except:
             raise HTTPException(status_code=500, detail=str(e))
+=======
+        return await update_entidade_db(entidade, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)

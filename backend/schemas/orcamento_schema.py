@@ -26,3 +26,21 @@ class OrcamentoGetSchema(OrcamentoBase):
 
 
 
+<<<<<<< HEAD
+=======
+    class Config:
+        from_attributes = True
+
+class OrcamentoUpdateSchema(BaseModel):
+    OrcamentoID: int
+    Fornecedor: str
+    Valor: decimal.Decimal
+    DescOrcamento: str
+
+class OrcamentoGetSchema(BaseModel):
+    OrcamentoID: int
+    Fornecedor: str
+    Valor: decimal.Decimal
+    DescOrcamento: str
+    CaminhoPDF : str
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)

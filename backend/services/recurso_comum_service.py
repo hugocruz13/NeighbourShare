@@ -3,6 +3,7 @@ import os
 from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
+<<<<<<< HEAD
 from fastapi import HTTPException, UploadFile
 from schemas.notificacao_schema import *
 from db.repository.notificacao_repo import get_tipo_processo_id
@@ -13,6 +14,11 @@ from services.notificacao_service import *
 from schemas.recurso_comum_schema import *
 from schemas.user_schemas import UserJWT
 from db.repository.orcamento_repo import get_orcamento_by_id
+=======
+from fastapi import HTTPException
+from schemas.recurso_comum_schema import *
+from schemas.user_schemas import UserJWT
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 
 #region Gestão dos Recursos Comuns
 
@@ -69,6 +75,10 @@ async def get_recursos_comuns_by_id(db:session, id:int):
 
 #region Pedidos de Novos Recursos Comuns
 
+#endregion
+
+#region Pedidos de Novos Recursos Comuns
+
 #Inserir um pedido de um novo recurso comum
 async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
     try:
@@ -80,6 +90,7 @@ async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecur
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+<<<<<<< HEAD
 #Inserir um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
@@ -93,6 +104,8 @@ async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoS
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+=======
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 async def listar_pedidos_novos_recursos_service(db:session):
     pedidos_novos_recursos = await recurso_comum_repo.listar_pedidos_novos_recursos_db(db)
 
@@ -104,6 +117,14 @@ async def listar_pedidos_novos_recursos_service(db:session):
 #endregion
 
 #region Pedidos de Manutenção
+<<<<<<< HEAD
+=======
+
+#Inserir um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
+
+    return await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 
 #Listar pedidos de manutenção
 async def listar_pedidos_manutencao_service(db:session):
@@ -121,6 +142,7 @@ async def obter_all_tipo_estado_pedido_manutencao(db:session):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+<<<<<<< HEAD
 async def obter_all_tipo_estado_manutencao(db:session):
     try:
         return await recurso_comum_repo.obter_all_tipo_estado_manutencao(db)
@@ -142,6 +164,8 @@ async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_est
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+=======
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, tipo_estado_pedido_manutencao:int):
     try:
         estados = await obter_all_tipo_estado_pedido_manutencao(db)
@@ -169,6 +193,7 @@ async def obter_pedido_manutencao(db:Session, id_manutencao:int):
         raise HTTPException(status_code=500, detail=str(e))
 
 async def update_pedido_manutencao(db:Session, u_pedido:PedidoManutencaoUpdateSchema, token:UserJWT):
+<<<<<<< HEAD
     try:
         pedido_manutencao = await obter_pedido_manutencao(db, u_pedido.PMID)
         if u_pedido.DescPedido is None:
@@ -233,11 +258,19 @@ async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_est
         raise HTTPException(status_code=500, detail=str(e))
 
 async def obter_manutencao(db:Session, id_manutencao:int):
+=======
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
     try:
-        return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+        pedido_manutencao = await obter_pedido_manutencao(db, u_pedido.PMID)
+        if u_pedido.DataPedido is None or u_pedido.DescPedido is None or u_pedido.PMID is None or u_pedido.RecursoComun_ is None:
+            return False, "Erro, um dos campos não foi preenchido"
+        elif token.role == "residente" and pedido_manutencao.UtilizadorID != token.id:
+            return False, "Utilizador não têm permissão para alterar os dados do pedido de manutenção"
+        return await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+<<<<<<< HEAD
 async def update_manutencao(db:Session, u_pedido:ManutencaoUpdateSchema):
     try:
         if u_pedido.ManutencaoID is None or u_pedido.PMID is None or u_pedido.DataManutencao is None or u_pedido.DescManutencao is None:
@@ -246,6 +279,50 @@ async def update_manutencao(db:Session, u_pedido:ManutencaoUpdateSchema):
         if a is None:
             raise HTTPException(status_code=400, detail="Erro, a atualizar manutenção")
         return a
+=======
+#Elimina um pedido de manutenção
+async def eliminar_pedido_manutencao_service(db:Session, pedido_id:int, token:UserJWT):
+    try:
+        pedido_manutencao = await obter_pedido_manutencao(db, pedido_id)
+        if token.role == "residente" and pedido_manutencao.UtilizadorID != token.id:
+            return {'Utilizador não têm permissão para alterar os dados do pedido de manutenção'}
+        return await recurso_comum_repo.eliminar_pedido_manutencao(db, pedido_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+#endregion
+
+#region Manutenção de Recursos Comuns
+
+async def visualizar_manutencoes(db:session):
+    manutencoes = await recurso_comum_repo.listar_manutencoes_db(db)
+
+    if not manutencoes:
+        raise HTTPException(status_code=400, detail="Nenhuma manutenção encontrada")
+    return manutencoes
+
+async def obter_all_tipo_estado_manutencao(db:session):
+    try:
+        return await recurso_comum_repo.obter_all_tipo_estado_manutencao(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_estado_manutencao:int):
+    try:
+        estados = await obter_all_tipo_estado_manutencao(db)
+        if estados is None:
+            raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado manutenção")
+        if tipo_estado_manutencao in estados:
+            await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
+            return True
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_manutencao(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -255,5 +332,14 @@ async def eliminar_manutencao_service(db:Session, id_manutencao:int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+<<<<<<< HEAD
+=======
+async def eliminar_manutencao_service(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.eliminar_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 #endregion
 

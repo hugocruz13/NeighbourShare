@@ -10,8 +10,12 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.4.1",
+<<<<<<< HEAD
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
+=======
+    "react-scripts": "^5.0.1",
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
     "react-transition-group": "^4.4.5",
     "web-vitals": "^2.1.4"
   },

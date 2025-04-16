@@ -1,6 +1,11 @@
 from sqlalchemy.orm import Session
+<<<<<<< HEAD
 from db.models import Orcamento, EntidadeExterna, PedidoManutencao
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
+=======
+from db.models import Orcamento
+from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 from sqlalchemy.exc import SQLAlchemyError
 from db.repository.recurso_comum_repo import obter_pedido_manutencao_db, obter_pedido_novo_recurso_db
 
@@ -41,6 +46,7 @@ async def listar_orcamentos_db(db: Session):
 #Eliminar um orçamento da base de dados
 async def eliminar_orcamento_db(db: Session, orcamento_id: int):
     try:
+<<<<<<< HEAD
         orcamento = db.query(Orcamento).get(orcamento_id)
         if not orcamento:
             return False, {'erro': 'Orçamento não encontrado'}
@@ -58,6 +64,10 @@ async def eliminar_orcamento_db(db: Session, orcamento_id: int):
         db.commit()
         return True, {'mensagem': 'Orçamento removido com sucesso!'}
 
+=======
+        db.query(Orcamento).filter(Orcamento.OrcamentoID == orcamento_id).delete()
+        db.commit()
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
         return True, {'Orcamento removido com sucesso!'}
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
@@ -67,14 +77,22 @@ async def altera_orcamento_db(db:Session, orcamento:OrcamentoUpdateSchema, nomep
     try:
         if nomepdf: #Se for adicionado um novo pdf
             db.query(Orcamento).filter(Orcamento.OrcamentoID == orcamento.OrcamentoID).update(
+<<<<<<< HEAD
                 {Orcamento.EntidadeExternaEntidadeID: orcamento.IDEntidade,
+=======
+                {Orcamento.Fornecedor: orcamento.Fornecedor,
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
                  Orcamento.Valor: orcamento.Valor,
                  Orcamento.DescOrcamento: orcamento.DescOrcamento,
                  Orcamento.NomePDF: nomepdf}
             )
         else: # Se não for adicionado, mantêm o pdf antigo
             db.query(Orcamento).filter(Orcamento.OrcamentoID == orcamento.OrcamentoID).update(
+<<<<<<< HEAD
                 {Orcamento.EntidadeExternaEntidadeID: orcamento.IDEntidade,
+=======
+                {Orcamento.Fornecedor: orcamento.Fornecedor,
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
                  Orcamento.Valor: orcamento.Valor,
                  Orcamento.DescOrcamento: orcamento.DescOrcamento
                  }
@@ -83,6 +101,7 @@ async def altera_orcamento_db(db:Session, orcamento:OrcamentoUpdateSchema, nomep
         return True, {'Orcamento atualizado com sucesso!'}
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
+<<<<<<< HEAD
 
 #Tras o orcamento
 async def get_orcamento_by_id(db: Session, orcamento_id: int):
@@ -91,3 +110,5 @@ async def get_orcamento_by_id(db: Session, orcamento_id: int):
         return orcamento
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
+=======
+>>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
