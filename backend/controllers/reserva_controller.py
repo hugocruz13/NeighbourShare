@@ -155,9 +155,12 @@ async def criar_pedido_reserva(
 @router.post("/pedidosreserva/recusar")
 async def recusar_pedido_reserva(
     pedido_reserva_id: int,
+    motivo_recusacao: str,
     db:session = Depends(get_db)
 ):
     try:
-        return await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO)
+        msg, msg_noti, pedido_reserva =  muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
+
+        return msg, msg_noti
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

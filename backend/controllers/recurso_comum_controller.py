@@ -1,10 +1,7 @@
 from datetime import date
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from db.session import get_db
-from schemas.recurso_comum_schema import PedidoNovoRecursoSchema, PedidoManutencaoSchema
 from services.recurso_comum_service import *
-from typing import List
 from middleware.auth_middleware import *
 from schemas.user_schemas import UserJWT
 
@@ -26,7 +23,7 @@ async def inserir_recurso_comum(
 
 #Inserção de um pedido de um novo recurso comum
 @router.post("/pedidosnovos/inserir")
-async def inserir_recurso_comum(
+async def inserir_pedido_novo_recurso_comum(
     desc_pedido_novo_recurso: str,
     db:Session = Depends(get_db),
     token: UserJWT = Depends(jwt_middleware)
@@ -122,9 +119,17 @@ async def listar_pedidos_manutencao_finalizados(
 
     return await listar_pedidos_manutencao_finalizados_service(db)
 
+@router.get("/manutencao/", response_model=List[ManutencaoSchema])
+async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
+    return await visualizar_manutencoes(db)
+
 @router.get("/pedidodsmanutencao/estados")
 async def listar_tipos_pedido_manutencao(db:Session = Depends(get_db), token: UserJWT=Depends(role_required(["admin", "residente", "gestor"]))):
     return await obter_all_tipo_estado_pedido_manutencao(db)
+
+@router.get("/manutencao/estados")
+async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=Depends(role_required(["admin", "residente", "gestor"]))):
+    return await obter_all_tipo_estado_manutencao(db)
 
 @router.put("/pedidosmanutencao/{pedido_id}/estado")
 async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
@@ -142,3 +147,43 @@ async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, db:
     except HTTPException as es:
         raise es
 
+@router.put("/manutencao/update{pedido_id}/estado")
+async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
+    try:
+        obter = await obter_manutencao(db, manutencao_id)
+        if obter is None:
+            raise HTTPException(status_code=404, detail="Manutenção com o seguinte ID não existe: {pedido_id}")
+        out = await alterar_tipo_estado_pedido_manutencao(db, manutencao_id, estado_data.novo_estado_id)
+        if out is False:
+            return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
+        if out is True:
+            return True, "Tipo de estado alterado com sucesso"
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException as es:
+        raise es
+
+@router.put("/manutencao/update/")
+async def atualizar_manutencao(manutencao: ManutencaoUpdateSchema, db: Session = Depends(get_db)):
+    try:
+        val, msg = await update_manutencao(db, manutencao)
+        if val is False:
+            return False, msg
+        if val is True:
+            return True, "Manutenção atualizada com sucesso"
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/pedidosmanutencao/update/")
+async def atualizar_pedido_manutencao(manutencao: PedidoManutencaoUpdateSchema, db: Session = Depends(get_db)):
+    try:
+        val, msg = await (
+            update_pedido_manutencao(db, manutencao))
+        if val is False:
+            return False, msg
+        if val is True:
+            return True, "Pedido de manutenção atualizada com sucesso"
+        if val is None:
+            raise HTTPException(status_code=500)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

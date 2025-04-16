@@ -1,6 +1,9 @@
+from http.client import HTTPException
+
 from requests import Session
 from sqlalchemy.orm import joinedload
-from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoPedidoManutencao, EstadoManutencao, Manutencao
+from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoPedidoManutencao, EstadoManutencao, \
+    Manutencao, EntidadeExterna
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
 from schemas.recurso_comum_schema import *
@@ -26,7 +29,7 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de novo recurso inserido com sucesso!'}
+        return {'Pedido de novo recurso inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -39,7 +42,7 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}
+        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -191,3 +194,43 @@ async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
         return pedido_manutencao
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
+
+async def obter_manutencao_db(db:session, id_manutencao:int):
+    try:
+        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
+        return manutencao
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def listar_manutencoes_db(db:session):
+    try:
+        manutencoes = db.query(Manutencao).all()
+        return manutencoes
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def update_pedido_manutencao_db(db:session, u_pedido: PedidoManutencaoUpdateSchema):
+    pedido = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == u_pedido.PMID).first()
+    pedido.RecursoComun_ = u_pedido.RecursoComun_
+    pedido.DescPedido = u_pedido.DescPedido
+    pedido.DataPedido = u_pedido.DataPedido
+    db.commit()
+    return pedido
+
+async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema):
+    manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
+    entidades = db.query(EntidadeExterna).all()
+    pmid = db.query(PedidoManutencao).all()
+    for e in entidades:
+        if e.EntidadeID != u_manutencao.EntidadeID:
+            return None
+    for e in pmid:
+        if e.PMID != u_manutencao.PMID:
+            return None
+    manutencao.PMID = u_manutencao.PMID
+    manutencao.EntidadeID = u_manutencao.EntidadeID
+    manutencao.DataManutencao = u_manutencao.DataManutencao
+    manutencao.DescManutencao = u_manutencao.DescManutencao
+
+    db.commit()
+    return manutencao
