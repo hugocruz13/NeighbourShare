@@ -17,10 +17,19 @@ class NotificacaoUtilizadorSchema(BaseModel):
         from_attributes = True
 
 class NotificacaoSchema(BaseModel):
+<<<<<<< HEAD
     Titulo: constr(min_length=5, max_length=100)
     Mensagem: constr(min_length=5, max_length=1000)
     ProcessoID: conint(gt=0)
     TipoProcessoID : conint(gt=0)
+=======
+    Titulo: str
+    Mensagem: str
+    DataHora: datetime.datetime
+    ProcessoID: int
+    Estado : bool
+    TipoProcID : int
+>>>>>>> 9109c73 (Refactor reserva and notificacao services for consistency)
 
     class Config:
         from_attributes = True

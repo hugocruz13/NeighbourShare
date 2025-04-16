@@ -6,9 +6,13 @@ from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao
 from services.recurso_comum_service import obter_pedido_manutencao
+<<<<<<< HEAD
 from db.models import PedidoReserva, Votacao
 from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
+=======
+from db.models import PedidoReserva
+>>>>>>> 9109c73 (Refactor reserva and notificacao services for consistency)
 
 
 #Cria uma notificação direcionada somente a um utilizador específico
