@@ -3,10 +3,11 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from db.session import get_db
-from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao
+from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao, \
+    jwt_middleware
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword
 from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, \
-    verificao_utilizador, atualizar_nova_password, eliminar_utilizador
+    verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador
 from fastapi.responses import RedirectResponse
 from utils.tokens_record import validate_token_entry, mark_token_as_used
 # Define o tempo do token
@@ -49,6 +50,14 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
+
+# Controller para obter a informação de um utilizador
+@router.get("/perfil")
+async def perfil(user: UserJWT = Depends(jwt_middleware), db: Session = Depends(get_db)):
+    try:
+        return await get_dados_utilizador(db, user.id)
+    except Exception as e:
+        return HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/verification/{token}")
 async def verificacao(token, db:Session = Depends(get_db)):
@@ -146,3 +155,16 @@ async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
+
+@router.get("/logout")
+async def logout(response: Response):
+    try:
+        response.delete_cookie("access_token")
+        return {"message": "Sessão terminada com sucesso."}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+

@@ -1,9 +1,21 @@
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
+from schemas.recurso_comum_schema import *
+
+#Inserir um novo recurso comum
+async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSchemaCreate):
+    return await recurso_comum_repo.inserir_recurso_comum_db(db,recurso_comum)
+
+#Inserir um pedido de um novo recurso comum
+async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    return await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+
+#Inserir um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
+    return await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
 
 async def listar_pedidos_novos_recursos_service(db:session):
-
     pedidos_novos_recursos = await recurso_comum_repo.listar_pedidos_novos_recursos_db(db)
 
     if not pedidos_novos_recursos:

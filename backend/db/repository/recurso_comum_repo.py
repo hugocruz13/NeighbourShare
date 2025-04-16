@@ -1,7 +1,47 @@
 from sqlalchemy.orm import joinedload
-from db.models import PedidoNovoRecurso, PedidoManutencao
+from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
+from schemas.recurso_comum_schema import *
+
+#Inserção de um novo recurso comum
+async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
+    try:
+        novo_recurso_comum = RecursoComun(Nome=recurso_comum.nome, DescRecursoComum=recurso_comum.descRecursoComum)
+        db.add(novo_recurso_comum)
+        db.commit()
+        db.refresh(novo_recurso_comum)
+
+        return {'Recurso comum inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+#Inserção de um novo pedido de um novo recurso comum
+async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    try:
+        novo_pedido = PedidoNovoRecurso(**pedido.dict())
+        db.add(novo_pedido)
+        db.commit()
+        db.refresh(novo_pedido)
+
+        return {'Pedido de novo recurso inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+#Inserção de um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
+    try:
+        novo_pedido = PedidoManutencao(**pedido.dict())
+        db.add(novo_pedido)
+        db.commit()
+        db.refresh(novo_pedido)
+
+        return {'Pedido de manutenção inserido com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
 
 async def listar_pedidos_novos_recursos_db(db:session):
     try:

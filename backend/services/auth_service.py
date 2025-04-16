@@ -1,4 +1,5 @@
 from sqlalchemy.sql.sqltypes import NULLTYPE
+
 from db.repository.user_repo import *
 from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword
 from fastapi import HTTPException
@@ -10,6 +11,10 @@ from services.email_service import send_verification_email, send_recovery_passwo
 from utils.tokens_record import add_save_token
 from utils.string_utils import formatar_string
 
+
+async def get_user_data(db: Session, id_user:int):
+
+    return await get_dados_utilizador(db, id_user)
 
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:
