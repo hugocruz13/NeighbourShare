@@ -19,7 +19,7 @@ async def criar_pedido_reserva_db(db:session, pedido_reserva : PedidoReservaSche
         db.commit()
         db.refresh(novo_pedido_reserva)
 
-        return {'Pedido de reserva criado com sucesso!'}, pedido_reserva
+        return {'Pedido de reserva criado com sucesso!'}, novo_pedido_reserva
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}

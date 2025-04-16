@@ -6,11 +6,7 @@ function Navbar2() {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [notifications, setNotifications] = useState([
-        { id: 1, message: "Nova reserva aprovada", read: false },
-        { id: 2, message: "Recurso foi devolvido com sucesso", read: true },
-        { id: 3, message: "Pedido de novo recurso foi aceite", read: false },
-    ]);
+    const [notifications, setNotifications] = useState([]);
 
     const handlePerfilClick = () => setShowMenu(!showMenu);
     const handleBellClick = () => setShowNotifications(!showNotifications);
@@ -39,13 +35,39 @@ function Navbar2() {
         }
     };
 
-    const toggleRead = (id) => {
-        setNotifications(notifications.map(n =>
-            n.id === id ? { ...n, read: !n.read } : n
-        ));
+    const marcarComoLida = async (NotificacaoID) => {
+        try {
+            const res = await fetch(`http://localhost:8000/api/notificacoes/${NotificacaoID}/lida`, {
+                method: 'PUT',
+                credentials: 'include'
+            });
+            if (!res.ok) {
+                throw new Error('Erro ao marcar notificação como lida');
+            }
+            setNotifications(notifications.map(n =>
+                n.NotificacaoID === NotificacaoID ? { ...n, Estado: true } : n
+            ));
+        } catch (error) {
+            console.error('Erro ao marcar notificação como lida:', error);
+        }
     };
 
     useEffect(() => {
+        const fetchNotificacoes = async () => {
+            try {
+                const res = await fetch('http://localhost:8000/api/notificacoes/', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                console.log(data);
+                setNotifications(data);
+            } catch (error) {
+                console.error('Erro ao buscar notificações:', error);
+            }
+        };
+
+        fetchNotificacoes();
         document.addEventListener('click', handleOutsideClick);
         return () => {
             document.removeEventListener('click', handleOutsideClick);
@@ -63,31 +85,31 @@ function Navbar2() {
             </div>
 
             <div className="profile-section">
-            <div className="notification-bell" onClick={handleBellClick}>
-    <img
-        src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
-        alt="Notificações"
-        className="notification-icon"
-    />
-    {notifications.some(n => !n.read) && <span className="noti-dot"></span>}
-</div>
-
+                <div className="notification-bell" onClick={handleBellClick}>
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
+                        alt="Notificações"
+                        className="notification-icon"
+                    />
+                    {notifications.some(n => !n.Estado) && <span className="noti-dot"></span>}
+                </div>
 
                 {/* Painel lateral de notificações */}
                 {showNotifications && (
                     <div className="notification-container">
                         <div className="notification-header">
-                            <Link to="/notificacoes" className="ver-todas">Ver todas as notificações</Link>
+                            <h3>Notificações</h3>
+                            <Link to="/notificacoes" className="ver-todas">Ver todas</Link>
                         </div>
                         <div className="notification-list">
-                            {notifications.map(notif => (
+                            {notifications.filter(n => !n.Estado).map(notif => (
                                 <div
-                                    key={notif.id}
-                                    className={`notification-item ${notif.read ? "lida" : "nao-lida"}`}
+                                    key={notif.NotificacaoID}
+                                    className="notification-item nao-lida"
                                 >
-                                    <span>{notif.message}</span>
-                                    <button onClick={() => toggleRead(notif.id)}>
-                                        Marcar como {notif.read ? "não lida" : "lida"}
+                                    <span>{notif.Titulo.substring(0, 100)}...</span>
+                                    <button onClick={() => marcarComoLida(notif.NotificacaoID)}>
+                                        Marcar como lida
                                     </button>
                                 </div>
                             ))}

@@ -6,6 +6,7 @@ from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from services.recurso_comum_service import obter_pedido_manutencao
+from db.models import PedidoReserva
 
 
 #Cria uma notificação direcionada somente a um utilizador específico
@@ -61,7 +62,9 @@ async def cria_notificacao_insercao_pedido_manutencao_service(db:Session,pedido:
             Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
             """,
             ProcessoID=pedido.PMID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID =await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_admin_db(db,notficacao)
@@ -86,7 +89,9 @@ async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:Pe
             Agradecemos a sua colaboração e disponibilidade.
             """,
             ProcessoID= pedido.PMID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_individual_db(db,notificacao,pedido.Utilizador_.UtilizadorID)
@@ -110,7 +115,9 @@ async def cria_notificacao_necessidade_entidade_externa(db:Session,pedido:Pedido
                     Com isto agradecemos a indicação do problema existente e fiquem a aguardar a votação.
                     """,
             ProcessoID=pedido.PMID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_todos_utilizadores_db(db, notificacao)
@@ -133,7 +140,9 @@ async def cria_notificacao_rejeicao_manutencao_recurso_comum(db:Session,pedido:P
                     Com isto agradecemos a sua intervenção, contudo o pedido será dado como rejeitado.
                     """,
             ProcessoID=pedido.PMID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_individual_db(db, notificacao, pedido.Utilizador_.UtilizadorID)
@@ -158,7 +167,9 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
                 Agradeçemos a todos aqueles que expresseram o seu direito de voto
                 """,
             ProcessoID= pedido.PMID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_todos_utilizadores_db(db,notificacao)
@@ -182,7 +193,9 @@ async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,manuten
                 Agradecemos a compreensão e colaboração de todos durante este processo.
             """,
             ProcessoID= pedido.PMID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_todos_utilizadores_db(db,notificacao)
@@ -210,7 +223,9 @@ async def cria_notificacao_insercao_pedido_novo_recurso_comum_service(db:Session
                     Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
                     """,
             ProcessoID=pedido.PedidoNovoRecID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.AQUISICAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.AQUISICAO)
         )
 
         return await cria_notificacao_admin_db(db,notificacao)
@@ -237,7 +252,9 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
 
             """,
             ProcessoID=pedido.PedidoNovoRecID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.AQUISICAO)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID=await get_tipo_processo_id(db, TipoProcessoOpcoes.AQUISICAO)
         )
 
         return await cria_notificacao_todos_utilizadores_db(db, notificao)
@@ -250,7 +267,7 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
 #region Reserva de Recursos entre Vizinhos
 
 #Cria notificação para notificar o recebimento de um novo pedido de reserva de um recurso
-async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReservaSchema):
+async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReserva):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Novo pedido de reserva recebido",
@@ -259,14 +276,16 @@ async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoR
 
             Detalhes do pedido:
             
-            Solicitado por: {pedido.Utilizador_.Nome}
+            Solicitado por: {pedido.Utilizador_.NomeUtilizador}
             
             Período: {pedido.DataInicio} até {pedido.DataFim}
             
             Por favor, aceda aos seus pedidos de reserva para aceitar ou recusar o pedido.
             """,
             ProcessoID= pedido.PedidoResevaID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
         return await cria_notificacao_individual_db(db,notificacao,pedido.Recurso_.UtilizadorID)
@@ -286,7 +305,9 @@ async def cria_notificacao_recusa_pedido_reserva(db:Session, pedido:PedidoReserv
             O dono lamenta o transtorno, contudo pode consultar os recursos disponíveis no sistema.
             """,
             ProcessoID=pedido.PedidoResevaID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
         return await cria_notificacao_individual_db(db,notificacao,pedido.Utilizador_.UtilizadorID)
@@ -304,7 +325,9 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
             Este mesmo pedido foi transformado em reserva, onde pode consultar a mesma na sua página de reservas.
             """,
             ProcessoID= pedido.PedidoResevaID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
         return await cria_notificacao_individual_db(db,notificacao,pedido.Utilizador_.UtilizadorID)
@@ -312,7 +335,7 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação para indicar que a caução será devolvida
-async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int):
+async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução será devolvida",
@@ -327,13 +350,17 @@ async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:Pe
             Caso tenha algum problema com a caução, contacte o seguinte numero de telemovel, referente ao dono do produto : {pedido.Recurso_.Utilizador_.Contacto}
             """,
             ProcessoID=pedido.PedidoResevaID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
+            DataHora= datetime.datetime.now(),
+            Estado = False,
+            TipoProcID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db,notificacao,pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que a caução não será devolvida
-async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int, justificativa:str):
+async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int, justificativa:str):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução não será devolvida",
@@ -347,8 +374,12 @@ async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedid
             Contudo se sentir necessidade de entrar em contacto com o dono do produto, contacte o seguinte numero de telemovel : {pedido.Recurso_.Utilizador_.Contacto}
             """,
             ProcessoID= pedido.PedidoResevaID,
-            TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
+            DataHora=datetime.datetime.now(),
+            Estado=False,
+            TipoProcID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db, notificacao, pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

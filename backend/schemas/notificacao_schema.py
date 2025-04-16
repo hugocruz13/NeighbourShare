@@ -19,11 +19,22 @@ class NotificacaoUtilizadorSchema(BaseModel):
 class NotificacaoSchema(BaseModel):
     Titulo: str
     Mensagem: str
+    DataHora: datetime.datetime
     ProcessoID: int
-    TipoProcessoID : int
+    Estado : bool
+    TipoProcID : int
 
     class Config:
         from_attributes = True
+
+class NotificacaoOutSchema(BaseModel):
+    NotificacaoID: int
+    Titulo: str
+    Mensagem: str
+    DataHora: datetime.datetime
+    ProcessoID: int
+    Estado : bool
+    TipoProcID : int
 
 class TipoProcessoOpcoes(Enum):
     AQUISICAO = "Aquisição"
