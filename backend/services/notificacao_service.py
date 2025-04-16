@@ -30,6 +30,13 @@ async def listar_notificacoes_service(db:Session, user_id:int):
 
     return lista_notificacoes
 
+#Marca notificação como lida
+async def marcar_noti_lida_service(db:Session, notificacao_id: int):
+    try:
+        return await marcar_notificacao_lida_db(db, notificacao_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 #region Votações
 #TODO Criar notificação aquando da criação de uma votação
 

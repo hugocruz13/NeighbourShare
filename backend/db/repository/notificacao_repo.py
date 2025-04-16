@@ -94,6 +94,18 @@ async def listar_notificacoes_db(db: Session, user_id: int = None):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+#Marcar uma notificação como lida
+async def marcar_notificacao_lida_db(db: Session, notificacao_id: int):
+    try:
+        notificacao = db.query(Notificacao).filter(Notificacao.NotificacaoID == notificacao_id).first()
+        notificacao.Estado = True
+        db.commit()
+        db.refresh(notificacao)
+
+        return {'Notificação marcada como lida!'}
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
 #Obtêm o id de um tipo de processo a associar a uma notificação
 async def get_tipo_processo_id(db:Session, tipoprocesso: TipoProcessoOpcoes):
     try:
