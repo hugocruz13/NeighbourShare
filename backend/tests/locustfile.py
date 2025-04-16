@@ -12,10 +12,12 @@ class TestUser(HttpUser):
 
         if response.status_code == 200:
             print("Autenticado com sucesso")
+            self.access_token_cookie = response.cookies.get("access_token")
         else:
             print(f"Erro ao autenticar: {response.status_code} - {response.text}")
+            self.access_token_cookie = None
 
-    #TODO Colocar as requisições aos recursos (por exemplo) a funcionar
     @task
-    def testar_endpoint_recursos(self):
-        self.client.get("/api/recursos/pessoais")
+    def acessar_recurso_protegido(self):
+        # Usa os cookies salvos no login
+        self.client.get("/api/recursos/pessoais",  cookies={"access_token": self.access_token_cookie})
