@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 from db.repository.notificacao_repo import *
-from db.models import Notificacao, PedidoNovoRecurso
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
@@ -24,7 +23,7 @@ async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSche
 #Lista todas as notificações de um utilizador
 async def listar_notificacoes_service(db:Session, user_id:int):
 
-    lista_notificacoes = listar_notificacoes_db(db, user_id)
+    lista_notificacoes = await listar_notificacoes_db(db, user_id)
 
     if not lista_notificacoes:
         raise HTTPException(status_code=400, detail="Nenhuma notificação encontrada")
