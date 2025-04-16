@@ -8,6 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
 from schemas.recurso_comum_schema import *
 
+#region Gestão de Recursos Comuns
+
 #Inserção de um novo recurso comum
 async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
     try:
@@ -21,6 +23,10 @@ async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaC
         db.rollback()
         return {'details': str(e)}
 
+#endregion
+
+#region Pedidos de Novos Recursos Comuns
+
 #Inserção de um novo pedido de um novo recurso comum
 async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
     try:
@@ -30,19 +36,6 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.refresh(novo_pedido)
 
         return {'Pedido de novo recurso inserido com sucesso!'}
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
-
-#Inserção de um pedido de manutenção de um recurso comum
-async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
-    try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
-        db.add(novo_pedido)
-        db.commit()
-        db.refresh(novo_pedido)
-
-        return {'Pedido de manutenção inserido com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -62,38 +55,22 @@ async def listar_pedidos_novos_recursos_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
-async def listar_pedidos_novos_recursos_pendentes_db(db:session):
+#endregion
+
+#region Pedidos de Manutenção
+
+#Inserção de um pedido de manutenção de um recurso comum
+async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
-        pedidos_novos_recursos_pendentes = (
-            db.query(PedidoNovoRecurso)
-            .options(
-                joinedload(PedidoNovoRecurso.Utilizador_),
-                joinedload(PedidoNovoRecurso.EstadoPedidoNovoRecurso_)
-            )
-            .filter(PedidoNovoRecurso.EstadoPedNovoRecID == 1)
-            .all()
-        )
+        novo_pedido = PedidoManutencao(**pedido.dict())
+        db.add(novo_pedido)
+        db.commit()
+        db.refresh(novo_pedido)
 
-        return pedidos_novos_recursos_pendentes
+        return {'Pedido de manutenção inserido com sucesso!'}
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
-async def listar_pedidos_novos_recursos_aprovados_db(db:session):
-    try:
-        pedidos_novos_recursos_aprovados = (
-            db.query(PedidoNovoRecurso)
-            .options(
-                joinedload(PedidoNovoRecurso.Utilizador_),
-                joinedload(PedidoNovoRecurso.EstadoPedidoNovoRecurso_)
-            )
-            .filter(PedidoNovoRecurso.EstadoPedNovoRecID == 2)
-            .all()
-        )
-
-        return pedidos_novos_recursos_aprovados
-
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        return {'details': str(e)}
 
 async def listar_pedidos_manutencao_db(db:session):
 
@@ -113,43 +90,6 @@ async def listar_pedidos_manutencao_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
-async def listar_pedidos_manutencao_em_progresso_db(db:session):
-
-    try:
-        pedidos_manutencao_em_progresso = (
-            db.query(PedidoManutencao)
-            .options(
-                joinedload(PedidoManutencao.Utilizador_),
-                joinedload(PedidoManutencao.EstadoPedidoManutencao_),
-                joinedload(PedidoManutencao.RecursoComun_)
-            )
-            .filter(PedidoManutencao.EstadoPedManuID == 1)
-            .all()
-        )
-
-        return pedidos_manutencao_em_progresso
-
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
-async def listar_pedidos_manutencao_finalizados_db(db:session):
-    try:
-        pedidos_manutencao_finalizado = (
-            db.query(PedidoManutencao)
-            .options(
-                joinedload(PedidoManutencao.Utilizador_),
-                joinedload(PedidoManutencao.EstadoPedidoManutencao_),
-                joinedload(PedidoManutencao.RecursoComun_)
-            )
-            .filter(PedidoManutencao.EstadoPedManuID == 2)
-            .all()
-        )
-
-        return pedidos_manutencao_finalizado
-
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
 async def obter_all_tipo_estado_pedido_manutencao(db:session):
     try:
         dbc = db.query(EstadoPedidoManutencao).all()
@@ -158,6 +98,45 @@ async def obter_all_tipo_estado_pedido_manutencao(db:session):
         return dbc
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
+
+async def alterar_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, estado_pedido_manutencao:int):
+    try:
+        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_pedido_manutencao).first()
+        pedido_manutencao.EstadoPedManuID = estado_pedido_manutencao
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise SQLAlchemyError(str(e))
+
+async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
+    try:
+        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_manutencao).first()
+        return pedido_manutencao
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def update_pedido_manutencao_db(db:session, u_pedido: PedidoManutencaoUpdateSchema):
+    pedido = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == u_pedido.PMID).first()
+    pedido.RecursoComun_ = u_pedido.RecursoComun_
+    pedido.DescPedido = u_pedido.DescPedido
+    pedido.DataPedido = u_pedido.DataPedido
+    db.commit()
+    return pedido
+
+async def eliminar_pedido_manutencao(db:session, pedido_id:int):
+    try:
+        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == pedido_id).first()
+        db.delete(pedido_manutencao)
+        db.commit()
+        return {'Pedido de manutenção eliminado com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise SQLAlchemyError(str(e))
+
+#endregion
+
+#region Manutenção de Recursos Comuns
 
 async def obter_all_tipo_estado_manutencao(db:session):
     try:
@@ -178,23 +157,6 @@ async def alterar_estado_manutencao(db:session, id_manutencao:int, tipo_estado_m
         db.rollback()
         raise SQLAlchemyError(str(e))
 
-async def alterar_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, estado_pedido_manutencao:int):
-    try:
-        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_pedido_manutencao).first()
-        pedido_manutencao.EstadoPedManuID = estado_pedido_manutencao
-        db.commit()
-        return True
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise SQLAlchemyError(str(e))
-
-async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
-    try:
-        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_manutencao).first()
-        return pedido_manutencao
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
 async def obter_manutencao_db(db:session, id_manutencao:int):
     try:
         manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
@@ -208,14 +170,6 @@ async def listar_manutencoes_db(db:session):
         return manutencoes
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
-
-async def update_pedido_manutencao_db(db:session, u_pedido: PedidoManutencaoUpdateSchema):
-    pedido = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == u_pedido.PMID).first()
-    pedido.RecursoComun_ = u_pedido.RecursoComun_
-    pedido.DescPedido = u_pedido.DescPedido
-    pedido.DataPedido = u_pedido.DataPedido
-    db.commit()
-    return pedido
 
 async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema):
     manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
@@ -234,3 +188,20 @@ async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema)
 
     db.commit()
     return manutencao
+
+#Eliminar uma manutenção da base de dados
+async def eliminar_manutencao_db(db:session, id_manutencao:int):
+    try:
+        manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == id_manutencao).first()
+        db.delete(manutencao)
+        db.commit()
+
+        return {'Manutenção eliminada com sucesso!'}
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise SQLAlchemyError(str(e))
+
+#endregion
+
+
+

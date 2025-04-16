@@ -7,3 +7,11 @@ class EntidadeSchema(BaseModel):
     Email: EmailStr
     Nome: str
     Nif: int
+
+class EntidadeUpdateSchema(BaseModel):
+    EntidadeID: int
+    Especialidade: str
+    Contacto: int
+    Email: EmailStr
+    Nome: str
+    Nif: int
