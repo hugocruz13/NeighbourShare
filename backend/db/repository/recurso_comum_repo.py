@@ -1,5 +1,6 @@
+from requests import Session
 from sqlalchemy.orm import joinedload
-from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun
+from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoPedidoManutencao, EstadoManutencao, Manutencao
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
 from schemas.recurso_comum_schema import *
@@ -143,5 +144,50 @@ async def listar_pedidos_manutencao_finalizados_db(db:session):
 
         return pedidos_manutencao_finalizado
 
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def obter_all_tipo_estado_pedido_manutencao(db:session):
+    try:
+        dbc = db.query(EstadoPedidoManutencao).all()
+        if dbc is None:
+            return None
+        return dbc
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def obter_all_tipo_estado_manutencao(db:session):
+    try:
+        dbc = db.query(EstadoManutencao).all()
+        if dbc is None:
+            return None
+        return dbc
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def alterar_estado_manutencao(db:session, id_manutencao:int, tipo_estado_manutencao:int):
+    try:
+        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
+        manutencao.TipoManuID = tipo_estado_manutencao
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise SQLAlchemyError(str(e))
+
+async def alterar_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, estado_pedido_manutencao:int):
+    try:
+        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_pedido_manutencao).first()
+        pedido_manutencao.EstadoPedManuID = estado_pedido_manutencao
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise SQLAlchemyError(str(e))
+
+async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
+    try:
+        pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id_manutencao).first()
+        return pedido_manutencao
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
