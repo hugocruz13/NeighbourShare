@@ -199,12 +199,16 @@ async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
 async def update_pedido_manutencao_db(db:session, u_pedido: PedidoManutencaoUpdateSchema):
     pedido = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == u_pedido.PMID).first()
 <<<<<<< HEAD
+<<<<<<< HEAD
     pedido.DescPedido = u_pedido.DescPedido
 =======
     pedido.RecursoComun_ = u_pedido.RecursoComun_
     pedido.DescPedido = u_pedido.DescPedido
     pedido.DataPedido = u_pedido.DataPedido
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
+=======
+    pedido.DescPedido = u_pedido.DescPedido
+>>>>>>> dbe2ddb (Ligeira modificação no update de um pedido de manutenção, permitindo somente modificar a descrição do mesmo)
     db.commit()
     return pedido
 

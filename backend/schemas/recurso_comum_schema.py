@@ -107,8 +107,13 @@ class PedidoManutencaoSchemaCreate(BaseModel):
     EstadoPedManuID: conint(gt=0)
 
 class PedidoManutencaoUpdateSchema(BaseModel):
+<<<<<<< HEAD
     PMID: conint(gt=0)
     DescPedido: constr(min_length=5, max_length=300)
+=======
+    PMID: int
+    DescPedido: str
+>>>>>>> dbe2ddb (Ligeira modificação no update de um pedido de manutenção, permitindo somente modificar a descrição do mesmo)
 
 # === Manutenções ===
 class ManutencaoBase(BaseModel):

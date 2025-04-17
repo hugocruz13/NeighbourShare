@@ -262,8 +262,8 @@ async def obter_manutencao(db:Session, id_manutencao:int):
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
     try:
         pedido_manutencao = await obter_pedido_manutencao(db, u_pedido.PMID)
-        if u_pedido.DataPedido is None or u_pedido.DescPedido is None or u_pedido.PMID is None or u_pedido.RecursoComun_ is None:
-            return False, "Erro, um dos campos não foi preenchido"
+        if u_pedido.DescPedido is None:
+            return False, "Descrição do Pedido não introduzida"
         elif token.role == "residente" and pedido_manutencao.UtilizadorID != token.id:
             return False, "Utilizador não têm permissão para alterar os dados do pedido de manutenção"
         return await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
