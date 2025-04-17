@@ -2,7 +2,7 @@ from requests import session
 from sqlalchemy.sql.sqltypes import NULLTYPE
 
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword, UserUpdateInfo, UserDat
+from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email, apagar, atualizar_utilizador_db

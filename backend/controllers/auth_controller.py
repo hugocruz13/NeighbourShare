@@ -2,16 +2,15 @@ import os
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
-
-from db.models import Utilizador
 from db.session import get_db
 from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao, \
     jwt_middleware
 from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword, UserUpdateInfo
 from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, \
-    verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador
+    verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador, atualizar_utilizador
 from fastapi.responses import RedirectResponse
 from utils.tokens_record import validate_token_entry, mark_token_as_used
+
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
