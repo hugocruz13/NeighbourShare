@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Navbar2 from "../components/Navbar2.js";
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
   const [desc_manutencao_recurso_comum, setDescricao] = useState('');
@@ -37,6 +37,7 @@ const RealizarPedidoManutencao = () => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <ToastContainer />
       <h1>Realizar Pedido de Manutenção</h1>
       <form onSubmit={handleSubmit}>

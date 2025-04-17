@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
+import Navbar2 from "../components/Navbar2.js";
 
 const Orcamentos = () => {
   const [entities, setEntities] = useState([]);
@@ -78,6 +79,7 @@ const Orcamentos = () => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <div className="home-container">
         <div className='fundoMeusRecursos'>
           <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Inserir Orçamento</button>

@@ -77,7 +77,7 @@ const ReservarRecurso = ({ match }) => {
 
     return (
       <div className="page-content">
-
+        <Navbar2 />
       <div className="home-container">
         <div className='fundoListaPedidosReserva'>
           <p className='tituloPedidosReserva'>Os Meus Pedidos de Reserva Feitos</p>

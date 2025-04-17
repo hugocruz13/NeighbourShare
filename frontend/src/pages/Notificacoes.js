@@ -53,6 +53,7 @@ function Notificacoes() {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <div className="notificacoes-container">
         <div className="notificacoes-lista">
           {notificacoes.map((noti) => (

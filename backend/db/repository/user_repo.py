@@ -1,10 +1,11 @@
 import datetime
-
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
+
 from datetime import date
 from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserData, UserUpdateInfo
+
 
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
@@ -98,7 +99,8 @@ def apagar(db: Session, id: int):
         return False
     except Exception as e:
 
-        raise RuntimeError(f"Erro ao apagar utilizador: {e}")
+        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+
 
 #Função para obter os dados aquando da consulta de perfil do utilizador
 async def get_dados_utilizador(db:Session, id_user:int):
@@ -113,6 +115,7 @@ async def get_dados_utilizador(db:Session, id_user:int):
         else:
             return None
     except Exception as e:
+
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
 
 def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
@@ -131,4 +134,6 @@ def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
         return True
     except Exception as e:
         raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
+
+
 

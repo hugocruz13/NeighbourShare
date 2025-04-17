@@ -143,6 +143,7 @@ const handleJustification = (id) => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
     <div className="home-container">
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Os Meus Pedidos de Reserva de Recursos</p>

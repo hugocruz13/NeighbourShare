@@ -64,6 +64,7 @@ const ReservarRecurso = () => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <div className='home-container'>
 
         <div>

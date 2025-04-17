@@ -5,9 +5,12 @@ from sqlalchemy.orm import Session
 from schemas.recurso_schema import *
 from typing import List
 import decimal
+
+from schemas.user_schemas import UserJWT
+
 from services.recurso_service import *
 from middleware.auth_middleware import role_required
-from schemas.user_schemas import UserJWT
+
 
 router = APIRouter(prefix="/recursos", tags=["Recursos"])
 

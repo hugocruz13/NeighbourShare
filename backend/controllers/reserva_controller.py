@@ -7,6 +7,7 @@ from typing import List, Tuple
 from middleware.auth_middleware import role_required
 from schemas.user_schemas import UserJWT
 
+
 router = APIRouter(prefix="/reserva", tags=["Reservas"])
 
 @router.post("/criar")
@@ -104,8 +105,11 @@ async def confirma_bom_estado_produto_e_devolucao_caucao(
 #Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
 @router.get("/pedidosreserva/lista", response_model=Tuple[List[PedidoReservaGetDonoSchema],List[PedidoReservaGetSolicitanteSchema]])
 async def lista_pedidos_reserva(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
+
+        token: UserJWT = Depends(jwt_middleware),
+        db:Session = Depends(get_db)
+):
+
     try:
         return await lista_pedidos_reserva_service(db, token.id)
     except Exception as e:
@@ -162,5 +166,9 @@ async def recusar_pedido_reserva(
         msg, msg_noti, pedido_reserva = await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
 
         return msg, msg_noti
+
+    db:session = Depends(get_db)
+):
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

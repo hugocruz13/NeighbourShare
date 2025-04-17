@@ -1,12 +1,13 @@
 import { useAuth } from "../context/AuthContext";
 import { Link } from 'react-router-dom';
 import "../styles/Menu.css";
-
+import Navbar2 from "../components/Navbar2.js";
 function Residente() {
     const { user } = useAuth();
 
     return (
       <div className="page-content">
+        <Navbar2 />
         <div className="home-containerMenu">
 
           <p className="menu-title">Menu Principal</p>

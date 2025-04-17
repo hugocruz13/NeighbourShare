@@ -171,6 +171,7 @@ async def logout(response: Response):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
 @router.put("/user/update")
 async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:

@@ -5,11 +5,14 @@ import "../styles/Perfil.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [editingField, setEditingField] = useState(null);
+  const [newFieldValue, setNewFieldValue] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -58,58 +61,120 @@ const ProfilePage = () => {
     }
   };
 
+  const handleEditField = (field) => {
+    setEditingField(field);
+    setNewFieldValue(user[field]);
+  };
+
+  const handleSaveField = async () => {
+    try {
+      
+const updatedUser = {
+   ...user,
+   [editingField]: newFieldValue,
+   name: user.nome,
+   contacto: user.contacto,
+   data_nascimento: "2025-01-01"
+  };
+  
+      const response = await fetch("http://localhost:8000/api/user/update", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar campo');
+      }
+
+      setUser(updatedUser);
+      setEditingField(null);
+      toast.success('Campo atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro:', error);
+      toast.error('Não foi possível atualizar o campo.');
+    }
+  };
+
   return (
     <div className="page-content">
+      <Navbar2 />
+      <div className="home-container">
+        <div className='fundoPerfil'>
+          <div className='itensPerfil'>
+            <div className='textosPerfil'>
+              <img className='fotoPerfil' src={user?.foto} alt="Foto"></img>
+            </div>
 
-    <div className="home-container">
+            <div className='textosPerfil'>
+              <p>Utilizador</p>
+              {editingField === 'nome' ? (
+                <input
+                  type="text"
+                  value={newFieldValue}
+                  onChange={(e) => setNewFieldValue(e.target.value)}
+                  onBlur={handleSaveField}
+                />
+              ) : (
+                <p className='infoUser'>{user?.nome} <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('nome')} /></p>
+              )}
+            </div>
 
-      <div className='fundoPerfil'>
+            <div className='textosPerfil'>
+              <p>Email</p>
+              <p className='infoUser'>{user?.email}</p>
+            </div>
 
-        <div className='itensPerfil'>
-          <div className='textosPerfil'>
-            <img className='fotoPerfil' src={user?.foto} alt="Foto"></img>
-          </div>
+            <div className='textosPerfil'>
+              <p>Contacto</p>
+              {editingField === 'contacto' ? (
+                <input
+                  type="text"
+                  value={newFieldValue}
+                  onChange={(e) => setNewFieldValue(e.target.value)}
+                  onBlur={handleSaveField}
+                />
+              ) : (
+                <p className='infoUser'>{user?.contacto} <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('contacto')} /></p>
+              )}
+            </div>
 
-          <div className='textosPerfil'>
-            <p>Utilizador</p>
-            <p className='infoUser'>{user?.nome}</p>
-          </div>
-
-          <div className='textosPerfil'>
-            <p>Email</p>
-            <p className='infoUser'>{user?.email}</p>
-          </div>    
-
-          <div className='textosPerfil'>
-            <p>Contacto</p>
-            <p className='infoUser'>{user?.contacto}</p>
+            <div className='textosPerfil'>
+              <p>Data de Nascimento</p>
+              {editingField === 'data_aniversario' ? (
+                <input
+                  type="date"
+                  value={newFieldValue}
+                  onChange={(e) => setNewFieldValue(e.target.value)}
+                  onBlur={handleSaveField}
+                />
+              ) : (
+                <p className='infoUser'>2020-01-01 <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('data_aniversario')} /></p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
+        <button className="btn-deletePerfil" onClick={() => setShowModal(true)}>Eliminar Conta</button>
 
-      <button className="btn-deletePerfil" onClick={() => setShowModal(true)}>Eliminar Conta</button>
-
-      {showModal && (
-        <>
-          <div className="modal-backdropDelete" onClick={() => setShowModal(false)} />
+        {showModal && (
+          <>
+            <div className="modal-backdropDelete" onClick={() => setShowModal(false)} />
             <div className="modal-contentDelete">
               <h2>Tem a certeza que deseja eliminar a sua conta!</h2>
-
               <div>
                 <button onClick={handleDeleteAccount}>Eliminar</button>
                 <button onClick={() => setShowModal(false)}>Cancelar</button>
               </div>
-          </div>
-        </>
-
-      )}
-
-
-
+            </div>
+          </>
+        )}
+      </div>
+      <ToastContainer />
     </div>
-</div>
-
   );
 };
 

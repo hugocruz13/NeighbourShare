@@ -37,15 +37,20 @@ INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Aprovado para execuÁ„o interna');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
+<<<<<<< HEAD
 VALUES ('Em negociaÁ„o com entidades externas');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Em votaÁ„o');
+=======
+VALUES ('Aprovado para execuÁ„o externa');
+>>>>>>> origin/vota√ß√£o
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Rejeitado');
 
 
+<<<<<<< HEAD
 /*Estado ManutenÁ„o de um recurso comum*/
 
 
@@ -56,6 +61,8 @@ INSERT INTO EstadoManutencao (DescEstadoManutencao)
 VALUES ('ConcluÌda');
 
 
+=======
+>>>>>>> origin/vota√ß√£o
 /*Tipo Utilizador*/
 
 INSERT INTO TipoUtilizador (DescTU) VALUES ('Residente')

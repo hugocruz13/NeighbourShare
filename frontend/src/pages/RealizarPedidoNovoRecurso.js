@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import "../styles/RealizarPedidoNovoRecurso.css";
+import Navbar2 from "../components/Navbar2.js";
 const RealizarPedidoNovoRecurso = () => {
   const [descricao, setDescricao] = useState('');
 
@@ -24,6 +25,7 @@ const RealizarPedidoNovoRecurso = () => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <div className="home-container">
         <div className='fundoNovosRecursos'>
         <div className='textoEsquerda'>

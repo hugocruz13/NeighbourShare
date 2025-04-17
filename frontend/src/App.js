@@ -17,16 +17,15 @@ import RealizarPedidoNovoRecurso from "./pages/RealizarPedidoNovoRecurso.js";
 import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.js";
 import PedidosManutencao from "./pages/PedidosManutencao.js";
 import Notificacoes from "./pages/Notificacoes.js";
-import Navbar2 from "./components/Navbar2";
 import EntidadeExterna from "./pages/EntidadeExterna.js";
 import Orcamentos from "./pages/Orcamentos.js";
+
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <Router>
-          <Navbar2 /> {/* Aqui colocas a barra no topo */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
