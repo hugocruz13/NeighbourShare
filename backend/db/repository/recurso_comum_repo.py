@@ -136,6 +136,23 @@ async def eliminar_pedido_manutencao(db:session, pedido_id:int):
 
 #region Manutenção de Recursos Comuns
 
+async def criar_manutencao_db(db:session, manutencao:ManutencaoCreateSchema):
+    try:
+        nova_manutencao = Manutencao(
+            PMID=manutencao.PMID,
+            EntidadeID=manutencao.EntidadeID,
+            DataManutencao=manutencao.DataManutencao,
+            DescManutencao=manutencao.DescManutencao
+        )
+
+        db.add(nova_manutencao)
+        db.commit()
+
+        return {'Nova manutenção adicionada com sucesso !'}
+
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
 async def obter_all_tipo_estado_manutencao(db:session):
     try:
         dbc = db.query(EstadoManutencao).all()

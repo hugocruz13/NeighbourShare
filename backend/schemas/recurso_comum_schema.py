@@ -87,6 +87,12 @@ class PedidoManutencaoUpdateSchema(BaseModel):
     PMID: int
     DescPedido: str
 
+class ManutencaoCreateSchema(BaseModel):
+    PMID: int
+    EntidadeID: int
+    DataManutencao: datetime.date
+    DescManutencao: str
+
 class ManutencaoUpdateSchema(BaseModel):
     ManutencaoID: int
     PMID: int

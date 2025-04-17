@@ -101,6 +101,12 @@ async def eliminar_pedido_manutencao_service(db:Session, pedido_id:int, token:Us
 
 #region Manutenção de Recursos Comuns
 
+async def criar_manutencao_service(db:session, manutencao:ManutencaoCreateSchema):
+    try:
+        return await recurso_comum_repo.criar_manutencao_db(db,manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 async def visualizar_manutencoes(db:session):
     manutencoes = await recurso_comum_repo.listar_manutencoes_db(db)
 
