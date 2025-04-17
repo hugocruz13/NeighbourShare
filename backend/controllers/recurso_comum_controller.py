@@ -163,7 +163,7 @@ async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpd
         raise es
 
 @router.put("/manutencao/update/")
-async def atualizar_manutencao(manutencao: ManutencaoUpdateSchema, db: Session = Depends(get_db)):
+async def atualizar_manutencao(manutencao: ManutencaoUpdateSchema, db: Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         val, msg = await update_manutencao(db, manutencao)
         if val is False:
@@ -173,7 +173,7 @@ async def atualizar_manutencao(manutencao: ManutencaoUpdateSchema, db: Session =
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/manutencao/{manutencao_id}")
+@router.delete("/manutencao/eliminar/{manutencao_id}")
 async def eliminar_manutencao(manutencao_id: int, db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         return await eliminar_manutencao_service(db, manutencao_id)
