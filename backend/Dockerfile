@@ -28,4 +28,4 @@ WORKDIR /app
 # Expõe a porta onde o FastAPI irá correr
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "localhost", "--port", "8000"]
+CMD ["fastapi", "run", "main.py", "--port", "8000"]
