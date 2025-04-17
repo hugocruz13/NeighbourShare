@@ -65,6 +65,11 @@ O backend da aplicação (FastAPI) estará disponível na porta **8000**.
 
 - URL: [http://localhost:8000](http://localhost:8000)
 
+#### Aceder à Web App (React)
+O frontend da aplicação (React) estará disponível na porta **80**.
+
+- URL: [http://localhost:80](http://localhost:80)
+
 #### Aceder ao SQL Server
 A base de dados SQL Server estará disponível na porta **1433**. Para aceder à base de dados, podes usar qualquer ferramenta SQL, como o [SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms).
 
