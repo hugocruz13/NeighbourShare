@@ -1,5 +1,5 @@
 # Frontend Dockerfile (frontend/Dockerfile)
-FROM node:18-slim
+FROM node:18-slim as build
 
 # Install dependencies
 WORKDIR /app
@@ -11,12 +11,16 @@ RUN npm install
 COPY . /app
 RUN npm run build
 
-# Serve the React app using Nginx
-FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
+# Segunda etapa com Apache
+FROM httpd:2.4
+
+# Copiar os arquivos de build do React para o diretório do Apache
+COPY --from=build /app/build/ /usr/local/apache2/htdocs/
+
+# Copiar arquivo de configuração personalizado do Apache
+#COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+
+# Expor a porta 80
 EXPOSE 80
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-CMD ["nginx", "-g", "daemon off;"]
+RUN echo "Include conf/extra/custom.conf" >> /usr/local/apache2/conf/httpd.conf

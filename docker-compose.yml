@@ -32,8 +32,10 @@ services:
     build:
       context: ./frontend
     container_name: neighbourshare_frontend
+    volumes:
+      - ./frontend/apache-config:/usr/local/apache2/conf/extra
     ports:
-      - "80:80"  # Exposing port 80 for the frontend/Nginx server
+      - "80:80"
     depends_on:
       - backend
     networks:
