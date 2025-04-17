@@ -2,7 +2,7 @@ from requests import session
 from sqlalchemy.sql.sqltypes import NULLTYPE
 
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword, UserUpdateInfo
+from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword, UserUpdateInfo, UserDat
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email, apagar, atualizar_utilizador_db
@@ -14,6 +14,10 @@ from utils.tokens_record import add_save_token
 
 def formatar_string(word: str) -> str:
     return word.strip()
+
+async def get_user_data(db: Session, id_user:int):
+
+    return await get_dados_utilizador(db, id_user)
 
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:

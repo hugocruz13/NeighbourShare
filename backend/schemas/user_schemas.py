@@ -24,6 +24,11 @@ class UserJWT(BaseModel):
     email: EmailStr
     role: str
 
+class UserData(BaseModel):
+    nome: str
+    email: str
+    contacto: int
+
 class NewUserUpdate(BaseModel):
     nome: str
     data_nascimento: date
