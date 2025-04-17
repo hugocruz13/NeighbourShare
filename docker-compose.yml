@@ -14,7 +14,8 @@ services:
       - sql_data:/var/opt/mssql  # Persistir dados do SQL Server
 
   backend:
-    build: .
+    build:
+      context: ./backend
     container_name: neighbourshare_backend
     environment:
       - DATABASE_URL=mssql+pyodbc://sa:DEVesi2025@db:1433/NeighbourShare?driver=ODBC+Driver+17+for+SQL+Server
@@ -25,7 +26,18 @@ services:
     networks:
       - app_network
     volumes:
-      - .:/app  # Montar o diretório local para desenvolvimento
+      - ./backend:/app  # Montar o diretório local para desenvolvimento
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: neighbourshare_frontend
+    ports:
+      - "80:80"  # Exposing port 80 for the frontend/Nginx server
+    depends_on:
+      - backend
+    networks:
+      - app_network
 
 networks:
   app_network:
