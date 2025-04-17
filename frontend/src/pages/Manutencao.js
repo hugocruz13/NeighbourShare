@@ -34,7 +34,7 @@ const Manutencao = () => {
 
   return (
     <div className="page-content">
-<Navbar2 />
+    <Navbar2 />
 
     <div className="home-container">
       <div className='fundoMeusRecursos'>

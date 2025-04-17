@@ -37,7 +37,7 @@ def verificar_password(password: str, stored_hash: str, stored_salt: str) -> boo
 print(hash_password("123456"))
 
 def validate_password_strength(password: str) -> str:
-    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])([^\s]){8,}$'
+    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
     if not re.match(pattern, password):
         raise HTTPException(
             status_code=400,

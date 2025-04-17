@@ -8,6 +8,7 @@ from typing import List
 import jwt
 import os
 
+
 # Load environment variables
 load_dotenv()
 
@@ -116,8 +117,4 @@ def role_required(roles: List[str]):
         if user.role not in roles:
             raise HTTPException(status_code=403, detail="Acesso negado")
         return user
-<<<<<<< HEAD
-    #print("foi")
-=======
->>>>>>> origin/votação
     return role_check

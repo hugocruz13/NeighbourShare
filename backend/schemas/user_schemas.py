@@ -1,6 +1,4 @@
-from typing import Optional
-
-from pydantic import BaseModel, EmailStr, validator, Field
+from pydantic import BaseModel, EmailStr, validator
 from datetime import date
 from utils.PasswordHasher import validate_password_strength
 
@@ -37,11 +35,6 @@ class NewUserUpdate(BaseModel):
     @validator('password')
     def validate_password(cls, value):
         return validate_password_strength(value)
-
-class UserUpdateInfo(BaseModel):
-    nome: Optional[str] = Field(default=None, example= "")
-    contacto: Optional[int]
-    data_nascimento: Optional[date]
 
 class ForgotPassword(BaseModel):
     email: EmailStr

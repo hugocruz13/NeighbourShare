@@ -7,10 +7,7 @@ from typing import List
 import decimal
 
 from schemas.user_schemas import UserJWT
-
 from services.recurso_service import *
-from middleware.auth_middleware import role_required
-
 
 router = APIRouter(prefix="/recursos", tags=["Recursos"])
 
@@ -46,8 +43,7 @@ async def inserir_recurso(
 #Lista todos os recursos registados
 @router.get("/", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos(
-        db:Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+        db:Session = Depends(get_db)
 ):
     """
     Endpoint para consultar todos os recursos
@@ -65,8 +61,7 @@ async def listar_recursos_pessoais(
 #Lista todos os recursos disponíveis
 @router.get("/disponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_disponiveis(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+    db:Session = Depends(get_db)
 ):
     """
     Endpoint para consultar os recursos disponíveis (ID Disponibilidade = 1)
@@ -76,8 +71,7 @@ async def listar_recursos_disponiveis(
 #Lista todos os recursos indisponíveis
 @router.get("/indisponiveis", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos_indisponiveis(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+    db:Session = Depends(get_db)
 ):
     """
     Endpoint para consultar os recursos indisponíveis (ID Disponibilidade = 2)

@@ -4,23 +4,19 @@ from pydantic import BaseModel
 from typing import Optional
 import datetime
 
-
-
-class UtilizadorSchema(BaseModel):
-    UtilizadorID: int
-    NomeUtilizador: str
-    Contacto: int
-
-    class Config:
-        from_attributes = True
-
 class RecursoSchema(BaseModel):
     RecursoID: int
     Nome: str
     DescRecurso: str
     Caucao: decimal.Decimal
-    Utilizador_: UtilizadorSchema
     Image: Optional[bytes] = None
+
+    class Config:
+        from_attributes = True
+
+class UtilizadorSchema(BaseModel):
+    UtilizadorID: int
+    NomeUtilizador: str
 
     class Config:
         from_attributes = True

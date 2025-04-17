@@ -1,8 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, Table, Text
-from sqlalchemy.dialects.mssql import IMAGE
-
+from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, TEXT, Table
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
 import decimal
@@ -46,9 +44,7 @@ class EntidadeExterna(Base):
     Contacto: Mapped[int] = mapped_column(Integer)
     Email: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     Nome: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
-
     Nif: Mapped[Optional[int]] = mapped_column(Integer)
-
 
     Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', back_populates='EntidadeExterna_')
 
@@ -189,10 +185,8 @@ class Notificacao(Base):
     )
 
     NotificacaoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-
     Titulo: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     Mensagem: Mapped[str] = mapped_column(TEXT(2147483647, 'SQL_Latin1_General_CP1_CI_AS'))
-
     DataHora: Mapped[datetime.datetime] = mapped_column(DateTime)
     ProcessoID: Mapped[int] = mapped_column(Integer)
     Estado: Mapped[bool] = mapped_column(Boolean)
@@ -411,9 +405,7 @@ class Reserva(Base):
     RecursoEntregueVizinho: Mapped[bool] = mapped_column(Boolean)
     DevolucaoCaucao: Mapped[bool] = mapped_column(Boolean)
     EstadoRecurso: Mapped[bool] = mapped_column(Boolean)
-
     JustificacaoEstadoProduto: Mapped[Optional[str]] = mapped_column(TEXT(2147483647, 'SQL_Latin1_General_CP1_CI_AS'))
-
 
     PedidoReserva_: Mapped['PedidoReserva'] = relationship('PedidoReserva', back_populates='Reserva')
 

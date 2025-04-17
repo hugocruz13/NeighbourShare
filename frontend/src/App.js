@@ -19,6 +19,7 @@ import PedidosManutencao from "./pages/PedidosManutencao.js";
 import Notificacoes from "./pages/Notificacoes.js";
 import EntidadeExterna from "./pages/EntidadeExterna.js";
 import Orcamentos from "./pages/Orcamentos.js";
+import Manutencao from "./pages/Manutencao.js";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="/notificacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Notificacoes /></ProtectedRoute>}/>
             <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
             <Route path="/orcamentos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Orcamentos /></ProtectedRoute>}/>
+            <Route path="/manutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Manutencao /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>

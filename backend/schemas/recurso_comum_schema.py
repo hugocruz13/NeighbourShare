@@ -18,10 +18,8 @@ class RecursoComunSchema(BaseModel):
         from_attributes = True
 
 class RecursoComumSchemaCreate(BaseModel):
-
-    Nome: str
-    DescRecursoComum: str
-
+    nome: str
+    descRecursoComum: str
 
     class Config:
         from_attributes = True
@@ -72,31 +70,4 @@ class PedidoManutencaoSchemaCreate(BaseModel):
     RecComumID: int
     DescPedido: str
     DataPedido: datetime.date
-<<<<<<< HEAD
     EstadoPedManuID: int
-
-class ManutencaoSchema(BaseModel):
-    ManutencaoID: int
-    PMID: int
-    EntidadeID: int
-    DataManutencao: datetime.date
-    DescManutencao: str
-    EstadoManuID: int
-
-class EstadoUpdate(BaseModel):
-    novo_estado_id: int
-
-class PedidoManutencaoUpdateSchema(BaseModel):
-    PMID: int
-    RecursoComun_: RecursoComunSchema
-    DescPedido: str
-    DataPedido: datetime.date
-
-class ManutencaoUpdateSchema(BaseModel):
-    ManutencaoID: int
-    PMID: int
-    EntidadeID: int
-    DataManutencao: datetime.date
-    DescManutencao: str
-    EstadoPedManuID: int
-
