@@ -227,14 +227,23 @@ async def eliminar_pedido_manutencao(db:session, pedido_id:int):
 #region Manutenção de Recursos Comuns
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e7f0a7a (Criação de um service para criar uma manutenção)
 async def criar_manutencao_db(db:session, manutencao:ManutencaoCreateSchema):
     try:
         nova_manutencao = Manutencao(
             PMID=manutencao.PMID,
+<<<<<<< HEAD
             DataManutencao=manutencao.DataManutencao,
             DescManutencao=manutencao.DescManutencao,
             EstadoManuID=1,
             OrcamentoOrcamentoID= manutencao.Orcamento_id,
+=======
+            EntidadeID=manutencao.EntidadeID,
+            DataManutencao=manutencao.DataManutencao,
+            DescManutencao=manutencao.DescManutencao
+>>>>>>> e7f0a7a (Criação de um service para criar uma manutenção)
         )
 
         db.add(nova_manutencao)
@@ -245,8 +254,11 @@ async def criar_manutencao_db(db:session, manutencao:ManutencaoCreateSchema):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+<<<<<<< HEAD
 =======
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
+=======
+>>>>>>> e7f0a7a (Criação de um service para criar uma manutenção)
 async def obter_all_tipo_estado_manutencao(db:session):
     try:
         dbc = db.query(EstadoManutencao).all()

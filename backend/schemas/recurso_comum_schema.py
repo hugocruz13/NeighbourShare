@@ -115,9 +115,22 @@ class PedidoManutencaoUpdateSchema(BaseModel):
     DescPedido: str
 >>>>>>> dbe2ddb (Ligeira modificação no update de um pedido de manutenção, permitindo somente modificar a descrição do mesmo)
 
+<<<<<<< HEAD
 # === Manutenções ===
 class ManutencaoBase(BaseModel):
     PMID: conint(gt=0)
+=======
+class ManutencaoCreateSchema(BaseModel):
+    PMID: int
+    EntidadeID: int
+    DataManutencao: datetime.date
+    DescManutencao: str
+
+class ManutencaoUpdateSchema(BaseModel):
+    ManutencaoID: int
+    PMID: int
+    EntidadeID: int
+>>>>>>> e7f0a7a (Criação de um service para criar uma manutenção)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
 

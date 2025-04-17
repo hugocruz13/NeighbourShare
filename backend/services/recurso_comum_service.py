@@ -219,6 +219,7 @@ async def eliminar_pedido_manutencao_service(db:Session, pedido_id:int, token:Us
 
 async def criar_manutencao_service(db:session, manutencao:ManutencaoCreateSchema):
     try:
+<<<<<<< HEAD
         #verifica se o pedido existe
         if not await recurso_comum_repo.obter_pedido_manutencao_db(db, manutencao.PMID):
             raise HTTPException(status_code=400, detail="Pedido de manutenção não existe")
@@ -293,6 +294,12 @@ async def eliminar_pedido_manutencao_service(db:Session, pedido_id:int, token:Us
 
 #region Manutenção de Recursos Comuns
 
+=======
+        return await recurso_comum_repo.criar_manutencao_db(db,manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+>>>>>>> e7f0a7a (Criação de um service para criar uma manutenção)
 async def visualizar_manutencoes(db:session):
     manutencoes = await recurso_comum_repo.listar_manutencoes_db(db)
 
