@@ -3,38 +3,6 @@
 NeighbourShare é um projeto prático desenvolvido para as unidades curriculares de **PDS (Projeto de Desenvolvimento de Software)** e **Programação Web**. O objetivo deste projeto é criar uma aplicação colaborativa que permite aos utilizadores compartilhar e solicitar recursos dos seus vizinhos, promovendo a cooperação e o senso de comunidade.
 
 
-## Como atualizar o package com uma nova imagem
-
-### 1. Criar a imagem
-Para criar uma nova imagem a partir de um container em execução, usa o comando
-`docker commit`:
-
-	`docker commit <nome-container> <nome-imagem>`
- 
- Substitui `<nome-container>` pelo nome ou ID do teu container em execução e `<nome-imagem>` pelo nome que desejas dar à tua nova imagem. 
-	
-### 2. Login no GitHub Container Registry (GHCR)
-Para enviar a imagem para o GitHub Container Registry, primeiro é necessário fazer login utilizando um token de acesso. Executa o seguinte comando:
-
-	`echo "Token-Git" | docker login ghcr.io -u <user-git> --password-stdin`
-
-Substitui `"Token-Git"` pelo teu token de acesso do GitHub e `<user-git>` pelo teu nome de utilizador do GitHub.
- 
-### 3. Criar uma tag para a imagem
-Depois de criares a imagem, adiciona uma tag que identifique a versão. Usa o comando `docker tag`:
-
-	docker tag <nome-imagem> ghcr.io/mtcigor/neighbourshare-db:V<versao>
-
-Substitui `<nome-imagem>` pelo nome da imagem que criaste e `<versao>` pela versão que desejas atribuir à imagem (por exemplo, v1.0.1).
-
-### 4. Carregar a imagem para o repositório do GHCR
-Por fim, para enviar a imagem para o GitHub Container Registry, usa o comando `docker push`:
-
-	docker push ghcr.io/mtcigor/neighbourshare-db:V<versao>
-
- Substitui `<versao>` pela versão que usaste na etapa anterior.
-
-
 ## Instruções para utilizar os Containers com Docker
 
 ### Pré-requisitos
@@ -174,3 +142,35 @@ docker-compose restart
   ```
 
 ---
+
+
+## Como atualizar o package com uma nova imagem
+
+### 1. Criar a imagem
+Para criar uma nova imagem a partir de um container em execução, usa o comando
+`docker commit`:
+
+	`docker commit <nome-container> <nome-imagem>`
+ 
+ Substitui `<nome-container>` pelo nome ou ID do teu container em execução e `<nome-imagem>` pelo nome que desejas dar à tua nova imagem. 
+	
+### 2. Login no GitHub Container Registry (GHCR)
+Para enviar a imagem para o GitHub Container Registry, primeiro é necessário fazer login utilizando um token de acesso. Executa o seguinte comando:
+
+	`echo "Token-Git" | docker login ghcr.io -u <user-git> --password-stdin`
+
+Substitui `"Token-Git"` pelo teu token de acesso do GitHub e `<user-git>` pelo teu nome de utilizador do GitHub.
+ 
+### 3. Criar uma tag para a imagem
+Depois de criares a imagem, adiciona uma tag que identifique a versão. Usa o comando `docker tag`:
+
+	docker tag <nome-imagem> ghcr.io/mtcigor/neighbourshare-db:V<versao>
+
+Substitui `<nome-imagem>` pelo nome da imagem que criaste e `<versao>` pela versão que desejas atribuir à imagem (por exemplo, v1.0.1).
+
+### 4. Carregar a imagem para o repositório do GHCR
+Por fim, para enviar a imagem para o GitHub Container Registry, usa o comando `docker push`:
+
+	docker push ghcr.io/mtcigor/neighbourshare-db:V<versao>
+
+ Substitui `<versao>` pela versão que usaste na etapa anterior.
