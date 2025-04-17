@@ -118,9 +118,7 @@ async def obter_pedido_manutencao_db(db:session, id_manutencao:int):
 
 async def update_pedido_manutencao_db(db:session, u_pedido: PedidoManutencaoUpdateSchema):
     pedido = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == u_pedido.PMID).first()
-    pedido.RecursoComun_ = u_pedido.RecursoComun_
     pedido.DescPedido = u_pedido.DescPedido
-    pedido.DataPedido = u_pedido.DataPedido
     db.commit()
     return pedido
 
