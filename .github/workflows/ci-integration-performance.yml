@@ -41,7 +41,7 @@ jobs:
           }
       
       - name: Up os containers com Docker Compose
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
       
       - name: Verificar se os containers estão rodando
         run: |
