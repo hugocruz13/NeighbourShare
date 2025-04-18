@@ -1,0 +1,46 @@
+name: CI - Docker Compose & Integração & Desempenho
+
+on:
+  push:
+    branches: master
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+
+    services:
+      docker: docker:24.0.5-cli
+      options: --privileged
+
+    steps:
+      - 
+        name: Checkout do repositório
+        uses: actions/checkout@v3
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Instalar Docker Compose
+        uses: docker/setup-compose-action@v2
+      -
+        name: Up os containers com Docker Compose
+        run: docker-compose up -d --build
+      -
+        name: Esperar que os serviços estejam prontos
+        run: |
+            echo "Aguardar 20 segundos para garantir que a API está ativa..."
+            sleep 20
+      -
+        name: Instalar dependências Python
+        run: |
+            python3 -v venv venv
+            source venv/bin/activate
+            pip install httpx pytest
+      -
+        name: Correr testes de conexão e performance
+        run: |
+            pytest backend/tests/test_performance.py
