@@ -16,6 +16,10 @@ EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
 
 router = APIRouter(tags=['Autenticação'])
 
+@router.get("/health")
+async def health():
+    return {"message": "Serviço API em funcionamento!"}
+
 #Controler login, protegido
 @router.post("/registar")
 async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
