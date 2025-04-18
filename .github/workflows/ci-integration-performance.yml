@@ -3,11 +3,20 @@ on:
   push:
     branches: RNFTests
 jobs:
-  login:
+  ci-integration-performance:
     runs-on: ubuntu-latest
+    permissions:
+          contents: read
+          packages: write  # Aumentar para write para garantir acesso completo às imagens
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v3
+        
+
+      - name: Verificar diretório e listar arquivos
+        run: |
+          pwd
+          ls -la
       
       - name: Criar .env para o backend
         run: |
@@ -23,49 +32,57 @@ jobs:
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> backend/.env
       
       - name: Login to GitHub Container Registry
+        # Logs in to pull private base images (e.g., database) if needed
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Configurar Docker e Docker Compose
+
+      - name: Configurar Docker Buildx
+        # Sets up Docker buildx for potentially faster/better builds
         uses: docker/setup-buildx-action@v2
-      
-      - name: Instalar Docker Compose
-        run: |
-          docker compose version || {
-            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            docker-compose version
-          }
-      
+
       - name: Up os containers com Docker Compose
+        # Builds images (if needed) and starts services in detached mode
+        # Assumes docker-compose.yml is in the repository root
         run: docker compose up -d --build
-      
+
       - name: Verificar se os containers estão rodando
         run: |
           docker ps
           echo "Containers ativos acima ^^"
-      
-      - name: Esperar que os serviços estejam prontos
+
+      - name: Esperar que a API esteja pronta (Health Check)
+        # Waits for the backend service (assumed on port 8000 and has /api/health endpoint)
+        # Adjust URL, port, and timeout as needed
         run: |
-          echo "Aguardar 20 segundos para garantir que a API está ativa..."
-          sleep 20
-          # Opcionalmente, podemos verificar a disponibilidade da API
-          # curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost:8000/health || echo "API pode não estar respondendo, mas continuaremos os testes"
-      
-      - name: Instalar dependências Python
+          echo "Waiting for API to be ready..."
+          # Retry every 5 seconds for up to 60 seconds (12 retries)
+          timeout 60s bash -c 'until curl --fail --output /dev/null --silent http://localhost:8000/api/health; do echo "Waiting..."; sleep 5; done' \
+            || (echo "API failed to start in time!" && docker compose logs && exit 1) # Show logs on timeout
+          echo "API is ready!"
+
+      - name: Instalar dependências Python para testes
+        # Sets up a venv on the runner to run tests from the host
         run: |
           python3 -m venv venv
           source venv/bin/activate
+          pip install --upgrade pip
           pip install httpx pytest
-      
+
       - name: Correr testes de conexão e performance
+        # Runs pytest against the specified test file
         run: |
           source venv/bin/activate
           pytest backend/tests/test_performance.py
-      
+
       - name: Logs dos containers em caso de falha
+        # If any step failed previously, show the logs from all services
         if: failure()
-        run: docker-compose logs
+        run: docker compose logs
+
+      - name: Parar e remover containers
+        # Always runs to clean up Docker resources
+        if: always()
+        run: docker compose down -v --remove-orphans
