@@ -1,18 +1,14 @@
 name: CI - Docker Compose & Integração & Desempenho
-
 on:
   push:
     branches: RNFTests
-
 jobs:
   login:
     runs-on: ubuntu-latest
-
-    services:
-      docker: docker:24.0.5-cli
-      options: --privileged
-
     steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+      
       - name: Criar .env para o backend
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> backend/.env
@@ -25,34 +21,51 @@ jobs:
           echo "UPLOAD_DIR_ORCAMENTO=${{ secrets.UPLOAD_DIR_ORCAMENTO }}" >> backend/.env
           echo "UPLOAD_DIR_RECURSO=${{ secrets.UPLOAD_DIR_RECURSO }}" >> backend/.env
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> backend/.env
-      - 
-        name: Checkout do repositório
-        uses: actions/checkout@v3
-      -
-        name: Login to GitHub Container Registry
+      
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Instalar Docker Compose
-        uses: docker/setup-compose-action@v2
-      -
-        name: Up os containers com Docker Compose
+      
+      - name: Configurar Docker e Docker Compose
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Instalar Docker Compose
+        run: |
+          docker compose version || {
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose version
+          }
+      
+      - name: Up os containers com Docker Compose
         run: docker-compose up -d --build
-      -
-        name: Esperar que os serviços estejam prontos
+      
+      - name: Verificar se os containers estão rodando
         run: |
-            echo "Aguardar 20 segundos para garantir que a API está ativa..."
-            sleep 20
-      -
-        name: Instalar dependências Python
+          docker ps
+          echo "Containers ativos acima ^^"
+      
+      - name: Esperar que os serviços estejam prontos
         run: |
-            python3 -v venv venv
-            source venv/bin/activate
-            pip install httpx pytest
-      -
-        name: Correr testes de conexão e performance
+          echo "Aguardar 20 segundos para garantir que a API está ativa..."
+          sleep 20
+          # Opcionalmente, podemos verificar a disponibilidade da API
+          # curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost:8000/health || echo "API pode não estar respondendo, mas continuaremos os testes"
+      
+      - name: Instalar dependências Python
         run: |
-            pytest backend/tests/test_performance.py
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install httpx pytest
+      
+      - name: Correr testes de conexão e performance
+        run: |
+          source venv/bin/activate
+          pytest backend/tests/test_performance.py
+      
+      - name: Logs dos containers em caso de falha
+        if: failure()
+        run: docker-compose logs
