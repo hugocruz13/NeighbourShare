@@ -2,7 +2,7 @@ name: CI - Docker Compose & Integração & Desempenho
 
 on:
   push:
-    branches: master
+    branches: RNFTests
 
 jobs:
   login:
