@@ -13,14 +13,15 @@ function Residente() {
           <p className="menu-title">Menu Principal</p>
           <div className="botoes">
             <Link className="btnMenu" to="/recursosDisponiveis">Recursos Disponiveis</Link><br></br>
-            <Link className="btnMenu" to="/pedidosReserva">Pedidos Reserva</Link><br></br>
             <Link className="btnMenu" to="/perfil">Perfil</Link><br></br>
-            <Link className="btnMenu" to="/meusRecursos">Meus Recursos</Link><br></br>
+            <Link className="btnMenu" to="/meusRecursos">Meus Recursos</Link><br></br> 
             <Link className="btnMenu" to="/listaPedidosReserva">Pedidos de Reserva</Link><br></br>
             <Link className="btnMenu" to="/listaReserva">Lista Reservas</Link><br></br>
             <Link className="btnMenu" to="/realizarPedidoNovoRecurso">Realizar Pedido Novo Recurso</Link><br></br>
             <Link className="btnMenu" to="/notificacoes">Notificações</Link><br></br>
             <Link className="btnMenu" to="/realizarPedidoManutencao">Realizar Pedido Manutenção</Link><br></br>
+            <Link className="btnMenu" to="/votacoes">Votações</Link><br></br>
+            <Link className="btnMenu" to="/pedidosNovosRecursosPendentesVoto">Votar Pedidos Novos Recursos (Pendentes)</Link><br></br>
 
             {user?.role === "gestor" || user?.role === "admin" && (
               <>

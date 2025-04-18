@@ -102,17 +102,21 @@ function Navbar2() {
                             <Link to="/notificacoes" className="ver-todas">Ver todas</Link>
                         </div>
                         <div className="notification-list">
-                            {notifications.filter(n => !n.Estado).map(notif => (
-                                <div
-                                    key={notif.NotificacaoID}
-                                    className="notification-item nao-lida"
-                                >
-                                    <span>{notif.Titulo.substring(0, 100)}...</span>
-                                    <button onClick={() => marcarComoLida(notif.NotificacaoID)}>
-                                        Marcar como lida
-                                    </button>
-                                </div>
-                            ))}
+                            {notifications.filter(n => !n.Estado).length > 0 ? (
+                                notifications.filter(n => !n.Estado).map(notif => (
+                                    <div
+                                        key={notif.NotificacaoID}
+                                        className="notification-item nao-lida"
+                                    >
+                                        <span>{notif.Titulo.substring(0, 100)}...</span>
+                                        <button onClick={() => marcarComoLida(notif.NotificacaoID)}>
+                                            Marcar como lida
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Sem notificações de momento</p>
+                            )}
                         </div>
                     </div>
                 )}

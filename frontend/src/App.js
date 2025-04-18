@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.js";
 import Login from "./pages/Login.js";
+import Registar from "./pages/Registar.js";
 import Admin from "./pages/Admin.js"
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -20,6 +21,9 @@ import Notificacoes from "./pages/Notificacoes.js";
 import EntidadeExterna from "./pages/EntidadeExterna.js";
 import Orcamentos from "./pages/Orcamentos.js";
 import Manutencao from "./pages/Manutencao.js";
+import Votacoes from "./pages/Votacoes.js";
+import ConsultarVotacao from "./pages/ConsultarVotacao.js";
+import PedidosNovosRecursosPendentesVoto from "./pages/PedidosNovosRecursosPendentesVoto.js";
 
 
 function App() {
@@ -31,6 +35,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><Admin /></ProtectedRoute>}/>
+            <Route path="/registar" element={<ProtectedRoute allowedRoles={["admin"]}><Registar /></ProtectedRoute>}/>
             <Route path="/menu" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Menu /></ProtectedRoute>}/>
             <Route path="/recursosDisponiveis" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RecursosDisponiveis /></ProtectedRoute>}/>
             <Route path="/pedidosNovosRecursos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosNovosRecursos /></ProtectedRoute>}/>
@@ -46,6 +51,9 @@ function App() {
             <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
             <Route path="/orcamentos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Orcamentos /></ProtectedRoute>}/>
             <Route path="/manutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Manutencao /></ProtectedRoute>}/>
+            <Route path="/votacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Votacoes /></ProtectedRoute>}/>
+            <Route path="/consultarVotacao/:id" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ConsultarVotacao  /></ProtectedRoute>}/>
+            <Route path="/pedidosNovosRecursosPendentesVoto" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosNovosRecursosPendentesVoto  /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>

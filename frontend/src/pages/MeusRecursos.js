@@ -144,6 +144,7 @@ const MeusRecursos = () => {
       </table>
       </div>
     </div>
+    <ToastContainer />
 </div>
   );
 };

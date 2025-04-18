@@ -14,7 +14,7 @@ async def cria_notificacao_todos_service(db:Session, notificacao:Notificacao):
 
 async def listar_notificacoes_service(db:Session, user_id:int):
 
-    lista_notificacoes = notificacao_repo.listar_notificacoes_db(db, user_id)
+    lista_notificacoes = await notificacao_repo.listar_notificacoes_db(db, user_id)
 
     if not lista_notificacoes:
         raise HTTPException(status_code=400, detail="Nenhuma notificação encontrada")

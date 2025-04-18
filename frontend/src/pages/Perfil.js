@@ -119,7 +119,7 @@ const updatedUser = {
                   onBlur={handleSaveField}
                 />
               ) : (
-                <p className='infoUser'>{user?.nome} <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('nome')} /></p>
+                <p className='infoUser'>{user?.nome} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('nome')} /></p>
               )}
             </div>
 
@@ -138,7 +138,7 @@ const updatedUser = {
                   onBlur={handleSaveField}
                 />
               ) : (
-                <p className='infoUser'>{user?.contacto} <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('contacto')} /></p>
+                <p className='infoUser'>{user?.contacto} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('contacto')} /></p>
               )}
             </div>
 
@@ -152,7 +152,7 @@ const updatedUser = {
                   onBlur={handleSaveField}
                 />
               ) : (
-                <p className='infoUser'>2020-01-01 <img src="public\img\lapis.png" alt="Editar" onClick={() => handleEditField('data_aniversario')} /></p>
+                <p className='infoUser'>2020-01-01 <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('data_aniversario')} /></p>
               )}
             </div>
           </div>

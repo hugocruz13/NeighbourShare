@@ -101,6 +101,25 @@ const Orcamentos = () => {
           </>
           )}
 
+
+          <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Criar Votação</button>
+
+          {showModal && (
+          <>
+          <div className="modal-backdrop" onClick={() => setShowModal(false)} />
+            <div className="modal-content">
+              <h2>Criar Votação</h2>
+              <input type="text" placeholder="fornecedor" value={newResource.fornecedor_orcamento} onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}/>
+              <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })}/>
+              <div>
+                <button >Criar</button>
+                <button onClick={() => setShowModal(false)}>Cancelar</button>
+              </div>
+            </div>
+          </>
+          )}
+
+
           <p className='p-meusRecursos'>Orçamentos</p>
           <table>
             <thead>
@@ -132,7 +151,7 @@ const Orcamentos = () => {
       
 
 
-      
+      <ToastContainer />
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import "../styles/RealizarPedidoNovoRecurso.css";
 import Navbar2 from "../components/Navbar2.js";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const RealizarPedidoNovoRecurso = () => {
   const [descricao, setDescricao] = useState('');
 
@@ -42,11 +45,10 @@ const RealizarPedidoNovoRecurso = () => {
 
       <div className='imagemDireita'>
         <img className='imgNovosRecursos' src="./img/fundo2.png" alt="Imagem"/>
-        <p>Se achas que é necessário novos recursos realiza o pedido aqui.</p>
       </div>
         </div>
       </div>
-
+      <ToastContainer />
     </div>
   );
 };

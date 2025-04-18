@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "../styles/RecursosDisponiveis.css";
 import Navbar2 from "../components/Navbar2.js";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ReservarRecurso = () => {
   const { id } = useParams();
@@ -86,7 +88,7 @@ const ReservarRecurso = () => {
         
 
       </div>
-
+      <ToastContainer />
     </div>
   );
 };

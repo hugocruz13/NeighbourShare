@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext.js";
 import { InputLogin, InputPassword } from "../components/Inputs.js";
 import "../styles/Login.css";
 
-function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+function Registar() {
+  const [formData, setFormData] = useState({ email: "", role: "" });
   const [error, setError] = useState("");
   const { setUser } = useAuth();
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
+      const response = await fetch("http://localhost:8000/api/registar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -28,23 +28,10 @@ function Login() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        const res = await fetch("http://localhost:8000/api/me", {
-          credentials: "include",
-        });
-        const userData = await res.json();
-        setUser(userData);
-
-        if (userData.role === "admin") {
-          navigate("/menu");
-        } else if (userData.role === "residente" || userData.role === "gestor") {
-          navigate("/menu");
-        } else {
-          navigate("/login");
-        }
-      } else {
-        setError(data.detail);
+      if (!response.ok) {
+              throw new Error(data.detail || 'Erro ao registar.');
       }
+      toast.success('Utilizador Registado com sucesso!');
     } catch (error) {
       setError("Erro");
     }
@@ -52,10 +39,9 @@ function Login() {
   return (
     <div className="container-login">
       <div className="container-esquerda">
-        <h1>Bem-vindo de volta!</h1>
         <div className="container-formulario">
           <form className="formulario" onSubmit={handleSubmit}>
-            <h2>Acesse a sua conta!</h2>
+            <h2>Registar Utilizador</h2>
             <div className="container-center">
               <InputLogin
                 name={"email"}
@@ -69,7 +55,7 @@ function Login() {
               />
               <div className="container-btn">
                 <button className="btn" type="submit">
-                  Login
+                  Registar
                 </button>
               </div>
               <p className="erro">{error && error}</p>
@@ -84,4 +70,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Registar;

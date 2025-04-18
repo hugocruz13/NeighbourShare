@@ -1,7 +1,7 @@
 from sqlalchemy.sql.sqltypes import NULLTYPE
 
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword
+from schemas.user_schemas import UserJWT, User, UserLogin, ResetPassword, UserData
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email
@@ -9,8 +9,10 @@ from utils.PasswordHasher import hash_password, verificar_password
 from services.jwt_services import generate_jwt_token_login, generate_jwt_token_registo, generate_jwt_token_recovery
 from services.email_service import send_verification_email, send_recovery_password_email
 from utils.tokens_record import add_save_token
-from utils.string_utils import formatar_string
 
+
+def formatar_string(word: str) -> str:
+    return word.strip()
 
 async def get_user_data(db: Session, id_user:int):
 

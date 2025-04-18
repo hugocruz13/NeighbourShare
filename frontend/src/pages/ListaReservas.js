@@ -147,7 +147,7 @@ const handleJustification = (id) => {
     <div className="home-container">
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Os Meus Pedidos de Reserva de Recursos</p>
-
+        {Array.isArray(comoSolicitante) && comoSolicitante.length > 0 ? (
         <table>
         <thead>
           <tr>
@@ -185,14 +185,19 @@ const handleJustification = (id) => {
               </button>
               </td>
             </tr>
-          ))}
+          ) ) }
         </tbody>
       </table>
+) : (
+   <p>Nenhum pedido de reserva encontrado.</p>
+ )}
+
       </div>
 
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Reservas</p>
 
+        {Array.isArray(comoDono) && comoDono.length > 0 ? (
         <table>
         <thead>
           <tr>
@@ -241,6 +246,10 @@ const handleJustification = (id) => {
           ))}
         </tbody>
       </table>
+) : (
+ <p>Nenhuma reserva encontrada.</p>
+ )}
+
       </div>
 
          
@@ -261,6 +270,7 @@ const handleJustification = (id) => {
 
 
     </div>
+    <ToastContainer />
     </div>
 
     

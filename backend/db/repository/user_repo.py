@@ -1,4 +1,5 @@
 import datetime
+
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador

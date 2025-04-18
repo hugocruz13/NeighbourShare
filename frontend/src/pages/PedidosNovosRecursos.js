@@ -18,7 +18,7 @@ const PedidosAquisicao = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data)
+        console.log(data);
         setPedidos(data);
       } catch (error) {
         console.error('Erro ao buscar pedidos de aquisição:', error);
@@ -52,8 +52,6 @@ const PedidosAquisicao = () => {
           id_pedido: pedidoAtual.PedidoNovoRecID
         }),
         credentials: 'include',
-        
-        
       });
       
       if (!response.ok) {
@@ -93,30 +91,34 @@ const PedidosAquisicao = () => {
           )}
 
           <p className='p-NovosRecursos'>Pedidos De Aquisição Pendentes</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Nº do Pedido</th>
-                <th>Solicitante</th>
-                <th>Data Do Pedido</th>
-                <th>Descrição</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pedidos.map((pedido) => (
-                <tr key={pedido.PedidoNovoRecID}>
-                  <td>{pedido.PedidoNovoRecID}</td>
-                  <td>{pedido.Utilizador_.NomeUtilizador}</td>
-                  <td>{pedido.DataPedido}</td>
-                  <td>{pedido.DescPedidoNovoRecurso}</td>
-                  <td>
-                    <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>Consultar</Link>
-                  </td>
+          {Array.isArray(pedidos) && pedidos.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº do Pedido</th>
+                  <th>Solicitante</th>
+                  <th>Data Do Pedido</th>
+                  <th>Descrição</th>
+                  <th>Ação</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pedidos.map((pedido) => (
+                  <tr key={pedido.PedidoNovoRecID}>
+                    <td>{pedido.PedidoNovoRecID}</td>
+                    <td>{pedido.Utilizador_.NomeUtilizador}</td>
+                    <td>{pedido.DataPedido}</td>
+                    <td>{pedido.DescPedidoNovoRecurso}</td>
+                    <td>
+                      <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>Consultar</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>Nenhum pedido de novo recurso encontrado.</p>
+          )}
         </div>
       </div>
       <ToastContainer />
