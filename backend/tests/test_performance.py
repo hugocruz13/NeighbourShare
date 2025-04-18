@@ -21,3 +21,4 @@ def test_web_response_time():
     duration = (end - start) * 1000  # em milissegundos
     assert response.status_code == 200
     assert duration < 400, f"Tempo de resposta para website excedeu 400ms: {duration:.2f}ms"
+    assert duration < 400, f"Tempo de resposta para website excedeu 400ms: {duration:.2f}ms"
