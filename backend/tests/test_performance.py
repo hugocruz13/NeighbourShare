@@ -15,7 +15,7 @@ def test_api_response_time():
 
 def test_web_response_time():
     start = time.time()
-    response = httpx.get(f"{WEB_URL}/")
+    response = httpx.get(f"{WEB_URL}")
     end = time.time()
     
     duration = (end - start) * 1000  # em milissegundos
