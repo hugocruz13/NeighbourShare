@@ -45,6 +45,7 @@ class EntidadeExterna(Base):
     Contacto: Mapped[int] = mapped_column(Integer)
     Email: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     Nome: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    Nif: Mapped[int] = mapped_column(Integer)
 
     Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', back_populates='EntidadeExterna_')
 

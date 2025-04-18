@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session
 from db.session import get_db
+from middleware.auth_middleware import role_required
 from schemas.orcamento_schema import OrcamentoSchema
+from schemas.user_schemas import UserJWT
 import services.orcamento_service as orcamento_service
+from middleware.auth_middleware import role_required
 import decimal
 
 router = APIRouter(prefix="/orcamentos", tags=["Orcamentos"])
@@ -14,7 +17,8 @@ async def inserir_orcamento(
         valor_orcamento : decimal.Decimal = Form(...),
         descricao_orcamento: str = Form(...),
         pdforcamento: UploadFile = File(...),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin", "gestor"]))
 ):
     try:
         orcamento_data = OrcamentoSchema(Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename)

@@ -137,12 +137,15 @@ async def carrega_imagem_recurso_service(recurso_id:int):
 
     pasta_path = os.path.join(os.getenv('UPLOAD_DIR_RECURSO'), str(recurso_id))
 
+    if not os.path.exists(pasta_path):
+        os.makedirs(pasta_path)
+
     pasta = Path(pasta_path)
 
     arquivos = [f for f in pasta.iterdir() if f.is_file()]
 
     if not arquivos:
-        raise FileNotFoundError("Nenhuma foto encontrada")
+        return None
 
     imagem_path = str(arquivos[0])
 

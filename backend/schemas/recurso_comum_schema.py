@@ -71,3 +71,27 @@ class PedidoManutencaoSchemaCreate(BaseModel):
     DescPedido: str
     DataPedido: datetime.date
     EstadoPedManuID: int
+
+class ManutencaoSchema(BaseModel):
+    ManutencaoID: int
+    PMID: int
+    EntidadeID: int
+    DataManutencao: datetime.date
+    DescManutencao: str
+    EstadoManuID: int
+
+class EstadoUpdate(BaseModel):
+    novo_estado_id: int
+
+class PedidoManutencaoUpdateSchema(BaseModel):
+    PMID: int
+    RecursoComun_: RecursoComunSchema
+    DescPedido: str
+    DataPedido: datetime.date
+
+class ManutencaoUpdateSchema(BaseModel):
+    ManutencaoID: int
+    PMID: int
+    EntidadeID: int
+    DataManutencao: datetime.date
+    DescManutencao: str

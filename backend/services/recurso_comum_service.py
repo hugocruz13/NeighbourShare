@@ -1,13 +1,14 @@
+from requests import Session
+
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
 from db.repository.notificacao_repo import get_tipo_processo_id
 from datetime import date
-from db.models import Notificacao
+from db.models import Notificacao, PedidoManutencao
 from schemas.recurso_comum_schema import *
 from services.notificacao_service import *
-
 
 #Inserir um novo recurso comum
 async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSchemaCreate):
@@ -91,3 +92,81 @@ async def listar_pedidos_manutencao_finalizados_service(db:session):
         raise HTTPException(status_code=400, detail="Nenhum pedido de manutenção finalizado encontrado")
 
     return pedidos_manutencao_finalizados
+
+async def visualizar_manutencoes(db:session):
+    manutencoes = await recurso_comum_repo.listar_manutencoes(db)
+
+    if not manutencoes:
+        raise HTTPException(status_code=400, detail="Nenhuma manutenção encontrada")
+    return manutencoes
+
+async def obter_all_tipo_estado_pedido_manutencao(db:session):
+    try:
+        return await recurso_comum_repo.obter_all_tipo_estado_pedido_manutencao(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_all_tipo_estado_manutencao(db:session):
+    try:
+        return await recurso_comum_repo.obter_all_tipo_estado_manutencao(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_estado_manutencao:int):
+    try:
+        estados = await obter_all_tipo_estado_manutencao(db)
+        if estados is None:
+            raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado manutenção")
+        if tipo_estado_manutencao in estados:
+            await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
+            return True
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao:int, tipo_estado_pedido_manutencao:int):
+    try:
+        estados = await obter_all_tipo_estado_pedido_manutencao(db)
+        if estados is None:
+            raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado de pedido manutenção")
+        for e in estados:
+            if e.EstadoPedManuID == tipo_estado_pedido_manutencao:
+                await recurso_comum_repo.alterar_estado_pedido_manutencao(db, id_pedido_manutencao, tipo_estado_pedido_manutencao)
+                return True
+            else:
+                return False
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_pedido_manutencao(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.obter_pedido_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def obter_manutencao(db:Session, id_manutencao:int):
+    try:
+        return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def update_pedido_manutencao(db:Session, u_pedido:PedidoManutencaoUpdateSchema):
+    try:
+        if u_pedido.DataPedido is None or u_pedido.DescPedido is None or u_pedido.PMID is None or u_pedido.RecursoComun_ is None:
+            return False, "Erro, um dos campos não foi preenchido"
+        return await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def update_manutencao(db:Session, u_pedido:ManutencaoUpdateSchema):
+    try:
+        if u_pedido.ManutencaoID is None or u_pedido.PMID is None or u_pedido.EntidadeID is None or u_pedido.DataManutencao is None or u_pedido.DescManutencao is None:
+            return False, "Erro, um dos campos não foi preenchido"
+        a = await recurso_comum_repo.update_manutencao_db(db, u_pedido)
+        if a is None:
+            return HTTPException(status_code=400)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
