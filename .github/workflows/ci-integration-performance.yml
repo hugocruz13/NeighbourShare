@@ -13,6 +13,18 @@ jobs:
       options: --privileged
 
     steps:
+      - name: Criar .env para o backend
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> backend/.env
+          echo "SECRET_KEY_LOGIN=${{ secrets.SECRET_KEY_LOGIN }}" >> backend/.env
+          echo "SECRET_KEY_SIGNUP=${{ secrets.SECRET_KEY_SIGNUP }}" >> backend/.env
+          echo "SECRET_KEY_RECOVERY=${{ secrets.SECRET_KEY_RECOVERY }}" >> backend/.env
+          echo "ALGORITHM=${{ secrets.ALGORITHM }}" >> backend/.env
+          echo "EXPIRE_MINUTES_LOGIN=${{ secrets.EXPIRE_MINUTES_LOGIN }}" >> backend/.env
+          echo "EXPIRE_MINUTES_SIGNUP=${{ secrets.EXPIRE_MINUTES_SIGNUP }}" >> backend/.env
+          echo "UPLOAD_DIR_ORCAMENTO=${{ secrets.UPLOAD_DIR_ORCAMENTO }}" >> backend/.env
+          echo "UPLOAD_DIR_RECURSO=${{ secrets.UPLOAD_DIR_RECURSO }}" >> backend/.env
+          echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> backend/.env
       - 
         name: Checkout do repositório
         uses: actions/checkout@v3
