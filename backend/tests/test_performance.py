@@ -6,7 +6,7 @@ WEB_URL = "http://localhost:80/"
 
 def test_api_response_time():
     start = time.time()
-    response = httpx.get(f"{API_URL}/api/health")
+    response = httpx.get(f"{API_URL}api/health")
     end = time.time()
     
     duration = (end - start) * 1000  # em milissegundos
