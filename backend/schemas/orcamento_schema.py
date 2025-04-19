@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from pydantic import BaseModel, constr, conint, condecimal
 from enum import Enum
 
@@ -30,6 +31,23 @@ class OrcamentoGetSchema(OrcamentoBase):
 =======
     class Config:
         from_attributes = True
+=======
+import decimal
+from pydantic import BaseModel
+from enum import Enum
+
+class TipoOrcamento(Enum):
+    AQUISICAO = "Aquisição"
+    MANUTENCAO = "Manutenção"
+
+class OrcamentoSchema(BaseModel):
+    Fornecedor: str
+    Valor: decimal.Decimal
+    DescOrcamento: str
+    NomePDF : str
+    IDProcesso: int
+    TipoProcesso: TipoOrcamento
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 
 class OrcamentoUpdateSchema(BaseModel):
     OrcamentoID: int
@@ -43,4 +61,11 @@ class OrcamentoGetSchema(BaseModel):
     Valor: decimal.Decimal
     DescOrcamento: str
     CaminhoPDF : str
+<<<<<<< HEAD
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
+=======
+
+
+
+
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)

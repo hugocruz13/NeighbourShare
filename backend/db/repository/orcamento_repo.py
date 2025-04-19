@@ -4,8 +4,12 @@ from db.models import Orcamento, EntidadeExterna, PedidoManutencao
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 =======
 from db.models import Orcamento
+<<<<<<< HEAD
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
+=======
+from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 from sqlalchemy.exc import SQLAlchemyError
 from db.repository.recurso_comum_repo import obter_pedido_manutencao_db, obter_pedido_novo_recurso_db
 
@@ -21,7 +25,11 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
 
         if orcamento.TipoProcesso == TipoOrcamento.MANUTENCAO:
             pedido_manutencao = await obter_pedido_manutencao_db(db, orcamento.IDProcesso)
+<<<<<<< HEAD
             novo_orcamento.PedidoManutencao.append(pedido_manutencao)
+=======
+            novo_orcamento.Manutencao.append(pedido_manutencao)
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
         else:
             pedido_novo_recurso = await obter_pedido_novo_recurso_db(db, orcamento.IDProcesso)
             novo_orcamento.PedidoNovoRecurso.append(pedido_novo_recurso)
@@ -29,7 +37,14 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
         db.add(novo_orcamento)
         db.commit()
         db.refresh(novo_orcamento)
+<<<<<<< HEAD
         return novo_orcamento.OrcamentoID, {'message': 'Inserção do orçamento realizada com sucesso!'}
+=======
+
+
+
+        return novo_orcamento.OrcamentoID, {'Inserção do orçamento realizada com sucesso!'}
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 
     except SQLAlchemyError as e:
         db.rollback()

@@ -5,11 +5,15 @@ from db.models import EntidadeExterna
 from db.session import get_db
 from middleware.auth_middleware import role_required
 <<<<<<< HEAD
+<<<<<<< HEAD
 from schemas.notificacao_schema import NotificacaoOutSchema
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 =======
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
+=======
+from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 from schemas.user_schemas import UserJWT
 from services.orcamento_service import *
 from middleware.auth_middleware import role_required
@@ -30,7 +34,11 @@ async def inserir_orcamento(
         token: UserJWT = Depends(role_required(["admin", "gestor"]))
 ):
     try:
+<<<<<<< HEAD
         orcamento_data = OrcamentoSchema(IDEntidade=id_entidade_externa ,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
+=======
+        orcamento_data = OrcamentoSchema(Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 
         sucesso, msg = await inserir_orcamento_service(db, orcamento_data, pdforcamento)
 

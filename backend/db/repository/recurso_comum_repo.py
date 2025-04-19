@@ -112,6 +112,9 @@ async def listar_pedidos_novos_recursos_db(db:session):
         raise SQLAlchemyError(str(e))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
     try:
         pedido_novo_recurso = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == id_pedido).first()
@@ -119,6 +122,7 @@ async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+<<<<<<< HEAD
 #endregion
 
 #region Pedidos de Manutenção
@@ -134,6 +138,8 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
         return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
 =======
+=======
+>>>>>>> 101c9b2 (Associação da inserção de um orçamento a um processo em questão, podendo ser ele um pedido de manutenção ou então um pedido de novo recurso comum)
 #endregion
 
 #region Pedidos de Manutenção
