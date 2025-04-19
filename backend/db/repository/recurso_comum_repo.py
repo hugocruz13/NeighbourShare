@@ -55,6 +55,13 @@ async def listar_pedidos_novos_recursos_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
+async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
+    try:
+        pedido_novo_recurso = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == id_pedido).first()
+        return pedido_novo_recurso
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
 #endregion
 
 #region Pedidos de Manutenção

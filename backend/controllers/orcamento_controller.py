@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import role_required
-from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema
+from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 from schemas.user_schemas import UserJWT
 from services.orcamento_service import *
 from middleware.auth_middleware import role_required
@@ -18,11 +18,13 @@ async def inserir_orcamento(
         valor_orcamento : decimal.Decimal = Form(...),
         descricao_orcamento: str = Form(...),
         pdforcamento: UploadFile = File(...),
+        idprocesso: int = Form(...),
+        tipoorcamento: TipoOrcamento = Form(...),
         db: Session = Depends(get_db),
         token: UserJWT = Depends(role_required(["admin", "gestor"]))
 ):
     try:
-        orcamento_data = OrcamentoSchema(Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename)
+        orcamento_data = OrcamentoSchema(Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
 
         sucesso, msg = await inserir_orcamento_service(db, orcamento_data, pdforcamento)
 
