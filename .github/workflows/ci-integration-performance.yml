@@ -1,7 +1,7 @@
 name: CI - Docker Compose & Integração & Desempenho
 on:
   push:
-    branches: RNFTests
+    branches: master
 jobs:
   ci-integration-performance:
     runs-on: ubuntu-latest
