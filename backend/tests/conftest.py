@@ -4,6 +4,8 @@ from fastapi.testclient import TestClient
 from main import app
 from db.session import SessionLocal
 from middleware.auth_middleware import generate_jwt_token_login
+from db.models import Utilizador
+import datetime
 
 #Cria uma sessão com transação isolada
 @pytest.fixture(scope="function")
@@ -32,4 +34,31 @@ def token_admin():
     token = generate_jwt_token_login(payload["id"], payload["email"], payload["role"])
 
     return token
+
+def token_user(id_user:int, role:str,email:str):
+    payload = {
+        "role": role,
+        "email": email,
+        "id": id_user
+    }
+
+    token = generate_jwt_token_login(payload["id"], payload["email"], payload["role"])
+
+    return token
+
+@pytest.fixture
+def utilizador_registado(db_session):
+    utilizador = Utilizador(
+        NomeUtilizador="TesteVerificacao",
+        DataNasc=datetime.date(2025, 4, 19),
+        Contacto=123456789,
+        Email="teste@exemploteste.com",
+        PasswordHash="fake_hash",
+        Salt="fake_salt",
+        Verificado=False,
+        TUID=2
+    )
+    db_session.add(utilizador)
+    db_session.commit()
+    return db_session.query(Utilizador).filter(Utilizador.Email == utilizador.Email).first()
 
