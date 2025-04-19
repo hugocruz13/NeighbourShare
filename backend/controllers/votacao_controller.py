@@ -45,8 +45,3 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
-
-
-@router.patch("/update/votacao")
-def atualizarvotacao():
-    return {"Atualizado"}
