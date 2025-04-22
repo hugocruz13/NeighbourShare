@@ -6,6 +6,7 @@ from enum import Enum
 
 
 # === Recursos, Utilizadores e Estado ===
+<<<<<<< HEAD
 
 
 
@@ -16,18 +17,33 @@ class UtilizadorSchema(BaseModel):
 
     class Config:
         from_attributes = True
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 class RecursoSchema(BaseModel):
     RecursoID: conint(gt=0)
     Nome: constr(min_length=2, max_length=100)
     DescRecurso: constr(min_length=5, max_length=500)
     Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
+<<<<<<< HEAD
     Utilizador_: UtilizadorSchema
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
     Image: Optional[bytes] = None
 
     class Config:
         from_attributes = True
 
+<<<<<<< HEAD
+=======
+class UtilizadorSchema(BaseModel):
+    UtilizadorID: conint(gt=0)
+    NomeUtilizador: constr(min_length=3, max_length=100)
+
+    class Config:
+        from_attributes = True
+
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 class EstadoReservaSchema(BaseModel):
     EstadoID: conint(gt=0)
     DescEstadoPedidoReserva: constr(min_length=3, max_length=100)
@@ -104,9 +120,12 @@ class ReservaGetSolicitanteSchema(BaseModel):
     RecursoEntregueSolicitante: bool
     ConfirmarCaucaoSolicitante: bool
     EstadoReserva: constr(min_length=3, max_length=100)
+<<<<<<< HEAD
     DevolucaoCaucao: bool
     EstadoRecurso: bool
     JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 # === Listagem de Pedidos de Reserva ===
 

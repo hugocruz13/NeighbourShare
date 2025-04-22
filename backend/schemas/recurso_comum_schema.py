@@ -1,6 +1,9 @@
 from pydantic import BaseModel, constr, conint
 import datetime
+<<<<<<< HEAD
 from enum import Enum
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 # === Utilizadores e Recursos Comuns ===
 
@@ -26,12 +29,15 @@ class RecursoComumSchemaCreate(BaseModel):
     class Config:
         from_attributes = True
 
+<<<<<<< HEAD
 class RecursoComum_Return(BaseModel):
     id:int
     nome: str
     desc:str
     path:str
 
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 # === Estados ===
 
 class EstadoPedNovoRecursoSchema(BaseModel):
@@ -48,6 +54,7 @@ class EstadoPedManuSchema(BaseModel):
     class Config:
         from_attributes = True
 
+<<<<<<< HEAD
 class EstadoPedNovoRecursoComumSchema(str,Enum):
     PENDENTE = 'Pendente'
     EMVOTACAO = 'Em votação'
@@ -64,6 +71,8 @@ class EstadoPedManutencaoSchema(str,Enum):
     VOTACAO = 5
     REJEITADO = 4
 
+=======
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 # === Pedidos de Novo Recurso ===
 
@@ -77,12 +86,19 @@ class PedidoNovoRecursoSchema(BaseModel):
     class Config:
         from_attributes = True
 
+<<<<<<< HEAD
 class PedidoNovoRecursoBase(BaseModel):
     DescPedidoNovoRecurso: constr(min_length=5, max_length=300)
     DataPedido: datetime.date
 
 class PedidoNovoRecursoSchemaCreate(PedidoNovoRecursoBase):
     UtilizadorID: conint(gt=0)
+=======
+class PedidoNovoRecursoSchemaCreate(BaseModel):
+    UtilizadorID: conint(gt=0)
+    DescPedidoNovoRecurso: constr(min_length=5, max_length=300)
+    DataPedido: datetime.date
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
     EstadoPedNovoRecID: conint(gt=0)
 
 
@@ -108,12 +124,27 @@ class PedidoManutencaoSchemaCreate(BaseModel):
 
 class PedidoManutencaoUpdateSchema(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     PMID: conint(gt=0)
     DescPedido: constr(min_length=5, max_length=300)
 =======
     PMID: int
     DescPedido: str
 >>>>>>> dbe2ddb (Ligeira modificação no update de um pedido de manutenção, permitindo somente modificar a descrição do mesmo)
+=======
+    PMID: conint(gt=0)
+    DescPedido: constr(min_length=5, max_length=300)
+
+# === Manutenções ===
+
+class ManutencaoSchema(BaseModel):
+    ManutencaoID: conint(gt=0)
+    PMID: conint(gt=0)
+    EntidadeID: conint(gt=0)
+    DataManutencao: datetime.date
+    DescManutencao: constr(min_length=5, max_length=300)
+    EstadoManuID: conint(gt=0)
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 <<<<<<< HEAD
 # === Manutenções ===
@@ -121,12 +152,13 @@ class ManutencaoBase(BaseModel):
     PMID: conint(gt=0)
 =======
 class ManutencaoCreateSchema(BaseModel):
-    PMID: int
-    EntidadeID: int
+    PMID: conint(gt=0)
+    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
-    DescManutencao: str
+    DescManutencao: constr(min_length=5, max_length=300)
 
 class ManutencaoUpdateSchema(BaseModel):
+<<<<<<< HEAD
     ManutencaoID: int
     PMID: int
     EntidadeID: int
@@ -158,3 +190,15 @@ class EstadoUpdate(BaseModel):
 class PedidoManutencaoRequest(BaseModel):
     recurso_comum_id: int
     desc_manutencao_recurso_comum: str
+=======
+    ManutencaoID: conint(gt=0)
+    PMID: conint(gt=0)
+    EntidadeID: conint(gt=0)
+    DataManutencao: datetime.date
+    DescManutencao: constr(min_length=5, max_length=300)
+
+# === Atualização de estado ===
+
+class EstadoUpdate(BaseModel):
+    novo_estado_id: conint(gt=0)
+>>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
