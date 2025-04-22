@@ -24,36 +24,6 @@ async def criar_pedido_reserva_db(db:session, pedido_reserva : PedidoReservaSche
         db.rollback()
         return {'details': str(e)}
 
-async def lista_pedidos_reserva_ativos_db(db:session):
-    try:
-        pedidos_reserva_ativos = (
-            db.query(PedidoReserva)
-            .options(
-                joinedload(PedidoReserva.Recurso_),
-                joinedload(PedidoReserva.Utilizador_),
-                joinedload(PedidoReserva.EstadoPedidoReserva_)
-            )
-            .filter(PedidoReserva.EstadoID == 1)
-        )
-        return pedidos_reserva_ativos
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
-async def lista_pedidos_reserva_cancelados_db(db:session):
-    try:
-        pedidos_reserva_cancelados = (
-            db.query(PedidoReserva)
-            .options(
-                joinedload(PedidoReserva.Recurso_),
-                joinedload(PedidoReserva.Utilizador_),
-                joinedload(PedidoReserva.EstadoPedidoReserva_)
-            )
-            .filter(PedidoReserva.EstadoID == 2)
-        )
-        return pedidos_reserva_cancelados
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
 # Muda o estado de um pedido de reserva
 async def muda_estado_pedido_reserva_db(db:session, pedido_reserva_id:int, estado:PedidoReservaEstadosSchema):
     try:

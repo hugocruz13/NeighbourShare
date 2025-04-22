@@ -12,6 +12,7 @@ router = APIRouter(prefix="/reserva", tags=["Reservas"])
 @router.post("/criar")
 async def criar_reserva(
         pedido_reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -26,7 +27,7 @@ async def criar_reserva(
 #Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 @router.get("/lista", response_model=Tuple[List[ReservaGetDonoSchema],List[ReservaGetSolicitanteSchema]])
 async def lista_reservas(
-        token: UserJWT = Depends(jwt_middleware),
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -38,6 +39,7 @@ async def lista_reservas(
 @router.post("/confirma/entrega/recurso")
 async def confirma_entrega_recurso(
         reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -49,6 +51,7 @@ async def confirma_entrega_recurso(
 @router.post("/confirma/rececao/recurso")
 async def confirma_rececao_recurso(
         reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -60,6 +63,7 @@ async def confirma_rececao_recurso(
 @router.post("/confirma/entrega/caucao")
 async def confirma_entrega_caucao(
         reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -71,6 +75,7 @@ async def confirma_entrega_caucao(
 @router.post("/confirma/rececao/caucao")
 async def confirma_rececao_caucao(
         reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -83,6 +88,7 @@ async def confirma_rececao_caucao(
 async def inserir_justificacao_caucao(
         reserva_id: int,
         justificacao: str,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -94,6 +100,7 @@ async def inserir_justificacao_caucao(
 @router.post("/confirma/bomestado")
 async def confirma_bom_estado_produto_e_devolucao_caucao(
         reserva_id: int,
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
         db:Session = Depends(get_db)
 ):
     try:
@@ -111,33 +118,13 @@ async def lista_pedidos_reserva(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pedidosreserva/ativos", response_model=List[PedidoReservaSchema])
-async def lista_pedidos_reserva_ativos(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
-    """
-    Endpoint para consultar todos os pedidos de reserva ativos (EstadoID == 1)
-    """
-    return await lista_pedidos_reserva_ativos_service(db)
-
-@router.get("/pedidosreserva/cancelados", response_model=List[PedidoReservaSchema])
-async def lista_pedidos_reserva_cancelados(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
-    """
-    Endpoint para consultar todos os pedidos de reserva cancelados (EstadoID == 2)
-    """
-    return await lista_pedidos_reserva_cancelados_service(db)
-
 @router.post("/pedidosreserva/criar")
 async def criar_pedido_reserva(
     recurso_id: int = Form(...),
     data_inicio: datetime.date = Form(...),
     data_fim: datetime.date = Form(...),
     db:Session = Depends(get_db),
-    token: UserJWT = Depends(jwt_middleware),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     try:
         pedido_reserva = PedidoReservaSchemaCreate(
@@ -155,7 +142,8 @@ async def criar_pedido_reserva(
 @router.post("/pedidosreserva/recusar")
 async def recusar_pedido_reserva(
     pedido_reserva_id: int,
-    db:session = Depends(get_db)
+    db:session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     try:
         return await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO)

@@ -13,7 +13,7 @@ router = APIRouter(prefix="/recursos", tags=["Recursos"])
 
 @router.post("/inserir")
 async def inserir_recurso(
-        token : UserJWT = Depends(jwt_middleware),
+        token : UserJWT = Depends(role_required(["admin", "gestor","residente"])),
         nome_recurso: str = Form(...),
         descricao_recurso: str = Form(...),
         caucao_recurso: decimal.Decimal = Form(...),
@@ -54,36 +54,15 @@ async def listar_recursos(
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
 async def listar_recursos_pessoais(
-        token: UserJWT = Depends(jwt_middleware),
+        token: UserJWT = Depends(role_required(["admin","gestor","residente"])),
         db:Session = Depends(get_db)
 ):
     return await lista_recursos_utilizador_service(db, token.id)
 
-#Lista todos os recursos disponíveis
-@router.get("/disponiveis", response_model=List[RecursoGetTodosSchema])
-async def listar_recursos_disponiveis(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
-    """
-    Endpoint para consultar os recursos disponíveis (ID Disponibilidade = 1)
-    """
-    return await lista_recursos_disponiveis_service(db)
-
-#Lista todos os recursos indisponíveis
-@router.get("/indisponiveis", response_model=List[RecursoGetTodosSchema])
-async def listar_recursos_indisponiveis(
-    db:Session = Depends(get_db),
-    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
-    """
-    Endpoint para consultar os recursos indisponíveis (ID Disponibilidade = 2)
-    """
-    return await lista_recursos_indisponiveis_service(db)
-
 @router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
 async def listar_recurso(
         recurso_id: int,
+        token: UserJWT = Depends(role_required(["admin","gestor","residente"])),
         db:Session = Depends(get_db)
 ):
     return await lista_recurso_service(db, recurso_id)
