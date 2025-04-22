@@ -2,6 +2,12 @@ from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException
+from schemas.notificacao_schema import *
+from db.repository.notificacao_repo import get_tipo_processo_id
+from datetime import date
+from db.models import Notificacao, PedidoManutencao
+from schemas.recurso_comum_schema import *
+from services.notificacao_service import *
 from schemas.recurso_comum_schema import *
 from schemas.user_schemas import UserJWT
 
@@ -12,14 +18,21 @@ async def inserir_recurso_comum_service(db:session, recurso_comum:RecursoComumSc
 
     return await recurso_comum_repo.inserir_recurso_comum_db(db,recurso_comum)
 
+
 #endregion
 
 #region Pedidos de Novos Recursos Comuns
 
 #Inserir um pedido de um novo recurso comum
 async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecursoSchemaCreate):
+    try:
+        msg, novo_pedido = await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
 
-    return await recurso_comum_repo.inserir_pedido_novo_recurso_db(db,pedido)
+        msg_noti = await cria_notificacao_insercao_pedido_novo_recurso_comum_service(db, novo_pedido) #Criação da notificação
+
+        return msg, msg_noti
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def listar_pedidos_novos_recursos_service(db:session):
 

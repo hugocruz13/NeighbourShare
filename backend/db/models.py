@@ -186,7 +186,8 @@ class Notificacao(Base):
     )
 
     NotificacaoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Mensagem: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    Titulo: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'), nullable=False)
+    Mensagem: Mapped[str] = mapped_column(Text(collation='SQL_Latin1_General_CP1_CI_AS'))
     DataHora: Mapped[datetime.datetime] = mapped_column(DateTime)
     ProcessoID: Mapped[int] = mapped_column(Integer)
     Estado: Mapped[bool] = mapped_column(Boolean)

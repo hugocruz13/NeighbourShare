@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { InputLogin, InputPassword } from "../components/Inputs.js";
 import "../styles/Login.css";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -26,7 +29,19 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        navigate("/menu");
+        const res = await fetch("http://localhost:8000/api/me", {
+          credentials: "include",
+        });
+        const userData = await res.json();
+        setUser(userData);
+
+        if (userData.role === "admin") {
+          navigate("/admin");
+        } else if (userData.role === "residente" || userData.role === "gestor") {
+          navigate("/menu");
+        } else {
+          navigate("/login");
+        }
       } else {
         setError(data.detail);
       }
@@ -42,18 +57,18 @@ function Login() {
           <form className="formulario" onSubmit={handleSubmit}>
             <h2>Acesse a sua conta!</h2>
             <div className="container-center">
-              <div className="container-email">
-                <label>Email</label>
-                <br></br>
-                <input type="email" name="email" className="input"value={formData.email} onChange={handleChange} required/>
-              </div>
-              <div className="container-pass">
-                <label>Password</label>
-                <br></br>
-                <input type="password" name="password" className="input" value={formData.password} onChange={handleChange} required />
-              </div>
+              <InputLogin
+                name={"email"}
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <InputPassword
+                name={"password"}
+                value={formData.password}
+                onChange={handleChange}
+              />
               <div className="container-btn">
-                <button class="btn" type="submit">
+                <button className="btn" type="submit">
                   Login
                 </button>
               </div>

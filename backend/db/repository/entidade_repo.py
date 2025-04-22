@@ -37,7 +37,8 @@ async def remover_entidade_db(entidade_id: int,db: Session):
         db.commit()
         return True, {'Entidade removida com sucesso.'}
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        return False, {'details': str(e)}
 
 #Update a uma entidade externa na base de dados
 async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
@@ -51,4 +52,5 @@ async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
         db.commit()
         return True, {'Entidade atualizada com sucesso.'}
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        return False, {'details': str(e)}
