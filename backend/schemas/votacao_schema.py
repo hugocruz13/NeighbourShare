@@ -7,11 +7,11 @@ class Criar_Votacao_Novo_Recurso(BaseModel):
     data_fim: date
     id_pedido:int
 
-class Criar_Votacao_Manutenção(BaseModel):
+class Criar_Votacao_Pedido_Manutencao(BaseModel):
     titulo: str
     descricao: str
     data_fim: date
-    id_manutencao:int
+    id_pedido_manutencao:int
 
 class Votar(BaseModel):
     voto:str

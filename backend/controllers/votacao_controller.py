@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends,HTTPException
 from requests import Session
 from db.session import get_db
 from middleware.auth_middleware import role_required
-from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Manutenção, Votar, Votar_id
+from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Pedido_Manutencao, Votar, Votar_id
 from schemas.user_schemas import UserJWT
-from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_manutencao, gerir_voto
+from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto
 
 router = APIRouter(tags=['Votação'])
 
@@ -21,10 +21,10 @@ async def criar_votacao(votacao: Criar_Votacao_Novo_Recurso, user: UserJWT = Dep
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
-@router.post("/criarvotacao_manutencao")
-async def criar_votacao(votacao: Criar_Votacao_Manutenção, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
+@router.post("/criarvotacao_pedido_manutencao")
+async def criar_votacao(votacao: Criar_Votacao_Pedido_Manutencao, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
     try:
-        if await gerir_votacao_manutencao(db, votacao):
+        if await gerir_votacao_pedido_manutencao(db, votacao):
             return {"mensagem": "Votacao criada com sucesso"}
         else:
             return {"erro": "Erro ao criar votacao"}

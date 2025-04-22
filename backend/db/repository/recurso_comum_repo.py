@@ -20,7 +20,7 @@ async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaC
 #Inserção de um novo pedido de um novo recurso comum
 async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
     try:
-        novo_pedido = PedidoNovoRecurso(**pedido.dict())
+        novo_pedido = PedidoNovoRecurso(DescPedidoNovoRecurso=pedido.DescPedidoNovoRecurso, DataPedido=pedido.DataPedido, UtilizadorID=pedido.UtilizadorID, EstadoPedNovoRecID=pedido.EstadoPedNovoRecID)
         db.add(novo_pedido)
         db.commit()
         db.refresh(novo_pedido)

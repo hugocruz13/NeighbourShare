@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, PrimaryKeyConstraint, String, TEXT, Table
+from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, TEXT, Table, Unicode
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
 import decimal
@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 class Categoria(Base):
     __tablename__ = 'Categoria'
     __table_args__ = (
-        PrimaryKeyConstraint('CatID', name='PK__Categori__6A1C8ADAC4CE0BBB'),
+        PrimaryKeyConstraint('CatID', name='PK__Categori__6A1C8ADAA528F93F'),
     )
 
     CatID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -24,7 +24,7 @@ class Categoria(Base):
 class Disponibilidade(Base):
     __tablename__ = 'Disponibilidade'
     __table_args__ = (
-        PrimaryKeyConstraint('DispID', name='PK__Disponib__1682E8118921D234'),
+        PrimaryKeyConstraint('DispID', name='PK__Disponib__1682E811536CF998'),
     )
 
     DispID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -36,7 +36,7 @@ class Disponibilidade(Base):
 class EntidadeExterna(Base):
     __tablename__ = 'EntidadeExterna'
     __table_args__ = (
-        PrimaryKeyConstraint('EntidadeID', name='PK__Entidade__6894D275AD10A484'),
+        PrimaryKeyConstraint('EntidadeID', name='PK__Entidade__6894D275B47018A8'),
     )
 
     EntidadeID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -49,20 +49,10 @@ class EntidadeExterna(Base):
     Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', back_populates='EntidadeExterna_')
 
 
-class EstadoDevolucao(Base):
-    __tablename__ = 'EstadoDevolucao'
-    __table_args__ = (
-        PrimaryKeyConstraint('EDID', name='PK__EstadoDe__27751757EF4BB561'),
-    )
-
-    EDID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Desc: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
-
-
 class EstadoManutencao(Base):
     __tablename__ = 'EstadoManutencao'
     __table_args__ = (
-        PrimaryKeyConstraint('EstadoManuID', name='PK__EstadoMa__6A784FD440D1B5DE'),
+        PrimaryKeyConstraint('EstadoManuID', name='PK__EstadoMa__6A784FD48118485A'),
     )
 
     EstadoManuID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -74,7 +64,7 @@ class EstadoManutencao(Base):
 class EstadoPedidoManutencao(Base):
     __tablename__ = 'EstadoPedidoManutencao'
     __table_args__ = (
-        PrimaryKeyConstraint('EstadoPedManuID', name='PK__EstadoPe__0010CC672D6BC7B0'),
+        PrimaryKeyConstraint('EstadoPedManuID', name='PK__EstadoPe__0010CC67ED3D27A2'),
     )
 
     EstadoPedManuID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -86,7 +76,7 @@ class EstadoPedidoManutencao(Base):
 class EstadoPedidoNovoRecurso(Base):
     __tablename__ = 'EstadoPedidoNovoRecurso'
     __table_args__ = (
-        PrimaryKeyConstraint('EstadoPedNovoRecID', name='PK__EstadoPe__4A23F6219D7E1947'),
+        PrimaryKeyConstraint('EstadoPedNovoRecID', name='PK__EstadoPe__4A23F6213F55B72D'),
     )
 
     EstadoPedNovoRecID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -98,7 +88,7 @@ class EstadoPedidoNovoRecurso(Base):
 class EstadoPedidoReserva(Base):
     __tablename__ = 'EstadoPedidoReserva'
     __table_args__ = (
-        PrimaryKeyConstraint('EstadoID', name='PK__EstadoPe__FEF86B60F5D226CC'),
+        PrimaryKeyConstraint('EstadoID', name='PK__EstadoPe__FEF86B60F142A504'),
     )
 
     EstadoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -110,7 +100,7 @@ class EstadoPedidoReserva(Base):
 class Orcamento(Base):
     __tablename__ = 'Orcamento'
     __table_args__ = (
-        PrimaryKeyConstraint('OrcamentoID', name='PK__Orcament__4E96F759BB671424'),
+        PrimaryKeyConstraint('OrcamentoID', name='PK__Orcament__4E96F7598C163374'),
     )
 
     OrcamentoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -119,14 +109,15 @@ class Orcamento(Base):
     DescOrcamento: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     NomePDF: Mapped[Optional[str]] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
 
+    PedidoManutencao: Mapped[List['PedidoManutencao']] = relationship('PedidoManutencao', secondary='OrcamentoPedidoManutencao', back_populates='Orcamento_')
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', secondary='OrcamentoPedidoNovoRecurso', back_populates='Orcamento_')
-    Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', secondary='OrcamentoPedidoManutencao', back_populates='Orcamento_')
+    Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', back_populates='Orcamento_')
 
 
 class RecursoComun(Base):
     __tablename__ = 'RecursoComun'
     __table_args__ = (
-        PrimaryKeyConstraint('RecComumID', name='PK__RecursoC__0691E1D65A33A3BF'),
+        PrimaryKeyConstraint('RecComumID', name='PK__RecursoC__0691E1D633DD71F6'),
     )
 
     RecComumID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -139,7 +130,7 @@ class RecursoComun(Base):
 class TipoProcesso(Base):
     __tablename__ = 'TipoProcesso'
     __table_args__ = (
-        PrimaryKeyConstraint('TipoProcID', name='PK__TipoProc__D86DF0CCE8060460'),
+        PrimaryKeyConstraint('TipoProcID', name='PK__TipoProc__D86DF0CC3316F8AF'),
     )
 
     TipoProcID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -151,7 +142,7 @@ class TipoProcesso(Base):
 class TipoUtilizador(Base):
     __tablename__ = 'TipoUtilizador'
     __table_args__ = (
-        PrimaryKeyConstraint('TUID', name='PK__TipoUtil__81338C4E86FCB835'),
+        PrimaryKeyConstraint('TUID', name='PK__TipoUtil__81338C4EC1A74045'),
     )
 
     TUID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -163,7 +154,7 @@ class TipoUtilizador(Base):
 class Votacao(Base):
     __tablename__ = 'Votacao'
     __table_args__ = (
-        PrimaryKeyConstraint('VotacaoID', name='PK__Votacao__F4DCDDBD249F15DA'),
+        PrimaryKeyConstraint('VotacaoID', name='PK__Votacao__F4DCDDBD1BBB2F3E'),
     )
 
     VotacaoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -172,16 +163,30 @@ class Votacao(Base):
     DataInicio: Mapped[datetime.date] = mapped_column(Date)
     DataFim: Mapped[datetime.date] = mapped_column(Date)
 
-    PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', secondary='VotacaoPedidoNovoRecurso', back_populates='Votacao_')
+    PedidoManutencao: Mapped[List['PedidoManutencao']] = relationship('PedidoManutencao', back_populates='Votacao_')
+    PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', back_populates='Votacao_')
     Voto: Mapped[List['Voto']] = relationship('Voto', back_populates='Votacao_')
-    Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', secondary='VotacaoOrcamentoManutencao', back_populates='Votacao_')
+
+
+class Sysdiagrams(Base):
+    __tablename__ = 'sysdiagrams'
+    __table_args__ = (
+        PrimaryKeyConstraint('diagram_id', name='PK__sysdiagr__C2B05B61677BF79B'),
+        Index('UK_principal_name', 'principal_id', 'name', unique=True)
+    )
+
+    name: Mapped[str] = mapped_column(Unicode(128, 'SQL_Latin1_General_CP1_CI_AS'))
+    principal_id: Mapped[int] = mapped_column(Integer)
+    diagram_id: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    version: Mapped[Optional[int]] = mapped_column(Integer)
+    definition: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
 
 
 class Notificacao(Base):
     __tablename__ = 'Notificacao'
     __table_args__ = (
         ForeignKeyConstraint(['TipoProcID'], ['TipoProcesso.TipoProcID'], name='FKNotificaca853595'),
-        PrimaryKeyConstraint('NotificacaoID', name='PK__Notifica__FB9B785C018DF9E1')
+        PrimaryKeyConstraint('NotificacaoID', name='PK__Notifica__FB9B785CE0FADA81')
     )
 
     NotificacaoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -200,8 +205,8 @@ class Utilizador(Base):
     __tablename__ = 'Utilizador'
     __table_args__ = (
         ForeignKeyConstraint(['TUID'], ['TipoUtilizador.TUID'], name='FKUtilizador842840'),
-        PrimaryKeyConstraint('UtilizadorID', name='PK__Utilizad__90F8E1C886852E40'),
-        Index('UQ__Utilizad__A9D105348CD55660', 'Email', unique=True)
+        PrimaryKeyConstraint('UtilizadorID', name='PK__Utilizad__90F8E1C877ECB96D'),
+        Index('UQ__Utilizad__A9D105348EF8FF18', 'Email', unique=True)
     )
 
     UtilizadorID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -212,6 +217,7 @@ class Utilizador(Base):
     PasswordHash: Mapped[str] = mapped_column(String(64, 'SQL_Latin1_General_CP1_CI_AS'))
     Salt: Mapped[str] = mapped_column(String(32, 'SQL_Latin1_General_CP1_CI_AS'))
     Verificado: Mapped[bool] = mapped_column(Boolean)
+    Path: Mapped[str] = mapped_column(String(100, 'SQL_Latin1_General_CP1_CI_AS'))
     TUID: Mapped[int] = mapped_column(Integer)
 
     Notificacao_: Mapped[List['Notificacao']] = relationship('Notificacao', secondary='NotificacaoUser', back_populates='Utilizador')
@@ -229,7 +235,7 @@ t_NotificacaoUser = Table(
     Column('UtilizadorID', Integer, primary_key=True, nullable=False),
     ForeignKeyConstraint(['NotificacaoID'], ['Notificacao.NotificacaoID'], name='FKNotificaca868180'),
     ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKNotificaca496296'),
-    PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F64018F31E1F')
+    PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F640B606791C')
 )
 
 
@@ -239,19 +245,23 @@ class PedidoManutencao(Base):
         ForeignKeyConstraint(['EstadoPedManuID'], ['EstadoPedidoManutencao.EstadoPedManuID'], name='FKPedidoManu183438'),
         ForeignKeyConstraint(['RecComumID'], ['RecursoComun.RecComumID'], name='FKPedidoManu235529'),
         ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKPedidoManu652837'),
-        PrimaryKeyConstraint('PMID', name='PK__PedidoMa__5C86FF66526D0251')
+        ForeignKeyConstraint(['VotacaoID'], ['Votacao.VotacaoID'], name='FKPedidoManu749443'),
+        PrimaryKeyConstraint('PMID', name='PK__PedidoMa__5C86FF6624A78388')
     )
 
     PMID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    UtilizadorID: Mapped[int] = mapped_column(Integer)
-    RecComumID: Mapped[int] = mapped_column(Integer)
     DescPedido: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     DataPedido: Mapped[datetime.date] = mapped_column(Date)
+    RecComumID: Mapped[int] = mapped_column(Integer)
+    UtilizadorID: Mapped[int] = mapped_column(Integer)
     EstadoPedManuID: Mapped[int] = mapped_column(Integer)
+    VotacaoID: Mapped[Optional[int]] = mapped_column(Integer)
 
+    Orcamento_: Mapped[List['Orcamento']] = relationship('Orcamento', secondary='OrcamentoPedidoManutencao', back_populates='PedidoManutencao')
     EstadoPedidoManutencao_: Mapped['EstadoPedidoManutencao'] = relationship('EstadoPedidoManutencao', back_populates='PedidoManutencao')
     RecursoComun_: Mapped['RecursoComun'] = relationship('RecursoComun', back_populates='PedidoManutencao')
     Utilizador_: Mapped['Utilizador'] = relationship('Utilizador', back_populates='PedidoManutencao')
+    Votacao_: Mapped[Optional['Votacao']] = relationship('Votacao', back_populates='PedidoManutencao')
     Manutencao: Mapped[List['Manutencao']] = relationship('Manutencao', back_populates='PedidoManutencao_')
 
 
@@ -260,19 +270,21 @@ class PedidoNovoRecurso(Base):
     __table_args__ = (
         ForeignKeyConstraint(['EstadoPedNovoRecID'], ['EstadoPedidoNovoRecurso.EstadoPedNovoRecID'], name='FKPedidoNovo687404'),
         ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKPedidoNovo924624'),
-        PrimaryKeyConstraint('PedidoNovoRecID', name='PK__PedidoNo__0649490B0A45A797')
+        ForeignKeyConstraint(['VotacaoID'], ['Votacao.VotacaoID'], name='FKPedidoNovo21231'),
+        PrimaryKeyConstraint('PedidoNovoRecID', name='PK__PedidoNo__0649490B39A81187')
     )
 
     PedidoNovoRecID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    UtilizadorID: Mapped[int] = mapped_column(Integer)
     DescPedidoNovoRecurso: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     DataPedido: Mapped[datetime.date] = mapped_column(Date)
+    UtilizadorID: Mapped[int] = mapped_column(Integer)
     EstadoPedNovoRecID: Mapped[int] = mapped_column(Integer)
+    VotacaoID: Mapped[Optional[int]] = mapped_column(Integer)
 
     Orcamento_: Mapped[List['Orcamento']] = relationship('Orcamento', secondary='OrcamentoPedidoNovoRecurso', back_populates='PedidoNovoRecurso')
     EstadoPedidoNovoRecurso_: Mapped['EstadoPedidoNovoRecurso'] = relationship('EstadoPedidoNovoRecurso', back_populates='PedidoNovoRecurso')
     Utilizador_: Mapped['Utilizador'] = relationship('Utilizador', back_populates='PedidoNovoRecurso')
-    Votacao_: Mapped[List['Votacao']] = relationship('Votacao', secondary='VotacaoPedidoNovoRecurso', back_populates='PedidoNovoRecurso')
+    Votacao_: Mapped[Optional['Votacao']] = relationship('Votacao', back_populates='PedidoNovoRecurso')
 
 
 class Recurso(Base):
@@ -281,13 +293,14 @@ class Recurso(Base):
         ForeignKeyConstraint(['CatID'], ['Categoria.CatID'], name='FKRecurso936704'),
         ForeignKeyConstraint(['DispID'], ['Disponibilidade.DispID'], name='FKRecurso462257'),
         ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKRecurso905396'),
-        PrimaryKeyConstraint('RecursoID', name='PK__Recurso__82F2B1A410A3D9EF')
+        PrimaryKeyConstraint('RecursoID', name='PK__Recurso__82F2B1A49FC6A013')
     )
 
     RecursoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
     Nome: Mapped[str] = mapped_column(String(50, 'SQL_Latin1_General_CP1_CI_AS'))
     DescRecurso: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     Caucao: Mapped[decimal.Decimal] = mapped_column(DECIMAL(19, 0))
+    Path: Mapped[str] = mapped_column(String(100, 'SQL_Latin1_General_CP1_CI_AS'))
     UtilizadorID: Mapped[int] = mapped_column(Integer)
     DispID: Mapped[int] = mapped_column(Integer)
     CatID: Mapped[int] = mapped_column(Integer)
@@ -303,7 +316,7 @@ class Voto(Base):
     __table_args__ = (
         ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKVoto117230'),
         ForeignKeyConstraint(['VotacaoID'], ['Votacao.VotacaoID'], name='FKVoto757754'),
-        PrimaryKeyConstraint('VotacaoID', 'UtilizadorID', name='PK__Voto__6DD353A1C2CDFBBE')
+        PrimaryKeyConstraint('VotacaoID', 'UtilizadorID', name='PK__Voto__6DD353A1CEDB1817')
     )
 
     VotacaoID: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -320,22 +333,33 @@ class Manutencao(Base):
     __table_args__ = (
         ForeignKeyConstraint(['EntidadeID'], ['EntidadeExterna.EntidadeID'], name='FKManutencao947029'),
         ForeignKeyConstraint(['EstadoManuID'], ['EstadoManutencao.EstadoManuID'], name='FKManutencao654470'),
+        ForeignKeyConstraint(['OrcamentoOrcamentoID'], ['Orcamento.OrcamentoID'], name='FKManutencao941990'),
         ForeignKeyConstraint(['PMID'], ['PedidoManutencao.PMID'], name='FKManutencao23106'),
-        PrimaryKeyConstraint('ManutencaoID', name='PK__Manutenc__8F43BF12C28810AE')
+        PrimaryKeyConstraint('ManutencaoID', name='PK__Manutenc__8F43BF12717E7BFE')
     )
 
     ManutencaoID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
-    PMID: Mapped[int] = mapped_column(Integer)
-    EntidadeID: Mapped[int] = mapped_column(Integer)
     DataManutencao: Mapped[datetime.date] = mapped_column(Date)
     DescManutencao: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
+    PMID: Mapped[int] = mapped_column(Integer)
+    EntidadeID: Mapped[int] = mapped_column(Integer)
     EstadoManuID: Mapped[int] = mapped_column(Integer)
+    OrcamentoOrcamentoID: Mapped[int] = mapped_column(Integer)
 
     EntidadeExterna_: Mapped['EntidadeExterna'] = relationship('EntidadeExterna', back_populates='Manutencao')
     EstadoManutencao_: Mapped['EstadoManutencao'] = relationship('EstadoManutencao', back_populates='Manutencao')
+    Orcamento_: Mapped['Orcamento'] = relationship('Orcamento', back_populates='Manutencao')
     PedidoManutencao_: Mapped['PedidoManutencao'] = relationship('PedidoManutencao', back_populates='Manutencao')
-    Orcamento_: Mapped[List['Orcamento']] = relationship('Orcamento', secondary='OrcamentoPedidoManutencao', back_populates='Manutencao')
-    Votacao_: Mapped[List['Votacao']] = relationship('Votacao', secondary='VotacaoOrcamentoManutencao', back_populates='Manutencao')
+
+
+t_OrcamentoPedidoManutencao = Table(
+    'OrcamentoPedidoManutencao', Base.metadata,
+    Column('OrcamentoID', Integer, primary_key=True, nullable=False),
+    Column('PedidoManutencaoPMID', Integer, primary_key=True, nullable=False),
+    ForeignKeyConstraint(['OrcamentoID'], ['Orcamento.OrcamentoID'], name='FKOrcamentoP892124'),
+    ForeignKeyConstraint(['PedidoManutencaoPMID'], ['PedidoManutencao.PMID'], name='FKOrcamentoP958025'),
+    PrimaryKeyConstraint('OrcamentoID', 'PedidoManutencaoPMID', name='PK__Orcament__CCD2A98603434CBA')
+)
 
 
 t_OrcamentoPedidoNovoRecurso = Table(
@@ -344,7 +368,7 @@ t_OrcamentoPedidoNovoRecurso = Table(
     Column('PedidoNovoRecID', Integer, primary_key=True, nullable=False),
     ForeignKeyConstraint(['OrcamentoID'], ['Orcamento.OrcamentoID'], name='FKOrcamentoP299373'),
     ForeignKeyConstraint(['PedidoNovoRecID'], ['PedidoNovoRecurso.PedidoNovoRecID'], name='FKOrcamentoP11081'),
-    PrimaryKeyConstraint('OrcamentoID', 'PedidoNovoRecID', name='PK__Orcament__EEF263C9ABFCFAE1')
+    PrimaryKeyConstraint('OrcamentoID', 'PedidoNovoRecID', name='PK__Orcament__EEF263C92F36C747')
 )
 
 
@@ -354,7 +378,7 @@ class PedidoReserva(Base):
         ForeignKeyConstraint(['EstadoID'], ['EstadoPedidoReserva.EstadoID'], name='FKPedidoRese354298'),
         ForeignKeyConstraint(['RecursoID'], ['Recurso.RecursoID'], name='FKPedidoRese183537'),
         ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKPedidoRese738683'),
-        PrimaryKeyConstraint('PedidoResevaID', name='PK__PedidoRe__3409FC9061737973')
+        PrimaryKeyConstraint('PedidoResevaID', name='PK__PedidoRe__3409FC90E32E774B')
     )
 
     PedidoResevaID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -370,31 +394,11 @@ class PedidoReserva(Base):
     Reserva: Mapped[List['Reserva']] = relationship('Reserva', back_populates='PedidoReserva_')
 
 
-t_VotacaoPedidoNovoRecurso = Table(
-    'VotacaoPedidoNovoRecurso', Base.metadata,
-    Column('VotacaoID', Integer, primary_key=True, nullable=False),
-    Column('PedidoNovoRecID', Integer, primary_key=True, nullable=False),
-    ForeignKeyConstraint(['PedidoNovoRecID'], ['PedidoNovoRecurso.PedidoNovoRecID'], name='FKVotacaoPed723238'),
-    ForeignKeyConstraint(['VotacaoID'], ['Votacao.VotacaoID'], name='FKVotacaoPed984472'),
-    PrimaryKeyConstraint('VotacaoID', 'PedidoNovoRecID', name='PK__VotacaoP__54B8492DD55BFC80')
-)
-
-
-t_OrcamentoPedidoManutencao = Table(
-    'OrcamentoPedidoManutencao', Base.metadata,
-    Column('OrcamentoID', Integer, primary_key=True, nullable=False),
-    Column('ManutencaoID', Integer, primary_key=True, nullable=False),
-    ForeignKeyConstraint(['ManutencaoID'], ['Manutencao.ManutencaoID'], name='FKOrcamentoP946778'),
-    ForeignKeyConstraint(['OrcamentoID'], ['Orcamento.OrcamentoID'], name='FKOrcamentoP892124'),
-    PrimaryKeyConstraint('OrcamentoID', 'ManutencaoID', name='PK__Orcament__7662CCA82812FE8F')
-)
-
-
 class Reserva(Base):
     __tablename__ = 'Reserva'
     __table_args__ = (
         ForeignKeyConstraint(['PedidoResevaID'], ['PedidoReserva.PedidoResevaID'], name='FKReserva 41673'),
-        PrimaryKeyConstraint('ReservaID', name='PK__Reserva__C399370327D282BF')
+        PrimaryKeyConstraint('ReservaID', name='PK__Reserva__C399370388EC31DE')
     )
 
     ReservaID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -408,13 +412,3 @@ class Reserva(Base):
     JustificacaoEstadoProduto: Mapped[Optional[str]] = mapped_column(TEXT(2147483647, 'SQL_Latin1_General_CP1_CI_AS'))
 
     PedidoReserva_: Mapped['PedidoReserva'] = relationship('PedidoReserva', back_populates='Reserva')
-
-
-t_VotacaoOrcamentoManutencao = Table(
-    'VotacaoOrcamentoManutencao', Base.metadata,
-    Column('VotacaoID', Integer, primary_key=True, nullable=False),
-    Column('ManutencaoID', Integer, primary_key=True, nullable=False),
-    ForeignKeyConstraint(['ManutencaoID'], ['Manutencao.ManutencaoID'], name='FKVotacaoOrc476843'),
-    ForeignKeyConstraint(['VotacaoID'], ['Votacao.VotacaoID'], name='FKVotacaoOrc131595'),
-    PrimaryKeyConstraint('VotacaoID', 'ManutencaoID', name='PK__VotacaoO__CC28E64C6956F1BD')
-)
