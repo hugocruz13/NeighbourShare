@@ -1,59 +1,49 @@
-/*Tipo de processo associado à tabela notificações*/
+USE NeighbourShare
 
-INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('Aquisição');
-INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('Manutenção');
+INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('AquisiÃ§Ã£o');
+INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('ManutenÃ§Ã£o');
 INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('Reserva');
-INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('Votação');
-
-/*Estado Pedido Novo Recurso*/
+INSERT INTO TipoProcesso (DescTipoProcesso) VALUES ('VotaÃ§Ã£o');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
 VALUES ('Pendente');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
-VALUES ('Em votação');
+VALUES ('Em votaÃ§Ã£o');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
 VALUES ('Rejeitado');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
-VALUES ('Aprovado para orçamentação');
+VALUES ('Aprovado para orÃ§amentaÃ§Ã£o');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
-VALUES ('Rejeitado após orçamentação');
+VALUES ('Rejeitado apÃ³s orÃ§amentaÃ§Ã£o');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
 VALUES ('Aprovado para compra');
 
 INSERT INTO EstadoPedidoNovoRecurso (DescEstadoPedidoNovoRecurso)
-VALUES ('Concluído');
-
-/*Estado Pedido de Manutenção de um recurso comum*/
+VALUES ('ConcluÃ­do');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
-VALUES ('Em análise');
+VALUES ('Em anÃ¡lise');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
-VALUES ('Aprovado para execução interna');
+VALUES ('Aprovado para execuÃ§Ã£oo interna');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
-VALUES ('Aprovado para execução externa');
+VALUES ('Aprovado para execuÃ§Ã£o externa');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Rejeitado');
 
+INSERT INTO TipoUtilizador (DescTU) VALUES ('admin')
+INSERT INTO TipoUtilizador (DescTU) VALUES ('residente')
+INSERT INTO TipoUtilizador (DescTU) VALUES ('gestor')
 
-/*Tipo Utilizador*/
-
-INSERT INTO TipoUtilizador (DescTU) VALUES ('Residente')
-INSERT INTO TipoUtilizador (DescTU) VALUES ('Gestor')
-
-/*Disponibilidade do recurso*/
-
-INSERT INTO Disponibilidade (DescDisponibilidade) VALUES ('Disponível')
-INSERT INTO Disponibilidade (DescDisponibilidade) VALUES ('Indisponível')
-
-/*Categoria de Recursos*/
+INSERT INTO Disponibilidade (DescDisponibilidade) VALUES ('DisponÃ­vel')
+INSERT INTO Disponibilidade (DescDisponibilidade) VALUES ('IndisponÃ­vel')
 
 INSERT INTO Categoria (DescCategoria) VALUES ('Lazer')
 INSERT INTO Categoria (DescCategoria) VALUES ('Tecnologia')
@@ -61,12 +51,6 @@ INSERT INTO Categoria (DescCategoria) VALUES ('Ferramentas')
 INSERT INTO Categoria (DescCategoria) VALUES ('Cozinha')
 INSERT INTO Categoria (DescCategoria) VALUES ('Outros')
 
-/* Estado Pedido Reserva */
-
-INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Em análise')
+INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Em anÃ¡lise')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Aprovado')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Rejeitado')
-
-
-
-

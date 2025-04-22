@@ -34,7 +34,9 @@ def verificar_password(password: str, stored_hash: str, stored_salt: str) -> boo
     # Converte para base64 para comparar
     return base64.b64encode(hashed_password).decode() == stored_hash
 
-print(hash_password("123456"))
+print('admin', hash_password("admin"))
+print('gestor', hash_password("gestor"))
+print('residente', hash_password("residente"))
 
 def validate_password_strength(password: str) -> str:
     pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])([^\s]){8,}$'

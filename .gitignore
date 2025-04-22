@@ -89,3 +89,5 @@ htmlcov/
 *.sqlite3
 /backend/.env
 /backend/.idea
+backend/.idea/misc.xml
+backend/.idea/backend.iml
