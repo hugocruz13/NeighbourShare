@@ -4,18 +4,15 @@ from sqlalchemy.orm import Session
 from middleware.auth_middleware import *
 from services.reserva_service import *
 from typing import List, Tuple
+from middleware.auth_middleware import role_required
+from schemas.user_schemas import UserJWT
 
 router = APIRouter(prefix="/reserva", tags=["Reservas"])
 
 @router.post("/criar")
-async def criar_reserva(
-        pedido_reserva_id: int,
-        db:Session = Depends(get_db)
-):
+async def criar_reserva(pedido_reserva_id: int,db:Session = Depends(get_db)):
     try:
-
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
-
         return await cria_reserva_service(db, reserva)
 
     except Exception as e:
@@ -102,9 +99,8 @@ async def confirma_bom_estado_produto_e_devolucao_caucao(
 #Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
 @router.get("/pedidosreserva/lista", response_model=Tuple[List[PedidoReservaGetDonoSchema],List[PedidoReservaGetSolicitanteSchema]])
 async def lista_pedidos_reserva(
-        token: UserJWT = Depends(jwt_middleware),
-        db:Session = Depends(get_db)
-):
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     try:
         return await lista_pedidos_reserva_service(db, token.id)
     except Exception as e:
@@ -112,7 +108,8 @@ async def lista_pedidos_reserva(
 
 @router.get("/pedidosreserva/ativos", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva_ativos(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de reserva ativos (EstadoID == 1)
@@ -121,7 +118,8 @@ async def lista_pedidos_reserva_ativos(
 
 @router.get("/pedidosreserva/cancelados", response_model=List[PedidoReservaSchema])
 async def lista_pedidos_reserva_cancelados(
-    db:Session = Depends(get_db)
+    db:Session = Depends(get_db),
+    token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de reserva cancelados (EstadoID == 2)

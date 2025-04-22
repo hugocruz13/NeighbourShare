@@ -8,7 +8,6 @@ from typing import List
 import jwt
 import os
 
-
 # Load environment variables
 load_dotenv()
 
