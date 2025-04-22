@@ -19,8 +19,8 @@ class DisponibilidadeSchema(BaseModel):
         from_attributes = True
 
 class UtilizadorSchema(BaseModel):
-    DispID: conint(gt=0)
-    DescDisponibilidade: constr(min_length=3, max_length=100)
+    UtilizadorID: conint(gt=0)
+    NomeUtilizador: constr(min_length=3, max_length=100)
 
     class Config:
         from_attributes = True
