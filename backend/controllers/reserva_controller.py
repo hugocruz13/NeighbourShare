@@ -13,7 +13,12 @@ router = APIRouter(prefix="/reserva", tags=["Reservas"])
 async def criar_reserva(
         pedido_reserva_id: int,
         token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
+<<<<<<< HEAD
         db:Session = Depends(get_db)):
+=======
+        db:Session = Depends(get_db)
+):
+>>>>>>> 90e6d21 (Restrição do acesso aos controllers para apenas uma pessoa com um token poder aceder, existindo em alguns caso restrições pelos cargos dos mesmos)
     try:
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
         return await cria_reserva_service(db, reserva)
@@ -139,7 +144,10 @@ async def criar_pedido_reserva(
 @router.post("/pedidosreserva/recusar")
 async def recusar_pedido_reserva(
     pedido_reserva_id: int,
+<<<<<<< HEAD
     motivo_recusacao: str,
+=======
+>>>>>>> 90e6d21 (Restrição do acesso aos controllers para apenas uma pessoa com um token poder aceder, existindo em alguns caso restrições pelos cargos dos mesmos)
     db:session = Depends(get_db),
     token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):

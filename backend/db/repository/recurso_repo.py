@@ -95,6 +95,7 @@ async def listar_recursos_utilizador_db(db:session, utilizador_id:int):
         )
         return recursos
     except SQLAlchemyError as e:
+<<<<<<< HEAD
         raise SQLAlchemyError(str(e))
 
 #Função para atualizar o estado de todos os recursos tendo em conta se está reservado ou não
@@ -127,4 +128,6 @@ async def muda_recurso_para_indisponivel(db:session, recurso_id:int):
         recurso.DispID = DisponibilidadeEstadosSchema.INDISPONIVEL
         return True
     except SQLAlchemyError as e:
+=======
+>>>>>>> 90e6d21 (Restrição do acesso aos controllers para apenas uma pessoa com um token poder aceder, existindo em alguns caso restrições pelos cargos dos mesmos)
         raise SQLAlchemyError(str(e))
