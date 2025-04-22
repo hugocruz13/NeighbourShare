@@ -25,12 +25,17 @@ class DisponibilidadeSchema(BaseModel):
 
 class UtilizadorSchema(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     UtilizadorID: conint(gt=0)
     NomeUtilizador: constr(min_length=3, max_length=100)
 =======
     DispID: conint(gt=0)
     DescDisponibilidade: constr(min_length=3, max_length=100)
 >>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
+=======
+    UtilizadorID: conint(gt=0)
+    NomeUtilizador: constr(min_length=3, max_length=100)
+>>>>>>> b429fb6 (Correção de um erro na definição do schema UtilizadorSchema)
 
     class Config:
         from_attributes = True
