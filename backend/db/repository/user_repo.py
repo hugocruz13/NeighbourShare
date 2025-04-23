@@ -1,14 +1,13 @@
 import datetime
-
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
-from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserData
+from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserUpdateInfo, UserData
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
         date = datetime.date.today()
-        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=str(user.email), Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False)
+        new_user = Utilizador(NomeUtilizador="none", DataNasc=date, Email=str(user.email), Contacto=0, PasswordHash="none", Salt="none", TUID=id_role, Verificado=False, Path="none")
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -95,7 +94,7 @@ def apagar(db: Session, id: int):
             return True
         return False
     except Exception as e:
-        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+        raise RuntimeError(f"Erro ao apagar utilizador: {e}")
 
 #Função para obter os dados aquando da consulta de perfil do utilizador
 async def get_dados_utilizador(db:Session, id_user:int):
@@ -111,3 +110,21 @@ async def get_dados_utilizador(db:Session, id_user:int):
             return None
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
+
+
+def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
+    try:
+        user = db.query(Utilizador).filter(Utilizador.UtilizadorID == id).first()
+        if not user:
+            return False
+        if dados.nome is not None and dados.nome != "":
+            user.NomeUtilizador = dados.nome
+        if dados.contacto is not None and dados.contacto != 0:
+            user.Contacto = dados.contacto
+        if dados.data_nascimento is not None and dados.data_nascimento != date.today():
+            user.DataNasc = dados.data_nascimento
+        db.commit()
+        db.refresh(user)
+        return True
+    except Exception as e:
+        raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
