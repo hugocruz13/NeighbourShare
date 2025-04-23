@@ -6,33 +6,32 @@ function Residente() {
     const { user } = useAuth();
 
     return (
-        <div className="home-container">
+      <div className="page-content">
+        <div className="home-containerMenu">
+
+          <p className="menu-title">Menu Principal</p>
           <div className="botoes">
+            <Link className="btnMenu" to="/recursosDisponiveis">Recursos Disponiveis</Link><br></br>
+            <Link className="btnMenu" to="/pedidosReserva">Pedidos Reserva</Link><br></br>
+            <Link className="btnMenu" to="/perfil">Perfil</Link><br></br>
+            <Link className="btnMenu" to="/meusRecursos">Meus Recursos</Link><br></br>
+            <Link className="btnMenu" to="/listaPedidosReserva">Pedidos de Reserva</Link><br></br>
+            <Link className="btnMenu" to="/listaReserva">Lista Reservas</Link><br></br>
+            <Link className="btnMenu" to="/realizarPedidoNovoRecurso">Realizar Pedido Novo Recurso</Link><br></br>
+            <Link className="btnMenu" to="/notificacoes">Notificações</Link><br></br>
+            <Link className="btnMenu" to="/realizarPedidoManutencao">Realizar Pedido Manutenção</Link><br></br>
 
-          <div className="btnMenu">
-            <Link className="textBtn" to="/recursosDisponiveis">Recursos Disponiveis</Link><br></br>
-          </div>
-          <div className="btnMenu">
-            <Link className="textBtn" to="/pedidosReserva">Pedidos Reserva</Link><br></br>
-          </div>
-          <div className="btnMenu">
-            <Link className="textBtn" to="/perfil">Perfil</Link><br></br>
-          </div>
-          <div className="btnMenu">
-            <Link className="textBtn" to="/meusRecursos">Meus Recursos</Link><br></br>
-          </div>
-
-          {user?.role === "gestor" || user?.role === "admin" && (
-            
-            <div>
-              <div className="btnMenu">
-                <Link className="textBtn" to="/pedidosNovosRecursos">Pedidos Novos Recursos - Pendentes</Link><br></br>
-              </div>
+            {user?.role === "gestor" || user?.role === "admin" && (
+              <>
+              <Link className="btnMenu" to="/pedidosNovosRecursos">Pedidos Novos Recursos (Pendentes)</Link><br></br>
+              <Link className="btnMenu" to="/pedidosManutencao">Pedidos Manutenção (Pendentes)</Link><br></br>
+              <Link className="btnMenu" to="/orcamentos">Orçamentos</Link><br></br>
+              </>
               
-            </div>
             
           )}
           </div>
+        </div>
         </div>
       );
   }

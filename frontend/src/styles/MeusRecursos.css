@@ -61,13 +61,15 @@
 
 
 
-.fundoMeusRecursos {
-  max-width: 1000px;
+.fundoNovosRecursos {
+  max-width: 90%;
   margin: 40px auto 0 auto;
   padding: 30px 30px 40px 30px;
   background-color: #f9f9f9;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 20px;
 }
 
 /* Tabela */
@@ -114,8 +116,44 @@ th {
   background-color: #0077b6;
 }
 
-.p-meusRecursos{
+.p-NovosRecursos{
   font-size: 24px;
   margin-bottom: 20px;
   font-weight: bold;
+}
+
+.deleteIcon{
+  width: 20px;
+  height: 20px;
+}
+
+.imgNovosRecursos{
+  width: 75%;
+  
+}
+
+.imagemDireita{
+  width: 75%;
+}
+
+.textoEsquerda{
+  width: 50%;
+}
+
+.inputNovoRecurso{
+  width: 100%;
+  border-radius: 10px;
+}
+
+.btnNovoRecurso{
+  background-color: #00b4d8;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+.btnNovoRecurso:hover{
+  background-color: #0077b6;
 }

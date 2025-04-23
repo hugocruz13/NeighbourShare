@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from db.repository.notificacao_repo import *
+import db.repository.notificacao_repo as notificacao_repo
+from db.models import Notificacao
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
@@ -22,6 +24,8 @@ async def cria_notificacao_individual_service(db:Session, notificacao:Notificaca
         await send_notification(user_id,notificacao_out.dict())
 
     return notificacao_out
+async def cria_notificacao_individual_service(db:Session, notificacao:Notificacao, user_id:int):
+    return await notificacao_repo.cria_notificacao_individual_db(db, notificacao, user_id)
 
 #Cria uma notificação para todos os admins/gestores do sistema
 async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSchema):
@@ -34,6 +38,8 @@ async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSche
             await send_notification(admin_id, notificacao_out.dict())
 
     return notificacao_out
+async def cria_notificacao_admin_service(db:Session, notificacao:Notificacao):
+    return await notificacao_repo.cria_notificacao_admin_db(db, notificacao)
 
 #Cria uma notificação para todos os utilizadores
 async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSchema):
@@ -44,6 +50,8 @@ async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSche
         await send_notification(user_id, notificacao_out.dict())
 
     return notificacao_out
+async def cria_notificacao_todos_service(db:Session, notificacao:Notificacao):
+    return await notificacao_repo.cria_notificacao_todos_utilizadores_db(db,notificacao)
 
 #Lista todas as notificações de um utilizador
 async def listar_notificacoes_service(db:Session, user_id:int):
