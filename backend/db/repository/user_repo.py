@@ -111,6 +111,11 @@ async def get_dados_utilizador(db:Session, id_user:int):
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
 
+#Função que obtêm os ID's de todos os admins/gestores
+async def get_all_admin_gestores_ids(db:Session):
+
+    lista_ids = db.query(Utilizador.UtilizadorID).filter(TipoUtilizador.DescTU != "residente").all()
+    return lista_ids
 
 def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
     try:
