@@ -85,7 +85,6 @@ async def listar_pedidos_manutencao(
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns
     """
-
     return await listar_pedidos_manutencao_service(db)
 
 #Endpoint para eliminar um pedido de manutenção

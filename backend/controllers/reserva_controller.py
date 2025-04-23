@@ -10,14 +10,9 @@ from schemas.user_schemas import UserJWT
 router = APIRouter(prefix="/reserva", tags=["Reservas"])
 
 @router.post("/criar")
-async def criar_reserva(
-        pedido_reserva_id: int,
-        db:Session = Depends(get_db)
-):
+async def criar_reserva(pedido_reserva_id: int,db:Session = Depends(get_db)):
     try:
-
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
-
         return await cria_reserva_service(db, reserva)
 
     except Exception as e:

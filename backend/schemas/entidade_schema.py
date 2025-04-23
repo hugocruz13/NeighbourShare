@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr
 
-
 class EntidadeSchema(BaseModel):
     Especialidade: str
     Contacto: int
