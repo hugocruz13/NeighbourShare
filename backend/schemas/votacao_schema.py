@@ -1,17 +1,17 @@
 from pydantic import BaseModel
 from datetime import date
+from enum import Enum
 
-class Criar_Votacao_Novo_Recurso(BaseModel):
+class TipoVotacao(str, Enum):
+    AQUISICAO = "Aquisição"
+    MANUTENCAO = "Manutenção"
+
+class Criar_Votacao(BaseModel):
     titulo: str
     descricao: str
+    id_processo: int
     data_fim: date
-    id_pedido:int
-
-class Criar_Votacao_Pedido_Manutencao(BaseModel):
-    titulo: str
-    descricao: str
-    data_fim: date
-    id_pedido_manutencao:int
+    tipo_votacao: TipoVotacao
 
 class Votar(BaseModel):
     voto:str
@@ -25,3 +25,9 @@ class Votar_id(BaseModel):
 class Consulta_Votacao(BaseModel):
     id_votacao: int
     id_user: int
+
+class Votacao_Return(BaseModel):
+    id_votacao: int
+    data_inicio: date
+    data_fim: date
+    processada: bool
