@@ -5,7 +5,7 @@ from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
-from schemas.votacao_schema import Criar_Votacao_Novo_Recurso,Criar_Votacao_Pedido_Manutencao
+from schemas.votacao_schema import Criar_Votacao
 from services.recurso_comum_service import obter_pedido_manutencao
 from db.models import PedidoReserva
 
@@ -42,7 +42,7 @@ async def marcar_noti_lida_service(db:Session, notificacao_id: int):
 #region Votações
 
 #Cria notificação referente à criação de uma votação para decidir se é para comprar um novo recurso ou não
-async def cria_notificacao_decisao_novo_recurso_comum_service(db:Session, votacao:Criar_Votacao_Novo_Recurso):
+async def cria_notificacao_decisao_novo_recurso_comum_service(db:Session, votacao:Criar_Votacao):
     try:
         notificacao = NotificacaoSchema(
             Titulo="Nova Votação Disponível!",
@@ -68,7 +68,7 @@ async def cria_notificacao_decisao_novo_recurso_comum_service(db:Session, votaca
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação referente à criação de uma votação para decidir qual orçamento será escolhido para a compra do novo recurso
-async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, votacao:Criar_Votacao_Novo_Recurso):
+async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, votacao:Criar_Votacao):
     try:
         notificacao = NotificacaoSchema(
             Titulo="Nova Votação Disponível!",
@@ -94,7 +94,7 @@ async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, vota
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria votação para a escolha do orçamento referente à manutenção de um recurso comum
-async def cria_notificacao_decisao_orcamento_manutencao_service(db:Session, votacao:Criar_Votacao_Pedido_Manutencao):
+async def cria_notificacao_decisao_orcamento_manutencao_service(db:Session, votacao:Criar_Votacao):
     try:
         notificacao = NotificacaoSchema(
             Titulo="Nova Votação Disponível!",
