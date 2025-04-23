@@ -241,18 +241,6 @@ class Utilizador(Base):
     PedidoReserva: Mapped[List['PedidoReserva']] = relationship('PedidoReserva', back_populates='Utilizador_')
     notificacoes_assoc = relationship('NotificacaoUser', back_populates='utilizador')
 
-
-
-t_NotificacaoUser = Table(
-    'NotificacaoUser', Base.metadata,
-    Column('NotificacaoID', Integer, primary_key=True, nullable=False),
-    Column('UtilizadorID', Integer, primary_key=True, nullable=False),
-    ForeignKeyConstraint(['NotificacaoID'], ['Notificacao.NotificacaoID'], name='FKNotificaca868180'),
-    ForeignKeyConstraint(['UtilizadorID'], ['Utilizador.UtilizadorID'], name='FKNotificaca496296'),
-    PrimaryKeyConstraint('NotificacaoID', 'UtilizadorID', name='PK__Notifica__6294F640B606791C')
-)
-
-
 class PedidoManutencao(Base):
     __tablename__ = 'PedidoManutencao'
     __table_args__ = (
