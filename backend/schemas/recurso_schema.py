@@ -48,6 +48,7 @@ class RecursoGetTodosSchema(BaseModel):
     DescRecurso: constr(min_length=5, max_length=500)
     Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
+    Utilizador_ : UtilizadorSchema
     Disponibilidade_: DisponibilidadeSchema
     Image: Optional[str] = None
 

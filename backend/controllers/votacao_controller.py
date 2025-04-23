@@ -4,7 +4,7 @@ from db.session import get_db
 from middleware.auth_middleware import role_required
 from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Pedido_Manutencao, Votar, Votar_id
 from schemas.user_schemas import UserJWT
-from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto
+from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, processar_votacoes_expiradas
 
 router = APIRouter(tags=['Votação'])
 
@@ -45,3 +45,6 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
+
+async def testar_processamento_votacao(db: Session = Depends(get_db)):
+    return await processar_votacoes_expiradas(db)

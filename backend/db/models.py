@@ -162,6 +162,7 @@ class Votacao(Base):
     Descricao: Mapped[str] = mapped_column(String(255, 'SQL_Latin1_General_CP1_CI_AS'))
     DataInicio: Mapped[datetime.date] = mapped_column(Date)
     DataFim: Mapped[datetime.date] = mapped_column(Date)
+    Processada = Column(Boolean, default=False, nullable=False)
 
     PedidoManutencao: Mapped[List['PedidoManutencao']] = relationship('PedidoManutencao', back_populates='Votacao_')
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', back_populates='Votacao_')

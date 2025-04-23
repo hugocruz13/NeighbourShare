@@ -1,4 +1,6 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Pedido_Manutencao, Votar_id, Consulta_Votacao
 from db.models import Votacao, PedidoNovoRecurso, PedidoManutencao, Voto
@@ -88,3 +90,22 @@ def ja_votou(db: Session, votacao: Consulta_Votacao) -> bool:
     except Exception as e:
         db.rollback()
         raise RuntimeError(f"Erro ao verificar se já votou: {e}")
+
+#Consulta as votações que ainda não foram processadas, contudo já se encontram expiradas
+async def get_votacoes_expiradas_e_nao_processadas(db:Session):
+    try:
+        hoje = datetime.utcnow().date()
+        ontem = hoje - timedelta(days=1)
+        votacoes = db.query(Votacao).filter(Votacao.DataFim == ontem, Votacao.Processada == False).all()
+
+        return votacoes
+    except SQLAlchemyError as e:
+        raise e
+
+#Obtem todos os votos relativos a uma votação
+async def get_votos_votacao(db:Session, votacao_id:int):
+    try:
+        votos = db.query(Voto).filter(Voto.VotacaoID == votacao_id).all()
+        return votos
+    except SQLAlchemyError as e:
+        raise e
