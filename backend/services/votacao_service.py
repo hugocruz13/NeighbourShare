@@ -10,7 +10,6 @@ from db.repository.votacao_repo import *
 from datetime import datetime, timedelta, date
 from services.notificacao_service import cria_notificacao_decisao_novo_recurso_comum_service
 from collections import defaultdict
-from services.notificacao_service import cria
 
 scheduler = AsyncIOScheduler()
 
