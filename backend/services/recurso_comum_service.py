@@ -35,7 +35,6 @@ async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecur
         raise HTTPException(status_code=500, detail=str(e))
 
 async def listar_pedidos_novos_recursos_service(db:session):
-
     pedidos_novos_recursos = await recurso_comum_repo.listar_pedidos_novos_recursos_db(db)
 
     if not pedidos_novos_recursos:

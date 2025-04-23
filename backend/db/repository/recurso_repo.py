@@ -31,7 +31,8 @@ async def inserir_recurso_db(db:session, recurso:Recurso):
             Caucao=recurso.Caucao,
             UtilizadorID=recurso.UtilizadorID,
             DispID = recurso.DispID,
-            CatID=recurso.CatID
+            CatID=recurso.CatID,
+            Path="none"
         )
         db.add(novo_recurso)
         db.commit()

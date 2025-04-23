@@ -16,9 +16,7 @@ async def criar_reserva(
         db:Session = Depends(get_db)
 ):
     try:
-
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
-
         return await cria_reserva_service(db, reserva)
 
     except Exception as e:
