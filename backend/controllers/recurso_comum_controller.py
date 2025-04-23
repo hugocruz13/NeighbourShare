@@ -104,7 +104,7 @@ async def listar_tipos_pedido_manutencao(db:Session = Depends(get_db), token: Us
     return await obter_all_tipo_estado_pedido_manutencao(db)
 
 @router.put("/pedidosmanutencao/{pedido_id}/estado")
-async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
+async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, token: UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
     try:
         obter = await obter_pedido_manutencao(db, pedido_id)
         if obter is None:
@@ -146,7 +146,7 @@ async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=D
     return await obter_all_tipo_estado_manutencao(db)
 
 @router.put("/manutencao/update{pedido_id}/estado")
-async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
+async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, token:UserJWT=Depends(role_required(["admin","gestor","residente"])),db: Session = Depends(get_db)):
     try:
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:
