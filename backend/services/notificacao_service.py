@@ -10,7 +10,7 @@ from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao_Novo_Recurso,Criar_Votacao_Pedido_Manutencao
 from services.recurso_comum_service import obter_pedido_manutencao
 from db.models import PedidoReserva
-from web_sockets_service import send_notification, active_connections
+from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
 
 

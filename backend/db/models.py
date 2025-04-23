@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, TEXT, Table, Unicode
+from sqlalchemy import Boolean, Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, TEXT, Table, Unicode, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
 import decimal
@@ -199,7 +199,18 @@ class Notificacao(Base):
     TipoProcID: Mapped[int] = mapped_column(Integer)
 
     TipoProcesso_: Mapped['TipoProcesso'] = relationship('TipoProcesso', back_populates='Notificacao')
-    Utilizador: Mapped[List['Utilizador']] = relationship('Utilizador', secondary='NotificacaoUser', back_populates='Notificacao_')
+    Utilizador = relationship('Utilizador', secondary='NotificacaoUser', back_populates='Notificacao_')
+    utilizadores_assoc = relationship('NotificacaoUser', back_populates='notificacao')
+
+class NotificacaoUser(Base):
+    __tablename__ = 'NotificacaoUser'
+
+    UtilizadorID = Column(Integer, ForeignKey('utilizador.UtilizadorID'), primary_key=True)
+    NotificacaoID = Column(Integer, ForeignKey('notificacao.NotificacaoID'), primary_key=True)
+
+    # Opcional: para facilitar navegação reversa se quiseres
+    utilizador = relationship("Utilizador", back_populates="notificacoes_assoc")
+    notificacao = relationship("Notificacao", back_populates="utilizadores_assoc")
 
 
 class Utilizador(Base):
@@ -221,13 +232,15 @@ class Utilizador(Base):
     Path: Mapped[str] = mapped_column(String(100, 'SQL_Latin1_General_CP1_CI_AS'))
     TUID: Mapped[int] = mapped_column(Integer)
 
-    Notificacao_: Mapped[List['Notificacao']] = relationship('Notificacao', secondary='NotificacaoUser', back_populates='Utilizador')
+    Notificacao_ = relationship('Notificacao', secondary='NotificacaoUser', back_populates='Utilizador')
     TipoUtilizador_: Mapped['TipoUtilizador'] = relationship('TipoUtilizador', back_populates='Utilizador')
     PedidoManutencao: Mapped[List['PedidoManutencao']] = relationship('PedidoManutencao', back_populates='Utilizador_')
     PedidoNovoRecurso: Mapped[List['PedidoNovoRecurso']] = relationship('PedidoNovoRecurso', back_populates='Utilizador_')
     Recurso: Mapped[List['Recurso']] = relationship('Recurso', back_populates='Utilizador_')
     Voto: Mapped[List['Voto']] = relationship('Voto', back_populates='Utilizador_')
     PedidoReserva: Mapped[List['PedidoReserva']] = relationship('PedidoReserva', back_populates='Utilizador_')
+    notificacoes_assoc = relationship('NotificacaoUser', back_populates='utilizador')
+
 
 
 t_NotificacaoUser = Table(

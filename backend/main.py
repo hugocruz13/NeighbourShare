@@ -6,6 +6,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.votacao_service import check_votacoes_expiradas
 
 app = FastAPI()
+scheduler = AsyncIOScheduler()
 
 # CORS setup
 origins = [
