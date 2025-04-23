@@ -1,47 +1,52 @@
-import decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, constr, conint, condecimal
 from typing import Optional
-from fastapi import File
+import decimal
+
+# === Schemas Auxiliares ===
 
 class CategoriaSchema(BaseModel):
-    CatID: int
-    DescCategoria: str
+    CatID: conint(gt=0)
+    DescCategoria: constr(min_length=3, max_length=100)
 
     class Config:
         from_attributes = True
 
 class DisponibilidadeSchema(BaseModel):
-    DispID: int
-    DescDisponibilidade: str
+    DispID: conint(gt=0)
+    DescDisponibilidade: constr(min_length=3, max_length=100)
 
     class Config:
         from_attributes = True
 
 class UtilizadorSchema(BaseModel):
-    UtilizadorID: int
-    NomeUtilizador: str
+    UtilizadorID: conint(gt=0)
+    NomeUtilizador: constr(min_length=3, max_length=100)
 
     class Config:
         from_attributes = True
+
+
+# === Inserção de Recurso ===
 
 class RecursoInserirSchema(BaseModel):
-    Nome: str
-    DescRecurso: str
-    UtilizadorID: int
-    Caucao: decimal.Decimal
-    CatID: int
-    DispID: int
-    Image: Optional[bytes] = None
+    Nome: constr(min_length=2, max_length=100)
+    DescRecurso: constr(min_length=5, max_length=500)
+    UtilizadorID: conint(gt=0)
+    Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
+    CatID: conint(gt=0)
+    DispID: conint(gt=0)
 
     class Config:
         from_attributes = True
+
+# === Recurso para listagens ===
 
 #Informações passadas aquando a amostragem de todos os recurso registados
 class RecursoGetTodosSchema(BaseModel):
-    RecursoID: int
-    Nome: str
-    DescRecurso: str
-    Caucao: decimal.Decimal
+    RecursoID: conint(gt=0)
+    Nome: constr(min_length=2, max_length=100)
+    DescRecurso: constr(min_length=5, max_length=500)
+    Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
     Image: Optional[str] = None
@@ -51,9 +56,9 @@ class RecursoGetTodosSchema(BaseModel):
 
 #Informação passada aquando da amostragem dos recursos de um utilizador
 class RecursoGetUtilizadorSchema(BaseModel):
-    RecursoID: int
-    Nome: str
-    Caucao: decimal.Decimal
+    RecursoID: conint(gt=0)
+    Nome: constr(min_length=2, max_length=100)
+    Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
 

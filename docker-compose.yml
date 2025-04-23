@@ -1,0 +1,49 @@
+services:
+  db:
+    image: ghcr.io/mtcigor/neighbourshare-db:v12
+    container_name: sql_server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=DEVesi2025
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"  # Porta do SQL Server
+    networks:
+      - app_network
+    volumes:
+      - sql_data:/var/opt/mssql  # Persistir dados do SQL Server
+
+  backend:
+    build:
+      context: ./backend
+    container_name: neighbourshare_backend
+    environment:
+      - DATABASE_URL=mssql+pyodbc://sa:DEVesi2025@db:1433/NeighbourShare?driver=ODBC+Driver+17+for+SQL+Server
+    ports:
+      - "8000:8000"  # Porta do FastAPI
+    depends_on:
+      - db
+    networks:
+      - app_network
+    volumes:
+      - ./backend:/app  # Montar o diretório local para desenvolvimento
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: neighbourshare_frontend
+    volumes:
+      - ./frontend/apache-config:/usr/local/apache2/conf/extra
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  sql_data:

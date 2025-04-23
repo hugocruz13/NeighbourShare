@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from db.models import Orcamento
-from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema
+from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 from sqlalchemy.exc import SQLAlchemyError
+from db.repository.recurso_comum_repo import obter_pedido_manutencao_db, obter_pedido_novo_recurso_db
 
 #Inserção de um novo orçamento na base de dados
 async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
@@ -12,11 +13,18 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
             DescOrcamento=orcamento.DescOrcamento,
             NomePDF = orcamento.NomePDF
         )
+
+        if orcamento.TipoProcesso == TipoOrcamento.MANUTENCAO:
+            pedido_manutencao = await obter_pedido_manutencao_db(db, orcamento.IDProcesso)
+            novo_orcamento.PedidoManutencao.append(pedido_manutencao)
+        else:
+            pedido_novo_recurso = await obter_pedido_novo_recurso_db(db, orcamento.IDProcesso)
+            novo_orcamento.PedidoNovoRecurso.append(pedido_novo_recurso)
+
         db.add(novo_orcamento)
         db.commit()
         db.refresh(novo_orcamento)
-
-        return novo_orcamento.OrcamentoID, {'Inserção do orçamento realizada com sucesso!'}
+        return novo_orcamento.OrcamentoID, {'message': 'Inserção do orçamento realizada com sucesso!'}
 
     except SQLAlchemyError as e:
         db.rollback()
