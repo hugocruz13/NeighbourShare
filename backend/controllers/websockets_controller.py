@@ -1,21 +1,18 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from typing import Dict
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, APIRouter, Depends
+from services.web_sockets_service import register_connection, unregister_connection
+from schemas.user_schemas import UserJWT
+from middleware.auth_middleware import role_required
 
 from starlette.websockets import WebSocketDisconnect #Não sei se é este import para corrigir a missing module na linha 16
 
-app = FastAPI()
-active_connections: Dict[int, WebSocket] = {}
+router = APIRouter()
 
-@app.websocket("/ws/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, user_id: int):
+@router.websocket("/ws/{user_id}", )
+async def websocket_endpoint(websocket: WebSocket, token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     await websocket.accept()
-    active_connections[user_id] = websocket
+    register_connection(token.id, websocket)
     try:
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
-        del active_connections[user_id]
-
-async def send_notification(user_id: int, message: str):
-    if user_id in active_connections:
-        await active_connections[user_id].send_text(message)
+        unregister_connection(token.id)

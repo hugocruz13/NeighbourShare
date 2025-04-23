@@ -8,19 +8,42 @@ from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao_Novo_Recurso,Criar_Votacao_Pedido_Manutencao
 from services.recurso_comum_service import obter_pedido_manutencao
 from db.models import PedidoReserva
+from web_sockets_service import send_notification, active_connections
+from db.repository.user_repo import get_all_admin_gestores_ids
 
 
 #Cria uma notificação direcionada somente a um utilizador específico
 async def cria_notificacao_individual_service(db:Session, notificacao:NotificacaoSchema, user_id:int):
-    return await cria_notificacao_individual_db(db, notificacao, user_id)
+
+    nova_notificacao = await cria_notificacao_individual_db(db, notificacao, user_id)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    if user_id in active_connections:
+        await send_notification(user_id,notificacao_out.dict())
+
+    return notificacao_out
 
 #Cria uma notificação para todos os admins/gestores do sistema
 async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSchema):
-    return await cria_notificacao_admin_db(db, notificacao)
+    nova_notificacao = await cria_notificacao_admin_db(db, notificacao)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    admin_ids = await get_all_admin_gestores_ids(db)
+    for admin_id in admin_ids:
+        if admin_id in active_connections:
+            await send_notification(admin_id, notificacao_out.dict())
+
+    return notificacao_out
 
 #Cria uma notificação para todos os utilizadores
 async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSchema):
-    return await cria_notificacao_todos_utilizadores_db(db,notificacao)
+    nova_notificacao = await cria_notificacao_admin_db(db, notificacao)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    for user_id in active_connections.keys():
+        await send_notification(user_id, notificacao_out.dict())
+
+    return notificacao_out
 
 #Lista todas as notificações de um utilizador
 async def listar_notificacoes_service(db:Session, user_id:int):
