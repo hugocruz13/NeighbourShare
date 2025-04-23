@@ -1,10 +1,18 @@
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from db.session import get_db
 from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Pedido_Manutencao, Votar_id, Consulta_Votacao
 from sqlalchemy.orm import Session
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import HTTPException
 from utils.string_utils import formatar_string
-from db.repository.votacao_repo import criar_votacao_nr_db, criar_votacao_pedido_manutencao_db, existe_nr, existe_pedido_manutencao, \
-    existe_votacao, registar_voto, ja_votou
-from datetime import date
+from db.repository.votacao_repo import *
+from datetime import datetime, timedelta, date
+from services.notificacao_service import cria_notificacao_decisao_novo_recurso_comum_service
+from collections import defaultdict
+from services.notificacao_service import cria
+
+scheduler = AsyncIOScheduler()
 
 async def gerir_votacao_novo_recurso(db: Session, votacao: Criar_Votacao_Novo_Recurso):
     try:
@@ -57,3 +65,36 @@ async def gerir_voto(db: Session, voto:Votar_id):
         return await registar_voto(db,voto)
     except Exception as e:
         raise e
+
+#Verificas as votações que tem como data de término o dia anterior ao atual e calcula os resultados
+async def processar_votacoes_expiradas(db:Session):
+
+    resultado = ""
+
+    votacoes_expiradas = await get_votacoes_expiradas_e_nao_processadas(db)
+
+    for votacao in votacoes_expiradas:
+        votos = await get_votos_votacao(db, votacao.id_votacao)
+
+        contagem = defaultdict(int)
+
+        for voto in votos:
+            if voto.EscolhaVoto:
+                contagem[voto.EscolhaVoto] += 1
+
+        if contagem:
+            resultado = max(contagem.items(), key=lambda item: item[1])[0]
+        else:
+            resultado = "Sem votos"
+
+        votacao.Processada = True
+
+    db.commit()
+
+    return {"status": "Votação processada, resultado: " + resultado}
+
+def check_votacoes_expiradas():
+    db: Session = next(get_db())
+    processar_votacoes_expiradas(db)
+
+
