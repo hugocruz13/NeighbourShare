@@ -214,15 +214,14 @@ async def get_recurso_comum(db:Session = Depends(get_db),token: UserJWT = Depend
 #Inserção de um pedido de manutenção de um recurso comum
 @router.post("/pedidosmanutencao/inserir")
 async def inserir_manutencao_recurso_comum(
-    recurso_comum_id: int,
-    desc_manutencao_recurso_comum: str,
+    pedido: PedidoManutencaoRequest,
     token: UserJWT = Depends(role_required(["admin","gestor", "residente"])),
     db:Session = Depends(get_db)
 ):
     novo_pedido_manutencao = PedidoManutencaoSchemaCreate(
         UtilizadorID=token.id,
-        RecComumID=recurso_comum_id,
-        DescPedido=desc_manutencao_recurso_comum,
+        RecComumID=pedido.recurso_comum_id,
+        DescPedido=pedido.desc_manutencao_recurso_comum,
         DataPedido = date.today(),
         EstadoPedManuID= 1 # Relativo ao estado 'Em análise'
     )
