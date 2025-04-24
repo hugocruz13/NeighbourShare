@@ -1,15 +1,15 @@
 from datetime import date
-from schemas.votacao_schema import Criar_Votacao, Votar_id, Consulta_Votacao
+from schemas.votacao_schema import Criar_Votacao, Votar_id, Consulta_Votacao, TipoVotacaoPedidoNovoRecurso
+from schemas.recurso_comum_schema import EstadoPedNovoRecursoComumSchema
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from db.session import get_db
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import HTTPException
 from utils.string_utils import formatar_string
-from db.repository.votacao_repo import criar_votacao_nr_db, criar_votacao_pedido_manutencao_db, existe_nr, existe_pedido_manutencao, \
-    existe_votacao, registar_voto, ja_votou
 from db.repository.votacao_repo import *
+from db.repository.recurso_comum_repo import *
 from datetime import datetime, timedelta, date
-from services.notificacao_service import cria_notificacao_decisao_novo_recurso_comum_service
+from services.notificacao_service import *
 from collections import defaultdict
 
 scheduler = AsyncIOScheduler()
@@ -22,14 +22,24 @@ async def gerir_votacao_novo_recurso(db: Session, votacao: Criar_Votacao):
         votacao.descricao = formatar_string(votacao.descricao)
 
         #Verifica se o pedido existe
-        if not await existe_nr(db, votacao.id_processo):
+        val, desc_estado_pedido = await existe_nr(db, votacao.id_processo)
+
+        if not val:
             raise HTTPException(status_code=404, detail="Erro ao encontar pedido")
 
         #Verifica se a votação tem no mínimo 1 dia,
         if votacao.data_fim<= date.today():
             raise HTTPException(status_code=400, detail="A data de fim da votação deve ser posterior à data de início (mínimo 1 dia de duração).")
 
-        return await criar_votacao_nr_db(db,votacao)
+        tipovotacao = TipoVotacaoPedidoNovoRecurso.BINARIA
+
+        if desc_estado_pedido == EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value:
+            tipovotacao = TipoVotacaoPedidoNovoRecurso.MULTIPLA
+            await cria_notificao_decisao_orcamento_novo_recurso_service(db, votacao)
+        else:
+            await cria_notificacao_decisao_novo_recurso_comum_service(db, votacao)
+
+        return await criar_votacao_nr_db(db,votacao,tipovotacao)
     except Exception as e:
         raise e
 
@@ -46,6 +56,8 @@ async def gerir_votacao_pedido_manutencao(db: Session, votacao: Criar_Votacao):
         #Verifica se a votação tem no mínimo 1 dia,
         if votacao.data_fim <= date.today():
             raise HTTPException(status_code=400, detail="A data de fim da votação deve ser posterior à data de início (mínimo 1 dia de duração).")
+
+        await cria_notificacao_decisao_orcamento_manutencao_service(db, votacao)
 
         return await criar_votacao_pedido_manutencao_db(db,votacao)
     except Exception as e:
@@ -90,6 +102,17 @@ async def processar_votacoes_expiradas(db:Session):
             resultado = "Sem votos"
 
         votacao.Processada = True
+
+        tipo_votacao  = await get_contexto_votacao(db, votacao.id_votacao)
+
+        if tipo_votacao == TipoVotacao.MANUTENCAO and resultado != "Sem votos":
+            await cria_notificacao_orcamento_mais_votado(db,await obter_pedido_manutencao_db(db,votacao.id_processo),resultado)
+        elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA and resultado != "Sem votos":
+            await cria_notificacao_anuncio_compra_novo_recurso_comum_service(db,await obter_pedido_novo_recurso_db(db,votacao.id_processo),resultado)
+        elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Sim"):
+            await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao)
+        elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Não"):
+            await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao)
 
     db.commit()
 

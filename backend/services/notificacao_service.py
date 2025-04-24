@@ -9,7 +9,7 @@ from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao
 from services.recurso_comum_service import obter_pedido_manutencao
-from db.models import PedidoReserva
+from db.models import PedidoReserva, Votacao
 from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
 
@@ -24,8 +24,6 @@ async def cria_notificacao_individual_service(db:Session, notificacao:Notificaca
         await send_notification(user_id,notificacao_out.dict())
 
     return notificacao_out
-async def cria_notificacao_individual_service(db:Session, notificacao:Notificacao, user_id:int):
-    return await notificacao_repo.cria_notificacao_individual_db(db, notificacao, user_id)
 
 #Cria uma notificação para todos os admins/gestores do sistema
 async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSchema):
@@ -38,8 +36,6 @@ async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSche
             await send_notification(admin_id, notificacao_out.dict())
 
     return notificacao_out
-async def cria_notificacao_admin_service(db:Session, notificacao:Notificacao):
-    return await notificacao_repo.cria_notificacao_admin_db(db, notificacao)
 
 #Cria uma notificação para todos os utilizadores
 async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSchema):
@@ -50,8 +46,6 @@ async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSche
         await send_notification(user_id, notificacao_out.dict())
 
     return notificacao_out
-async def cria_notificacao_todos_service(db:Session, notificacao:Notificacao):
-    return await notificacao_repo.cria_notificacao_todos_utilizadores_db(db,notificacao)
 
 #Lista todas as notificações de um utilizador
 async def listar_notificacoes_service(db:Session, user_id:int):
@@ -150,8 +144,57 @@ async def cria_notificacao_decisao_orcamento_manutencao_service(db:Session, vota
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-#TODO Completar os dados de acordo com o resultado da votação
 #Cria notificação decisão da compra do novo recurso
+async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, votacao:Votacao):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Aquisição de Novo Recurso Comum",
+            Mensagem=f"""
+                Caros residentes,
+                
+                Informamos que, após a realização da votação pelos residentes do condomínio, foi aprovada por maioria a aquisição do novo recurso comum.
+                
+                A votação em questão tem os seguintes dados:
+
+                Titulo : {votacao.titulo}
+                Descrição : {votacao.descricao}
+                
+                Esta decisão reflete o envolvimento e interesse de todos em melhorar as condições e a convivência no nosso espaço coletivo.
+
+                Em breve será criada uma votação para a escolha do orçamento, para avançar com a compra.
+
+                Agradecemos a participação de todos!""",
+            ProcessoID=votacao.id_processo,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+            )
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação decisão de não comprar um novo recurso comum
+async def cria_notificacao_decisao_nao_compra_recurso_service(db:Session, votacao:Votacao):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Recusa de Aquisição de Novo Recurso Comum",
+            Mensagem=f"""
+                Caros residentes,
+
+                Informamos que, após a realização da votação pelos residentes do condomínio, foi recusada por maioria a aquisição do novo recurso comum.
+
+                A votação em questão tem os seguintes dados:
+
+                Titulo : {votacao.titulo}
+                Descrição : {votacao.descricao}
+
+                Esta decisão reflete o envolvimento e de todos, refletindo-se numa recusa que tem que ser respeitada.
+
+                Agradecemos a participação de todos!""",
+            ProcessoID=votacao.id_processo,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+        )
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #endregion
 
@@ -253,7 +296,7 @@ async def cria_notificacao_rejeicao_manutencao_recurso_comum(db:Session,pedido:P
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que orçamento foi o mais votado para a manutenção do recurso comum
-async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManutencaoSchema, orcamento:OrcamentoSchema):
+async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManutencaoSchema, nomeorcamento:str):
     try:
 
         notificacao = NotificacaoSchema(
@@ -261,7 +304,7 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
             Mensagem= f"""
                 Prezados moradores,
                 
-                Informamos que, após o processo de avaliação e votação, foi escolhido o orçamento apresentado pela entidade {orcamento.Fornecedor} no valor de {orcamento.Valor}€ para a realização da manutenção do recurso comum {pedido.RecursoComun_.Nome}.
+                Informamos que, após o processo de avaliação e votação, foi escolhido o orçamento {nomeorcamento} para a realização da manutenção do recurso comum {pedido.RecursoComun_.Nome}.
                 
                 A proposta selecionada foi a mais votada entre as opções apresentadas e cumpre os critérios estabelecidos.
                 
@@ -331,7 +374,7 @@ async def cria_notificacao_insercao_pedido_novo_recurso_comum_service(db:Session
         raise HTTPException(status_code=500, detail=str(e))
 
 # Cria notificação para o anuncio da compra que será efetuada para a aquisição do novo recurso comum
-async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session, pedido: PedidoNovoRecursoSchema, orcamento: OrcamentoSchema):
+async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session, pedido: PedidoNovoRecursoSchema, nomeorcamento):
     try:
         notificao = NotificacaoSchema(
             Titulo="Confirmação da Aquisição de Novo Recurso",
@@ -340,8 +383,7 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
             Prezados moradores,
 
             Informamos que, após o processo de votação e análise dos orçamentos disponíveis, foi aprovada a aquisição do novo recurso
-            referente ao pedido Nº {pedido.PedidoNovoRecID} com base no orçamento apresentado pela entidade {orcamento.Fornecedor}
-            , no valor de {orcamento.Valor} €.
+            referente ao pedido Nº {pedido.PedidoNovoRecID} com base no orçamento : {nomeorcamento}
 
             Esta proposta foi a mais votada pelos moradores, cumprindo o critério de aprovação por maioria.
 

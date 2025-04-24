@@ -1,5 +1,6 @@
 from pydantic import BaseModel, constr, conint
 import datetime
+from enum import Enum
 
 # === Utilizadores e Recursos Comuns ===
 
@@ -40,6 +41,15 @@ class EstadoPedManuSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class EstadoPedNovoRecursoComumSchema(str,Enum):
+    PENDENTE = 'Pendente'
+    EMVOTACAO = 'Em votação'
+    REJEITADO = 'Rejeitado'
+    APROVADOPARAORCAMENTACAO = 'Aprovado para orçamentação'
+    REJEITADOAPOSORCAMENTACAO = 'Rejeitado após orçamentação'
+    APROVADOPARACOMPRA = 'Aprovado para compra'
+    CONCLUIDO = 'Concluído'
 
 
 # === Pedidos de Novo Recurso ===

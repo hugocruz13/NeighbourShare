@@ -3,7 +3,7 @@ from requests import Session
 from starlette.responses import JSONResponse
 from db.session import get_db
 from middleware.auth_middleware import role_required
-from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao
+from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso
 from schemas.user_schemas import UserJWT
 from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, \
     processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm
@@ -66,4 +66,7 @@ async def votar(id:int, user: UserJWT = Depends(role_required(["residente","gest
         raise HTTPException(status_code=500, detail={str(e)})
 
 async def testar_processamento_votacao(db: Session = Depends(get_db)):
-    return await processar_votacoes_expiradas(db)
+    try:
+        return await processar_votacoes_expiradas(db)
+    except HTTPException as he:
+        raise he
