@@ -74,7 +74,7 @@ async def existe_pedido_manutencao(db: Session, id:int):
 
 async def existe_votacao(db: Session, id:int):
     try:
-        query = db.query(Votacao_Return).filter(Votacao_Return.VotacaoID == id).first()
+        query = db.query(Votacao).filter(Votacao.VotacaoID == id).first()
         return True if query else False
     except Exception as e:
         db.rollback()
