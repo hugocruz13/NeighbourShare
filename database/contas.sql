@@ -12,6 +12,7 @@ INSERT INTO [dbo].[Utilizador]
            ,[Salt]
            ,[Verificado]
            ,[TUID])
+           ,[Path])
      VALUES
            ('admin'
            ,'2025-04-18'
@@ -20,7 +21,8 @@ INSERT INTO [dbo].[Utilizador]
            ,'TsQyUx0vE0xr29BAYX3hFWQAW+bSb2ZRTG/8fR4rUZA='
            ,'b7Cjbu8pIgohV3pkU64fUg=='
            ,1
-           ,1)
+           ,1
+           ,'null')
 GO
 
 USE [NeighbourShare]
