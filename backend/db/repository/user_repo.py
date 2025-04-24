@@ -111,7 +111,6 @@ async def get_dados_utilizador(db:Session, id_user:int):
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
 
-
 def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
     try:
         user = db.query(Utilizador).filter(Utilizador.UtilizadorID == id).first()
@@ -121,7 +120,7 @@ def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
             user.NomeUtilizador = dados.nome
         if dados.contacto is not None and dados.contacto != 0:
             user.Contacto = dados.contacto
-        if dados.data_nascimento is not None and dados.data_nascimento != date.today():
+        if dados.data_nascimento is not None and dados.data_nascimento != datetime.date.today():
             user.DataNasc = dados.data_nascimento
         db.commit()
         db.refresh(user)
