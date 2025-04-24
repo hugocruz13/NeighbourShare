@@ -6,12 +6,12 @@ from middleware.auth_middleware import role_required
 from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso
 from schemas.user_schemas import UserJWT
 from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, \
-    processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm
+    processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm, processar_votacao
 
 router = APIRouter(tags=['Votação'])
 
 @router.post("/criarvotacao")
-async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
+async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_required(["gestor","admin"])), db: Session = Depends(get_db)):
     try:
         if votacao.tipo_votacao == TipoVotacao.AQUISICAO:
             success = await gerir_votacao_novo_recurso(db, votacao)
@@ -42,7 +42,7 @@ async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_req
         raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
 
 @router.post("/votar")
-async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
+async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente","gestor", "admin"])), db: Session = Depends(get_db)):
     try:
         if await gerir_voto(db, Votar_id(voto=votacao.voto, id_votacao=votacao.id_votacao, id_user=user.id)):
             return {"mensagem": "Votacao registado com sucesso"}
@@ -53,9 +53,6 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
-async def testar_processamento_votacao(db: Session = Depends(get_db)):
-    return await processar_votacoes_expiradas(db)
-
 @router.get("/votacao_orcamento_pm")
 async def votar(id:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
     try:
@@ -65,8 +62,9 @@ async def votar(id:int, user: UserJWT = Depends(role_required(["residente","gest
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
-async def testar_processamento_votacao(db: Session = Depends(get_db)):
+@router.get("/terminar_votacao")
+async def testar_processamento_votacao(votacao_id: int,db: Session = Depends(get_db)):
     try:
-        return await processar_votacoes_expiradas(db)
+        return await processar_votacao(db,votacao_id)
     except HTTPException as he:
         raise he

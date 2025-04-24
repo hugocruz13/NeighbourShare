@@ -9,8 +9,8 @@ async def criar_votacao_nr_db(db: Session, votacao: Criar_Votacao, tipovotacao:T
     try:
         votacao_new = Votacao(Titulo=votacao.titulo, Descricao=votacao.descricao, DataInicio=date.today(), DataFim= votacao.data_fim, Processada=False)
         db.add(votacao_new)
+        db.commit()
         pedido = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == votacao.id_processo).first()
-
         if not pedido:
             raise RuntimeError(f"Pedido com ID {votacao.id_processo} não encontrado.")
 

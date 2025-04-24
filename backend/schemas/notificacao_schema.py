@@ -18,7 +18,7 @@ class NotificacaoUtilizadorSchema(BaseModel):
 
 class NotificacaoSchema(BaseModel):
     Titulo: constr(min_length=5, max_length=100)
-    Mensagem: constr(min_length=5, max_length=500)
+    Mensagem: constr(min_length=5, max_length=1000)
     ProcessoID: conint(gt=0)
     TipoProcessoID : conint(gt=0)
 
