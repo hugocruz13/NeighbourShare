@@ -11,7 +11,7 @@ INSERT INTO [dbo].[Utilizador]
            ,[PasswordHash]
            ,[Salt]
            ,[Verificado]
-           ,[TUID])
+           ,[TUID]
            ,[Path])
      VALUES
            ('admin'

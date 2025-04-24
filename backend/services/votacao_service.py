@@ -155,3 +155,13 @@ async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
         return await get_orcamentos_pm(db, votacao_id)
     except Exception as e:
         raise e
+
+#Obter todos os orçamentos registados associados a um pedido de aquisição de um novo recurso
+async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int):
+    try:
+        if not await existe_votacao(db, votacao_id):
+            raise HTTPException(status_code=404, detail="Votação não encontrado")
+
+        return await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+    except HTTPException as he:
+        raise he

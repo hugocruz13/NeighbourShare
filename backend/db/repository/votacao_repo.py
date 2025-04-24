@@ -127,9 +127,20 @@ async def get_contexto_votacao(db:Session, votacao_id:int):
         raise e
 
 #Obter orcamentos associados ao pedido de Manutenção
-async  def get_orcamentos_pm(db:Session, votacao_id:int):
+async def get_orcamentos_pm(db:Session, votacao_id:int):
     try:
         orcamentos = db.query(Orcamento).join(Orcamento.PedidoManutencao).filter(PedidoManutencao.VotacaoID==votacao_id).all()
+        return orcamentos
+    except SQLAlchemyError as e:
+        raise e
+
+#Obter os orcamentos associados a um pedido de novo recurso
+async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
+    try:
+        orcamentos = (db.query(Orcamento)
+                  .join(Orcamento.PedidoNovoRecurso)
+                  .join(VotacaoPedidoNovoRecurso)
+                  .filter(VotacaoPedidoNovoRecurso.VotacaoID==votacao_id).all())
         return orcamentos
     except SQLAlchemyError as e:
         raise e
