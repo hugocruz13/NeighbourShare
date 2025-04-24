@@ -84,7 +84,7 @@ async def cria_notificacao_decisao_novo_recurso_comum_service(db:Session, votaca
                     
                     A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
                     """,
-            ProcessoID=votacao.id_pedido,
+            ProcessoID=votacao.id_processo,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
         )
 
@@ -145,7 +145,7 @@ async def cria_notificacao_decisao_orcamento_manutencao_service(db:Session, vota
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação decisão da compra do novo recurso
-async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, votacao:Votacao):
+async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, votacao:Votacao,pedido: PedidoNovoRecursoSchema):
     try:
         notificacao = NotificacaoSchema(
             Titulo="Aquisição de Novo Recurso Comum",
@@ -156,15 +156,15 @@ async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, v
                 
                 A votação em questão tem os seguintes dados:
 
-                Titulo : {votacao.titulo}
-                Descrição : {votacao.descricao}
+                Titulo : {votacao.Titulo}
+                Descrição : {votacao.Descricao}
                 
                 Esta decisão reflete o envolvimento e interesse de todos em melhorar as condições e a convivência no nosso espaço coletivo.
 
                 Em breve será criada uma votação para a escolha do orçamento, para avançar com a compra.
 
                 Agradecemos a participação de todos!""",
-            ProcessoID=votacao.id_processo,
+            ProcessoID=pedido.PedidoNovoRecID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
             )
         return await cria_notificacao_todos_utilizadores_db(db, notificacao)
@@ -172,7 +172,7 @@ async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, v
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação decisão de não comprar um novo recurso comum
-async def cria_notificacao_decisao_nao_compra_recurso_service(db:Session, votacao:Votacao):
+async def cria_notificacao_decisao_nao_compra_recurso_service(db:Session, votacao:Votacao,pedido: PedidoNovoRecursoSchema):
     try:
         notificacao = NotificacaoSchema(
             Titulo="Recusa de Aquisição de Novo Recurso Comum",
@@ -183,13 +183,13 @@ async def cria_notificacao_decisao_nao_compra_recurso_service(db:Session, votaca
 
                 A votação em questão tem os seguintes dados:
 
-                Titulo : {votacao.titulo}
-                Descrição : {votacao.descricao}
+                Titulo : {votacao.Titulo}
+                Descrição : {votacao.Descricao}
 
                 Esta decisão reflete o envolvimento e de todos, refletindo-se numa recusa que tem que ser respeitada.
 
                 Agradecemos a participação de todos!""",
-            ProcessoID=votacao.id_processo,
+            ProcessoID=pedido.PedidoNovoRecID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
         )
         return await cria_notificacao_todos_utilizadores_db(db, notificacao)

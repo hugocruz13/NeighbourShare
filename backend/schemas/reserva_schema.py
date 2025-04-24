@@ -93,7 +93,7 @@ class ReservaGetDonoSchema(BaseModel):
     ConfirmarCaucaoDono: bool
     DevolucaoCaucao: bool
     EstadoRecurso: bool
-    JustificacaoEstadoProduto : constr(min_length=2, max_length=500)
+    JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
 
 class ReservaGetSolicitanteSchema(BaseModel):
     ReservaID: conint(gt=0)

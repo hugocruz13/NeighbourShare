@@ -110,9 +110,9 @@ async def processar_votacoes_expiradas(db:Session):
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA and resultado != "Sem votos":
             await cria_notificacao_anuncio_compra_novo_recurso_comum_service(db,await obter_pedido_novo_recurso_db(db,votacao.id_processo),resultado)
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Sim"):
-            await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao)
+            await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao,await obter_pedido_novo_recurso_db(db,votacao.id_processo))
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Não"):
-            await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao)
+            await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao,await obter_pedido_novo_recurso_db(db,votacao.id_processo))
 
     db.commit()
 
