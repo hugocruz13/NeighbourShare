@@ -123,6 +123,7 @@ async def lista_imagens_recursos_service(lista_recursos:list):
             DescRecurso = recurso.DescRecurso,
             Caucao = recurso.Caucao,
             Categoria_ = recurso.Categoria_,
+            Utilizador_=recurso.Utilizador_,
             Disponibilidade_ = recurso.Disponibilidade_,
             Image = caminho_foto_recurso
         )

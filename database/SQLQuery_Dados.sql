@@ -80,6 +80,11 @@ INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Em análise')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Aprovado')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Rejeitado')
 
+/* Recurso de Teste */
+
+INSERT INTO Recurso (Nome, DescRecurso, Caucao, Path, UtilizadorID, DisPID, CatID)
+VALUES ('Projetor', 'Projetor 4k todo XPTO', 200, 'none',1,1,2)
+
 
 
 
