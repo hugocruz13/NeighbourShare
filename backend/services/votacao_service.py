@@ -1,14 +1,9 @@
-from datetime import date
-from schemas.votacao_schema import Criar_Votacao, Votar_id, Consulta_Votacao, TipoVotacaoPedidoNovoRecurso
-from schemas.recurso_comum_schema import EstadoPedNovoRecursoComumSchema
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from db.session import get_db
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from fastapi import HTTPException
 from utils.string_utils import formatar_string
 from db.repository.votacao_repo import *
 from db.repository.recurso_comum_repo import *
-from datetime import datetime, timedelta, date
+from datetime import date
 from services.notificacao_service import *
 from collections import defaultdict
 
@@ -80,7 +75,7 @@ async def gerir_voto(db: Session, voto:Votar_id):
     except Exception as e:
         raise e
 
-#Verificas as votações que tem como data de término o dia anterior ao atual e calcula os resultados
+#Verifica as votações que tem como data de término o dia anterior ao atual e calcula os resultados
 async def processar_votacoes_expiradas(db:Session):
 
     resultado = ""
@@ -116,7 +111,34 @@ async def processar_votacoes_expiradas(db:Session):
 
     db.commit()
 
-    return {"status": "Votação processada, resultado: " + resultado}
+    return True
+
+#Função para testar o processamento de uma votação e obtenção dos resultados
+async def processar_votacao(db:Session, votacao_id: int):
+    try:
+        votos = await get_votos_votacao(db, votacao_id)
+
+        contagem = defaultdict(int)
+
+        for voto in votos:
+            if voto.EscolhaVoto:
+                contagem[voto.EscolhaVoto] += 1
+
+        if contagem:
+            resultado = max(contagem.items(), key=lambda item: item[1])[0]
+        else:
+            resultado = "Sem votos"
+
+        votacao = db.query(Votacao).filter(Votacao.VotacaoID == votacao_id).first()
+
+        votacao.Processada = True
+
+        db.commit()
+
+        return {'Votação processada, resultado: ' + resultado}
+
+    except HTTPException as he:
+        raise he
 
 def check_votacoes_expiradas():
     db: Session = next(get_db())
