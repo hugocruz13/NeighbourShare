@@ -54,9 +54,9 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/votacao_orcamento_pm")
-async def votar(id:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
+async def votar(id_v:int, user: UserJWT = Depends(role_required(["residente","gestor", "admin"])), db: Session = Depends(get_db)):
     try:
-        return await gerir_votacoes_orcamentos_pm(db,id)
+        return await gerir_votacoes_orcamentos_pm(db,id_v)
     except HTTPException as he:
         raise he
     except Exception as e:

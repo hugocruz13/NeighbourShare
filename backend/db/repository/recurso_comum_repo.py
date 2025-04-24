@@ -10,7 +10,7 @@ from schemas.recurso_comum_schema import *
 #Inserção de um novo recurso comum
 async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
     try:
-        novo_recurso_comum = RecursoComun(Nome=recurso_comum.nome, DescRecursoComum=recurso_comum.descRecursoComum)
+        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum)
         db.add(novo_recurso_comum)
         db.commit()
         db.refresh(novo_recurso_comum)

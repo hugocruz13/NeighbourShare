@@ -129,3 +129,7 @@ class ManutencaoUpdateSchema(BaseModel):
 
 class EstadoUpdate(BaseModel):
     novo_estado_id: EstadoPedManutencaoSchema
+
+class PedidoManutencaoRequest(BaseModel):
+    recurso_comum_id: int
+    desc_manutencao_recurso_comum: str
