@@ -1,6 +1,6 @@
 import os
-from datetime import datetime, timedelta, timezone
-from fastapi import APIRouter, Depends, HTTPException, Response
+from datetime import datetime, timedelta, timezone, date
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao, \
@@ -83,14 +83,23 @@ async def verificacao(token, db:Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.post("/registar/atualizar_dados")
-async def registar_atualizar_dados(user: NewUserUpdate, token: str, db: Session = Depends(get_db)):
+async def registar_atualizar_dados(
+    nome: str = Form(...),
+    data_nascimento: date = Form(...),
+    contacto: int = Form(...),
+    password: str = Form(...),
+    token: str = Form(...),
+    foto: UploadFile = File(...),
+    db: Session = Depends(get_db)):
     try:
         b, message = validate_token_entry(token)
         if b is False:
             raise HTTPException(status_code=403, detail=message)
+
+        user = NewUserUpdate(nome=nome, data_nascimento=data_nascimento, contacto=contacto, password=password)
         payload = verify_token_verification(token)
         user_jwt = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
-        a, message = await atualizar_novo_utilizador(user, user_jwt, db)
+        a, message = await atualizar_novo_utilizador(user, foto ,user_jwt, db)
         if a is True:
             mark_token_as_used(token)
         return a, message

@@ -23,15 +23,14 @@ async def inserir_recurso_service(db:session, novo_recurso, imagem_recurso:Uploa
     try:
         recurso_id, mensagem = await recurso_repo.inserir_recurso_db(db, novo_recurso)
         if recurso_id :
-            return await guardar_imagem_recurso(imagem_recurso, recurso_id)
+            return await guardar_imagem_recurso(imagem_recurso, recurso_id, db)
         else:
             return False, "Erro ao guardar a imagem referente ao recurso"
     except Exception as e:
         return False, "details: "+str(e)
 
-async def guardar_imagem_recurso(imagem_recurso:UploadFile, recurso_id:int):
+async def guardar_imagem_recurso(imagem_recurso:UploadFile, recurso_id:int,db:session):
     try:
-
         tipos_permitidos = ['image/png', 'image/jpeg', 'image/jpg']
 
         if imagem_recurso.content_type not in tipos_permitidos:
@@ -44,11 +43,17 @@ async def guardar_imagem_recurso(imagem_recurso:UploadFile, recurso_id:int):
         os.makedirs(imagem_path, exist_ok=True)
 
         caminho_arquivo = os.path.join(imagem_path, imagem_recurso.filename)
-
         with open(caminho_arquivo,'wb+') as f:
             f.write(imagem_recurso.file.read())
 
-        return True, {"message": "Imagem guardada com sucesso"}
+        url_imagens = os.getenv('SAVE_RECRUSO')
+        caminho_arquivo_new = os.path.join(url_imagens,str(recurso_id), imagem_recurso.filename)
+        clean_path = caminho_arquivo_new.replace("\\", "/")
+
+        if await recurso_repo.update_path(db, recurso_id, clean_path):
+            return True, {"message": "Imagem guardada com sucesso"}
+        else:
+            return False, {"message": "Erro ao guardada imagem"}
     except Exception as e:
         return False, {"details": str(e)}
 
@@ -75,9 +80,7 @@ async def lista_recurso_service(db:session, recurso_id:int):
     if not recurso:
         raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
 
-    image_path = await carrega_imagem_recurso_service(recurso_id)
-
-    recurso.Image = image_path
+    recurso.Image = recurso.Path
 
     return recurso
 
