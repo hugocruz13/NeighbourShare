@@ -85,7 +85,10 @@ async def lista_reservas_service(db:session, utilizador_id:int):
             DataFim = reserva.DataFim,
             NomeRecurso = reserva.Nome,
             RecursoEntregueDono = reserva.RecursoEntregueDono,
-            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono
+            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono,
+            DevolucaoCaucao = reserva.DevolucaoCaucao,
+            EstadoRecurso= reserva.EstadoRecurso,
+            JustificacaoEstadoProduto= reserva.JustificacaoEstadoProduto
         ))
 
     for reserva in reservas_solicitante:
