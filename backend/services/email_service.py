@@ -17,7 +17,7 @@ def send_verification_email(user_email: str, token: str):
     params: resend.Emails.SendParams = {
         "from": "NeighbourShare <no-reply@verification.igorcosta.pt>",
         "to": [user_email],
-        "subject": "Confirmação de Conta - Igor Costa",
+        "subject": "Confirmação de Conta",
         "html": f"""
             <p>Olá,</p>
             <p>Para concluir o seu registro, clique no link abaixo:</p>

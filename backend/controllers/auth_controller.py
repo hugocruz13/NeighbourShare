@@ -74,7 +74,7 @@ async def verificacao(token, db:Session = Depends(get_db)):
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
         if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
-            return RedirectResponse(url=f"http://127.0.0.1:8000/docs#/default/registar_atualizar_dados_api_registar_atualizar_dados_post?{token}") #TODO ALTERAR A URL
+            return RedirectResponse(url=f"http://localhost/AtualizarDados?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de verificação de email inválido")
     except HTTPException as he:
@@ -114,7 +114,7 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
             raise HTTPException(status_code=403, detail=message)
         payload = verify_token_recuperacao(token)
         user = UserJWT(id=payload["id"], email=payload["email"], role="")
-        if await verificao_utilizador(db, token):
+        if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
             return RedirectResponse(
                 url=f"http://127.0.0.1:8000?{token}")  # TODO ALTERAR A URL

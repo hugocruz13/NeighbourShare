@@ -1,6 +1,6 @@
 services:
   db:
-    image: ghcr.io/mtcigor/neighbourshare-db:v15
+    image: ghcr.io/mtcigor/neighbourshare-db:v16
     container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
