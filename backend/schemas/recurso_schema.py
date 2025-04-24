@@ -1,3 +1,5 @@
+from enum import Enum
+
 from pydantic import BaseModel, constr, conint, condecimal
 from typing import Optional
 import decimal
@@ -65,3 +67,7 @@ class RecursoGetUtilizadorSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DisponibilidadeEstadosSchema(str, Enum):
+    DISPONIVEL = 1
+    INDISPONIVEL = 2

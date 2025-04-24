@@ -4,6 +4,7 @@ from controllers import *
 from utils.tokens_record import clean_expired_tokens
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.votacao_service import check_votacoes_expiradas
+from services.recurso_service import checkar_estado_recurso
 
 app = FastAPI()
 scheduler = AsyncIOScheduler()
@@ -16,6 +17,7 @@ origins = [
 @app.on_event('startup')
 async def start_scheduler():
     scheduler.add_job(check_votacoes_expiradas, "interval", hours=24)
+    scheduler.add_job(checkar_estado_recurso, 'cron', hour=0)
     scheduler.start()
 
 app.add_middleware(

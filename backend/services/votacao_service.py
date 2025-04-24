@@ -120,7 +120,10 @@ async def processar_votacoes_expiradas(db:Session):
 
 def check_votacoes_expiradas():
     db: Session = next(get_db())
-    processar_votacoes_expiradas(db)
+    try:
+        processar_votacoes_expiradas(db)
+    finally:
+        db.close()
 
 async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
     try:
