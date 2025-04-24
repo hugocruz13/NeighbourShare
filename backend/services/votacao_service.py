@@ -99,4 +99,11 @@ def check_votacoes_expiradas():
     db: Session = next(get_db())
     processar_votacoes_expiradas(db)
 
+async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
+    try:
+        if not await existe_votacao(db, votacao_id):
+            raise HTTPException(status_code=404, detail="Votação não encontrado")
 
+        return await get_orcamentos_pm(db, votacao_id)
+    except Exception as e:
+        raise e

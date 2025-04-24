@@ -3,7 +3,7 @@ from datetime import datetime, date, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from schemas.votacao_schema import Criar_Votacao, Votar_id, Consulta_Votacao, Votacao_Return
-from db.models import Votacao, PedidoNovoRecurso, PedidoManutencao, Voto
+from db.models import Votacao, PedidoNovoRecurso, PedidoManutencao, Voto, Orcamento
 
 
 async def criar_votacao_nr_db(db: Session, votacao: Criar_Votacao):
@@ -74,7 +74,7 @@ async def existe_pedido_manutencao(db: Session, id:int):
 
 async def existe_votacao(db: Session, id:int):
     try:
-        query = db.query(Votacao_Return).filter(Votacao_Return.VotacaoID == id).first()
+        query = db.query(Votacao).filter(Votacao.VotacaoID == id).first()
         return True if query else False
     except Exception as e:
         db.rollback()
@@ -104,5 +104,13 @@ async def get_votos_votacao(db:Session, votacao_id:int):
     try:
         votos = db.query(Voto).filter(Voto.VotacaoID == votacao_id).all()
         return votos
+    except SQLAlchemyError as e:
+        raise e
+
+#Obter orcamentos associados ao pedido de Manutenção
+async  def get_orcamentos_pm(db:Session, votacao_id:int):
+    try:
+        orcamentos = db.query(Orcamento).join(Orcamento.PedidoManutencao).filter(PedidoManutencao.VotacaoID==votacao_id).all()
+        return orcamentos
     except SQLAlchemyError as e:
         raise e
