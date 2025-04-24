@@ -114,7 +114,10 @@ async def lista_reservas_db(db:session, utilizador_id: int):
             Recurso.Nome,
             Reserva.RecursoEntregueVizinho,
             Reserva.ConfirmarCaucaoVizinho,
-            EstadoPedidoReserva.DescEstadoPedidoReserva
+            EstadoPedidoReserva.DescEstadoPedidoReserva,
+            Reserva.DevolucaoCaucao,
+            Reserva.EstadoRecurso,
+            Reserva.JustificacaoEstadoProduto
         ).join(
             PedidoReserva, PedidoReserva.PedidoResevaID == Reserva.PedidoResevaID
         ).join(

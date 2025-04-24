@@ -109,11 +109,10 @@ async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, tok
         obter = await obter_pedido_manutencao(db, pedido_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Pedido de manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.novo_estado_id)
+        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.value)
         if out is False:
             return False, "Erro ao alterar o tipo de estado do pedido de manutenção com o ID {pedido_id}"
-        if out is True:
-            return True, "Tipo de estado alterado com sucesso"
+        return True, "Tipo de estado alterado com sucesso"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     except HTTPException as es:

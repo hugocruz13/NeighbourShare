@@ -104,6 +104,9 @@ class ReservaGetSolicitanteSchema(BaseModel):
     RecursoEntregueSolicitante: bool
     ConfirmarCaucaoSolicitante: bool
     EstadoReserva: constr(min_length=3, max_length=100)
+    DevolucaoCaucao: bool
+    EstadoRecurso: bool
+    JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
 
 # === Listagem de Pedidos de Reserva ===
 

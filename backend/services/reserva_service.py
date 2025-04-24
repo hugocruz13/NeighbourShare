@@ -101,7 +101,10 @@ async def lista_reservas_service(db:session, utilizador_id:int):
             NomeRecurso = reserva.Nome,
             RecursoEntregueSolicitante = reserva.RecursoEntregueVizinho,
             ConfirmarCaucaoSolicitante = reserva.ConfirmarCaucaoVizinho,
-            EstadoReserva = reserva.DescEstadoPedidoReserva
+            EstadoReserva = reserva.DescEstadoPedidoReserva,
+            DevolucaoCaucao=reserva.DevolucaoCaucao,
+            EstadoRecurso=reserva.EstadoRecurso,
+            JustificacaoEstadoProduto=reserva.JustificacaoEstadoProduto
         ))
 
     return lista_reservas_dono, lista_reservas_solicitante

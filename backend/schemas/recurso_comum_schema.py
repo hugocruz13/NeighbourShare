@@ -51,6 +51,13 @@ class EstadoPedNovoRecursoComumSchema(str,Enum):
     APROVADOPARACOMPRA = 'Aprovado para compra'
     CONCLUIDO = 'Concluído'
 
+class EstadoPedManutencaoSchema(str,Enum):
+    EMANALISE = 1
+    APROVADOEXECUCAOINTERNA = 2
+    NEGOCIACAOENTIDADESEXTERNAS = 3
+    VOTACAO = 4
+    REJEITADO = 5
+
 
 # === Pedidos de Novo Recurso ===
 
@@ -121,4 +128,4 @@ class ManutencaoUpdateSchema(BaseModel):
 # === Atualização de estado ===
 
 class EstadoUpdate(BaseModel):
-    novo_estado_id: conint(gt=0)
+    novo_estado_id: EstadoPedManutencaoSchema
