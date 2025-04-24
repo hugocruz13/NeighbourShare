@@ -1,7 +1,4 @@
-from sqlalchemy.orm import Session
 from db.repository.notificacao_repo import *
-import db.repository.notificacao_repo as notificacao_repo
-from db.models import Notificacao
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
