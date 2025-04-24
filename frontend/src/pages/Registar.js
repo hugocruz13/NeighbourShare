@@ -1,73 +1,57 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.js";
-import { InputLogin, InputPassword } from "../components/Inputs.js";
-import "../styles/Login.css";
+import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function Registar() {
-  const [formData, setFormData] = useState({ email: "", role: "" });
-  const [error, setError] = useState("");
-  const { setUser } = useAuth();
-  const navigate = useNavigate();
+const Registar = () => {
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
+  const handleRegister = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/registar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include",
+      const res = await fetch('http://localhost:8000/api/registar', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, role }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-              throw new Error(data.detail || 'Erro ao registar.');
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error(errorData);
+        throw new Error(errorData.detail || 'Erro ao registrar usuário');
       }
-      toast.success('Utilizador Registado com sucesso!');
+
+      toast.success('Usuário registrado com sucesso!');
+      setEmail('');
+      setRole('');
     } catch (error) {
-      setError("Erro");
+      toast.error('Erro ao registrar usuário: ' + error.message);
     }
   };
+
   return (
-    <div className="container-login">
-      <div className="container-esquerda">
-        <div className="container-formulario">
-          <form className="formulario" onSubmit={handleSubmit}>
-            <h2>Registar Utilizador</h2>
-            <div className="container-center">
-              <InputLogin
-                name={"email"}
-                value={formData.email}
-                onChange={handleChange}
-              />
-              <InputPassword
-                name={"password"}
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <div className="container-btn">
-                <button className="btn" type="submit">
-                  Registar
-                </button>
-              </div>
-              <p className="erro">{error && error}</p>
-            </div>
-          </form>
-        </div>
+    <div className="page-content">
+      <div className="register-container">
+        <h2>Registrar Usuário</h2>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        />
+        <button onClick={handleRegister}>Registrar</button>
       </div>
-      <div className="container-direita">
-        <img className="imagem" src="img/fundo.jpg" alt="Imagem" />
-      </div>
+      <ToastContainer />
     </div>
   );
-}
+};
 
 export default Registar;

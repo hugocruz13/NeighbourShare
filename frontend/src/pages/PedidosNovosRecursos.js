@@ -13,7 +13,7 @@ const PedidosAquisicao = () => {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosnovos/pendentes', {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosnovos', {
           method: 'GET',
           credentials: 'include'
         });
@@ -40,16 +40,17 @@ const PedidosAquisicao = () => {
     const dataFimFormatada = dataFim.toISOString().split('T')[0];
 
     try {
-      const response = await fetch('http://localhost:8000/api/criarvotacao_novo_recurso', {
+      const response = await fetch('http://localhost:8000/api/criarvotacao', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          titulo: "123",
+          titulo: "Votação para novo recurso",
           descricao: pedidoAtual.DescPedidoNovoRecurso,
-          data_fim: dataFimFormatada, // Data de fim como a data atual
-          id_pedido: pedidoAtual.PedidoNovoRecID
+          id_processo: pedidoAtual.PedidoNovoRecID,
+          data_fim: dataFimFormatada,
+          tipo_votacao: "Aquisição"
         }),
         credentials: 'include',
       });

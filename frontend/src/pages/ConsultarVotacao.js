@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,6 +9,8 @@ const ConsultarVotacao = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [pedidoAtual, setPedidoAtual] = useState(null);
+  const [newResource, setNewResource] = useState({ nome_recurso: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,37 +40,29 @@ const ConsultarVotacao = () => {
       <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Votar</button>
 
       {showModal && (
-
         <>
           <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-            <div className="modal-content">
-              <h2>Votar</h2>
-              <input type="text" placeholder="Selecionar Opção " value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
-              <div>
-                <button>Votar</button>
-                <button onClick={() => setShowModal(false)}>Cancelar</button>
-              </div>
+          <div className="modal-content">
+            <h2>Votar</h2>
+            <input type="text" placeholder="Selecionar Opção " value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
+            <div>
+              <button>Votar</button>
+              <button onClick={() => setShowModal(false)}>Cancelar</button>
+            </div>
           </div>
         </>
-
       )}
-
-
-
 
       {showModal2 && (
-
-      <>
-      <div className="modal-backdrop" onClick={() => setShowModal2(false)} />
-        <div className="modal-content">
-          <h2>Detalhes do Orçamento</h2>
-          <input type="text" placeholder="Selecionar Opção " value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
-          <button onClick={() => setShowModal2(false)}>Fechar</button>
-        </div>
-      </>
-
+        <>
+          <div className="modal-backdrop" onClick={() => setShowModal2(false)} />
+          <div className="modal-content">
+            <h2>Detalhes do Orçamento</h2>
+            <input type="text" placeholder="Selecionar Opção " value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
+            <button onClick={() => setShowModal2(false)}>Fechar</button>
+          </div>
+        </>
       )}
-
 
       <table>
         <thead>
@@ -92,7 +86,7 @@ const ConsultarVotacao = () => {
               <td>{orcamento.data}</td>
               <td>{orcamento.valor}</td>
               <td>
-                 <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>Consultar</Link>
+                <Link className='linkStyle' onClick={() => handleConsultarClick(orcamento)}>Consultar</Link>
               </td>
             </tr>
           ))}

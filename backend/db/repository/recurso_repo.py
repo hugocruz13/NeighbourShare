@@ -31,7 +31,8 @@ async def inserir_recurso_db(db:session, recurso:Recurso):
             Caucao=recurso.Caucao,
             UtilizadorID=recurso.UtilizadorID,
             DispID = recurso.DispID,
-            CatID=recurso.CatID
+            CatID=recurso.CatID,
+            Path="none"
         )
         db.add(novo_recurso)
         db.commit()
@@ -80,35 +81,5 @@ async def listar_recursos_utilizador_db(db:session, utilizador_id:int):
             .all()
         )
         return recursos
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
-async def listar_recursos_disponiveis_db(db:session):
-    try:
-        recursos_disponiveis = (
-            db.query(Recurso)
-            .filter(Recurso.DispID == 1)
-            .options(
-                joinedload(Recurso.Utilizador_),
-                joinedload(Recurso.Categoria_),
-                joinedload(Recurso.Disponibilidade_)
-            )
-        )
-        return recursos_disponiveis
-    except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
-
-async def listar_recursos_indisponiveis(db:session):
-    try:
-        recursos_indisponiveis = (
-            db.query(Recurso)
-            .filter(Recurso.DispID == 2)
-            .options(
-                joinedload(Recurso.Utilizador_),
-                joinedload(Recurso.Categoria_),
-                joinedload(Recurso.Disponibilidade_)
-            )
-        )
-        return recursos_indisponiveis
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))

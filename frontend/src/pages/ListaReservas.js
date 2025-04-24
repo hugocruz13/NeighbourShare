@@ -77,6 +77,7 @@ const MeusPedidosReserva = () => {
     try {
       const response = await fetch(apiEndpoint, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reserva_id: id, value }),
       });
@@ -121,6 +122,7 @@ const handleJustification = (id) => {
 
    fetch(`http://localhost:8000/api/reserva/submissao/justificacao?reserva_id=${id}&justificacao=${justification}`, {
    method: 'POST',
+   credentials: 'include',
    headers: {
    'Content-Type': 'application/json',
    },
@@ -140,6 +142,15 @@ const handleJustification = (id) => {
  
    };
    
+   
+  const filteredComoDono = comoDono.filter(reservation => 
+   !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
+  );
+
+  const filteredComoSolicitante = comoSolicitante.filter(reservation =>
+    !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
+  );
+  
 
   return (
     <div className="page-content">
@@ -147,7 +158,7 @@ const handleJustification = (id) => {
     <div className="home-container">
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Os Meus Pedidos de Reserva de Recursos</p>
-        {Array.isArray(comoSolicitante) && comoSolicitante.length > 0 ? (
+        {Array.isArray(filteredComoSolicitante) && filteredComoSolicitante.length > 0 ? (
         <table>
         <thead>
           <tr>
@@ -197,7 +208,7 @@ const handleJustification = (id) => {
       <div className='fundoListaReserva'>
         <p className='tituloReserva'>Reservas</p>
 
-        {Array.isArray(comoDono) && comoDono.length > 0 ? (
+        {Array.isArray(filteredComoDono) && filteredComoDono.length > 0 ? (
         <table>
         <thead>
           <tr>

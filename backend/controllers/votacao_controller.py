@@ -1,38 +1,45 @@
 from fastapi import APIRouter, Depends,HTTPException
 from requests import Session
+from starlette.responses import JSONResponse
 from db.session import get_db
 from middleware.auth_middleware import role_required
-from schemas.votacao_schema import Criar_Votacao_Novo_Recurso, Criar_Votacao_Manutenção, Votar, Votar_id
+from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso
 from schemas.user_schemas import UserJWT
-from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_manutencao, gerir_voto
+from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, \
+    processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm
 
 router = APIRouter(tags=['Votação'])
 
-@router.post("/criarvotacao_novo_recurso")
-async def criar_votacao(votacao: Criar_Votacao_Novo_Recurso, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
+@router.post("/criarvotacao")
+async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
     try:
-        if await gerir_votacao_novo_recurso(db, votacao):
-            return {"mensagem": "Votacao criada com sucesso"}
+        if votacao.tipo_votacao == TipoVotacao.AQUISICAO:
+            success = await gerir_votacao_novo_recurso(db, votacao)
+        elif votacao.tipo_votacao == TipoVotacao.MANUTENCAO:
+            success = await gerir_votacao_pedido_manutencao(db, votacao)
         else:
-            return {"erro": "Erro ao criar votacao"}
+            raise HTTPException(status_code=400, detail="Tipo de votação inválido")
+
+        if success:
+                return JSONResponse(
+                    status_code=201,
+                    content={
+                        "mensagem": "Votação criada com sucesso",
+                        "id_votacao": success.id_votacao,
+                        "tipo_votacao": votacao.tipo_votacao,
+                        "data_inicio": success.data_inicio.isoformat() if success.data_inicio else None,
+                        "data_fim": success.data_fim.isoformat() if success.data_fim else None,
+                        "processada": success.processada
+                    }
+                )
+
+        else:
+            raise HTTPException(status_code=500, detail="Erro ao criar votação")
 
     except HTTPException as he:
         raise he
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
-
-@router.post("/criarvotacao_manutencao")
-async def criar_votacao(votacao: Criar_Votacao_Manutenção, user: UserJWT = Depends(role_required(["gestor"])), db: Session = Depends(get_db)):
-    try:
-        if await gerir_votacao_manutencao(db, votacao):
-            return {"mensagem": "Votacao criada com sucesso"}
-        else:
-            return {"erro": "Erro ao criar votacao"}
-
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
 
 @router.post("/votar")
 async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
@@ -46,7 +53,20 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
+async def testar_processamento_votacao(db: Session = Depends(get_db)):
+    return await processar_votacoes_expiradas(db)
 
-@router.patch("/update/votacao")
-def atualizarvotacao():
-    return {"Atualizado"}
+@router.get("/votacao_orcamento_pm")
+async def votar(id:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
+    try:
+        return await gerir_votacoes_orcamentos_pm(db,id)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
+
+async def testar_processamento_votacao(db: Session = Depends(get_db)):
+    try:
+        return await processar_votacoes_expiradas(db)
+    except HTTPException as he:
+        raise he

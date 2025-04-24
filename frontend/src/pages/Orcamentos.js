@@ -5,19 +5,29 @@ import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
 
 const Orcamentos = () => {
-  const [entities, setEntities] = useState([]);
+  const [orcamentos, setOrcamentos] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('');
   const [newResource, setNewResource] = useState({
       fornecedor_orcamento: '', 
       valor_orcamento: '', 
       descricao_orcamento: '',
-      pdforcamento: null, 
+      pdforcamento: null,
+      idprocesso: '',
+      tipoorcamento: ''
+  });
+  const [votacao, setVotacao] = useState({
+    titulo: '',
+    descricao: '',
+    id_processo: 0,
+    data_fim: '',
+    tipo_votacao: 'Aquisição',
   });
 
   useEffect(() => {
       const fetchUsers = async () => {
         try {
-          const res = await fetch('http://localhost:8000/api/entidades/ver', {
+          const res = await fetch('http://localhost:8000/api/orcamentos/listar', {
             method: 'GET',
             credentials: 'include' ,
           });
@@ -25,9 +35,9 @@ const Orcamentos = () => {
           if (!res.ok) throw new Error('Erro ao buscar dados');
           const data = await res.json();
           console.log(data);
-          setEntities(data);
+          setOrcamentos(data);
         } catch (error) {
-          console.error('Erro ao buscar entidades:', error);
+          console.error('Erro ao buscar orcamentos:', error);
         }
       };
   
@@ -36,18 +46,18 @@ const Orcamentos = () => {
 
   const handleAddResource = async () => {
     try {
+      const formData = new FormData();
+      formData.append('fornecedor_orcamento', newResource.fornecedor_orcamento);
+      formData.append('valor_orcamento', parseInt(newResource.valor_orcamento));
+      formData.append('descricao_orcamento', newResource.descricao_orcamento);
+      formData.append('pdforcamento', newResource.pdforcamento);
+      formData.append('idprocesso', newResource.idprocesso);
+      formData.append('tipoorcamento', newResource.tipoorcamento);
+
       const res = await fetch('http://localhost:8000/api/orcamentos/inserir', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify({
-          fornecedor_orcamento: newResource.fornecedor_orcamento,
-          valor_orcamento: parseInt(newResource.valor_orcamento),
-          descricao_orcamento: newResource.descricao_orcamento,
-          pdforcamento: newResource.pdforcamento,
-        }),
+        body: formData,
       });
   
       if (!res.ok) {
@@ -64,9 +74,42 @@ const Orcamentos = () => {
         valor_orcamento: '', 
         descricao_orcamento: '', 
         pdforcamento: null,
+        idprocesso: '',
+        tipoorcamento: ''
       });
     } catch (error) {
       toast.error('Erro ao adicionar recurso: ' + error.message);
+    }
+  };
+
+  const handleCreateVotacao = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/criarvotacao', {
+        method: 'POST',
+        credentials: 'include', // Inclui cookies na solicitação
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(votacao),
+      });
+  
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error(errorData);
+        throw new Error(errorData.detail || 'Erro ao criar votação');
+      }
+  
+      toast.success('Votação criada com sucesso!');
+      setShowModal(false);
+      setVotacao({
+        titulo: '',
+        descricao: '',
+        id_processo: 0,
+        data_fim: '',
+        tipo_votacao: '',
+      });
+    } catch (error) {
+      toast.error('Erro ao criar votação: ' + error.message);
     }
   };
   
@@ -75,82 +118,100 @@ const Orcamentos = () => {
     setNewResource({ ...newResource, pdforcamento: e.target.files[0] });
   };
 
-
-
   return (
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
         <div className='fundoMeusRecursos'>
-          <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Inserir Orçamento</button>
+          <button className="btn-registarRecurso" onClick={() => { setShowModal(true); setModalType('orcamento'); }}>Inserir Orçamento</button>
+          <button className="btn-criarVotacao" onClick={() => { setShowModal(true); setModalType('votacao'); }}>Criar Votação</button>
 
           {showModal && (
           <>
           <div className="modal-backdrop" onClick={() => setShowModal(false)} />
           <div className="modal-content">
-            <h2>Adicionar Orçamento</h2>
-            <input type="text" placeholder="fornecedor" value={newResource.fornecedor_orcamento} onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}/>
-            <input type="number" placeholder="valor" value={newResource.valor_orcamento} onChange={(e) => setNewResource({ ...newResource, valor_orcamento: e.target.value })}/>
-            <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })}/>
-            <input type="file" onChange={handleFileChange} />
-            <div>
-              <button onClick={handleAddResource}>Adicionar</button>
-              <button onClick={() => setShowModal(false)}>Cancelar</button>
-            </div>
+            {modalType === 'orcamento' ? (
+              <>
+                <h2>Adicionar Orçamento</h2>
+                <input type="text" placeholder="fornecedor" value={newResource.fornecedor_orcamento} onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}/>
+                <input type="number" placeholder="valor" value={newResource.valor_orcamento} onChange={(e) => setNewResource({ ...newResource, valor_orcamento: e.target.value })}/>
+                <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })}/>
+                <input type="text" placeholder="ID Processo" value={newResource.idprocesso} onChange={(e) => setNewResource({ ...newResource, idprocesso: e.target.value })}/>
+                <input type="text" placeholder="Tipo Orçamento" value={newResource.tipoorcamento} onChange={(e) => setNewResource({ ...newResource, tipoorcamento: e.target.value })}/>
+                <input type="file" onChange={handleFileChange} />
+                <div>
+                  <button onClick={handleAddResource}>Adicionar</button>
+                  <button onClick={() => setShowModal(false)}>Cancelar</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>Criar Votação</h2>
+                <input
+                  type="text"
+                  placeholder="Título"
+                  value={votacao.titulo}
+                  onChange={(e) => setVotacao({ ...votacao, titulo: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Descrição"
+                  value={votacao.descricao}
+                  onChange={(e) => setVotacao({ ...votacao, descricao: e.target.value })}
+                />
+                <input
+                  type="number"
+                  placeholder="ID do Processo"
+                  value={votacao.id_processo}
+                  onChange={(e) => setVotacao({ ...votacao, id_processo: parseInt(e.target.value) })}
+                />
+                <input
+                  type="date"
+                  placeholder="Data de Fim"
+                  value={votacao.data_fim}
+                  onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Tipo"
+                  value={votacao.tipo_votacao}
+                  onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })}
+                />
+
+                <div>
+                  <button onClick={handleCreateVotacao}>Criar</button>
+                  <button onClick={() => setShowModal(false)}>Cancelar</button>
+                </div>
+              </>
+            )}
           </div>
           </>
           )}
-
-
-          <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Criar Votação</button>
-
-          {showModal && (
-          <>
-          <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-            <div className="modal-content">
-              <h2>Criar Votação</h2>
-              <input type="text" placeholder="fornecedor" value={newResource.fornecedor_orcamento} onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}/>
-              <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })}/>
-              <div>
-                <button >Criar</button>
-                <button onClick={() => setShowModal(false)}>Cancelar</button>
-              </div>
-            </div>
-          </>
-          )}
-
 
           <p className='p-meusRecursos'>Orçamentos</p>
           <table>
             <thead>
               <tr>
-                <th>Nº Entidade</th>
-                <th>Nome da entidade</th>
-                <th>Especialidade</th>
-                <th>Contacto</th>
-                <th>Nif</th>
+                <th>Nº Orçamento</th>
+                <th>Fornecedor</th>
+                <th>Valor</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             <tbody>
-              {entities.map((entity) => (
-              <tr key={entity.EntidadeID}>
-                <td>{entity.EntidadeID}</td>
-                <td>{entity.Nome}</td>
-                <td>{entity.Especialidade}</td>
-                <td>{entity.Contacto}</td>
-                <td>{entity.Nif}</td>
+              {orcamentos.map((orcamento) => (
+              <tr key={orcamento.OrcamentoID}>
+                <td>{orcamento.OrcamentoID}</td>
+                <td>{orcamento.Fornecedor}</td>
+                <td>{orcamento.Valor}</td>
+                <td>{orcamento.DescOrcamento}</td>
               </tr>
               ))}
             </tbody>
           </table>
-
         </div>
       </div>
-
-
-      
-
-
       <ToastContainer />
     </div>
   );

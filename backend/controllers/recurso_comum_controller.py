@@ -30,7 +30,7 @@ async def inserir_recurso_comum(
 
 #Inserção de um pedido de um novo recurso comum
 @router.post("/pedidosnovos/inserir")
-async def inserir_recurso_comum(
+async def inserir_pedido_novo_recurso_comum(
     desc_pedido_novo_recurso: str,
     db:Session = Depends(get_db),
     token: UserJWT = Depends(role_required(["admin","gestor", "residente"]))
@@ -85,7 +85,6 @@ async def listar_pedidos_manutencao(
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns
     """
-
     return await listar_pedidos_manutencao_service(db)
 
 #Endpoint para eliminar um pedido de manutenção
@@ -105,16 +104,15 @@ async def listar_tipos_pedido_manutencao(db:Session = Depends(get_db), token: Us
     return await obter_all_tipo_estado_pedido_manutencao(db)
 
 @router.put("/pedidosmanutencao/{pedido_id}/estado")
-async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
+async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, token: UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
     try:
         obter = await obter_pedido_manutencao(db, pedido_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Pedido de manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.novo_estado_id)
+        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.value)
         if out is False:
             return False, "Erro ao alterar o tipo de estado do pedido de manutenção com o ID {pedido_id}"
-        if out is True:
-            return True, "Tipo de estado alterado com sucesso"
+        return True, "Tipo de estado alterado com sucesso"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     except HTTPException as es:
@@ -147,7 +145,7 @@ async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=D
     return await obter_all_tipo_estado_manutencao(db)
 
 @router.put("/manutencao/update{pedido_id}/estado")
-async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, db: Session = Depends(get_db)):
+async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, token:UserJWT=Depends(role_required(["admin","gestor","residente"])),db: Session = Depends(get_db)):
     try:
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:

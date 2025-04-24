@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Certifique-se de que o Link está importado
-import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PedidosManutencao.css";
@@ -8,16 +6,18 @@ import Navbar2 from "../components/Navbar2.js";
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showJustificationModal, setShowJustificationModal] = useState(false);
   const [pedidoAtual, setPedidoAtual] = useState(null);
   const [justificacao, setJustificacao] = useState('');
 
+  // Fetch pedidos
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosmanutencao/progresso', {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosmanutencao', {
           method: 'GET',
           credentials: 'include' 
         });
@@ -32,12 +32,53 @@ const PedidosManutencao = () => {
     fetchPedidos();
   }, []);
 
-  const handleConsultarClick = (pedido) => {
-    setPedidoAtual(pedido);
-    setShowModal(true);
+  // Fetch status options
+  useEffect(() => {
+    const fetchStatusOptions = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidodsmanutencao/estados', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        console.log(data);
+        setStatusOptions(data); // Assuming data is an array of status options
+      } catch (error) {
+        console.error('Erro ao buscar opções de estado:', error);
+      }
+    };
+
+    fetchStatusOptions();
+  }, []);
+
+  const handleStatusChange = async (pedidoId, newStatusId) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedidoId}/estado`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ novo_estado_id: newStatusId }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Erro ao atualizar estado do pedido.');
+      }
+
+      toast.success('Estado do pedido atualizado com sucesso!');
+      
+      // Update local state
+      setPedidos((prevPedidos) =>
+        prevPedidos.map((pedido) =>
+          pedido.PMID === pedidoId ? { ...pedido, estado: newStatusId } : pedido
+        )
+      );
+    } catch (error) {
+      console.error('Erro ao atualizar estado do pedido:', error);
+      toast.error('Erro ao atualizar estado do pedido.');
+    }
   };
 
-  
   const handleNaoClick = () => {
     setShowModal(false);
     setShowJustificationModal(true);
@@ -49,7 +90,6 @@ const PedidosManutencao = () => {
     setShowJustificationModal(false);
     setJustificacao('');
   };
-    
 
   return (
     <div className="page-content">
@@ -78,7 +118,6 @@ const PedidosManutencao = () => {
             </div>
           </>
           )}
-
 
           {/* Modal de Justificação */}
           {showJustificationModal && (
@@ -117,7 +156,16 @@ const PedidosManutencao = () => {
                     <td>{pedido.DescPedido}</td>
                     <td>{pedido.RecursoComun_.Nome}</td>
                     <td>
-                      <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>Consultar</Link>
+                      <select
+                        value={pedido.estado}
+                        onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
+                      >
+                        {statusOptions.map((option) => (
+                          <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
+                            {option.DescEstadoPedidoManutencao}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                   </tr>
                 ))}

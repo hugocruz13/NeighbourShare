@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import Navbar2 from "../components/Navbar2.js";
 import "../styles/Perfil.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -71,10 +71,7 @@ const ProfilePage = () => {
       
 const updatedUser = {
    ...user,
-   [editingField]: newFieldValue,
-   name: user.nome,
-   contacto: user.contacto,
-   data_nascimento: "2025-01-01"
+   [editingField]: newFieldValue
   };
   
       const response = await fetch("http://localhost:8000/api/user/update", {
@@ -92,6 +89,8 @@ const updatedUser = {
 
       setUser(updatedUser);
       setEditingField(null);
+      console.log("Enviando dados:", updatedUser);
+
       toast.success('Campo atualizado com sucesso!');
     } catch (error) {
       console.error('Erro:', error);
@@ -144,15 +143,15 @@ const updatedUser = {
 
             <div className='textosPerfil'>
               <p>Data de Nascimento</p>
-              {editingField === 'data_aniversario' ? (
+              {editingField === 'data_nascimento' ? (
                 <input
-                  type="date"
+                  type="text"
                   value={newFieldValue}
                   onChange={(e) => setNewFieldValue(e.target.value)}
                   onBlur={handleSaveField}
                 />
               ) : (
-                <p className='infoUser'>2020-01-01 <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('data_aniversario')} /></p>
+                <p className='infoUser'>{user?.data_nascimento} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('data_nascimento')} /></p>
               )}
             </div>
           </div>

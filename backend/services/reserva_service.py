@@ -1,15 +1,23 @@
+from idlelib.window import add_windows_to_menu
+
 import db.repository.reserva_repo as reserva_repo
 import db.session as session
 from fastapi import HTTPException
+
+from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
+from services import notificacao_service
+from services.notificacao_service import *
+
 
 async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReservaSchemaCreate):
     try:
         if pedido_reserva.DataInicio > pedido_reserva.DataFim:
             raise HTTPException(status_code=500, detail='Data de inicio é depois da data de fim')
         else:
-            mensagem = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
-            return mensagem
+            mensagem, pedido_reserva_1 = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
+            msg_noti = await cria_notificacao_recebimento_pedido_reserva(db,pedido_reserva_1)
+            return mensagem, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}
 
@@ -31,18 +39,23 @@ async def lista_pedidos_reserva_cancelados_service(db:session):
     return lista_pedidos_cancelados
 
 #Muda o estado de um pedido de reserva
-async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int, estado:PedidoReservaEstadosSchema):
+async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int, estado:PedidoReservaEstadosSchema, motivo_recusa:str = None):
     try:
-        return await reserva_repo.muda_estado_pedido_reserva_db(db,pedido_reserva_id,estado)
+        msg_noti = None
+        msg, pedido_reserva =  await reserva_repo.muda_estado_pedido_reserva_db(db,pedido_reserva_id,estado)
+        if estado == PedidoReservaEstadosSchema.REJEITADO:
+            msg_noti = await cria_notificacao_recusa_pedido_reserva(db,pedido_reserva,motivo_recusa)
+        return msg, msg_noti, pedido_reserva
     except Exception as e:
         return {'details: '+ str(e)}
 
 async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
     try:
-
         mensagem = await reserva_repo.cria_reserva_db(db,reserva)
-        await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
-        return mensagem
+        msg_muda_estado_pedido, msg_noti ,pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
+        msg_noti = await cria_notificacao_aceitacao_pedido_reserva(db,pedido_reserva)
+
+        return mensagem, msg_muda_estado_pedido, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}
 
@@ -72,7 +85,10 @@ async def lista_reservas_service(db:session, utilizador_id:int):
             DataFim = reserva.DataFim,
             NomeRecurso = reserva.Nome,
             RecursoEntregueDono = reserva.RecursoEntregueDono,
-            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono
+            ConfirmarCaucaoDono = reserva.ConfirmarCaucaoDono,
+            DevolucaoCaucao = reserva.DevolucaoCaucao,
+            EstadoRecurso= reserva.EstadoRecurso,
+            JustificacaoEstadoProduto= reserva.JustificacaoEstadoProduto
         ))
 
     for reserva in reservas_solicitante:
@@ -85,7 +101,10 @@ async def lista_reservas_service(db:session, utilizador_id:int):
             NomeRecurso = reserva.Nome,
             RecursoEntregueSolicitante = reserva.RecursoEntregueVizinho,
             ConfirmarCaucaoSolicitante = reserva.ConfirmarCaucaoVizinho,
-            EstadoReserva = reserva.DescEstadoPedidoReserva
+            EstadoReserva = reserva.DescEstadoPedidoReserva,
+            DevolucaoCaucao=reserva.DevolucaoCaucao,
+            EstadoRecurso=reserva.EstadoRecurso,
+            JustificacaoEstadoProduto=reserva.JustificacaoEstadoProduto
         ))
 
     return lista_reservas_dono, lista_reservas_solicitante
@@ -163,7 +182,8 @@ async def confirma_rececao_caucao_service(db:session, reserva_id:int):
 async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justificacao:str):
     try:
         mensagem = await reserva_repo.inserir_justificacao_caucao_db(db,reserva_id,justificacao)
-        return mensagem
+        msg_noti = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db,await get_pedido_reserva_db(db, reserva_id),reserva_id,justificacao)
+        return mensagem, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}
 
@@ -171,6 +191,7 @@ async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justif
 async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id:int):
     try:
         mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao(db,reserva_id)
-        return mensagem
+        msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db,await get_pedido_reserva_db(db, reserva_id),reserva_id)
+        return mensagem, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}

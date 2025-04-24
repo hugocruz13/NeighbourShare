@@ -1,24 +1,31 @@
-import decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, constr, conint, condecimal
+from enum import Enum
+
+class TipoOrcamento(str,Enum):
+    AQUISICAO = "Aquisição"
+    MANUTENCAO = "Manutenção"
 
 class OrcamentoSchema(BaseModel):
-    Fornecedor: str
-    Valor: decimal.Decimal
-    DescOrcamento: str
-    NomePDF : str
-
-    class Config:
-        from_attributes = True
+    Fornecedor: constr(min_length=2, max_length=100)
+    Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
+    DescOrcamento: constr(min_length=5, max_length=300)
+    NomePDF : constr(min_length=5, max_length=200)
+    IDProcesso: conint(gt=0)
+    TipoProcesso: TipoOrcamento
 
 class OrcamentoUpdateSchema(BaseModel):
-    OrcamentoID: int
-    Fornecedor: str
-    Valor: decimal.Decimal
-    DescOrcamento: str
+    OrcamentoID: conint(gt=0)
+    Fornecedor: constr(min_length=2, max_length=100)
+    Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
+    DescOrcamento: constr(min_length=5, max_length=300)
 
 class OrcamentoGetSchema(BaseModel):
-    OrcamentoID: int
-    Fornecedor: str
-    Valor: decimal.Decimal
-    DescOrcamento: str
-    CaminhoPDF : str
+    OrcamentoID: conint(gt=0)
+    Fornecedor: constr(min_length=2, max_length=100)
+    Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
+    DescOrcamento: constr(min_length=5, max_length=300)
+    CaminhoPDF : constr(min_length=5, max_length=300)
+
+
+
+
