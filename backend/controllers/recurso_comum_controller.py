@@ -25,22 +25,6 @@ async def inserir_recurso_comum(
 
 #endregion
 
-@router.get("/")
-async def get_recurso_comum(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
-    try:
-        return await get_recursos_comuns(db)
-    except Exception as e:
-        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
-
-@router.get("/{recurso_id}")
-async def get_recurso_comum_by_id(recurso_id: int,db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
-    try:
-        return await get_recursos_comuns_by_id(db,recurso_id)
-    except Exception as e:
-        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
-
-#region Pedidos de Novos Recursos Comuns
-
 #Inserção de um pedido de um novo recurso comum
 @router.post("/pedidosnovos/inserir")
 async def inserir_pedido_novo_recurso_comum(
@@ -58,16 +42,31 @@ async def inserir_pedido_novo_recurso_comum(
     return await inserir_pedido_novo_recurso_service(db,novo_pedido)
 
 @router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
-async def listar_pedidos_novos_recursos(
-        db:Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
+async def listar_pedidos_novos_recursos(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns
     """
     return await listar_pedidos_novos_recursos_service(db)
 
 #endregion
+
+@router.get("/")
+async def get_recurso_comum(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
+    try:
+        return await get_recursos_comuns(db)
+    except Exception as e:
+        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+@router.get("/{recurso_id}")
+async def get_recurso_comum_by_id(recurso_id: int,db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
+    try:
+        return await get_recursos_comuns_by_id(db,recurso_id)
+    except Exception as e:
+        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+#region Pedidos de Novos Recursos Comuns
+
+
 
 #region Pedidos de Manutenção de Recursos Comuns
 
@@ -90,9 +89,7 @@ async def inserir_manutencao_recurso_comum(
 
 #Listar os pedidos de manutenção existentes no sistema
 @router.get("/pedidosmanutencao", response_model=List[PedidoManutencaoSchema])
-async def listar_pedidos_manutencao(
-        db:Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+async def listar_pedidos_manutencao(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
     Endpoint para consultar todos os pedidos de manutenção de recursos comuns
