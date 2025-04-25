@@ -92,3 +92,5 @@ htmlcov/
 
 tokens.json
 uploadFiles/
+/uploadFiles/recursos/
+/uploadFiles/perfil/
