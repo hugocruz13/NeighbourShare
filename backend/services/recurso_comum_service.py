@@ -104,11 +104,6 @@ async def listar_pedidos_novos_recursos_service(db:session):
 
 #region Pedidos de Manutenção
 
-#Inserir um pedido de manutenção de um recurso comum
-async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
-
-    return await recurso_comum_repo.inserir_pedido_manutencao_db(db,pedido)
-
 #Listar pedidos de manutenção
 async def listar_pedidos_manutencao_service(db:session):
 

@@ -138,12 +138,12 @@ async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
 #Inserção de um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
+        novo_pedido = PedidoManutencao(DescPedido=pedido.DescPedido, DataPedido=pedido.DataPedido, RecComumID=pedido.RecComumID, UtilizadorID=pedido.UtilizadorID, EstadoPedManuID=pedido.EstadoPedManuID)
         db.add(novo_pedido)
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}
+        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
