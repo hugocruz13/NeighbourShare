@@ -1,9 +1,6 @@
-from idlelib.window import add_windows_to_menu
-
 import db.repository.reserva_repo as reserva_repo
 import db.session as session
 from fastapi import HTTPException
-
 from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
 from services import notificacao_service
@@ -53,11 +50,19 @@ async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
     try:
         mensagem = await reserva_repo.cria_reserva_db(db,reserva)
         msg_muda_estado_pedido, msg_noti ,pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
+        if pedido_reserva.DataInicio == datetime.date.today():
+            await muda_recurso_para_indisponivel(db,pedido_reserva.RecursoID)
         msg_noti = await cria_notificacao_aceitacao_pedido_reserva(db,pedido_reserva)
 
         return mensagem, msg_muda_estado_pedido, msg_noti
     except Exception as e:
         return {'details: '+ str(e)}
+
+async def muda_recurso_para_indisponivel(db:session, recurso_id:int):
+    try:
+        return await muda_recurso_para_indisponivel(db,recurso_id)
+    except Exception as e:
+        return {'details: ' + str(e)}
 
 async def get_reserva_service(db:session, reserva_id:int):
     try:

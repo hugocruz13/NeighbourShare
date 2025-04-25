@@ -1,4 +1,4 @@
-from datetime import date, datetime
+import datetime
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
@@ -69,7 +69,7 @@ async def user_exists(db: Session, email: str):
     except Exception as e:
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
 
-def get_user_by_email(db: Session, email: EmailStr):
+def get_user_by_email(db: Session, email: str):
     try:
         user = db.query(Utilizador).filter(Utilizador.Email == email).first()
         if user:
@@ -126,7 +126,7 @@ def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
             user.NomeUtilizador = dados.nome
         if dados.contacto is not None and dados.contacto != 0:
             user.Contacto = dados.contacto
-        if dados.data_nascimento is not None and dados.data_nascimento != date.today():
+        if dados.data_nascimento is not None and dados.data_nascimento != datetime.date.today():
             user.DataNasc = dados.data_nascimento
         db.commit()
         db.refresh(user)

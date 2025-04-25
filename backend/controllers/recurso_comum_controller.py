@@ -1,5 +1,5 @@
 from datetime import date
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from db.session import get_db
 from services.recurso_comum_service import *
 from middleware.auth_middleware import *
@@ -150,7 +150,7 @@ async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpd
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_pedido_manutencao(db, manutencao_id, estado_data.novo_estado_id)
+        out = await alterar_tipo_estado_pedido_manutencao(db, manutencao_id, estado_data.value)
         if out is False:
             return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
         if out is True:

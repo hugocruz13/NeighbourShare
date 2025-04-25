@@ -122,9 +122,8 @@ const MeusRecursos = () => {
             <th>Nº Recurso</th>
             <th>Nome do Recurso</th>
             <th>Caução</th>
-            <th>Disponibilidade</th>
             <th>Categoria</th>
-            <th>Eliminar Recurso</th>
+            <th>Disponibilidade</th>
           </tr>
         </thead>
         <tbody>
@@ -135,9 +134,6 @@ const MeusRecursos = () => {
               <td>{recurso.Caucao}</td>
               <td>{recurso.Categoria_.DescCategoria}</td>
               <td>{recurso.Disponibilidade_.DescDisponibilidade}</td>
-              <td>
-                <img className='deleteIcon' src="img/delete.png"></img>
-              </td>
             </tr>
           ))}
         </tbody>

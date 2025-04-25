@@ -24,6 +24,7 @@ import Votacoes from "./pages/Votacoes.js";
 import ConsultarVotacao from "./pages/ConsultarVotacao.js";
 import PedidosNovosRecursosPendentesVoto from "./pages/PedidosNovosRecursosPendentesVoto.js";
 import AtualizarDados from "./pages/AtualizarDados.js";
+import RecuperarPass from "./pages/RecuperarPass.js";
 import Exemplo from "./pages/Exemplo.js";
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
             <Route path="/consultarVotacao/:id" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ConsultarVotacao  /></ProtectedRoute>}/>
             <Route path="/pedidosNovosRecursosPendentesVoto" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosNovosRecursosPendentesVoto  /></ProtectedRoute>}/>
             <Route path="/atualizarDados" element={<AtualizarDados  />}/>
+            <Route path="/recuperarPass" element={<RecuperarPass  />}/>
             <Route path="/exemplo" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Exemplo /></ProtectedRoute>}/>
           </Routes>
         </Router>

@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
+from db.session import get_db
 from pathlib import Path
 import db.repository.recurso_repo as recurso_repo
+from sqlalchemy.orm import Session
 import db.session as session
 from fastapi import HTTPException, UploadFile
 from schemas.recurso_schema import *
@@ -152,20 +154,9 @@ async def carrega_imagem_recurso_service(recurso_id:int):
 
     return imagem_path
 
-async def lista_recursos_disponiveis_service(db:session):
-
-    lista_recursos_disponiveis = await recurso_repo.listar_recursos_disponiveis_db(db)
-
-    if not lista_recursos_disponiveis:
-        raise HTTPException(status_code=400, detail="Nenhum recurso disponivel encontrado")
-
-    return lista_recursos_disponiveis
-
-async def lista_recursos_indisponiveis_service(db:session):
-
-    lista_recursos_indisponiveis = await recurso_repo.listar_recursos_indisponiveis(db)
-
-    if not lista_recursos_indisponiveis:
-        raise HTTPException(status_code=400, detail="Nenhum recurso indisponivel encontrado")
-
-    return lista_recursos_indisponiveis
+def checkar_estado_recurso():
+    db: Session = next(get_db())
+    try:
+        recurso_repo.atualizar_disponibilidade_recurso_db(db)
+    finally:
+        db.close()

@@ -143,11 +143,11 @@ const handleJustification = (id) => {
    };
    
    
-  const filteredComoDono = comoDono.filter(reservation => 
+  const filteredComoDono = (comoDono || []).filter(reservation => 
    !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
   );
 
-  const filteredComoSolicitante = comoSolicitante.filter(reservation =>
+  const filteredComoSolicitante = (comoSolicitante || []).filter(reservation =>
     !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
   );
   
