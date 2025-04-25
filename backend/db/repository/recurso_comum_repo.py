@@ -1,4 +1,6 @@
 from http.client import HTTPException
+
+from fastapi import UploadFile
 from requests import Session
 from sqlalchemy.orm import joinedload
 from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoPedidoManutencao, EstadoManutencao, \
@@ -43,13 +45,39 @@ from schemas.recurso_comum_schema import *
 #Inserção de um novo recurso comum
 async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
     try:
-        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum)
+        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum, Path="none")
         db.add(novo_recurso_comum)
         db.commit()
-        return {'Recurso comum inserido com sucesso!'}
+        return novo_recurso_comum
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
+
+async  def update_imagem(db:session, path: str, id:int):
+    try:
+        recurso_comum = db.query(RecursoComun).filter(RecursoComun.RecComumID == id).first()
+
+        if recurso_comum:
+            recurso_comum.Path = path
+            db.commit()
+            return True
+        else:
+            raise RuntimeError("ID do recurso invalido!")
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+async def obter_recrusos_comuns(db:session):
+    try:
+        return db.query(RecursoComun).all()
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+async def obter_recrusos_comuns_by_id(db:session, id:int):
+    try:
+        return db.query(RecursoComun).filter(RecursoComun.RecComumID == id).first()
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
 
 #Inserção de um novo pedido de um novo recurso comum
 async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
