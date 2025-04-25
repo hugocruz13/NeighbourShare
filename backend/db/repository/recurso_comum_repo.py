@@ -147,12 +147,12 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
 #Inserção de um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
+        novo_pedido = PedidoManutencao(DescPedido=pedido.DescPedido, DataPedido=pedido.DataPedido, RecComumID=pedido.RecComumID, UtilizadorID=pedido.UtilizadorID, EstadoPedManuID=pedido.EstadoPedManuID)
         db.add(novo_pedido)
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}
+        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
 >>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
         db.rollback()
