@@ -34,7 +34,7 @@ async def update_new_password(db: Session, user_identifier: int, password_hashed
         db.rollback()
         raise RuntimeError(f"Erro ao atualizar password utilizador: {e}")
 
-async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
+async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str, path: str):
     try:
         new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
         if new_user:
@@ -48,6 +48,7 @@ async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int
                 new_user.PasswordHash = password_hashed
             if salt is not None:
                 new_user.Salt = salt
+            new_user.Path = path
             new_user.Verificado = True
             db.commit()
         else:
@@ -104,7 +105,9 @@ async def get_dados_utilizador(db:Session, id_user:int):
             return UserData(
                 nome=str(utilizador.NomeUtilizador),
                 email=str(utilizador.Email),
-                contacto= utilizador.Contacto
+                contacto= utilizador.Contacto,
+                data_nascimento=utilizador.DataNasc,
+                imagem=utilizador.Path,
             )
         else:
             return None

@@ -1,5 +1,5 @@
 from datetime import date
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from db.session import get_db
 from services.recurso_comum_service import *
 from middleware.auth_middleware import *
@@ -12,19 +12,32 @@ router = APIRouter(prefix="/recursoscomuns", tags=["Recursos Comuns"])
 #Inserção de um novo recurso comum
 @router.post("/inserir")
 async def inserir_recurso_comum(
-        nome_recurso:str,
-        descricao_recurso:str,
+        nome_recurso:str = Form(...),
+        descricao_recurso:str = Form(...),
+        imagem : UploadFile = File(...),
         db:Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin","gestor"]))
-):
-    novo_recurso_comum = RecursoComumSchemaCreate(
-        Nome=nome_recurso,
-        DescRecursoComum=descricao_recurso
-    )
-
-    return await inserir_recurso_comum_service(db, novo_recurso_comum)
+        token: UserJWT = Depends(role_required(["admin","gestor"]))):
+   try:
+       novo_recurso_comum = RecursoComumSchemaCreate(Nome=nome_recurso, DescRecursoComum=descricao_recurso)
+       return await inserir_recurso_comum_service(db, novo_recurso_comum, imagem)
+   except Exception as e:
+       raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
 
 #endregion
+
+@router.get("/")
+async def get_recurso_comum(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
+    try:
+        return await get_recursos_comuns(db)
+    except Exception as e:
+        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+@router.get("/{recurso_id}")
+async def get_recurso_comum_by_id(recurso_id: int,db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin","gestor"]))):
+    try:
+        return await get_recursos_comuns_by_id(db,recurso_id)
+    except Exception as e:
+        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
 
 #region Pedidos de Novos Recursos Comuns
 

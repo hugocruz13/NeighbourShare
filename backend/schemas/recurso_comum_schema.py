@@ -26,6 +26,12 @@ class RecursoComumSchemaCreate(BaseModel):
     class Config:
         from_attributes = True
 
+class RecursoComum_Return(BaseModel):
+    id:int
+    nome: str
+    desc:str
+    path:str
+
 # === Estados ===
 
 class EstadoPedNovoRecursoSchema(BaseModel):

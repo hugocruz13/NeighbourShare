@@ -13,8 +13,7 @@ router = APIRouter(prefix="/reserva", tags=["Reservas"])
 async def criar_reserva(
         pedido_reserva_id: int,
         token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
-        db:Session = Depends(get_db)
-):
+        db:Session = Depends(get_db)):
     try:
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
         return await cria_reserva_service(db, reserva)
