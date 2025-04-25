@@ -1,27 +1,49 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, constr, conint, EmailStr
 from datetime import date
+from enum import Enum
 
-class Criar_Votacao_Novo_Recurso(BaseModel):
-    titulo: str
-    descricao: str
-    data_fim: date
-    id_pedido:int
+class TipoVotacao(str, Enum):
+    AQUISICAO = "Aquisição"
+    MANUTENCAO = "Manutenção"
 
-class Criar_Votacao_Pedido_Manutencao(BaseModel):
-    titulo: str
-    descricao: str
+class TipoVotacaoPedidoNovoRecurso(int,Enum):
+    BINARIA = 0
+    MULTIPLA = 1
+
+class Criar_Votacao(BaseModel):
+    titulo: constr(min_length=2, max_length=100)
+    descricao: constr(min_length=2, max_length=500)
+    id_processo: conint(gt=0)
     data_fim: date
-    id_pedido_manutencao:int
+    tipo_votacao: TipoVotacao
+
+    class Config:
+        str_strip_whitespace = True
 
 class Votar(BaseModel):
-    voto:str
-    id_votacao:int
+    voto:constr(min_length=1, max_length=50)
+    id_votacao:conint(gt=0)
+
+    class Config:
+        str_strip_whitespace = True
 
 class Votar_id(BaseModel):
-    voto:str
-    id_votacao:int
-    id_user:int
+    voto:constr(min_length=1, max_length=50)
+    id_votacao:conint(gt=0)
+    id_user:conint(gt=0)
+
+    class Config:
+        str_strip_whitespace = True
 
 class Consulta_Votacao(BaseModel):
-    id_votacao: int
-    id_user: int
+    id_votacao: conint(gt=0)
+    id_user: conint(gt=0)
+
+class Votacao_Return(BaseModel):
+    id_votacao: conint(gt=0)
+    data_inicio: date
+    data_fim: date
+    processada: bool
+
+    class Config:
+        str_strip_whitespace = True

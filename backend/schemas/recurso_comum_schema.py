@@ -1,5 +1,6 @@
 from pydantic import BaseModel, constr, conint
 import datetime
+from enum import Enum
 
 # === Utilizadores e Recursos Comuns ===
 
@@ -25,6 +26,12 @@ class RecursoComumSchemaCreate(BaseModel):
     class Config:
         from_attributes = True
 
+class RecursoComum_Return(BaseModel):
+    id:int
+    nome: str
+    desc:str
+    path:str
+
 # === Estados ===
 
 class EstadoPedNovoRecursoSchema(BaseModel):
@@ -40,6 +47,22 @@ class EstadoPedManuSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class EstadoPedNovoRecursoComumSchema(str,Enum):
+    PENDENTE = 'Pendente'
+    EMVOTACAO = 'Em votação'
+    REJEITADO = 'Rejeitado'
+    APROVADOPARAORCAMENTACAO = 'Aprovado para orçamentação'
+    REJEITADOAPOSORCAMENTACAO = 'Rejeitado após orçamentação'
+    APROVADOPARACOMPRA = 'Aprovado para compra'
+    CONCLUIDO = 'Concluído'
+
+class EstadoPedManutencaoSchema(str,Enum):
+    EMANALISE = 1
+    APROVADOEXECUCAOINTERNA = 2
+    NEGOCIACAOENTIDADESEXTERNAS = 3
+    VOTACAO = 4
+    REJEITADO = 5
 
 
 # === Pedidos de Novo Recurso ===
@@ -111,4 +134,8 @@ class ManutencaoUpdateSchema(BaseModel):
 # === Atualização de estado ===
 
 class EstadoUpdate(BaseModel):
-    novo_estado_id: conint(gt=0)
+    novo_estado_id: EstadoPedManutencaoSchema
+
+class PedidoManutencaoRequest(BaseModel):
+    recurso_comum_id: int
+    desc_manutencao_recurso_comum: str

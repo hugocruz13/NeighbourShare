@@ -1,9 +1,7 @@
-from requests import session
-from sqlalchemy.sql.sqltypes import NULLTYPE
-
+import os
 from db.repository.user_repo import *
 from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email, apagar, atualizar_utilizador_db
 from utils.PasswordHasher import hash_password, verificar_password
@@ -54,17 +52,44 @@ async def registar_utilizador(user: UserRegistar, db: Session):
     except Exception as e:
         raise RuntimeError(f"Erro registar_utilizador: {e}")
 
-async def atualizar_novo_utilizador(user: NewUserUpdate, token:UserJWT, db: Session):
+async def atualizar_novo_utilizador(user: NewUserUpdate, imagem:UploadFile,token:UserJWT, db: Session):
     try:
         if await user_exists(db, str(token.email)):
             password_hashed, salt = hash_password(user.password)
-            await update_new_user(db, user, token.id, password_hashed, salt)
+            path = await guardar_imagem(imagem, token.id)
+            user.path = path
+            await update_new_user(db, user, token.id, password_hashed, salt,path)
             user.password = ""
             return True, "Utilizador atualizado com sucesso"
         else:
             return False, "Erro ao verificar utilizador"
     except Exception as e:
         raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+async def guardar_imagem(imagem:UploadFile, user_id:int):
+    try:
+        tipos_permitidos = ['image/png', 'image/jpeg', 'image/jpg']
+
+        if imagem.content_type not in tipos_permitidos:
+            raise HTTPException (status_code=400, detail="Apenas imagens são permitidas (png, jpeg, jpg)")
+
+        pasta_imagens = os.getenv('UPLOAD_DIR_PERFIL')
+
+        imagem_path = os.path.join(pasta_imagens, str(user_id))
+
+        os.makedirs(imagem_path, exist_ok=True)
+
+        caminho_arquivo = os.path.join(imagem_path, imagem.filename)
+        with open(caminho_arquivo,'wb+') as f:
+            f.write(imagem.file.read())
+
+        url_imagens = os.getenv('SAVE_PERFIL')
+        path = os.path.join(url_imagens,str(user_id), imagem.filename)
+        clean_path = path.replace("\\", "/")
+        return clean_path
+
+    except Exception as e:
+        return False, {"details": str(e)}
 
 async def user_auth(db: Session, user_login: UserLogin):
     try:

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, constr, conint
+from pydantic import BaseModel, constr, conint, EmailStr
 
 class EntidadeSchema(BaseModel):
     Especialidade: constr(min_length=2, max_length=100)

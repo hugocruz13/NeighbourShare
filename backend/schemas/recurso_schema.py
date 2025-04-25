@@ -1,3 +1,5 @@
+from enum import Enum
+
 from pydantic import BaseModel, constr, conint, condecimal
 from typing import Optional
 import decimal
@@ -48,6 +50,7 @@ class RecursoGetTodosSchema(BaseModel):
     DescRecurso: constr(min_length=5, max_length=500)
     Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
+    Utilizador_ : UtilizadorSchema
     Disponibilidade_: DisponibilidadeSchema
     Image: Optional[str] = None
 
@@ -64,3 +67,7 @@ class RecursoGetUtilizadorSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DisponibilidadeEstadosSchema(str, Enum):
+    DISPONIVEL = 1
+    INDISPONIVEL = 2
