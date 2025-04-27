@@ -51,14 +51,15 @@ const PedidosManutencao = () => {
     fetchStatusOptions();
   }, []);
 
-  const handleStatusChange = async (pedidoId, newStatusId) => {
+  const handleStatusChange = async (pedido_id, novo_estado_id) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedidoId}/estado`, {
+      const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedido_id}/estado`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ novo_estado_id: newStatusId }),
+        body: JSON.stringify({ novo_estado_id: novo_estado_id }),
       });
 
       if (!res.ok) {
@@ -70,7 +71,7 @@ const PedidosManutencao = () => {
       // Update local state
       setPedidos((prevPedidos) =>
         prevPedidos.map((pedido) =>
-          pedido.PMID === pedidoId ? { ...pedido, estado: newStatusId } : pedido
+          pedido.PMID === pedido_id ? { ...pedido, estado: novo_estado_id } : pedido
         )
       );
     } catch (error) {
