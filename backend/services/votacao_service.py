@@ -165,3 +165,9 @@ async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int
         return await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
     except HTTPException as he:
         raise he
+
+async def listar_votacoes_ativas(db:Session):
+    try:
+        return await listar_votacoes_ativas(db)
+    except Exception as e:
+        raise e

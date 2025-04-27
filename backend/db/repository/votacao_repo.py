@@ -144,3 +144,25 @@ async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
         return orcamentos
     except SQLAlchemyError as e:
         raise e
+
+#Obter todas as votações ativas, diferenciadas por tipos
+async def listar_votacoes_ativas(db:Session):
+    try:
+        votacoes_pedido_recurso_binarias = (db.query(Votacao, VotacaoPedidoNovoRecurso.PedidoNovoRecID)
+                                            .join(VotacaoPedidoNovoRecurso, VotacaoPedidoNovoRecurso.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True, VotacaoPedidoNovoRecurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA)
+                                            .all())
+
+        votacoes_pedido_recurso_mutliplas = (db.query(Votacao, VotacaoPedidoNovoRecurso.PedidoNovoRecID)
+                                            .join(VotacaoPedidoNovoRecurso, VotacaoPedidoNovoRecurso.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True, VotacaoPedidoNovoRecurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA)
+                                            .all())
+
+        votacoes_pedido_manutencao = (db.query(Votacao, PedidoManutencao.PMID)
+                                            .join(PedidoManutencao, PedidoManutencao.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True)
+                                            .all())
+
+        return votacoes_pedido_recurso_binarias,votacoes_pedido_recurso_mutliplas,votacoes_pedido_manutencao
+    except SQLAlchemyError as e:
+        raise e
