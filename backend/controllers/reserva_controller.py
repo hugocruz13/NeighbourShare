@@ -13,8 +13,7 @@ router = APIRouter(prefix="/reserva", tags=["Reservas"])
 async def criar_reserva(
         pedido_reserva_id: int,
         token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
-        db:Session = Depends(get_db)
-):
+        db:Session = Depends(get_db)):
     try:
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
         return await cria_reserva_service(db, reserva)
@@ -140,10 +139,13 @@ async def criar_pedido_reserva(
 @router.post("/pedidosreserva/recusar")
 async def recusar_pedido_reserva(
     pedido_reserva_id: int,
+    motivo_recusacao: str,
     db:session = Depends(get_db),
     token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     try:
-        return await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO)
+        msg, msg_noti, pedido_reserva = await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
+
+        return msg, msg_noti
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

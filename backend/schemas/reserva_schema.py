@@ -91,6 +91,9 @@ class ReservaGetDonoSchema(BaseModel):
     NomeRecurso: constr(min_length=2, max_length=100)
     RecursoEntregueDono: bool
     ConfirmarCaucaoDono: bool
+    DevolucaoCaucao: bool
+    EstadoRecurso: bool
+    JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
 
 class ReservaGetSolicitanteSchema(BaseModel):
     ReservaID: conint(gt=0)
@@ -101,6 +104,9 @@ class ReservaGetSolicitanteSchema(BaseModel):
     RecursoEntregueSolicitante: bool
     ConfirmarCaucaoSolicitante: bool
     EstadoReserva: constr(min_length=3, max_length=100)
+    DevolucaoCaucao: bool
+    EstadoRecurso: bool
+    JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
 
 # === Listagem de Pedidos de Reserva ===
 

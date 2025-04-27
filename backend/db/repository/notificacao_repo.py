@@ -1,6 +1,5 @@
-from sqlalchemy.orm import Session
-from db.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador
-from controllers.websockets_controller import send_notification
+from sqlalchemy.orm import Session, aliased
+from db.models import Notificacao,Utilizador,TipoProcesso, TipoUtilizador, t_NotificacaoUser
 import datetime
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
@@ -22,7 +21,7 @@ async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSc
             db.commit()
             db.refresh(nova_notificao)
 
-            db.add(NotificacaoUser(UtilizadorID=user_id, NotificacaoID=nova_notificao.NotificacaoID))
+            db.execute(t_NotificacaoUser.insert().values(UtilizadorID=user_id, NotificacaoID=nova_notificao.NotificacaoID))
             db.commit()
 
             return True, {'Inserção de nova notifcação realizada com sucesso!'}
@@ -48,7 +47,8 @@ async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema)
             admins = db.query(Utilizador).filter(TipoUtilizador.DescTU == 'admin')
 
             for admin in admins:
-                db.add(NotificacaoUser(UtilizadorID=admin.UtilizadorID, NotificacaoID=nova_notificao.NotificacaoID))
+                db.execute(
+                    t_NotificacaoUser.insert().values(UtilizadorID=admin.UtilizadorID, NotificacaoID=nova_notificao.NotificacaoID))
                 db.commit()
             return True, {'Inserção de notificações para os admins realizada com sucesso!'}
     except SQLAlchemyError as e:
@@ -73,7 +73,8 @@ async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificac
             utilizadores = db.query(Utilizador).all()
 
             for utilizador in utilizadores:
-                db.add(NotificacaoUser(UtilizadorID=utilizador.UtilizadorID, NotificacaoID=nova_notificao.NotificacaoID))
+                db.execute(
+                    t_NotificacaoUser.insert().values(UtilizadorID=utilizador.UtilizadorID, NotificacaoID=nova_notificao.NotificacaoID))
                 db.commit()
 
             return True, {'Inserção de notifcações para todos os utilizadores realizada com sucesso!'}
@@ -82,15 +83,28 @@ async def cria_notificacao_todos_utilizadores_db(db:Session, notificao:Notificac
         return False ,{'details': str(e)}
 
 # Lista as notificações de um utilizador por ordem descrescente de data
-async def listar_notificacoes_db(db: Session, user_id: int = None):
+async def listar_notificacoes_db(db: Session, user_id: int):
     try:
+        notificacao_user_alias = aliased(t_NotificacaoUser)
         lista_notificacoes = (
             db.query(Notificacao)
-            .filter(NotificacaoUser.UtilizadorID == user_id)
-            .join(NotificacaoUser)
+            .join(notificacao_user_alias, Notificacao.NotificacaoID == notificacao_user_alias.c.NotificacaoID)
+            .filter(notificacao_user_alias.c.UtilizadorID == user_id)
             .order_by(Notificacao.DataHora.desc())
         )
         return lista_notificacoes
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
+
+#Marcar uma notificação como lida
+async def marcar_notificacao_lida_db(db: Session, notificacao_id: int):
+    try:
+        notificacao = db.query(Notificacao).filter(Notificacao.NotificacaoID == notificacao_id).first()
+        notificacao.Estado = True
+        db.commit()
+        db.refresh(notificacao)
+
+        return {'Notificação marcada como lida!'}
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 

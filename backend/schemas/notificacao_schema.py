@@ -18,12 +18,21 @@ class NotificacaoUtilizadorSchema(BaseModel):
 
 class NotificacaoSchema(BaseModel):
     Titulo: constr(min_length=5, max_length=100)
-    Mensagem: constr(min_length=5, max_length=500)
+    Mensagem: constr(min_length=5, max_length=1000)
     ProcessoID: conint(gt=0)
     TipoProcessoID : conint(gt=0)
 
     class Config:
         from_attributes = True
+
+class NotificacaoOutSchema(BaseModel):
+    NotificacaoID: int
+    Titulo: str
+    Mensagem: str
+    DataHora: datetime.datetime
+    ProcessoID: int
+    Estado : bool
+    TipoProcID : int
 
 class TipoProcessoOpcoes(Enum):
     AQUISICAO = "Aquisição"

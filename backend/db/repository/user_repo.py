@@ -34,7 +34,7 @@ async def update_new_password(db: Session, user_identifier: int, password_hashed
         db.rollback()
         raise RuntimeError(f"Erro ao atualizar password utilizador: {e}")
 
-async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str):
+async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str, path: str):
     try:
         new_user = db.query(Utilizador).filter(Utilizador.UtilizadorID == user_identifier).first()
         if new_user:
@@ -48,6 +48,7 @@ async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int
                 new_user.PasswordHash = password_hashed
             if salt is not None:
                 new_user.Salt = salt
+            new_user.Path = path
             new_user.Verificado = True
             db.commit()
         else:
@@ -69,7 +70,7 @@ async def user_exists(db: Session, email: str):
     except Exception as e:
         raise RuntimeError(f"Erro ao verificar utilizador: {e}")
 
-def get_user_by_email(db: Session, email: EmailStr):
+def get_user_by_email(db: Session, email: str):
     try:
         user = db.query(Utilizador).filter(Utilizador.Email == email).first()
         if user:
@@ -104,12 +105,20 @@ async def get_dados_utilizador(db:Session, id_user:int):
             return UserData(
                 nome=str(utilizador.NomeUtilizador),
                 email=str(utilizador.Email),
-                contacto= utilizador.Contacto
+                contacto= utilizador.Contacto,
+                data_nascimento=utilizador.DataNasc,
+                imagem=utilizador.Path,
             )
         else:
             return None
     except Exception as e:
         raise RuntimeError(f"Erro ao obter utilizador: {e}")
+
+#Função que obtêm os ID's de todos os admins/gestores
+async def get_all_admin_gestores_ids(db:Session):
+
+    lista_ids = db.query(Utilizador.UtilizadorID).filter(TipoUtilizador.DescTU != "residente").all()
+    return lista_ids
 
 def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
     try:

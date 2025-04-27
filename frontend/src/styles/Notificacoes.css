@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+.notificacoes-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.notificacoes-lista {
+  width: 30%;
+  background-color: #f0f4f8;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.notificacao-preview {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.notificacao-preview:hover {
+  background-color: #e3f1f8;
+}
+
+.notificacao-preview.ativa {
+  background-color: #cde9f6;
+}
+
+.notificacao-preview h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+
+.notificacao-preview p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.notificacao-preview .data {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+.notificacao-detalhe {
+  flex-grow: 1;
+  padding: 40px;
+  background-color: #fff;
+}
+
+.notificacao-detalhe h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.notificacao-detalhe .data {
+  font-size: 0.85rem;
+  color: #777;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.notificacao-detalhe p {
+  font-size: 1rem;
+  line-height: 1.6;
+}

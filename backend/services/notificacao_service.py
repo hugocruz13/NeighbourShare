@@ -1,38 +1,198 @@
-from sqlalchemy.orm import Session
 from db.repository.notificacao_repo import *
-from db.models import Notificacao, PedidoNovoRecurso
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
 from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
+from schemas.votacao_schema import Criar_Votacao
+from services.recurso_comum_service import obter_pedido_manutencao
+from db.models import PedidoReserva, Votacao
+from services.web_sockets_service import send_notification, active_connections
+from db.repository.user_repo import get_all_admin_gestores_ids
+
 
 #Cria uma notificação direcionada somente a um utilizador específico
 async def cria_notificacao_individual_service(db:Session, notificacao:NotificacaoSchema, user_id:int):
-    return await cria_notificacao_individual_db(db, notificacao, user_id)
+
+    nova_notificacao = await cria_notificacao_individual_db(db, notificacao, user_id)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    if user_id in active_connections:
+        await send_notification(user_id,notificacao_out.dict())
+
+    return notificacao_out
 
 #Cria uma notificação para todos os admins/gestores do sistema
 async def cria_notificacao_admin_service(db:Session, notificacao:NotificacaoSchema):
-    return await cria_notificacao_admin_db(db, notificacao)
+    nova_notificacao = await cria_notificacao_admin_db(db, notificacao)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    admin_ids = await get_all_admin_gestores_ids(db)
+    for admin_id in admin_ids:
+        if admin_id in active_connections:
+            await send_notification(admin_id, notificacao_out.dict())
+
+    return notificacao_out
 
 #Cria uma notificação para todos os utilizadores
 async def cria_notificacao_todos_service(db:Session, notificacao:NotificacaoSchema):
-    return await cria_notificacao_todos_utilizadores_db(db,notificacao)
+    nova_notificacao = await cria_notificacao_admin_db(db, notificacao)
+    notificacao_out = NotificacaoOutSchema.from_orm(nova_notificacao)
+
+    for user_id in active_connections.keys():
+        await send_notification(user_id, notificacao_out.dict())
+
+    return notificacao_out
 
 #Lista todas as notificações de um utilizador
 async def listar_notificacoes_service(db:Session, user_id:int):
 
-    lista_notificacoes = await notificacao_repo.listar_notificacoes_db(db, user_id)
+    lista_notificacoes = await listar_notificacoes_db(db, user_id)
 
     if not lista_notificacoes:
         raise HTTPException(status_code=400, detail="Nenhuma notificação encontrada")
 
     return lista_notificacoes
 
-#region Votações
-#TODO Criar notificação aquando da criação de uma votação
+#Marca notificação como lida
+async def marcar_noti_lida_service(db:Session, notificacao_id: int):
+    try:
+        return await marcar_notificacao_lida_db(db, notificacao_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-#TODO Cria notificação para o anuncio negativo do resultado de uma votação
+#region Votações
+
+#Cria notificação referente à criação de uma votação para decidir se é para comprar um novo recurso ou não
+async def cria_notificacao_decisao_novo_recurso_comum_service(db:Session, votacao:Criar_Votacao):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Nova Votação Disponível!",
+            Mensagem=f"""
+                    Caros residentes,
+                    
+                    Foi criada uma nova votação com o objetivo de decidir sobre o avanço na aquisição de um novo recurso comum para o condomínio.
+                    
+                    A votação em questão tem os seguintes dados:
+                        
+                        Titulo : {votacao.titulo}
+                        Descrição : {votacao.descricao}
+                        Data de Fim : {votacao.data_fim}
+                    
+                    A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
+                    """,
+            ProcessoID=votacao.id_processo,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+        )
+
+        return await cria_notificacao_todos_utilizadores_db(db,notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação referente à criação de uma votação para decidir qual orçamento será escolhido para a compra do novo recurso
+async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, votacao:Criar_Votacao):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Nova Votação Disponível!",
+            Mensagem=f"""
+                        Caros residentes,
+
+                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a compra do recurso associado ao pedido nº: {votacao.id_pedido}
+
+                        A votação em questão tem os seguintes dados:
+
+                            Titulo : {votacao.titulo}
+                            Descrição : {votacao.descricao}
+                            Data de Fim : {votacao.data_fim}
+
+                        A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
+                        """,
+            ProcessoID=votacao.id_pedido,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+        )
+
+        return await cria_notificacao_todos_utilizadores_db(db,notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria votação para a escolha do orçamento referente à manutenção de um recurso comum
+async def cria_notificacao_decisao_orcamento_manutencao_service(db:Session, votacao:Criar_Votacao):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Nova Votação Disponível!",
+            Mensagem=f"""
+                        Caros residentes,
+
+                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a manutenção do recurso associado ao pedido nº: {votacao.id_processo}
+
+                        A votação em questão tem os seguintes dados:
+
+                            Titulo : {votacao.titulo}
+                            Descrição : {votacao.descricao}
+                            Data de Fim : {votacao.data_fim}
+
+                        A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
+                        """,
+            ProcessoID=votacao.id_processo,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+        )
+
+        return await cria_notificacao_todos_utilizadores_db(db,notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação decisão da compra do novo recurso
+async def cria_notificacao_decisao_compra_recurso_positiva_service(db:Session, votacao:Votacao,pedido: PedidoNovoRecursoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Aquisição de Novo Recurso Comum",
+            Mensagem=f"""
+                Caros residentes,
+                
+                Informamos que, após a realização da votação pelos residentes do condomínio, foi aprovada por maioria a aquisição do novo recurso comum.
+                
+                A votação em questão tem os seguintes dados:
+
+                Titulo : {votacao.Titulo}
+                Descrição : {votacao.Descricao}
+                
+                Esta decisão reflete o envolvimento e interesse de todos em melhorar as condições e a convivência no nosso espaço coletivo.
+
+                Em breve será criada uma votação para a escolha do orçamento, para avançar com a compra.
+
+                Agradecemos a participação de todos!""",
+            ProcessoID=pedido.PedidoNovoRecID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+            )
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação decisão de não comprar um novo recurso comum
+async def cria_notificacao_decisao_nao_compra_recurso_service(db:Session, votacao:Votacao,pedido: PedidoNovoRecursoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Recusa de Aquisição de Novo Recurso Comum",
+            Mensagem=f"""
+                Caros residentes,
+
+                Informamos que, após a realização da votação pelos residentes do condomínio, foi recusada por maioria a aquisição do novo recurso comum.
+
+                A votação em questão tem os seguintes dados:
+
+                Titulo : {votacao.Titulo}
+                Descrição : {votacao.Descricao}
+
+                Esta decisão reflete o envolvimento e de todos, refletindo-se numa recusa que tem que ser respeitada.
+
+                Agradecemos a participação de todos!""",
+            ProcessoID=pedido.PedidoNovoRecID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
+        )
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 #endregion
 
 #region Manutenção de recurso comum
@@ -53,7 +213,7 @@ async def cria_notificacao_insercao_pedido_manutencao_service(db:Session,pedido:
             Pode aceder ao pedido diretamente através da plataforma para visualizar os detalhes e tomar as ações necessárias.
             """,
             ProcessoID=pedido.PMID,
-            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+            TipoProcessoID =await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
         )
 
         return await cria_notificacao_admin_db(db,notficacao)
@@ -63,7 +223,6 @@ async def cria_notificacao_insercao_pedido_manutencao_service(db:Session,pedido:
 #Cria notificação a indicar a não necessidade de intervenção de uma entidade externa
 async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:PedidoManutencaoSchema):
     try:
-
         notificacao = NotificacaoSchema(
             Titulo= "Atualização sobre o seu pedido de manutenção",
             Mensagem= f"""
@@ -87,8 +246,54 @@ async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:Pe
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+#Cria notificação a indicar a necessidade de intervenção de uma entidade externa
+async def cria_notificacao_necessidade_entidade_externa(db:Session,pedido:PedidoManutencaoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Atualização sobre o seu pedido de manutenção",
+            Mensagem=f"""
+
+                    Prezados moradores,
+
+                    Depois de analisarmos um pedido de manutenção (Nº: {pedido.PMID}) efetuado por um morador, verificamos a necessidade da intervenção de uma entidade externa.
+
+                    Por isso informamos que será feito um estudo de orçamentos para a resolução do problema, onde surgirá uma votação para a escolha do melhor orçamento.
+
+                    Com isto agradecemos a indicação do problema existente e fiquem a aguardar a votação.
+                    """,
+            ProcessoID=pedido.PMID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+        )
+
+        return await cria_notificacao_todos_utilizadores_db(db, notificacao)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+#Cria notificação a rejeitar a manutenção de um recurso comum
+async def cria_notificacao_rejeicao_manutencao_recurso_comum(db:Session,pedido:PedidoManutencaoSchema):
+    try:
+        notificacao = NotificacaoSchema(
+            Titulo="Atualização sobre o seu pedido de manutenção",
+            Mensagem=f"""
+
+                    Olá {pedido.Utilizador_.Nome},
+
+                    Agradecemos o seu pedido de manutenção referente a {pedido.DescPedido}.
+
+                    Contudo depois de uma análise à situaçao reportado, não foi verificado uma intervenção no recurso em questão, seja a mesma inerna ou externa.
+                    
+                    Com isto agradecemos a sua intervenção, contudo o pedido será dado como rejeitado.
+                    """,
+            ProcessoID=pedido.PMID,
+            TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.MANUTENCAO)
+        )
+
+        return await cria_notificacao_individual_db(db, notificacao, pedido.Utilizador_.UtilizadorID)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 #Cria notificação a indicar que orçamento foi o mais votado para a manutenção do recurso comum
-async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManutencaoSchema, orcamento:OrcamentoSchema):
+async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManutencaoSchema, nomeorcamento:str):
     try:
 
         notificacao = NotificacaoSchema(
@@ -96,7 +301,7 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
             Mensagem= f"""
                 Prezados moradores,
                 
-                Informamos que, após o processo de avaliação e votação, foi escolhido o orçamento apresentado pela entidade {orcamento.Fornecedor} no valor de {orcamento.Valor}€ para a realização da manutenção do recurso comum {pedido.RecursoComun_.Nome}.
+                Informamos que, após o processo de avaliação e votação, foi escolhido o orçamento {nomeorcamento} para a realização da manutenção do recurso comum {pedido.RecursoComun_.Nome}.
                 
                 A proposta selecionada foi a mais votada entre as opções apresentadas e cumpre os critérios estabelecidos.
                 
@@ -114,9 +319,9 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar a conclusão da manutenção do recurso comum
-async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,pedido:PedidoManutencaoSchema, orcamento:OrcamentoSchema):
+async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,manutencao:ManutencaoSchema, orcamento:OrcamentoSchema):
     try:
-
+        pedido = await obter_pedido_manutencao(db,manutencao.PMID)
         notificacao = NotificacaoSchema(
             Titulo= "Manutenção concluída com sucesso",
             Mensagem= f"""
@@ -166,7 +371,7 @@ async def cria_notificacao_insercao_pedido_novo_recurso_comum_service(db:Session
         raise HTTPException(status_code=500, detail=str(e))
 
 # Cria notificação para o anuncio da compra que será efetuada para a aquisição do novo recurso comum
-async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session, pedido: PedidoNovoRecursoSchema, orcamento: OrcamentoSchema):
+async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session, pedido: PedidoNovoRecursoSchema, nomeorcamento):
     try:
         notificao = NotificacaoSchema(
             Titulo="Confirmação da Aquisição de Novo Recurso",
@@ -175,8 +380,7 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
             Prezados moradores,
 
             Informamos que, após o processo de votação e análise dos orçamentos disponíveis, foi aprovada a aquisição do novo recurso
-            referente ao pedido Nº {pedido.PedidoNovoRecID} com base no orçamento apresentado pela entidade {orcamento.Fornecedor}
-            , no valor de {orcamento.Valor} €.
+            referente ao pedido Nº {pedido.PedidoNovoRecID} com base no orçamento : {nomeorcamento}
 
             Esta proposta foi a mais votada pelos moradores, cumprindo o critério de aprovação por maioria.
 
@@ -197,7 +401,7 @@ async def cria_notificacao_anuncio_compra_novo_recurso_comum_service(db: Session
 #region Reserva de Recursos entre Vizinhos
 
 #Cria notificação para notificar o recebimento de um novo pedido de reserva de um recurso
-async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReservaSchema):
+async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoReserva):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Novo pedido de reserva recebido",
@@ -206,7 +410,7 @@ async def cria_notificacao_recebimento_pedido_reserva(db:Session, pedido:PedidoR
 
             Detalhes do pedido:
             
-            Solicitado por: {pedido.Utilizador_.Nome}
+            Solicitado por: {pedido.Utilizador_.NomeUtilizador}
             
             Período: {pedido.DataInicio} até {pedido.DataFim}
             
@@ -259,7 +463,7 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação para indicar que a caução será devolvida
-async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int):
+async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução será devolvida",
@@ -276,11 +480,13 @@ async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:Pe
             ProcessoID=pedido.PedidoResevaID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db,notificacao,pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que a caução não será devolvida
-async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReservaSchema, reserva_id:int, justificativa:str):
+async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int, justificativa:str):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução não será devolvida",
@@ -296,6 +502,8 @@ async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedid
             ProcessoID= pedido.PedidoResevaID,
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
+
+        return await cria_notificacao_individual_db(db, notificacao, pedido.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

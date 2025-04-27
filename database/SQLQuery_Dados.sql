@@ -37,10 +37,23 @@ INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Aprovado para execução interna');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
-VALUES ('Aprovado para execução externa');
+VALUES ('Em negociação com entidades externas');
+
+INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
+VALUES ('Em votação');
 
 INSERT INTO EstadoPedidoManutencao (DescEstadoPedidoManutencao)
 VALUES ('Rejeitado');
+
+
+/*Estado Manutenção de um recurso comum*/
+
+
+INSERT INTO EstadoManutencao (DescEstadoManutencao)
+VALUES ('Em progresso');
+
+INSERT INTO EstadoManutencao (DescEstadoManutencao)
+VALUES ('Concluída');
 
 
 /*Tipo Utilizador*/
@@ -66,6 +79,11 @@ INSERT INTO Categoria (DescCategoria) VALUES ('Outros')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Em análise')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Aprovado')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Rejeitado')
+
+/* Recurso de Teste */
+
+INSERT INTO Recurso (Nome, DescRecurso, Caucao, Path, UtilizadorID, DisPID, CatID)
+VALUES ('Projetor', 'Projetor 4k todo XPTO', 200, 'none',1,1,2)
 
 
 

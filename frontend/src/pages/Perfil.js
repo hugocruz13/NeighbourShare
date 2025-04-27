@@ -14,7 +14,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/me", {
+        const response = await fetch("http://localhost:8000/api/perfil", {
           method: 'GET',
           credentials: 'include',
         });
@@ -40,7 +40,7 @@ const ProfilePage = () => {
 
     try {
       setDeleting(true);
-      const response = await fetch("http://localhost:8000/api/deletarPerfil", {
+      const response = await fetch(`http://localhost:8000/api/delete?email=${user.email}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -59,8 +59,9 @@ const ProfilePage = () => {
   };
 
   return (
+    <div className="page-content">
+
     <div className="home-container">
-      <Navbar2 />
 
       <div className='fundoPerfil'>
 
@@ -107,6 +108,8 @@ const ProfilePage = () => {
 
 
     </div>
+</div>
+
   );
 };
 
