@@ -6,7 +6,7 @@ class TipoVotacao(str, Enum):
     AQUISICAO = "Aquisição"
     MANUTENCAO = "Manutenção"
 
-class TipoVotacaoPedidoNovoRecurso(str,Enum):
+class TipoVotacaoPedidoNovoRecurso(int,Enum):
     BINARIA = 0
     MULTIPLA = 1
 

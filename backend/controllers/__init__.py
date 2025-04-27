@@ -6,5 +6,6 @@ from .auth_controller import router as auth_controller
 from .notificacoes_controller import router as notificacoes_controller
 from .votacao_controller import router as votacao_controller
 from .entidade_controller import router as entidade_controller
+from .imagens import router as imagens_controller
 
-routers = [recurso_controller, reserva_controller, recurso_comum_controller, orcamento_controller, auth_controller, notificacoes_controller, entidade_controller, votacao_controller]
+routers = [recurso_controller, reserva_controller, recurso_comum_controller, orcamento_controller, auth_controller, notificacoes_controller, entidade_controller, votacao_controller,imagens_controller]

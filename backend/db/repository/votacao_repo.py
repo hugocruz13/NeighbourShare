@@ -26,7 +26,7 @@ async def criar_votacao_nr_db(db: Session, votacao: Criar_Votacao, tipovotacao:T
 
 async def criar_votacao_pedido_manutencao_db(db: Session, votacao: Criar_Votacao):
     try:
-        votacao_new = Votacao(Titulo=votacao.titulo, Descricao=votacao.descricao, DataInicio=date.today(), DataFim= votacao.data_fim, Processada=False, TipoVotacao=TipoVotacaoPedidoNovoRecurso.MULTIPLA)
+        votacao_new = Votacao(Titulo=votacao.titulo, Descricao=votacao.descricao, DataInicio=date.today(), DataFim= votacao.data_fim, Processada=False)
         pedido_manutencao = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == votacao.id_processo).first()
 
         if not pedido_manutencao:
