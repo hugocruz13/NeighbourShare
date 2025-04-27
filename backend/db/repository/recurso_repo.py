@@ -1,3 +1,4 @@
+from sqlalchemy import update
 from sqlalchemy.orm import joinedload
 from db import session
 from db.models import Recurso, Disponibilidade, Categoria, Reserva, PedidoReserva
@@ -45,6 +46,15 @@ async def inserir_recurso_db(db:session, recurso:Recurso):
     except SQLAlchemyError as e:
         db.rollback()
         return False, {'details': str(e)}
+
+async def update_path(db: session, id: int, path: str):
+    try:
+        db.query(Recurso).filter(Recurso.RecursoID == id).update({Recurso.Path: path})
+        db.commit()
+        return {"message": "Caminho da imagem atualizado com sucesso."}
+    except Exception as e:
+        db.rollback()
+        raise RuntimeError(f"Erro ao guardar o caminho da imagem: {e}")
 
 #Lista todos os recursos registados no sistema
 async def listar_recursos_db(db:session):

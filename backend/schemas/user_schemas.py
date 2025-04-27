@@ -34,12 +34,15 @@ class UserData(BaseModel):
     nome: constr(min_length=3, max_length=100)
     email: EmailStr
     contacto: conint(ge=100000000, le=999999999)
+    data_nascimento: date
+    imagem: str
 
 class NewUserUpdate(BaseModel):
     nome: constr(min_length=3, max_length=100)
     data_nascimento: date
     contacto: conint(ge=100000000, le=999999999)
     password: str
+    path :Optional[str] = Field(default=None, example= "")
     @validator('password')
     def validate_password(cls, value):
         return validate_password_strength(value)

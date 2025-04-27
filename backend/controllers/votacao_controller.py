@@ -6,7 +6,7 @@ from middleware.auth_middleware import role_required
 from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso
 from schemas.user_schemas import UserJWT
 from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, \
-    processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm, processar_votacao, get_orcamentos_pedido_novo_recurso_service
+    processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm, processar_votacao
 
 router = APIRouter(tags=['Votação'])
 
@@ -54,9 +54,9 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/votacao_orcamento_pm")
-async def orcamentos_pm(id:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
+async def orcamentos_pm(id_v:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
     try:
-        return await gerir_votacoes_orcamentos_pm(db,id)
+        return await gerir_votacoes_orcamentos_pm(db,id_v)
     except HTTPException as he:
         raise he
     except Exception as e:

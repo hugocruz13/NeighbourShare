@@ -26,6 +26,12 @@ class RecursoComumSchemaCreate(BaseModel):
     class Config:
         from_attributes = True
 
+class RecursoComum_Return(BaseModel):
+    id:int
+    nome: str
+    desc:str
+    path:str
+
 # === Estados ===
 
 class EstadoPedNovoRecursoSchema(BaseModel):
@@ -129,3 +135,7 @@ class ManutencaoUpdateSchema(BaseModel):
 
 class EstadoUpdate(BaseModel):
     novo_estado_id: EstadoPedManutencaoSchema
+
+class PedidoManutencaoRequest(BaseModel):
+    recurso_comum_id: int
+    desc_manutencao_recurso_comum: str

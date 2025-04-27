@@ -1,9 +1,6 @@
-from idlelib.window import add_windows_to_menu
-
 import db.repository.reserva_repo as reserva_repo
 import db.session as session
 from fastapi import HTTPException
-
 from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
 from services import notificacao_service
