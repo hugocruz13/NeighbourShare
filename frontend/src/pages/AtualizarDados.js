@@ -21,6 +21,14 @@ const AtualizarDados = () => {
   }, [location]);
 
   const handleUpdate = async () => {
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])([^\s]){8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      toast.error('Password inválida. Deve ter pelo menos 8 caracteres, incluindo uma maiúscula, uma minúscula, um número e um carácter especial.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('dataNascimento', dataNascimento);
     formData.append('email', email);

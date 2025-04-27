@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.js";
@@ -7,26 +7,6 @@ import "../styles/RealizarPedidoManutencao.css";
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
   const [desc_manutencao_recurso_comum, setDescricao] = useState('');
-  const [recursos, setRecursos] = useState([]);
-
-  useEffect(() => {
-    const fetchRecursos = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/recursoscomuns/', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        const data = await response.json();
-        console.log(data);
-        setRecursos(data);
-      } catch (error) {
-        console.error('Erro ao buscar recursos comuns:', error);
-        toast.error('Erro ao buscar recursos comuns.');
-      }
-    };
-
-    fetchRecursos();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,14 +48,7 @@ const RealizarPedidoManutencao = () => {
             <form onSubmit={handleSubmit}>
               <div>
                 <label>Id:</label><br></br>
-                <select value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} required>
-                  <option value="">Selecione um recurso</option>
-                  {recursos.map((recurso) => (
-                    <option key={recurso.RecComumID} value={recurso.RecComumID}>
-                      {recurso.Nome}
-                    </option>
-                  ))}
-                </select>
+                <input value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} required/>
               </div>
 
               <div>

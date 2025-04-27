@@ -43,7 +43,7 @@ const Exemplo = () => {
             {products.map((product) => (
               <div key={product.RecursoID}>
                 <Link to={`/pedidosReserva/${product.RecursoID}`}>
-                  <img src={product.Image} alt={product.Nome} style={{ width: '100%' }} />
+                  <img src="http://127.0.0.1:8000/api/imagens/recursos/1/Circulo_amarelo.png" alt={product.Nome} style={{ width: '100%' }} />
                 </Link>
                 <h2>{product.Nome}</h2>
                 <h2>{product.DescRecurso}</h2>
