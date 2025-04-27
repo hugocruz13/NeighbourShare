@@ -102,7 +102,9 @@ def test_delete_entidade(client, db_session, entidade_data, cookie):
     db_entidade = db_session.query(EntidadeExterna).filter(EntidadeExterna.Email == entidade_data["Email"]).first()
     assert db_entidade is not None
 
-    response = client.delete(f"/api/entidades/eliminar/{db_entidade.EntidadeID}")
+    response = client.delete(
+        "/api/entidades/eliminar",
+        params={"id_entidade": db_entidade.EntidadeID})
     assert response.status_code == 200
     response_data = response.json()
     assert response_data[0] is True
