@@ -146,7 +146,7 @@ async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
         raise e
 
 #Obter todas as votações ativas, diferenciadas por tipos
-async def listar_votacoes_ativas(db:Session):
+async def listar_votacoes_ativas_db(db:Session):
     try:
         votacoes_pedido_recurso_binarias = (db.query(Votacao, VotacaoPedidoNovoRecurso.PedidoNovoRecID)
                                             .join(VotacaoPedidoNovoRecurso, VotacaoPedidoNovoRecurso.VotacaoID == Votacao.VotacaoID)

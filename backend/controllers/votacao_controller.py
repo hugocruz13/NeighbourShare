@@ -3,7 +3,7 @@ from requests import Session
 from starlette.responses import JSONResponse
 from db.session import get_db
 from middleware.auth_middleware import role_required
-from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso
+from schemas.votacao_schema import Criar_Votacao, Votar, Votar_id, TipoVotacao, TipoVotacaoPedidoNovoRecurso, ObtemTodasVotacoes
 from schemas.user_schemas import UserJWT
 from services.votacao_service import gerir_votacao_novo_recurso, gerir_votacao_pedido_manutencao, gerir_voto, \
     processar_votacoes_expiradas, gerir_votacoes_orcamentos_pm, processar_votacao, \
@@ -80,7 +80,7 @@ async def testar_processamento_votacao(votacao_id: int,db: Session = Depends(get
         raise he
 
 #Lista todas as votações ativas, 3 listas, cada uma com os seguintes tipos de votações: pedido novo recurso binária, multipla e pedidos de manutenção
-@router.get("/listar_votacaos")
+@router.get("/listar_votacaos", response_model=ObtemTodasVotacoes)
 async def listar_votacoes_abertas(db:Session = Depends(get_db), user: UserJWT = Depends(role_required(["residente","gestor", "admin"]))):
     try:
         return await listar_votacoes_ativas(db)

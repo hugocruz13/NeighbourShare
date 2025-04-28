@@ -1,6 +1,7 @@
 from pydantic import BaseModel, constr, conint, EmailStr
 from datetime import date
 from enum import Enum
+from typing import List
 
 class TipoVotacao(str, Enum):
     AQUISICAO = "Aquisição"
@@ -47,3 +48,19 @@ class Votacao_Return(BaseModel):
 
     class Config:
         str_strip_whitespace = True
+
+class VotacaoGet(BaseModel):
+    votacao_id : conint(gt=0)
+    titulo: constr(min_length=2, max_length=100)
+    descricao: constr(min_length=2, max_length=500)
+    data_inicio: date
+    data_fim: date
+    pedido_recurso: conint(gt=0)
+
+    class Config:
+        str_strip_whitespace = True
+
+class ObtemTodasVotacoes(BaseModel):
+    lista_votacao_pedido_novo_recurso_binarias: List[VotacaoGet]
+    lista_votacao_pedido_novo_recurso_multiplas : List[VotacaoGet]
+    lista_votacao_pedido_manutencao : List[VotacaoGet]
