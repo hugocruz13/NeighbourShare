@@ -6,6 +6,7 @@ from db.repository.recurso_comum_repo import *
 from datetime import date
 from services.notificacao_service import *
 from collections import defaultdict
+from schemas.votacao_schema import *
 
 scheduler = AsyncIOScheduler()
 
@@ -153,5 +154,62 @@ async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
             raise HTTPException(status_code=404, detail="Votação não encontrado")
 
         return await get_orcamentos_pm(db, votacao_id)
+    except Exception as e:
+        raise e
+
+#Obter todos os orçamentos registados associados a um pedido de aquisição de um novo recurso
+async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int):
+    try:
+        if not await existe_votacao(db, votacao_id):
+            raise HTTPException(status_code=404, detail="Votação não encontrado")
+
+        return await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+    except HTTPException as he:
+        raise he
+
+async def listar_votacoes_ativas(db:Session):
+    try:
+        votacoes_pedido_recurso_binarias, votacoes_pedido_recurso_mutliplas, votacoes_pedido_manutencao = await listar_votacoes_ativas_db(db)
+
+        lista_votacoes_pr_binarias = []
+        lista_votacoes_pr_multiplas = []
+        lista_votacoes_pm = []
+
+        for votacao, pedido_id in votacoes_pedido_recurso_binarias:
+            new_votacao = VotacaoGet(
+                votacao_id=votacao.VotacaoID,
+                titulo=votacao.Titulo,
+                descricao=votacao.Descricao,
+                data_inicio = votacao.DataInicio,
+                data_fim = votacao.DataFim,
+                pedido_recurso = pedido_id
+            )
+            lista_votacoes_pr_binarias.append(new_votacao)
+        for votacao, pedido_id in votacoes_pedido_recurso_mutliplas:
+            new_votacao = VotacaoGet(
+                votacao_id=votacao.VotacaoID,
+                titulo=votacao.Titulo,
+                descricao=votacao.Descricao,
+                data_inicio = votacao.DataInicio,
+                data_fim = votacao.DataFim,
+                pedido_recurso = pedido_id
+            )
+            lista_votacoes_pr_multiplas.append(new_votacao)
+        for votacao, pedido_id in votacoes_pedido_manutencao:
+            new_votacao = VotacaoGet(
+                votacao_id=votacao.VotacaoID,
+                titulo=votacao.Titulo,
+                descricao=votacao.Descricao,
+                data_inicio=votacao.DataInicio,
+                data_fim=votacao.DataFim,
+                pedido_recurso=pedido_id
+            )
+            lista_votacoes_pm.append(new_votacao)
+
+        return ObtemTodasVotacoes(
+            lista_votacao_pedido_novo_recurso_binarias = lista_votacoes_pr_binarias,
+            lista_votacao_pedido_novo_recurso_multiplas = lista_votacoes_pr_multiplas,
+            lista_votacao_pedido_manutencao = lista_votacoes_pm
+        )
     except Exception as e:
         raise e

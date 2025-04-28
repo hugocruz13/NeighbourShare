@@ -127,9 +127,42 @@ async def get_contexto_votacao(db:Session, votacao_id:int):
         raise e
 
 #Obter orcamentos associados ao pedido de Manutenção
-async  def get_orcamentos_pm(db:Session, votacao_id:int):
+async def get_orcamentos_pm(db:Session, votacao_id:int):
     try:
         orcamentos = db.query(Orcamento).join(Orcamento.PedidoManutencao).filter(PedidoManutencao.VotacaoID==votacao_id).all()
         return orcamentos
+    except SQLAlchemyError as e:
+        raise e
+
+#Obter os orcamentos associados a um pedido de novo recurso
+async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
+    try:
+        orcamentos = (db.query(Orcamento)
+                  .join(Orcamento.PedidoNovoRecurso)
+                  .join(VotacaoPedidoNovoRecurso)
+                  .filter(VotacaoPedidoNovoRecurso.VotacaoID==votacao_id).all())
+        return orcamentos
+    except SQLAlchemyError as e:
+        raise e
+
+#Obter todas as votações ativas, diferenciadas por tipos
+async def listar_votacoes_ativas_db(db:Session):
+    try:
+        votacoes_pedido_recurso_binarias = (db.query(Votacao, VotacaoPedidoNovoRecurso.PedidoNovoRecID)
+                                            .join(VotacaoPedidoNovoRecurso, VotacaoPedidoNovoRecurso.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True, VotacaoPedidoNovoRecurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA)
+                                            .all())
+
+        votacoes_pedido_recurso_mutliplas = (db.query(Votacao, VotacaoPedidoNovoRecurso.PedidoNovoRecID)
+                                            .join(VotacaoPedidoNovoRecurso, VotacaoPedidoNovoRecurso.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True, VotacaoPedidoNovoRecurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA)
+                                            .all())
+
+        votacoes_pedido_manutencao = (db.query(Votacao, PedidoManutencao.PMID)
+                                            .join(PedidoManutencao, PedidoManutencao.VotacaoID == Votacao.VotacaoID)
+                                            .filter(Votacao.Processada != True)
+                                            .all())
+
+        return votacoes_pedido_recurso_binarias,votacoes_pedido_recurso_mutliplas,votacoes_pedido_manutencao
     except SQLAlchemyError as e:
         raise e
