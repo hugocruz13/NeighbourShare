@@ -54,3 +54,7 @@ INSERT INTO Categoria (DescCategoria) VALUES ('Outros')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Em análise')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Aprovado')
 INSERT INTO EstadoPedidoReserva (DescEstadoPedidoReserva) VALUES ('Rejeitado')
+
+/*INSERT INTO EstadoManutencao (DescEstadoManutencao) VALUES ('Aguardar entidade externa')*/
+INSERT INTO EstadoManutencao (DescEstadoManutencao) VALUES ('Em curso')
+INSERT INTO EstadoManutencao (DescEstadoManutencao) VALUES ('Concluído')
