@@ -52,7 +52,7 @@ jobs:
         id: docker-cache
         with:
           path: docker-cache
-          key: ${{ runner.os }}-docker-images-${{ github.sha }}
+          key: ${{ runner.os }}-docker-images-${{ hashFiles('backend/Dockerfile', 'docker-compose.yml', 'backend/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-docker-images-
 
