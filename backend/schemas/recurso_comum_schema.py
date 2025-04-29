@@ -61,8 +61,8 @@ class EstadoPedManutencaoSchema(str,Enum):
     EMANALISE = 1
     APROVADOEXECUCAOINTERNA = 2
     NEGOCIACAOENTIDADESEXTERNAS = 3
-    VOTACAO = 4
-    REJEITADO = 5
+    VOTACAO = 5
+    REJEITADO = 4
 
 
 # === Pedidos de Novo Recurso ===

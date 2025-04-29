@@ -12,7 +12,6 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v3
         
-
       - name: Verificar diretório e listar arquivos
         run: |
           pwd
@@ -42,6 +41,26 @@ jobs:
       - name: Configurar Docker Buildx
         # Sets up Docker buildx for potentially faster/better builds
         uses: docker/setup-buildx-action@v2
+
+      # Nova etapa: Restaurar cache de imagens Docker
+      - name: Restaurar cache de imagens Docker
+        uses: actions/cache@v3
+        id: docker-cache
+        with:
+          path: docker-cache
+          key: ${{ runner.os }}-docker-images-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-images-
+
+      # Nova etapa: Carregar imagens Docker do cache, se disponível
+      - name: Carregar imagens Docker do cache
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: |
+          echo "Cache de imagens Docker encontrado! Carregando imagens..."
+          for tar_file in docker-cache/*.tar; do
+            [ -f "$tar_file" ] && docker load -i "$tar_file" || echo "Nenhum arquivo .tar encontrado"
+          done
+          docker images
 
       - name: Up os containers com Docker Compose
         # Builds images (if needed) and starts services in detached mode
@@ -76,6 +95,20 @@ jobs:
         run: |
           source venv/bin/activate
           pytest backend/tests/test_performance.py
+      
+      - name: Salvar imagens Docker em cache
+        if: always()
+        run: |
+          mkdir -p docker-cache
+          docker images --format '{{.Repository}}:{{.Tag}}' | grep -v '<none>' | xargs -I {} sh -c 'docker save -o docker-cache/$(echo {} | tr "/:" "__").tar {}'
+
+      - name: Configurar cache para imagens Docker salvas
+        uses: actions/cache@v3
+        with:
+          path: docker-cache
+          key: ${{ runner.os }}-docker-images-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-images-
 
       - name: Logs dos containers em caso de falha
         # If any step failed previously, show the logs from all services
