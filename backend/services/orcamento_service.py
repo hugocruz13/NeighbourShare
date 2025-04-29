@@ -1,24 +1,30 @@
 import os
 from dotenv import load_dotenv
 import db.repository.orcamento_repo as orcamento_repo
+import db.repository.entidade_repo as entidade_repo
 import schemas.orcamento_schema as orcamentoschema
 import db.session as session
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 from schemas.orcamento_schema import OrcamentoUpdateSchema, OrcamentoGetSchema
 import shutil
 from pathlib import Path
 
 
 #Service para inserir um novo orçamento
-async def inserir_orcamento_service(db:session, orcamento:orcamentoschema, pdforcamento:UploadFile):
+async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.OrcamentoSchema, pdforcamento:UploadFile):
     try:
+
+        #Verifica se a entidade externa existe!
+        if not await entidade_repo.existe_entidade_db(orcamento.IDEntidade,db):
+            raise HTTPException(status_code=400, detail="Entidade Externa não registada")
+
         orcamento_id, mensagem = await orcamento_repo.inserir_orcamento_db(db, orcamento)
         if orcamento_id :
             return await guardar_pdf_orcamento(pdforcamento, orcamento_id)
         else:
             return False, "Erro ao inserir um orçamento"
     except Exception as e:
-        return False, "Erro na inserção do orçamento, detalhes : "+str(e)
+        raise e
 
 #Service para guardar um pdf associado a um orçamento
 async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
@@ -52,7 +58,8 @@ async def listar_orcamentos_service(db:session):
         for orcamento in orcamentos:
             orcamentos_caminhospdf.append(OrcamentoGetSchema(
                 OrcamentoID = orcamento.OrcamentoID,
-                Fornecedor = orcamento.Fornecedor,
+                EntidadeID = orcamento.EntidadeExternaEntidadeID,
+                Entidade= orcamento.EntidadeExterna_.Nome,
                 Valor = orcamento.Valor,
                 DescOrcamento = orcamento.DescOrcamento,
                 CaminhoPDF = os.path.join(pastapdfs, str(orcamento.OrcamentoID), orcamento.NomePDF)
