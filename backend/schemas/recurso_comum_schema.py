@@ -1,6 +1,8 @@
 from pydantic import BaseModel, constr, conint
 import datetime
 from enum import Enum
+from typing import Optional
+
 
 # === Utilizadores e Recursos Comuns ===
 
@@ -27,10 +29,16 @@ class RecursoComumSchemaCreate(BaseModel):
         from_attributes = True
 
 class RecursoComum_Return(BaseModel):
-    id:int
-    nome: str
-    desc:str
-    path:str
+    id: conint(gt=0)
+    nome: constr(min_length=2, max_length=100)
+    desc: constr(min_length=5, max_length=300)
+    path: constr(min_length=5, max_length=300)
+
+class RecursoComunUpdate(BaseModel):
+    Nome: Optional[str] = None
+    DescRecursoComum: Optional[str] = None
+    Path: Optional[str] = None
+
 
 # === Estados ===
 
@@ -57,7 +65,7 @@ class EstadoPedNovoRecursoComumSchema(str,Enum):
     APROVADOPARACOMPRA = 'Aprovado para compra'
     CONCLUIDO = 'Concluído'
 
-class EstadoPedManutencaoSchema(str,Enum):
+class EstadoPedManutencaoSchema(int,Enum):
     EMANALISE = 1
     APROVADOEXECUCAOINTERNA = 2
     NEGOCIACAOENTIDADESEXTERNAS = 3

@@ -53,8 +53,54 @@ async def guardar_imagem(imagem:UploadFile, id:int):
     except Exception as e:
         return False, {"details": str(e)}
 
-#endregion
+#Substitui uma imagem de um recurso comum
+async def substitui_imagem_recurso_comum_service(id_recurso_comum: int, imagem:Optional[UploadFile]):
+    try:
+        if imagem is None:
+            return False
+        elif imagem.content_type not in ['image/png', 'image/jpeg', 'image/jpg']:
+            raise HTTPException (status_code=400, detail="Apenas imagens são permitidas (png, jpeg, jpg)")
 
+        caminho_pasta_recurso = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum))
+        caminho_nova_imagem = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum), imagem.filename)
+
+        for nome_arquivo in os.listdir(caminho_pasta_recurso):
+            caminho_arquivo = os.path.join(caminho_pasta_recurso, nome_arquivo)
+
+            if os.path.isfile(caminho_arquivo):
+                if nome_arquivo != imagem.filename:
+                    os.remove(caminho_arquivo)
+                elif nome_arquivo == imagem.filename:
+                    return False
+
+        return await guardar_imagem(imagem, id_recurso_comum)
+
+    except Exception as e:
+        raise e
+
+#Faz a atualização dos dados de um recurso comum
+async def update_recurso_comum_service(recurso_comum_id: int, recurso_comum_update: RecursoComunUpdate, db:session):
+    try:
+        return await recurso_comum_repo.update_recurso_comum_db(recurso_comum_id,recurso_comum_update,db)
+    except Exception as e:
+        raise e
+
+#Elimina um recurso comum
+async def eliminar_recurso_comum_service(recurso_comum_id: int, db:session):
+    try:
+        if await verificar_possibilidade_eliminar_recurso_comum_service(recurso_comum_id, db):
+            return await recurso_comum_repo.eliminar_recurso_comum_db(recurso_comum_id,db)
+        else: return {'Recurso comum numa pedido de manutenção ativo'}
+    except Exception as e:
+        raise e
+#Verifica se um recurso comum pode ser eliminado
+async def verificar_possibilidade_eliminar_recurso_comum_service(recurso_comum_id: int, db:session):
+    try:
+        if await verificar_possibilidade_eliminar_recurso_comum_service(recurso_comum_id, db):
+            return True
+        else: return False
+    except Exception as e:
+        raise e
 async def get_recursos_comuns(db:session):
     try:
         return await recurso_comum_repo.obter_recrusos_comuns(db)
@@ -66,6 +112,8 @@ async def get_recursos_comuns_by_id(db:session, id:int):
         return await recurso_comum_repo.obter_recrusos_comuns_by_id(db, id)
     except Exception as e:
         return False, {"details": str(e)}
+
+#endregion
 
 #region Pedidos de Novos Recursos Comuns
 

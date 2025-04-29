@@ -97,7 +97,7 @@ async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, vota
             Mensagem=f"""
                         Caros residentes,
 
-                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a compra do recurso associado ao pedido nº: {votacao.id_pedido}
+                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a compra do recurso associado ao pedido nº: {votacao.id_processo}
 
                         A votação em questão tem os seguintes dados:
 
@@ -107,7 +107,7 @@ async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, vota
 
                         A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
                         """,
-            ProcessoID=votacao.id_pedido,
+            ProcessoID=votacao.id_processo,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
         )
 

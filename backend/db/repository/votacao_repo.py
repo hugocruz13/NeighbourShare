@@ -166,3 +166,15 @@ async def listar_votacoes_ativas_db(db:Session):
         return votacoes_pedido_recurso_binarias,votacoes_pedido_recurso_mutliplas,votacoes_pedido_manutencao
     except SQLAlchemyError as e:
         raise e
+
+#Verificar se uma votação pertence a um pedido de manutencao
+async def verificar_se_votacao_corresponde_a_pedido_manutencao_db(db:Session, votacao_id:int):
+    try:
+        val = db.query(PedidoManutencao).filter(PedidoManutencao.VotacaoID == votacao_id).first()
+
+        if val:
+            return True
+        else: return False
+
+    except SQLAlchemyError as e:
+        raise e

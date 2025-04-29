@@ -3,10 +3,11 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from utils.string_utils import formatar_string
 from db.repository.votacao_repo import *
 from db.repository.recurso_comum_repo import *
-from datetime import date
+from datetime import date, datetime
 from services.notificacao_service import *
 from collections import defaultdict
 from schemas.votacao_schema import *
+from services.recurso_comum_service import *
 
 scheduler = AsyncIOScheduler()
 
@@ -125,12 +126,21 @@ async def processar_votacao(db:Session, votacao_id: int):
             if voto.EscolhaVoto:
                 contagem[voto.EscolhaVoto] += 1
 
+        votacao = db.query(Votacao).filter(Votacao.VotacaoID == votacao_id).first()
+
         if contagem:
             resultado = max(contagem.items(), key=lambda item: item[1])[0]
+
+            if verificar_se_votacao_corresponde_a_pedido_manutencao_db(db, votacao_id):
+                await criar_manutencao_service(db, ManutencaoCreateSchema(
+                    PMID=votacao.PedidoManutencao[0].PMID,
+                    DataManutencao= datetime.datetime.min,
+                    DescManutencao=votacao.PedidoManutencao[0].DescPedido,
+                    Orcamento_id= int(resultado)
+                ))
+
         else:
             resultado = "Sem votos"
-
-        votacao = db.query(Votacao).filter(Votacao.VotacaoID == votacao_id).first()
 
         votacao.Processada = True
 
