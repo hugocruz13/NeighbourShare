@@ -61,8 +61,8 @@ class EstadoPedManutencaoSchema(str,Enum):
     EMANALISE = 1
     APROVADOEXECUCAOINTERNA = 2
     NEGOCIACAOENTIDADESEXTERNAS = 3
-    VOTACAO = 4
-    REJEITADO = 5
+    VOTACAO = 5
+    REJEITADO = 4
 
 
 # === Pedidos de Novo Recurso ===
@@ -109,25 +109,30 @@ class PedidoManutencaoUpdateSchema(BaseModel):
     DescPedido: constr(min_length=5, max_length=300)
 
 # === Manutenções ===
+class ManutencaoInserir(BaseModel):
+    PMID: conint(gt=0)
+    DataManutencao: datetime.date
+    DescManutencao: constr(min_length=5, max_length=300)
+    EstadoManuID: conint(gt=0)
+
 
 class ManutencaoSchema(BaseModel):
     ManutencaoID: conint(gt=0)
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
     EstadoManuID: conint(gt=0)
 
 class ManutencaoCreateSchema(BaseModel):
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
+    Orcamento_id: conint(gt=0)
+
 
 class ManutencaoUpdateSchema(BaseModel):
     ManutencaoID: conint(gt=0)
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
 
