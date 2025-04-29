@@ -26,7 +26,7 @@ async def inserir_manutencao_recurso_comum(
     return await inserir_pedido_manutencao_service(db, novo_pedido_manutencao)
 
 #Listar os pedidos de manutenção existentes no sistema
-@router.get("/pedidosmanutencao", response_model=List[PedidoManutencaoSchema])
+@router.get("/pedidosmanutencao")
 async def listar_pedidos_manutencao(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
@@ -92,7 +92,7 @@ async def inserir_manutencao(manutencao:ManutencaoCreateSchema,db:Session = Depe
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/manutencao/", response_model=List[ManutencaoSchema])
+@router.get("/manutencao/")
 async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     return await visualizar_manutencoes(db)
 
@@ -167,7 +167,7 @@ async def inserir_pedido_novo_recurso_comum(
 
     return await inserir_pedido_novo_recurso_service(db,novo_pedido)
 
-@router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
+@router.get("/pedidosnovos")
 async def listar_pedidos_novos_recursos(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns

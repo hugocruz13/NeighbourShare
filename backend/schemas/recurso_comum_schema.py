@@ -67,10 +67,6 @@ class EstadoPedManutencaoSchema(str,Enum):
 
 # === Pedidos de Novo Recurso ===
 
-class PedidoNovoRecursoBase(BaseModel):
-    DescPedidoNovoRecurso: constr(min_length=5, max_length=300)
-    DataPedido: datetime.date
-
 class PedidoNovoRecursoSchema(BaseModel):
     PedidoNovoRecID: conint(gt=0)
     Utilizador_: UtilizadorSchema
@@ -80,6 +76,10 @@ class PedidoNovoRecursoSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PedidoNovoRecursoBase(BaseModel):
+    DescPedidoNovoRecurso: constr(min_length=5, max_length=300)
+    DataPedido: datetime.date
 
 class PedidoNovoRecursoSchemaCreate(PedidoNovoRecursoBase):
     UtilizadorID: conint(gt=0)
