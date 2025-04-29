@@ -2,10 +2,9 @@ import pytest
 import datetime
 from fastapi.testclient import TestClient
 from main import app
-from db.models import PedidoReserva, Reserva, Recurso, Utilizador, EstadoPedidoReserva
+from db.models import PedidoReserva, Reserva, Recurso, EstadoPedidoReserva
 from db.session import get_db
-from sqlalchemy.orm import Session
-from schemas.reserva_schema import PedidoReservaSchemaCreate, ReservaSchemaCreate
+import decimal
 
 
 @pytest.fixture
@@ -19,6 +18,39 @@ def db_session():
     db = next(get_db())
     yield db
 
+@pytest.fixture
+def resource_data(db_session):
+    novo_recurso = Recurso(
+        Nome="Guarda-Sol",
+        DescRecurso="Guarda-Sol médido, pode ser usado na praia ou outras áreas de lazer",
+        Caucao=decimal.Decimal(20.0),
+        UtilizadorID=4,
+        DispID=1,
+        CatID=1,
+        Path="none"
+    )
+    db_session.add(novo_recurso)
+    db_session.commit()
+    db_session.refresh(novo_recurso)
+
+    return novo_recurso.RecursoID
+
+@pytest.fixture
+def resource_data_indsp(db_session):
+    novo_recurso = Recurso(
+        Nome="Guarda-Sol",
+        DescRecurso="Guarda-Sol médido, pode ser usado na praia ou outras áreas de lazer",
+        Caucao=decimal.Decimal(20.0),
+        UtilizadorID=4,
+        DispID=2,
+        CatID=1,
+        Path="none"
+    )
+    db_session.add(novo_recurso)
+    db_session.commit()
+    db_session.refresh(novo_recurso)
+
+    return novo_recurso.RecursoID
 
 @pytest.fixture
 def cookie_residente(client):
@@ -33,6 +65,17 @@ def cookie_residente(client):
 
     return response.cookies
 
+@pytest.fixture
+def cookie_gestor(client):
+    login_data = {
+        "email": "gestor@email.com",
+        "password": "gestor"
+    }
+    response = client.post("/api/login", json=login_data)
+    assert response.status_code == 200
+    token = response.cookies.get("access_token")
+    assert token is not None
+    return response.cookies
 
 @pytest.fixture
 def cookie_admin(client):
@@ -55,7 +98,7 @@ def pedido_reserva_data():
     day_after_tomorrow = tomorrow + datetime.timedelta(days=1)
     
     return {
-        "recurso_id": 1,
+        "recurso_id": None,
         "data_inicio": tomorrow.isoformat(),
         "data_fim": day_after_tomorrow.isoformat()
     }
@@ -72,9 +115,11 @@ def test_flow():
     return TestFlow()
 
 
-def test_01_criar_pedido_reserva(client, db_session, cookie_residente, pedido_reserva_data, test_flow):
+def test_01_criar_pedido_reserva(client, db_session, cookie_residente, pedido_reserva_data, test_flow, resource_data):
     """Um utilizador pode criar um pedido de reserva de um recurso"""
     client.cookies.set("access_token", cookie_residente.get("access_token"))
+
+    pedido_reserva_data["recurso_id"] = resource_data
 
     response = client.post(
         "/api/reserva/pedidosreserva/criar",
@@ -107,9 +152,9 @@ def test_02_listar_pedidos_reserva(client, cookie_residente):
     assert isinstance(response_data[1], list)
 
 
-def test_03_criar_reserva(client, db_session, cookie_admin, test_flow):
-    """Um administrador pode aprovar um pedido e criar uma reserva"""
-    client.cookies.set("access_token", cookie_admin.get("access_token"))
+def test_03_criar_reserva(client, db_session, cookie_gestor, test_flow):
+    """O dono do recurso pode aprovar um pedido e criar uma reserva"""
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
 
     response = client.post(
         f"/api/reserva/criar?pedido_reserva_id={test_flow.pedido_reserva_id}"
@@ -141,7 +186,7 @@ def test_03_criar_reserva(client, db_session, cookie_admin, test_flow):
 
 
 def test_04_listar_reservas(client, cookie_residente):
-    """Um utilizador pode listar suas reservas"""
+    """Um utilizador pode listar as reservas"""
     client.cookies.set("access_token", cookie_residente.get("access_token"))
 
     response = client.get("/api/reserva/lista")
@@ -154,9 +199,9 @@ def test_04_listar_reservas(client, cookie_residente):
     assert isinstance(response_data[1], list)
 
 
-def test_05_confirmar_entrega_recurso(client, db_session, cookie_residente, test_flow):
+def test_05_confirmar_entrega_recurso(client, db_session, cookie_gestor, test_flow):
     """Um dono do recurso pode confirmar a entrega do recurso"""
-    client.cookies.set("access_token", cookie_residente.get("access_token"))
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
 
     response = client.post(
         f"/api/reserva/confirma/entrega/recurso?reserva_id={test_flow.reserva_id}"
@@ -208,9 +253,9 @@ def test_07_confirmar_entrega_caucao(client, db_session, cookie_residente, test_
     assert reserva.ConfirmarCaucaoVizinho is True
 
 
-def test_08_confirmar_rececao_caucao(client, db_session, cookie_residente, test_flow):
+def test_08_confirmar_rececao_caucao(client, db_session, cookie_gestor, test_flow):
     """Um dono do recurso pode confirmar a recepção da caução"""
-    client.cookies.set("access_token", cookie_residente.get("access_token"))
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
 
     response = client.post(
         f"/api/reserva/confirma/rececao/caucao?reserva_id={test_flow.reserva_id}"
@@ -226,9 +271,9 @@ def test_08_confirmar_rececao_caucao(client, db_session, cookie_residente, test_
     assert reserva.ConfirmarCaucaoDono is True
 
 
-def test_09_confirmar_bom_estado_devolucao_caucao(client, db_session, cookie_residente, test_flow):
+def test_09_confirmar_bom_estado_devolucao_caucao(client, db_session, cookie_gestor, test_flow):
     """Um dono do recurso pode confirmar o bom estado do produto e devolução da caução"""
-    client.cookies.set("access_token", cookie_residente.get("access_token"))
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
 
     response = client.post(
         f"/api/reserva/confirma/bomestado?reserva_id={test_flow.reserva_id}"
@@ -245,9 +290,9 @@ def test_09_confirmar_bom_estado_devolucao_caucao(client, db_session, cookie_res
     assert reserva.EstadoRecurso is True
 
 
-def test_10_submeter_justificativa_mau_estado(client, db_session, cookie_residente, test_flow):
+def test_10_submeter_justificativa_mau_estado(client, db_session, cookie_gestor, test_flow):
     """Um dono do recurso pode justificar o mau estado do produto e não devolução da caução"""
-    client.cookies.set("access_token", cookie_residente.get("access_token"))
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
 
     justificativa = "Produto com danos na superfície"
     
@@ -265,7 +310,7 @@ def test_10_submeter_justificativa_mau_estado(client, db_session, cookie_residen
     assert reserva.JustificacaoEstadoProduto == justificativa
 
 
-def test_11_recusar_pedido_reserva(client, db_session, cookie_residente):
+def test_11_recusar_pedido_reserva(client, db_session, cookie_gestor, cookie_residente, resource_data):
     """Um dono de recurso pode recusar um pedido de reserva"""
     client.cookies.set("access_token", cookie_residente.get("access_token"))
     
@@ -274,7 +319,7 @@ def test_11_recusar_pedido_reserva(client, db_session, cookie_residente):
     day_after_tomorrow = tomorrow + datetime.timedelta(days=1)
     
     pedido_data = {
-        "recurso_id": 1,  # Assuming resource with ID 1 exists
+        "recurso_id": resource_data,  # Assuming resource with ID 1 exists
         "data_inicio": tomorrow.isoformat(),
         "data_fim": day_after_tomorrow.isoformat()
     }
@@ -287,7 +332,9 @@ def test_11_recusar_pedido_reserva(client, db_session, cookie_residente):
     # Obter o ID do novo pedido para recusá-lo
     pedido = db_session.query(PedidoReserva).order_by(PedidoReserva.PedidoResevaID.desc()).first()
     pedido_id = pedido.PedidoResevaID
-    
+
+    client.cookies.set("access_token", cookie_gestor.get("access_token"))
+
     # Agora recusa o pedido
     response = client.post(
         f"/api/reserva/pedidosreserva/recusar?pedido_reserva_id={pedido_id}&motivo_recusacao=Recurso indisponível"
@@ -297,6 +344,7 @@ def test_11_recusar_pedido_reserva(client, db_session, cookie_residente):
     
     # Verifica se o estado do pedido foi alterado para "Rejeitado"
     pedido = db_session.query(PedidoReserva).filter(PedidoReserva.PedidoResevaID == pedido_id).first()
+    db_session.refresh(pedido)
     assert pedido is not None
     
     estado = db_session.query(EstadoPedidoReserva).filter(

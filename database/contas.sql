@@ -21,7 +21,8 @@ INSERT INTO [dbo].[Utilizador]
            ,'TsQyUx0vE0xr29BAYX3hFWQAW+bSb2ZRTG/8fR4rUZA='
            ,'b7Cjbu8pIgohV3pkU64fUg=='
            ,1
-           ,'none')
+           ,1
+           ,'null')
 GO
 
 USE [NeighbourShare]
@@ -46,7 +47,7 @@ INSERT INTO [dbo].[Utilizador]
            ,'lMvfKy4UtMG27ayKFw7yCw=='
            ,1
            ,3
-		   ,'none')
+		   ,'null')
 GO
 
 INSERT INTO [dbo].[Utilizador]
@@ -68,5 +69,5 @@ INSERT INTO [dbo].[Utilizador]
            ,'+rNaQUKMZtnMrvYj9g1law=='
            ,1
            ,2
-		   ,'none')
+		   ,'null')
 GO
