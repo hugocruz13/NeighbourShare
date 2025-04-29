@@ -136,11 +136,16 @@ class PedidoManutencaoUpdateSchema(BaseModel):
     DescPedido: constr(min_length=5, max_length=300)
 
 # === Manutenções ===
+class ManutencaoInserir(BaseModel):
+    PMID: conint(gt=0)
+    DataManutencao: datetime.date
+    DescManutencao: constr(min_length=5, max_length=300)
+    EstadoManuID: conint(gt=0)
+
 
 class ManutencaoSchema(BaseModel):
     ManutencaoID: conint(gt=0)
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
     EstadoManuID: conint(gt=0)
@@ -153,9 +158,10 @@ class ManutencaoBase(BaseModel):
 =======
 class ManutencaoCreateSchema(BaseModel):
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
+    Orcamento_id: conint(gt=0)
+
 
 class ManutencaoUpdateSchema(BaseModel):
 <<<<<<< HEAD
@@ -193,7 +199,6 @@ class PedidoManutencaoRequest(BaseModel):
 =======
     ManutencaoID: conint(gt=0)
     PMID: conint(gt=0)
-    EntidadeID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
 
