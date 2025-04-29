@@ -16,9 +16,9 @@ const Manutencao = () => {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao', {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao/', {
           method: 'GET',
-          credentials: 'include' 
+          credentials: 'include'
         });
         const data = await res.json();
         console.log(data);
@@ -31,43 +31,43 @@ const Manutencao = () => {
     fetchPedidos();
   }, []);
 
-
   return (
     <div className="page-content">
-    <Navbar2 />
+      <Navbar2 />
 
-    <div className="home-container">
-      <div className='fundoMeusRecursos'>
-
-      <p className='p-meusRecursos'>Pedidos de Manutenção</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Nº Manutenção</th>
-            <th>Entidade</th>
-            <th>Data Manutenção</th>
-            <th>Descrição</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pedidos.map((manutencao) => (
-            <tr key={manutencao.ManutencaoID}>
-              <td>{manutencao.ManutencaoID}</td>
-              <td>{manutencao.EntidadeNome}</td>
-              <td>{manutencao.DataManutencao}</td>
-              <td>{manutencao.DescManutencao}</td>
-              <td>{manutencao.Estado}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-
+      <div className="home-container">
+        <div className='fundoMeusRecursos'>
+          <p className='p-meusRecursos'>Pedidos de Manutenção</p>
+          {pedidos.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº Manutenção</th>
+                  <th>Entidade</th>
+                  <th>Data Manutenação</th>
+                  <th>Descrição</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pedidos.map((manutencao) => (
+                  <tr key={manutencao.ManutencaoID}>
+                    <td>{manutencao.ManutencaoID}</td>
+                    <td>{manutencao.EntidadeNome}</td>
+                    <td>{manutencao.DataManutencao}</td>
+                    <td>{manutencao.DescManutencao}</td>
+                    <td>{manutencao.Estado}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>Nenhum pedido de manutenção encontrado.</p>
+          )}
+        </div>
+        <ToastContainer />
       </div>
-      <ToastContainer />
     </div>
-</div>
   );
 };
 

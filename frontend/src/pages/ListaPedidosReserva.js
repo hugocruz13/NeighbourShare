@@ -11,13 +11,16 @@ const ReservarRecurso = ({ match }) => {
   const [idPedido, setIDPedido] = useState('');
   const [comoSolicitante, setComoSolicitante] = useState([]); // data[1]
   const [comoDono, setComoDono] = useState([]);               // data[0]
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [motivoRecusacao, setMotivoRecusacao] = useState('');
+  const [pedidoReservaID, setPedidoReservaID] = useState(null);
 
   useEffect(() => {
     const fetchReservations = async () => {
       try {
         const res = await fetch('http://localhost:8000/api/reserva/pedidosreserva/lista', {
           method: 'GET',
-          credentials: 'include' 
+          credentials: 'include'
         });
         const data = await res.json();
         console.log(data);
@@ -38,7 +41,7 @@ const ReservarRecurso = ({ match }) => {
         credentials: 'include', // Enviar cookies
       });
       console.log(res);
-   
+
       if (res.ok) {
         alert('Reserva realizada com sucesso!');
       } else {
@@ -49,10 +52,10 @@ const ReservarRecurso = ({ match }) => {
       alert('Erro ao enviar reserva.');
     }
   };
-  
-  const handleReject = async (PedidoReservaID) => {
+
+  const handleReject = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/reserva/pedidosreserva/recusar?pedido_reserva_id=${PedidoReservaID}`, {
+      const res = await fetch(`http://localhost:8000/api/reserva/pedidosreserva/recusar?pedido_reserva_id=${pedidoReservaID}&motivo_recusacao=${motivoRecusacao}`, {
         method: 'POST',
         credentials: 'include', // Enviar cookies
       });
@@ -60,6 +63,8 @@ const ReservarRecurso = ({ match }) => {
 
       if (res.ok) {
         alert('Pedido de reserva recusado com sucesso!');
+        setShowRejectModal(false);
+        setMotivoRecusacao('');
       } else {
         alert('Erro ao recusar pedido de reserva.');
       }
@@ -68,7 +73,7 @@ const ReservarRecurso = ({ match }) => {
       alert('Erro ao recusar pedido de reserva.');
     }
   };
-  
+
   const pedidosEmAnaliseSolicitante = Array.isArray(comoSolicitante) ? comoSolicitante.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
   const pedidosEmAnaliseDono = Array.isArray(comoDono) ? comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
 
@@ -132,7 +137,7 @@ const ReservarRecurso = ({ match }) => {
                     <td>{reservation.DataFim}</td>
                     <td>
                       <button className='btnSimPedidoReserva' onClick={() => handleReserve(reservation.PedidoReservaID)}>Sim</button>
-                      <button className='btnNaoPedidoReserva' onClick={() => handleReject(reservation.PedidoReservaID)}>Não</button>
+                      <button className='btnNaoPedidoReserva' onClick={() => { setShowRejectModal(true); setPedidoReservaID(reservation.PedidoReservaID); }}>Não</button>
                     </td>
                   </tr>
                 ))}
@@ -143,6 +148,26 @@ const ReservarRecurso = ({ match }) => {
           )}
         </div>
       </div>
+
+      {showRejectModal && (
+        <>
+          <div className="modal-backdrop" onClick={() => setShowRejectModal(false)} />
+          <div className="modal-content">
+            <h3>Motivo da Recusa</h3>
+            <textarea
+              value={motivoRecusacao}
+              onChange={(e) => setMotivoRecusacao(e.target.value)}
+              placeholder="Digite o motivo da recusa"
+              required
+            />
+            <div>
+              <button onClick={handleReject}>Enviar</button>
+              <button onClick={() => setShowRejectModal(false)}>Cancelar</button>
+            </div>
+          </div>
+        </>
+      )}
+
       <ToastContainer />
     </div>
   );

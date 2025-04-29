@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "../styles/MeusRecursos.css";
+import "../styles/Orcamentos.css";
 import Navbar2 from "../components/Navbar2.js";
 
 const Orcamentos = () => {
@@ -9,12 +9,12 @@ const Orcamentos = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
   const [newResource, setNewResource] = useState({
-      fornecedor_orcamento: '', 
-      valor_orcamento: '', 
-      descricao_orcamento: '',
-      pdforcamento: null,
-      idprocesso: '',
-      tipoorcamento: ''
+    fornecedor_orcamento: '', 
+    valor_orcamento: '', 
+    descricao_orcamento: '',
+    pdforcamento: null,
+    idprocesso: '',
+    tipoorcamento: ''
   });
   const [votacao, setVotacao] = useState({
     titulo: '',
@@ -23,25 +23,43 @@ const Orcamentos = () => {
     data_fim: '',
     tipo_votacao: 'Aquisição',
   });
+  const [fornecedores, setFornecedores] = useState([]);
 
   useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const res = await fetch('http://localhost:8000/api/orcamentos/listar', {
-            method: 'GET',
-            credentials: 'include' ,
-          });
-  
-          if (!res.ok) throw new Error('Erro ao buscar dados');
-          const data = await res.json();
-          console.log(data);
-          setOrcamentos(data);
-        } catch (error) {
-          console.error('Erro ao buscar orcamentos:', error);
-        }
-      };
-  
-      fetchUsers();
+    const fetchOrcamentos = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/orcamentos/listar', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!res.ok) throw new Error('Erro ao buscar dados');
+        const data = await res.json();
+        console.log(data);
+        setOrcamentos(data);
+      } catch (error) {
+        console.error('Erro ao buscar orcamentos:', error);
+      }
+    };
+
+    const fetchFornecedores = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/entidades/ver', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!res.ok) throw new Error('Erro ao buscar fornecedores');
+        const data = await res.json();
+        console.log(data);
+        setFornecedores(data);
+      } catch (error) {
+        console.error('Erro ao buscar fornecedores:', error);
+      }
+    };
+
+    fetchOrcamentos();
+    fetchFornecedores();
   }, []);
 
   const handleAddResource = async () => {
@@ -59,16 +77,16 @@ const Orcamentos = () => {
         credentials: 'include',
         body: formData,
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         console.error(errorData);
         throw new Error(errorData.detail || 'Erro ao adicionar recurso');
       }
-  
+
       toast.success('Recurso adicionado com sucesso!');
       setShowModal(false);
-  
+
       setNewResource({ 
         fornecedor_orcamento: '', 
         valor_orcamento: '', 
@@ -86,19 +104,19 @@ const Orcamentos = () => {
     try {
       const res = await fetch('http://localhost:8000/api/criarvotacao', {
         method: 'POST',
-        credentials: 'include', // Inclui cookies na solicitação
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(votacao),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         console.error(errorData);
         throw new Error(errorData.detail || 'Erro ao criar votação');
       }
-  
+
       toast.success('Votação criada com sucesso!');
       setShowModal(false);
       setVotacao({
@@ -112,7 +130,6 @@ const Orcamentos = () => {
       toast.error('Erro ao criar votação: ' + error.message);
     }
   };
-  
 
   const handleFileChange = (e) => {
     setNewResource({ ...newResource, pdforcamento: e.target.files[0] });
@@ -133,7 +150,17 @@ const Orcamentos = () => {
             {modalType === 'orcamento' ? (
               <>
                 <h2>Adicionar Orçamento</h2>
-                <input type="text" placeholder="fornecedor" value={newResource.fornecedor_orcamento} onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}/>
+                <select
+                  value={newResource.fornecedor_orcamento}
+                  onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}
+                >
+                  <option value="">Selecione um fornecedor</option>
+                  {fornecedores.map((fornecedor) => (
+                    <option key={fornecedor.EntidadeID} value={fornecedor.Nome}>
+                      {fornecedor.Nome}
+                    </option>
+                  ))}
+                </select>
                 <input type="number" placeholder="valor" value={newResource.valor_orcamento} onChange={(e) => setNewResource({ ...newResource, valor_orcamento: e.target.value })}/>
                 <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })}/>
                 <input type="text" placeholder="ID Processo" value={newResource.idprocesso} onChange={(e) => setNewResource({ ...newResource, idprocesso: e.target.value })}/>
@@ -171,14 +198,12 @@ const Orcamentos = () => {
                   value={votacao.data_fim}
                   onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })}
                 />
-
                 <input
                   type="text"
                   placeholder="Tipo"
                   value={votacao.tipo_votacao}
                   onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })}
                 />
-
                 <div>
                   <button onClick={handleCreateVotacao}>Criar</button>
                   <button onClick={() => setShowModal(false)}>Cancelar</button>

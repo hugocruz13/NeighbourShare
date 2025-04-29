@@ -26,6 +26,7 @@ import PedidosNovosRecursosPendentesVoto from "./pages/PedidosNovosRecursosPende
 import AtualizarDados from "./pages/AtualizarDados.js";
 import RecuperarPass from "./pages/RecuperarPass.js";
 import Exemplo from "./pages/Exemplo.js";
+import EntidadeExterna from "./pages/EntidadeExterna.js";
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
             <Route path="/pedidosNovosRecursosPendentesVoto" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosNovosRecursosPendentesVoto  /></ProtectedRoute>}/>
             <Route path="/atualizarDados" element={<AtualizarDados  />}/>
             <Route path="/recuperarPass" element={<RecuperarPass  />}/>
+            <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
             <Route path="/exemplo" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Exemplo /></ProtectedRoute>}/>
           </Routes>
         </Router>

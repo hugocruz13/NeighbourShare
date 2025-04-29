@@ -17,6 +17,10 @@ const Votacoes = () => {
   const [votacaoAtual, setVotacaoAtual] = useState(null);
   const [selectedOrcamento, setSelectedOrcamento] = useState('');
 
+  const [showModalBinario, setShowModalBinario] = useState(false);  
+  const [votoBinario, setVotoBinario] = useState('');
+
+
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
@@ -52,6 +56,43 @@ const Votacoes = () => {
       console.error('Erro ao buscar orçamentos:', error);
     }
   };
+
+
+  const handleVotarBinarioClick = (votacao) => {
+  setVotacaoAtual(votacao);
+  setVotoBinario('');
+  setShowModalBinario(true);
+  };
+
+
+  const handleVoteBinarioSubmit = async () => {
+  try {
+    const res = await fetch('http://localhost:8000/api/votar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        voto: votoBinario,
+        id_votacao: votacaoAtual.votacao_id
+      })
+    });
+
+    if (!res.ok) throw new Error('Erro ao registrar voto.');
+
+    const data = await res.json();
+    console.log(data);
+    toast.success('Voto registrado com sucesso!');
+    setShowModalBinario(false);
+  } catch (error) {
+    console.error('Erro ao registrar voto:', error);
+    toast.error('Erro ao registrar voto.');
+  }
+  };
+
+
+
 
   const handleVotar2Click = async (votacao) => {
     setVotacaoAtual(votacao);
@@ -96,6 +137,11 @@ const Votacoes = () => {
       toast.error('Erro ao registrar voto.');
     }
   };
+
+
+
+
+
 
   return (
     <div className="page-content">
@@ -146,6 +192,7 @@ const Votacoes = () => {
                   <th>Descrição</th>
                   <th>Data de Início</th>
                   <th>Data de Fim</th>
+                  <th>Ação</th>
                 </tr>
               </thead>
               <tbody>
@@ -156,6 +203,9 @@ const Votacoes = () => {
                     <td>{votacao.descricao}</td>
                     <td>{votacao.data_inicio}</td>
                     <td>{votacao.data_fim}</td>
+                    <td>
+                      <button onClick={() => handleVotarBinarioClick(votacao)}>Votar</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -254,6 +304,29 @@ const Votacoes = () => {
         )}
 
 
+{showModalBinario && votacaoAtual && (
+  <>
+    <div className="modal-backdrop" onClick={() => setShowModalBinario(false)} />
+    <div className="modal-content">
+      <h3>Votação: {votacaoAtual.titulo}</h3>
+      <p>{votacaoAtual.descricao}</p>
+      <label htmlFor="votoBinario">Selecione o seu voto:</label>
+      <select
+        id="votoBinario"
+        value={votoBinario}
+        onChange={(e) => setVotoBinario(e.target.value)}
+      >
+        <option value="">-- Escolher --</option>
+        <option value="sim">Sim</option>
+        <option value="nao">Não</option>
+      </select>
+      <div>
+        <button disabled={!votoBinario} onClick={handleVoteBinarioSubmit}>Votar</button>
+        <button onClick={() => setShowModalBinario(false)}>Fechar</button>
+      </div>
+    </div>
+  </>
+)}
 
 
 
