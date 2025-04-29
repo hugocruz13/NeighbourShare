@@ -216,9 +216,10 @@ async def criar_manutencao_db(db:session, manutencao:ManutencaoCreateSchema):
     try:
         nova_manutencao = Manutencao(
             PMID=manutencao.PMID,
-            EntidadeID=manutencao.EntidadeID,
             DataManutencao=manutencao.DataManutencao,
-            DescManutencao=manutencao.DescManutencao
+            DescManutencao=manutencao.DescManutencao,
+            EstadoManuID=1,
+            OrcamentoOrcamentoID= manutencao.Orcamento_id,
         )
 
         db.add(nova_manutencao)
@@ -265,16 +266,8 @@ async def listar_manutencoes_db(db:session):
 
 async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema):
     manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
-    entidades = db.query(EntidadeExterna).all()
-    pmid = db.query(PedidoManutencao).all()
-    for e in entidades:
-        if e.EntidadeID != u_manutencao.EntidadeID:
-            return None
-    for e in pmid:
-        if e.PMID != u_manutencao.PMID:
-            return None
+
     manutencao.PMID = u_manutencao.PMID
-    manutencao.EntidadeID = u_manutencao.EntidadeID
     manutencao.DataManutencao = u_manutencao.DataManutencao
     manutencao.DescManutencao = u_manutencao.DescManutencao
 
