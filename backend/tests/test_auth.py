@@ -1,6 +1,6 @@
 import time
 
-import db
+from db.session import get_db
 from middleware.auth_middleware import verify_token_login, verify_token_verification
 from main import app
 from fastapi.testclient import TestClient
@@ -17,6 +17,11 @@ class DataFlow:
         self.access_token = None
         self.recovery_token = None
         self.email = None
+
+@pytest.fixture
+def db_session():
+    db = next(get_db())
+    yield db
 
 @pytest.fixture(scope="module")  # or "session" if you want it across multiple test files
 def data_flow():

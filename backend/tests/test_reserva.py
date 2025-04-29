@@ -6,6 +6,14 @@ from db.models import PedidoReserva, Reserva, Recurso, EstadoPedidoReserva
 from db.session import get_db
 import decimal
 
+"""
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ANTES DE EXECUTAR O TESTE, VERIFIQUE SE OS IDs DEFINIDOS NO CÓDIGO COMO
+A DO UTILIZADOR, ESTÃO A PAR DO QUE ESTÁ NA BASE DE DADOS.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+"""
 
 @pytest.fixture
 def client():
@@ -24,7 +32,7 @@ def resource_data(db_session):
         Nome="Guarda-Sol",
         DescRecurso="Guarda-Sol médido, pode ser usado na praia ou outras áreas de lazer",
         Caucao=decimal.Decimal(20.0),
-        UtilizadorID=4,
+        UtilizadorID=2,
         DispID=1,
         CatID=1,
         Path="none"
@@ -41,7 +49,7 @@ def resource_data_indsp(db_session):
         Nome="Guarda-Sol",
         DescRecurso="Guarda-Sol médido, pode ser usado na praia ou outras áreas de lazer",
         Caucao=decimal.Decimal(20.0),
-        UtilizadorID=4,
+        UtilizadorID=2,
         DispID=2,
         CatID=1,
         Path="none"

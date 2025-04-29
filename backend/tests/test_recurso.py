@@ -62,7 +62,7 @@ def resource_data(db_session):
         Nome="Guarda-Sol Teste fixture",
         DescRecurso="Guarda-Sol médido, pode ser usado na praia ou outras áreas de lazer",
         Caucao=decimal.Decimal(20.0),
-        UtilizadorID=4,
+        UtilizadorID=2,
         DispID=1,
         CatID=1,
         Path="none"
