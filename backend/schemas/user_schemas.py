@@ -50,7 +50,7 @@ class NewUserUpdate(BaseModel):
 class UserUpdateInfo(BaseModel):
     nome: Optional[str] = Field(default=None, example= "")
     contacto: Optional[int]
-    data_nascimento: Optional[date]
+    dataNascimento: Optional[date]
 
 class ForgotPassword(BaseModel):
     email: EmailStr
