@@ -136,3 +136,11 @@ def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
         return True
     except Exception as e:
         raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
+
+async def get_utilizador_por_id(user_id: int, db: Session):
+    return db.query(Utilizador).filter(Utilizador.UtilizadorID == user_id).first()
+
+async def atualizar_role_utilizador(utilizador: Utilizador, novo_role: int, db: Session):
+    utilizador.TUID = novo_role
+    db.commit()
+    db.refresh(utilizador)

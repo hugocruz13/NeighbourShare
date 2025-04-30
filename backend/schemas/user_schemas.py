@@ -60,3 +60,7 @@ class ResetPassword(BaseModel):
     @validator('password')
     def validate_password(cls, value):
         return validate_password_strength(value)
+
+class ChangeRole(BaseModel):
+    id: conint(gt=0)
+    role: constr(min_length=3, max_length=20)

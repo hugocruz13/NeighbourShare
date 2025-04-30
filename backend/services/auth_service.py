@@ -1,6 +1,6 @@
 import os
 from db.repository.user_repo import *
-from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo
+from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo, ChangeRole
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from db.repository.user_repo import get_id_role, create_user, user_exists, get_user_by_email, apagar, atualizar_utilizador_db
@@ -174,3 +174,14 @@ async def atualizar_utilizador(db: Session, id: int,dados: UserUpdateInfo):
         return atualizar_utilizador_db(db, id,dados)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+async def mudar_role(dados: ChangeRole, user: UserJWT, db: Session):
+    utilizador = await get_utilizador_por_id(dados.id, db)
+    role_id = await get_id_role(db, dados.role)
+    if role_id is None:
+        return False, "Cargo inserido inválido"
+    if not utilizador:
+        raise HTTPException(status_code=404, detail="Utilizador não encontrado")
+    await atualizar_role_utilizador(utilizador, role_id, db)
+    return True
+
