@@ -9,7 +9,7 @@ const Orcamentos = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
   const [newResource, setNewResource] = useState({
-    fornecedor_orcamento: '', 
+    id_entidade_externa: '', 
     valor_orcamento: '', 
     descricao_orcamento: '',
     pdforcamento: null,
@@ -65,7 +65,7 @@ const Orcamentos = () => {
   const handleAddResource = async () => {
     try {
       const formData = new FormData();
-      formData.append('fornecedor_orcamento', newResource.fornecedor_orcamento);
+      formData.append('id_entidade_externa', newResource.id_entidade_externa);
       formData.append('valor_orcamento', parseInt(newResource.valor_orcamento));
       formData.append('descricao_orcamento', newResource.descricao_orcamento);
       formData.append('pdforcamento', newResource.pdforcamento);
@@ -88,7 +88,7 @@ const Orcamentos = () => {
       setShowModal(false);
 
       setNewResource({ 
-        fornecedor_orcamento: '', 
+        id_entidade_externa: '', 
         valor_orcamento: '', 
         descricao_orcamento: '', 
         pdforcamento: null,
@@ -151,12 +151,12 @@ const Orcamentos = () => {
               <>
                 <h2>Adicionar Orçamento</h2>
                 <select
-                  value={newResource.fornecedor_orcamento}
-                  onChange={(e) => setNewResource({ ...newResource, fornecedor_orcamento: e.target.value })}
+                  value={newResource.id_entidade_externa}
+                  onChange={(e) => setNewResource({ ...newResource, id_entidade_externa: e.target.value })}
                 >
                   <option value="">Selecione um fornecedor</option>
                   {fornecedores.map((fornecedor) => (
-                    <option key={fornecedor.EntidadeID} value={fornecedor.Nome}>
+                    <option key={fornecedor.EntidadeID} value={fornecedor.EntidadeID}>
                       {fornecedor.Nome}
                     </option>
                   ))}

@@ -276,7 +276,7 @@ async def cria_notificacao_rejeicao_manutencao_recurso_comum(db:Session,pedido:P
             Titulo="Atualização sobre o seu pedido de manutenção",
             Mensagem=f"""
 
-                    Olá {pedido.Utilizador_.Nome},
+                    Olá {pedido.Utilizador_.NomeUtilizador},
 
                     Agradecemos o seu pedido de manutenção referente a {pedido.DescPedido}.
 

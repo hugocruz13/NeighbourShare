@@ -105,7 +105,7 @@ const updatedUser = {
         <div className='fundoPerfil'>
           <div className='itensPerfil'>
             <div className='textosPerfil'>
-              <img className='fotoPerfil' src={user?.foto} alt="Foto"></img>
+              <img className='fotoPerfil' src={user?.imagem} alt="Foto"></img>
             </div>
 
             <div className='textosPerfil'>

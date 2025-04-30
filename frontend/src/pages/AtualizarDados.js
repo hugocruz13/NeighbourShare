@@ -4,8 +4,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AtualizarDados = () => {
-  const [dataNascimento, setDataNascimento] = useState('');
-  const [email, setEmail] = useState('');
+  const [data_nascimento, setDataNascimento] = useState('');
+  const [nome, setNome] = useState('');
+  const [contacto, setContacto] = useState('');
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [foto, setFoto] = useState(null);
@@ -13,12 +14,13 @@ const AtualizarDados = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const tokenFromUrl = queryParams.get('token');
-    if (tokenFromUrl) {
+    const search = location.search;
+    if (search.startsWith('?')) {
+      const tokenFromUrl = search.substring(1); // remove o '?'
       setToken(tokenFromUrl);
     }
   }, [location]);
+  
 
   const handleUpdate = async () => {
 
@@ -30,8 +32,9 @@ const AtualizarDados = () => {
     }
 
     const formData = new FormData();
-    formData.append('dataNascimento', dataNascimento);
-    formData.append('email', email);
+    formData.append('data_nascimento', data_nascimento);
+    formData.append('nome', nome);
+    formData.append('contacto', contacto);
     formData.append('password', password);
     formData.append('token', token);
     if (foto) {
@@ -39,7 +42,7 @@ const AtualizarDados = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/register/atualizar_dados', {
+      const res = await fetch('http://localhost:8000/api/registar/atualizar_dados', {
         method: 'POST',
         body: formData,
       });
@@ -52,7 +55,8 @@ const AtualizarDados = () => {
 
       toast.success('Dados atualizados com sucesso!');
       setDataNascimento('');
-      setEmail('');
+      setNome('');
+      setContacto('');
       setPassword('');
       setFoto(null);
     } catch (error) {
@@ -67,15 +71,22 @@ const AtualizarDados = () => {
         <input
           type="date"
           placeholder="Data de Nascimento"
-          value={dataNascimento}
+          value={data_nascimento}
           onChange={(e) => setDataNascimento(e.target.value)}
         />
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Nome"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
         />
+        <input
+          type="number"
+          placeholder="Contacto"
+          value={contacto}
+          onChange={(e) => setContacto(e.target.value)}
+        />
+
         <input
           type="password"
           placeholder="Password"

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from typing import Optional
 from sqlalchemy.orm import Session
+from db.models import EntidadeExterna
 from db.session import get_db
 from middleware.auth_middleware import role_required
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/orcamentos", tags=["Orcamentos"])
 # Inserir um orçamento
 @router.post("/inserir")
 async def inserir_orcamento(
-        fornecedor_orcamento : str = Form(...),
+        id_entidade_externa: int = Form(...),
         valor_orcamento : decimal.Decimal = Form(...),
         descricao_orcamento: str = Form(...),
         pdforcamento: UploadFile = File(...),
@@ -24,7 +25,7 @@ async def inserir_orcamento(
         token: UserJWT = Depends(role_required(["admin", "gestor"]))
 ):
     try:
-        orcamento_data = OrcamentoSchema(Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
+        orcamento_data = OrcamentoSchema(IDEntidade=id_entidade_externa ,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
 
         sucesso, msg = await inserir_orcamento_service(db, orcamento_data, pdforcamento)
 
@@ -32,6 +33,8 @@ async def inserir_orcamento(
             return {"message": "Orçamento inserido com sucesso"}
         else:
             raise HTTPException(status_code=400, detail=msg)
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -62,7 +65,7 @@ async def eliminar_orcamento(
 @router.put("/alterar/")
 async def alterar_orcamento(
         orcamento_id: int = Form(...),
-        fornecedor_orcamento: str = Form(...),
+        id_entidade: int = Form(...),
         valor_orcamento: decimal.Decimal = Form(...),
         descricao_orcamento: str = Form(...),
         pdforcamento: Optional[UploadFile] = File(...),
@@ -70,7 +73,7 @@ async def alterar_orcamento(
         token: UserJWT = Depends(role_required(["admin", "gestor"]))
 ):
     try:
-        orcamento = OrcamentoUpdateSchema(OrcamentoID=orcamento_id,Fornecedor=fornecedor_orcamento,DescOrcamento=descricao_orcamento, Valor=valor_orcamento)
+        orcamento = OrcamentoUpdateSchema(OrcamentoID=orcamento_id,IDEntidade=id_entidade,DescOrcamento=descricao_orcamento, Valor=valor_orcamento)
         return await alterar_orcamento_service(db, orcamento, pdforcamento)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

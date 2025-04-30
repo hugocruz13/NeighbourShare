@@ -56,14 +56,15 @@ async def atualizar_estado_pedido(pedido_id: int, estado_data: EstadoUpdate, tok
         obter = await obter_pedido_manutencao(db, pedido_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Pedido de manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.value)
+        out = await alterar_tipo_estado_pedido_manutencao(db, pedido_id, estado_data.novo_estado_id.value)
         if out is False:
             return False, "Erro ao alterar o tipo de estado do pedido de manutenção com o ID {pedido_id}"
         return True, "Tipo de estado alterado com sucesso"
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
     except HTTPException as es:
         raise es
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/pedidosmanutencao/update/")
 async def atualizar_pedido_manutencao(manutencao: PedidoManutencaoUpdateSchema, db: Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "gestor"]))):
@@ -82,6 +83,14 @@ async def atualizar_pedido_manutencao(manutencao: PedidoManutencaoUpdateSchema, 
 #endregion
 
 #region Manutenção de Recursos Comuns
+@router.post("/manutencao/inserir")
+async def inserir_manutencao(manutencao:ManutencaoCreateSchema,db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
+    try:
+        return await criar_manutencao_service(db,manutencao);
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/manutencao/", response_model=List[ManutencaoSchema])
 async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
@@ -102,19 +111,18 @@ async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpd
             return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
         if out is True:
             return True, "Tipo de estado alterado com sucesso"
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
     except HTTPException as es:
         raise es
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/manutencao/update/")
 async def atualizar_manutencao(manutencao: ManutencaoUpdateSchema, db: Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
-        val, msg = await update_manutencao(db, manutencao)
-        if val is False:
-            return False, msg
-        if val is True:
-            return True, "Manutenção atualizada com sucesso"
+        return await update_manutencao(db, manutencao)
+    except HTTPException as es:
+        raise es
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

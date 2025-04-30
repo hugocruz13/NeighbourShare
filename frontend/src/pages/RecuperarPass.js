@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function RecuperarPass() {
-  const [formData, setFormData] = useState({ token: "", password: "" });
+  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
   const [error, setError] = useState("");
+  const location = useLocation();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    const search = location.search;
+    if (search.startsWith('?')) {
+      const tokenFromUrl = search.substring(1); // remove o '?'
+      setToken(tokenFromUrl);
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:8000/api/password/reset?token=${formData.token}`, { // token na URL
+      const response = await fetch(`http://localhost:8000/api/password/reset?token=${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: formData.password }),
+        body: JSON.stringify({ password }),
         credentials: "include",
       });
 
@@ -27,6 +33,7 @@ function RecuperarPass() {
 
       if (response.ok) {
         toast.success('Senha alterada com sucesso!');
+        setPassword("");
       } else {
         setError(data.detail);
         toast.error('Erro ao alterar senha.');
@@ -43,17 +50,10 @@ function RecuperarPass() {
       <form className="form-recuperar-pass" onSubmit={handleSubmit}>
         <div className="container-center">
           <input
-            type="text"
-            name="token"
-            value={formData.token}
-            onChange={handleChange}
-            placeholder="Token"
-          />
-          <input
             type="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Nova Senha"
           />
           <div className="container-btn">

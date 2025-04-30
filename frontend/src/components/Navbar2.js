@@ -7,6 +7,7 @@ function Navbar2() {
     const [showMenu, setShowMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const [notifications, setNotifications] = useState([]);
+    const [profileImage, setProfileImage] = useState('');
 
     const handlePerfilClick = () => setShowMenu(!showMenu);
     const handleBellClick = () => setShowNotifications(!showNotifications);
@@ -67,7 +68,21 @@ function Navbar2() {
             }
         };
 
+        const fetchProfileImage = async () => {
+            try {
+                const res = await fetch('http://localhost:8000/api/perfil', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                setProfileImage(data.imagem); // Assuming the response contains the URL of the profile image
+            } catch (error) {
+                console.error('Erro ao buscar imagem de perfil:', error);
+            }
+        };
+
         fetchNotificacoes();
+        fetchProfileImage();
         document.addEventListener('click', handleOutsideClick);
         return () => {
             document.removeEventListener('click', handleOutsideClick);
@@ -122,7 +137,7 @@ function Navbar2() {
                 )}
 
                 {/* Foto de perfil */}
-                <img src="123.png" alt="foto" className="fotoPerfilNav" onClick={handlePerfilClick} />
+                <img src={profileImage || "default-profile.png"} alt="foto" className="fotoPerfilNav" onClick={handlePerfilClick} />
                 {showMenu && (
                     <div className="dropdown-menu">
                         <Link to="/perfil" className="dropdown-item">Perfil</Link>

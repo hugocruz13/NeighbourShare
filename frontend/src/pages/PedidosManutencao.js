@@ -12,6 +12,7 @@ const PedidosManutencao = () => {
   const [showJustificationModal, setShowJustificationModal] = useState(false);
   const [pedidoAtual, setPedidoAtual] = useState(null);
   const [justificacao, setJustificacao] = useState('');
+  
 
   // Fetch pedidos
   useEffect(() => {

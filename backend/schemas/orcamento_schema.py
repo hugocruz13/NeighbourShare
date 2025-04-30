@@ -6,7 +6,7 @@ class TipoOrcamento(str,Enum):
     MANUTENCAO = "Manutenção"
 
 class OrcamentoSchema(BaseModel):
-    Fornecedor: constr(min_length=2, max_length=100)
+    IDEntidade: conint(gt=0)
     Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
     DescOrcamento: constr(min_length=5, max_length=300)
     NomePDF : constr(min_length=5, max_length=200)
@@ -15,13 +15,14 @@ class OrcamentoSchema(BaseModel):
 
 class OrcamentoUpdateSchema(BaseModel):
     OrcamentoID: conint(gt=0)
-    Fornecedor: constr(min_length=2, max_length=100)
+    IDEntidade: conint(gt=0)
     Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
     DescOrcamento: constr(min_length=5, max_length=300)
 
 class OrcamentoGetSchema(BaseModel):
     OrcamentoID: conint(gt=0)
-    Fornecedor: constr(min_length=2, max_length=100)
+    EntidadeID: conint(gt=0)
+    Entidade: constr(min_length=5, max_length=300)
     Valor: condecimal(gt=0, max_digits=10, decimal_places=2)
     DescOrcamento: constr(min_length=5, max_length=300)
     CaminhoPDF : constr(min_length=5, max_length=300)
