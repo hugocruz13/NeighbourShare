@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr, conint
+from pydantic import BaseModel, constr, conint, ConfigDict
 import datetime
 from enum import Enum
 from typing import Optional

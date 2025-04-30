@@ -22,7 +22,7 @@ async def criar_votacao_nr_db(db: Session, votacao: Criar_Votacao, tipovotacao:T
 
     except Exception as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar votação: {e}")
+        Z
 
 async def criar_votacao_pedido_manutencao_db(db: Session, votacao: Criar_Votacao):
     try:
