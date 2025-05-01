@@ -126,7 +126,7 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
         if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
             return RedirectResponse(
-                url=f"http://127.0.0.1:8000?{token}")  # TODO ALTERAR A URL
+                url=f"http://localhost/recuperarPass?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de recuperação password inválido")
     except HTTPException as he:
