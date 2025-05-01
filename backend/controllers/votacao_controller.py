@@ -63,7 +63,7 @@ async def votar(id_v:int, user: UserJWT = Depends(role_required(["residente","ge
         raise HTTPException(status_code=500, detail={str(e)})
 
 @router.get("/terminar_votacao")
-async def testar_processamento_votacao(votacao_id: int,db: Session = Depends(get_db)):
+async def testar_processamento_votacao(votacao_id: int,db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["gestor", "admin"]))):
     try:
         return await processar_votacao(db,votacao_id)
     except HTTPException as he:
