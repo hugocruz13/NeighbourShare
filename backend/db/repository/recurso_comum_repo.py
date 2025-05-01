@@ -286,7 +286,7 @@ async def alterar_estado_manutencao(db:session, id_manutencao:int, tipo_estado_m
 
 async def obter_manutencao_db(db:session, id_manutencao:int):
     try:
-        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
+        manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == id_manutencao).first()
         return manutencao
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
