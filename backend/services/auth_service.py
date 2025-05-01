@@ -169,6 +169,7 @@ async def eliminar_utilizador(db: Session, email: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##atualiza o utilizador
 async def atualizar_utilizador(db: Session, id: int,dados: UserUpdateInfo):
     try:
         return atualizar_utilizador_db(db, id,dados)

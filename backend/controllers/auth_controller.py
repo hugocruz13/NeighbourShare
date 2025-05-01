@@ -160,6 +160,7 @@ async def about_me(user: UserJWT = Depends(role_required(["admin","residente","g
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
+##Admin para apagar conta
 @router.delete("/delete")
 async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
     try:
@@ -182,6 +183,7 @@ async def logout(response: Response):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.put("/user/update")
 async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:
@@ -194,6 +196,7 @@ async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##Falta BLACKLIST
 @router.put("/user/role")
 async def change_role(dados: ChangeRole,user: UserJWT = Depends(role_required(["admin"])),db: Session = Depends(get_db)):
     try:
