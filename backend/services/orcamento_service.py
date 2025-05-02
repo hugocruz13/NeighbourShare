@@ -22,7 +22,7 @@ async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.Orcame
         if orcamento_id :
             return await guardar_pdf_orcamento(pdforcamento, orcamento_id)
         else:
-            return False, "Erro ao inserir um orçamento"
+            return False, mensagem
     except Exception as e:
         raise e
 
@@ -78,7 +78,8 @@ async def eliminar_orcamento_service(db:session, orcamento_id:int):
 
         val, msg = await orcamento_repo.eliminar_orcamento_db(db, orcamento_id)
 
-        shutil.rmtree(os.path.join(pastapdfs, str(orcamento_id)))
+        if val:
+            shutil.rmtree(os.path.join(pastapdfs, str(orcamento_id)))
 
         return val, msg
 

@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from sqlalchemy.orm import Session
 from db.models import Orcamento, EntidadeExterna, PedidoManutencao
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
@@ -16,9 +18,14 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
 
         if orcamento.TipoProcesso == TipoOrcamento.MANUTENCAO:
             pedido_manutencao = await obter_pedido_manutencao_db(db, orcamento.IDProcesso)
+            if not pedido_manutencao:
+                return False, {'message': 'Erro ao encontrar o pedido de manutenção!'}
+
             novo_orcamento.PedidoManutencao.append(pedido_manutencao)
         else:
             pedido_novo_recurso = await obter_pedido_novo_recurso_db(db, orcamento.IDProcesso)
+            if not pedido_novo_recurso:
+                return False, {'message': 'Erro ao encontrar o pedido de aquisição!'}
             novo_orcamento.PedidoNovoRecurso.append(pedido_novo_recurso)
 
         db.add(novo_orcamento)
