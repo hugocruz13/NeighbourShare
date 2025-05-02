@@ -5,7 +5,7 @@ from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
 from services.entidade_service import registar_entidade, ver_entidades, eliminar_entidade_service,  update_entidade_service
 from pydantic import ValidationError
 
-#Coneção com a base de dados
+#Conexão com a base de dados
 @pytest.fixture
 def db_session():
     db = next(get_db())

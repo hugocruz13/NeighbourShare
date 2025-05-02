@@ -99,18 +99,6 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.rollback()
         raise e
 
-
-#Inserção de um novo recurso comum
-async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
-    try:
-        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum, Path="none")
-        db.add(novo_recurso_comum)
-        db.commit()
-        return novo_recurso_comum
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
-
 async  def update_imagem(db:session, path: str, id:int):
     try:
         recurso_comum = db.query(RecursoComun).filter(RecursoComun.RecComumID == id).first()
@@ -136,32 +124,6 @@ async def obter_recrusos_comuns_by_id(db:session, id:int):
         return db.query(RecursoComun).filter(RecursoComun.RecComumID == id).first()
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
-
-#Inserção de um novo pedido de um novo recurso comum
-async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
-    try:
-        novo_pedido = PedidoNovoRecurso(DescPedidoNovoRecurso=pedido.DescPedidoNovoRecurso, DataPedido=pedido.DataPedido, UtilizadorID=pedido.UtilizadorID, EstadoPedNovoRecID=pedido.EstadoPedNovoRecID)
-        db.add(novo_pedido)
-        db.commit()
-        db.refresh(novo_pedido)
-
-        return {'Pedido de novo recurso inserido com sucesso!'}, novo_pedido
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
-
-#Inserção de um pedido de manutenção de um recurso comum
-async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
-    try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
-        db.add(novo_pedido)
-        db.commit()
-        db.refresh(novo_pedido)
-
-        return {'Pedido de manutenção inserido com sucesso!'}
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
 
 async def listar_pedidos_novos_recursos_db(db:session):
     try:
@@ -319,14 +281,17 @@ async def listar_manutencoes_db(db:session):
 
 
 async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema):
-    manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
+    try:
+        manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
 
-    manutencao.PMID = u_manutencao.PMID
-    manutencao.DataManutencao = u_manutencao.DataManutencao
-    manutencao.DescManutencao = u_manutencao.DescManutencao
+        manutencao.PMID = u_manutencao.PMID
+        manutencao.DataManutencao = u_manutencao.DataManutencao
+        manutencao.DescManutencao = u_manutencao.DescManutencao
 
-    db.commit()
-    return manutencao
+        db.commit()
+        return manutencao
+    except SQLAlchemyError as e:
+        raise SQLAlchemyError(str(e))
 
 #Eliminar uma manutenção da base de dados
 async def eliminar_manutencao_db(db:session, id_manutencao:int):
