@@ -1,14 +1,8 @@
 import services.notificacao_service as notificacao_service
 import os
-from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
-from fastapi import HTTPException, UploadFile
-from schemas.notificacao_schema import *
-from db.repository.notificacao_repo import get_tipo_processo_id
-from datetime import date
-from db.models import Notificacao, PedidoManutencao
-from schemas.recurso_comum_schema import *
+from fastapi import UploadFile
 from services.notificacao_service import *
 from schemas.recurso_comum_schema import *
 from schemas.user_schemas import UserJWT
@@ -179,13 +173,11 @@ async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao
         if estados is None:
             raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado de pedido manutenção")
         for e in estados:
-            print(e.EstadoPedManuID)
-            print(tipo_estado_pedido_manutencao)
             if e.EstadoPedManuID == int(tipo_estado_pedido_manutencao):
                 await recurso_comum_repo.alterar_estado_pedido_manutencao(db, id_pedido_manutencao, tipo_estado_pedido_manutencao)
-                if e.EstadoPedManuID == 2:  # Estado -> Aprovado para manutenção interna
+                if e.EstadoPedManuID == 2:  # Estado - Aprovado para manutenção interna
                     await notificacao_service.cria_notificacao_nao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
-                elif e.EstadoPedManuID == 3: # Estado -> Em negociação com entidades externas
+                elif e.EstadoPedManuID == 3: # Estado - Em negociação com entidades externas
                     await notificacao_service.cria_notificacao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
                 elif e.EstadoPedManuID == 4: # Estado -> Rejeitado
                     await notificacao_service.cria_notificacao_rejeicao_manutencao_recurso_comum(db,await obter_pedido_manutencao(db,id_pedido_manutencao))

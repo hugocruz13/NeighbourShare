@@ -226,7 +226,7 @@ async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:Pe
             Titulo= "Atualização sobre o seu pedido de manutenção",
             Mensagem= f"""
             
-            Olá {pedido.Utilizador_.Nome},
+            Olá {pedido.Utilizador_.NomeUtilizador},
 
             Agradecemos o seu pedido de manutenção referente a {pedido.DescPedido}.
             

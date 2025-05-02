@@ -5,6 +5,7 @@ from db.models import RecursoComun, EstadoManutencao, EstadoPedidoManutencao
 from io import BytesIO
 import sys
 from pydantic import ValidationError, EmailStr, parse_obj_as
+from datetime import date
 
 sys.modules["db.session"] = MagicMock()
 
