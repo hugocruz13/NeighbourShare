@@ -187,7 +187,8 @@ async def carrega_imagem_recurso_service(recurso_id:int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def checkar_estado_recurso(db:session):
+def checkar_estado_recurso():
+    db:session = get_db()
     try:
         recurso_repo.atualizar_disponibilidade_recurso_db(db)
     except HTTPException as e:
