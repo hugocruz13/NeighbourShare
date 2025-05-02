@@ -72,6 +72,10 @@ class EstadoPedManutencaoSchema(int,Enum):
     VOTACAO = 5
     REJEITADO = 4
 
+class EstadoManutencaoSchema(int,Enum):
+    EMPROGRESSO = 1
+    CONCLUIDO = 2
+
 
 # === Pedidos de Novo Recurso ===
 
@@ -148,6 +152,9 @@ class ManutencaoUpdateSchema(BaseModel):
 
 class EstadoUpdate(BaseModel):
     novo_estado_id: EstadoPedManutencaoSchema
+
+class EstadoManutencaoUpdate(BaseModel):
+    novo_estado_id: EstadoManutencaoSchema
 
 class PedidoManutencaoRequest(BaseModel):
     recurso_comum_id: int

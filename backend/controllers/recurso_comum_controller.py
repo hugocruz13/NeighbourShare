@@ -102,12 +102,12 @@ async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=D
     return await obter_all_tipo_estado_manutencao(db)
 
 @router.put("/manutencao/update{pedido_id}/estado")
-async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, token:UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
+async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoManutencaoUpdate, token:UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
     try:
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_pedido_manutencao(db, manutencao_id, estado_data.value)
+        out = await alterar_tipo_estado_manutencao(db, manutencao_id, estado_data.value)
         if out is False:
             return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
         if out is True:
