@@ -1,6 +1,5 @@
 import services.notificacao_service as notificacao_service
 import os
-from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException, UploadFile
@@ -106,7 +105,7 @@ async def eliminar_recurso_comum_service(recurso_comum_id: int, db:session):
 #Verifica se um recurso comum pode ser eliminado
 async def verificar_possibilidade_eliminar_recurso_comum_service(recurso_comum_id: int, db:session):
     try:
-        if await verificar_possibilidade_eliminar_recurso_comum_service(recurso_comum_id, db):
+        if await recurso_comum_repo.verifica_eliminar_recurso_comum_db(recurso_comum_id, db):
             return True
         else: return False
     except HTTPException as e:

@@ -1,11 +1,12 @@
 import db.repository.reserva_repo as reserva_repo
 import db.session as session
 from fastapi import HTTPException
+
+from db.repository.recurso_repo import muda_recurso_para_indisponivel_db
 from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
 from services import notificacao_service
 from services.notificacao_service import *
-
 
 async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReservaSchemaCreate):
     try:
@@ -49,7 +50,7 @@ async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
 
 async def muda_recurso_para_indisponivel(db:session, recurso_id:int):
     try:
-        return await muda_recurso_para_indisponivel(db,recurso_id)
+        return await muda_recurso_para_indisponivel_db(db,recurso_id)
     except HTTPException as e:
         raise e
     except Exception as e:

@@ -130,7 +130,7 @@ async def atualizar_disponibilidade_recurso_db(db:session):
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 #Função que muda a disponibilidade de um recurso para indisponivel
-async def muda_recurso_para_indisponivel(db:session, recurso_id:int):
+async def muda_recurso_para_indisponivel_db(db:session, recurso_id:int):
     try:
         recurso = db.query(Recurso).filter(Recurso.RecursoID == recurso_id).first()
         recurso.DispID = DisponibilidadeEstadosSchema.INDISPONIVEL
