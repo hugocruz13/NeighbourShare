@@ -183,7 +183,16 @@ async def logout(response: Response):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##Falta BLACKLIST
+@router.put("/user/role")
+async def change_role(dados: ChangeRole,user: UserJWT = Depends(role_required(["admin"])),db: Session = Depends(get_db)):
+    try:
+        if await mudar_role(dados, user, db):
+            return {"message": "Role atualizado com sucesso."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+##Update a info de qualquer user
 @router.put("/user/update")
 async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:
@@ -196,11 +205,3 @@ async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-##Falta BLACKLIST
-@router.put("/user/role")
-async def change_role(dados: ChangeRole,user: UserJWT = Depends(role_required(["admin"])),db: Session = Depends(get_db)):
-    try:
-        if await mudar_role(dados, user, db):
-            return {"message": "Role atualizado com sucesso."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
