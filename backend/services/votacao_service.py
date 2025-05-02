@@ -153,7 +153,7 @@ async def processar_votacao(db:Session, votacao_id: int):
         if contagem:
             resultado = max(contagem.items(), key=lambda item: item[1])[0]
 
-            if verificar_se_votacao_corresponde_a_pedido_manutencao_db(db, votacao_id):
+            if await verificar_se_votacao_corresponde_a_pedido_manutencao_db(db, votacao_id):
                 await criar_manutencao_service(db, ManutencaoCreateSchema(
                     PMID=votacao.PedidoManutencao[0].PMID,
                     DataManutencao= datetime.datetime.min,

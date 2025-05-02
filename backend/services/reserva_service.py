@@ -196,7 +196,7 @@ async def confirma_rececao_caucao_service(db:session, reserva_id:int):
 async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justificacao:str):
     try:
         mensagem = await reserva_repo.inserir_justificacao_caucao_db(db,reserva_id,justificacao)
-        msg_noti = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db,await get_pedido_reserva_db(db, reserva_id),reserva_id,justificacao)
+        msg_noti = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db,await reserva_repo.get_reserva_db(db, reserva_id),reserva_id,justificacao)
         return mensagem, msg_noti
     except HTTPException as e:
         raise e
@@ -207,7 +207,7 @@ async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justif
 async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id:int):
     try:
         mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao_db(db,reserva_id)
-        msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db,await get_pedido_reserva_db(db, reserva_id),reserva_id)
+        msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db, await reserva_repo.get_reserva_db(db, reserva_id), reserva_id)
         return mensagem, msg_noti
     except HTTPException as e:
         raise e
