@@ -6,6 +6,9 @@ from main import app
 from db.session import get_db
 from db.models import RecursoComun, PedidoManutencao
 
+import os
+os.environ["TESTING"] = "1"
+
 class DataFlow:
     """Classe para armazenar dados de teste entre várias etapas"""
     def __init__(self):
@@ -191,6 +194,7 @@ def test_07_registar_manutencao(client, gestor_token, data_flow):
         "Orcamento_id": orcamento_id
     }
     response = client.post("/api/recursoscomuns/manutencao/inserir", json=payload)
+    print(response.json())
     assert response.status_code == 200
 
 def test_08_terminar_manutencao(client, gestor_token, data_flow):

@@ -6,6 +6,9 @@ from main import app
 from db.session import get_db
 import os
 
+import os
+os.environ["TESTING"] = "1"
+
 @pytest.fixture
 def client():
     with TestClient(app) as client:

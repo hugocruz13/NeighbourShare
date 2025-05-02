@@ -6,6 +6,9 @@ from fastapi.testclient import TestClient
 from main import app
 from db.session import get_db
 
+import os
+os.environ["TESTING"] = "1"
+
 class DataFlow:
     """Classe para armazenar dados de teste entre várias etapas"""
     def __init__(self):

@@ -6,6 +6,9 @@ from db.models import PedidoReserva, Reserva, Recurso, EstadoPedidoReserva
 from db.session import get_db
 import decimal
 
+import os
+os.environ["TESTING"] = "1"
+
 """
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

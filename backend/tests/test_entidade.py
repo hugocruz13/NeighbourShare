@@ -3,11 +3,9 @@ from fastapi.testclient import TestClient
 from main import app
 from db.models import EntidadeExterna, PedidoManutencao, Manutencao, RecursoComun, Utilizador, Orcamento
 from db.session import get_db
-from sqlalchemy.orm import Session
-from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
-from schemas.recurso_comum_schema import PedidoManutencaoSchemaCreate, ManutencaoCreateSchema
-import datetime
-import time
+
+import os
+os.environ["TESTING"] = "1"
 
 @pytest.fixture
 def client():
