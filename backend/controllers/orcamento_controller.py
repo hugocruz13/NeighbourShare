@@ -47,6 +47,8 @@ async def ver_orcamentos(
 ):
     try:
         return await listar_orcamentos_service(db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -59,6 +61,8 @@ async def eliminar_orcamento(
 ):
     try:
         return await eliminar_orcamento_service(db,id_orcamento)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -76,5 +80,7 @@ async def alterar_orcamento(
     try:
         orcamento = OrcamentoUpdateSchema(OrcamentoID=orcamento_id,IDEntidade=id_entidade,DescOrcamento=descricao_orcamento, Valor=valor_orcamento)
         return await alterar_orcamento_service(db, orcamento, pdforcamento)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

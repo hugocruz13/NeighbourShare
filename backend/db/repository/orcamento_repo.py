@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.models import Orcamento, EntidadeExterna, PedidoManutencao
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
@@ -11,8 +12,7 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
             EntidadeExternaEntidadeID=orcamento.IDEntidade,
             Valor=orcamento.Valor,
             DescOrcamento=orcamento.DescOrcamento,
-            NomePDF = orcamento.NomePDF
-        )
+            NomePDF = orcamento.NomePDF)
 
         if orcamento.TipoProcesso == TipoOrcamento.MANUTENCAO:
             pedido_manutencao = await obter_pedido_manutencao_db(db, orcamento.IDProcesso)
@@ -27,16 +27,16 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
         return novo_orcamento.OrcamentoID, {'message': 'Inserção do orçamento realizada com sucesso!'}
 
     except SQLAlchemyError as e:
-        db.rollback()
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Listagem dos orçamentos registados na base de dados
 async def listar_orcamentos_db(db: Session):
     try:
+
         orcamentos = db.query(Orcamento).all()
         return orcamentos
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Eliminar um orçamento da base de dados
 async def eliminar_orcamento_db(db: Session, orcamento_id: int):
@@ -60,7 +60,7 @@ async def eliminar_orcamento_db(db: Session, orcamento_id: int):
 
         return True, {'Orcamento removido com sucesso!'}
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Altera os dados de um determinado orçamento
 async def altera_orcamento_db(db:Session, orcamento:OrcamentoUpdateSchema, nomepdf:str):
@@ -82,7 +82,7 @@ async def altera_orcamento_db(db:Session, orcamento:OrcamentoUpdateSchema, nomep
         db.commit()
         return True, {'Orcamento atualizado com sucesso!'}
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Tras o orcamento
 async def get_orcamento_by_id(db: Session, orcamento_id: int):
@@ -90,4 +90,4 @@ async def get_orcamento_by_id(db: Session, orcamento_id: int):
         orcamento = db.query(Orcamento).filter(Orcamento.OrcamentoID == orcamento_id).first()
         return orcamento
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
