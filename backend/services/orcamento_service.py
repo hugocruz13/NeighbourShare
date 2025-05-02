@@ -79,8 +79,11 @@ async def eliminar_orcamento_service(db:session, orcamento_id:int):
         val, msg = await orcamento_repo.eliminar_orcamento_db(db, orcamento_id)
 
         if val:
-            shutil.rmtree(os.path.join(pastapdfs, str(orcamento_id)))
-
+            caminho_pasta = os.path.join(pastapdfs, str(orcamento_id))
+            if os.path.exists(caminho_pasta):
+                shutil.rmtree(caminho_pasta)
+            else:
+                raise HTTPException(status_code=400,detail="Erro ao encontrar o caminho")
         return val, msg
 
     except Exception as e:
@@ -95,10 +98,12 @@ async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema,
 
             pasta = Path(os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID)))
 
-            if pasta:
+            if pasta.exists() and pasta.is_dir():
                 for item in pasta.iterdir():
                     if item.is_file():
                         os.remove(item)
+            else:
+                raise HTTPException(status_code=400, detail="Orçamento não registado!")
 
             await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
 

@@ -85,14 +85,15 @@ async def test_listar_orcamentos_service(db_session):
 
 async def test_eliminar_orcamento_service(db_session):
     # Arrange
-    id_orcamento = 17
+    id_orcamento = 7
 
     # Act
-    result = await eliminar_orcamento_service(db_session, id_orcamento)
+    with pytest.raises(HTTPException) as exc_info:
+        await eliminar_orcamento_service(db_session, id_orcamento)
 
     # Assert
-    assert result[0] == True
-    assert result[1] == {'mensagem': 'Orçamento removido com sucesso!'}
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Erro ao encontrar o caminho"
 
 async def test_eliminar_orcamento_service_erro(db_session):
     # Arrange
@@ -107,15 +108,16 @@ async def test_eliminar_orcamento_service_erro(db_session):
 
 async def test_alterar_orcamento_service(db_session):
     #Arrange
-    orcamento = OrcamentoUpdateSchema(OrcamentoID=16,IDEntidade=4,Valor=260,DescOrcamento="teste")
+    orcamento = OrcamentoUpdateSchema(OrcamentoID=7,IDEntidade=10,Valor=260,DescOrcamento="teste")
     fake_pdf = AsyncMock(spec=UploadFile)
     fake_pdf.filename = "teste"
     fake_pdf.file = BytesIO(b"conteudo de teste")
     fake_pdf.content_type = "application/pdf"
 
     #Act
-    result = await alterar_orcamento_service(db_session, orcamento,fake_pdf)
+    with pytest.raises(HTTPException) as exc_info:
+        await alterar_orcamento_service(db_session, orcamento,fake_pdf)
 
     #Assert
-    assert result[0] == True
-    assert result[1] == {'Orcamento atualizado com sucesso!'}
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Orçamento não registado!"

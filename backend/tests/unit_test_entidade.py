@@ -45,7 +45,7 @@ async def test_ver_entidades(db_session):
 
 async def test_eliminar_entidade_service(db_session):
     # Arrange
-    id_entidade = 6
+    id_entidade = 8
 
     #Act
     test = await eliminar_entidade_service(id_entidade, db_session)
@@ -68,7 +68,7 @@ async def test_eliminar_entidade_service_erro(db_session):
 
 async def test_update_entidade_service(db_session):
     # Arrange
-    entidade = EntidadeUpdateSchema(EntidadeID=5,Especialidade="TESTE", Contacto=253787945,Email="teste@teste.com", Nome="Teste",Nif=123456789)
+    entidade = EntidadeUpdateSchema(EntidadeID=2,Especialidade="TESTE", Contacto=253787945,Email="teste@teste.com", Nome="Teste",Nif=123456789)
 
     #Act
     test = await update_entidade_service(entidade, db_session)
