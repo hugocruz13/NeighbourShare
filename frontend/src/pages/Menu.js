@@ -32,6 +32,7 @@ function Residente() {
               <Link className="btnMenu" to="/orcamentos">Orçamentos</Link><br />
               <Link className="btnMenu" to="/pedidosManutencao">Pedidos Manutenção</Link><br />
               <Link className="btnMenu" to="/pedidosNovosRecursos">Pedidos Novos Recursos</Link><br />
+              <Link className="btnMenu" to="/recursosComuns">Recursos Comuns</Link><br />
             </>
           )}
 

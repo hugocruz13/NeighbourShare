@@ -18,6 +18,7 @@ const Manutencao = () => {
           credentials: 'include'
         });
         const data = await res.json();
+        console.log(data);
         setPedidos(data);
       } catch (error) {
         console.error('Erro ao buscar pedidos de manutenção:', error);
@@ -46,10 +47,11 @@ const Manutencao = () => {
 
   const handleStatusChange = async (manutencao_id, novo_estado_id) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/recursoscomuns/manutencao/update${manutencao_id}/estado?manutencao_id=${novo_estado_id}`, {
+      const res = await fetch(`http://localhost:8000/api/recursoscomuns/manutencao/update/${manutencao_id}/estado`, {
         method: 'PUT',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ novo_estado_id })
       });
 
       if (!res.ok) throw new Error();
@@ -109,7 +111,7 @@ const Manutencao = () => {
                 </tr>
               </thead>
               <tbody>
-                {pedidos.map((manutencao) => (
+                {pedidos.filter(manutencao => manutencao.EstadoManuID !== 2).map((manutencao) => (
                   <tr key={manutencao.ManutencaoID}>
                     <td>{manutencao.ManutencaoID}</td>
                     <td>{manutencao.DescManutencao}</td>

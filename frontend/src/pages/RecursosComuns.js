@@ -11,17 +11,14 @@ const MeusRecursos = () => {
   const [newResource, setNewResource] = useState({
     nome_recurso: '', 
     descricao_recurso: '', 
-    caucao_recurso: '',
-    recurso_disponivel: '', 
-    categoria_recurso: '', 
-    fotos_recurso: null,
+    imagem: null,
   });
 
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursos/pessoais', {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns', {
           
           credentials: 'include',
         });
@@ -43,16 +40,12 @@ const MeusRecursos = () => {
     const formData = new FormData();
     formData.append('nome_recurso', newResource.nome_recurso);
     formData.append('descricao_recurso', newResource.descricao_recurso);
-    formData.append('caucao_recurso', newResource.caucao_recurso);
-    formData.append('recurso_disponivel', newResource.recurso_disponivel);
-    formData.append('categoria_recurso', newResource.categoria_recurso);  
-    formData.append('fotos_recurso', newResource.fotos_recurso);
-    //formData.append('utilizador_recurso', 2); // Adicione o ID do utilizador aqui
+    formData.append('imagem', newResource.imagem);
     
 
     // Enviar os dados para a API
     try {
-      const res = await fetch('http://localhost:8000/api/recursos/inserir', {
+      const res = await fetch('http://localhost:8000/api/recursoscomuns/inserir', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -66,10 +59,7 @@ const MeusRecursos = () => {
       setNewResource({ 
         nome_recurso: '', 
         descricao_recurso: '', 
-        caucao_recurso: '', 
-        recurso_disponivel: '',
-        categoria_recurso: '', 
-        fotos_recurso: null,
+        imagem: null,
       }); // Limpar campos após envio
     } catch (error) {
       toast.error('Erro ao adicionar recurso: ' + error.message);
@@ -77,7 +67,7 @@ const MeusRecursos = () => {
   };
 
   const handleFileChange = (e) => {
-    setNewResource({ ...newResource, fotos_recurso: e.target.files[0] });
+    setNewResource({ ...newResource, imagem: e.target.files[0] });
   };
 
 
@@ -90,7 +80,7 @@ const MeusRecursos = () => {
 
 
       {/* Botão para abrir o modal de adicionar recurso */}
-      <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso</button>
+      <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
 
       {/* Modal de Adicionar Recurso */}
       {showModal && (
@@ -98,12 +88,9 @@ const MeusRecursos = () => {
         <>
           <div className="modal-backdrop" onClick={() => setShowModal(false)} />
             <div className="modal-content">
-              <h2>Adicionar Recurso</h2>
+              <h2>Adicionar Recurso Comum</h2>
               <input type="text" placeholder="Nome do Recurso" value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
               <textarea placeholder="Descrição" value={newResource.descricao_recurso} onChange={(e) => setNewResource({ ...newResource, descricao_recurso: e.target.value })}/>
-              <input type="text" placeholder="Caução" value={newResource.caucao_recurso} onChange={(e) => setNewResource({ ...newResource, caucao_recurso: e.target.value })}/>
-              <input type="text" placeholder="Disponível" value={newResource.recurso_disponivel} onChange={(e) => setNewResource({ ...newResource, recurso_disponivel: e.target.value })}/>
-              <input type="text" placeholder="Categoria" value={newResource.categoria_recurso} onChange={(e) => setNewResource({ ...newResource, categoria_recurso: e.target.value })}/>
               <input type="file" onChange={handleFileChange} />
               <div>
                 <button onClick={handleAddResource}>Adicionar</button>
@@ -115,25 +102,21 @@ const MeusRecursos = () => {
       )}
 
 
-      <p className='p-meusRecursos'>Os Meus Recursos</p>
+      <p className='p-meusRecursos'>Recursos Comuns</p>
       <table >
         <thead>
           <tr>
             <th>Nº Recurso</th>
             <th>Nome do Recurso</th>
-            <th>Caução</th>
-            <th>Categoria</th>
-            <th>Disponibilidade</th>
+            <th>Descrição</th>
           </tr>
         </thead>
         <tbody>
           {recurso.map((recurso) => (
-            <tr key={recurso.RecursoID}>
-              <td>{recurso.RecursoID}</td>
+            <tr key={recurso.RecComumID}>
+              <td>{recurso.RecComumID}</td>
               <td>{recurso.Nome}</td>
-              <td>{recurso.Caucao}</td>
-              <td>{recurso.Categoria_.DescCategoria}</td>
-              <td>{recurso.Disponibilidade_.DescDisponibilidade}</td>
+              <td>{recurso.DescRecursoComum}</td>
             </tr>
           ))}
         </tbody>

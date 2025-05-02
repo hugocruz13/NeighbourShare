@@ -58,7 +58,7 @@ async def listar_orcamentos_service(db:session):
         for orcamento in orcamentos:
             orcamentos_caminhospdf.append(OrcamentoGetSchema(
                 OrcamentoID = orcamento.OrcamentoID,
-                EntidadeID = orcamento.EntidadeExternaEntidadeID,
+                IDEntidade= orcamento.EntidadeExternaEntidadeID,
                 Entidade= orcamento.EntidadeExterna_.Nome,
                 Valor = orcamento.Valor,
                 DescOrcamento = orcamento.DescOrcamento,

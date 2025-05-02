@@ -228,7 +228,7 @@ const Orcamentos = () => {
               {orcamentos.map((orcamento) => (
               <tr key={orcamento.OrcamentoID}>
                 <td>{orcamento.OrcamentoID}</td>
-                <td>{orcamento.Fornecedor}</td>
+                <td>{orcamento.Entidade}</td>
                 <td>{orcamento.Valor}</td>
                 <td>{orcamento.DescOrcamento}</td>
               </tr>
