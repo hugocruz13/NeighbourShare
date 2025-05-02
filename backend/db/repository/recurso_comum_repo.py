@@ -99,6 +99,20 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
         db.rollback()
         raise e
 
+#Altera estado do pedido de novo recurso comum
+async def altera_estado_pedido_novo_recurso_db(db:session, id_pedido: int, novo_estado : int):
+    try:
+        pedido = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == id_pedido).first()
+
+        pedido.EstadoPedNovoRecID = novo_estado
+
+        db.commit()
+        db.refresh(pedido)
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise e
+
 
 #Inserção de um novo recurso comum
 async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):

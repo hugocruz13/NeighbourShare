@@ -60,7 +60,7 @@ async def existe_nr(db: Session, id:int):
     try:
         query = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == id).first()
         if query:
-            return True, query.EstadoPedidoNovoRecurso_.DescEstadoPedidoNovoRecurso
+            return True, query.EstadoPedNovoRecID
         else:
             return False, "none"
     except Exception as e:

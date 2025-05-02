@@ -56,14 +56,14 @@ class EstadoPedManuSchema(BaseModel):
     class Config:
         from_attributes = True
 
-class EstadoPedNovoRecursoComumSchema(str,Enum):
-    PENDENTE = 'Pendente'
-    EMVOTACAO = 'Em votação'
-    REJEITADO = 'Rejeitado'
-    APROVADOPARAORCAMENTACAO = 'Aprovado para orçamentação'
-    REJEITADOAPOSORCAMENTACAO = 'Rejeitado após orçamentação'
-    APROVADOPARACOMPRA = 'Aprovado para compra'
-    CONCLUIDO = 'Concluído'
+class EstadoPedNovoRecursoComumSchema(int,Enum):
+    PENDENTE = 1
+    EMVOTACAO = 2
+    REJEITADO = 3
+    APROVADOPARAORCAMENTACAO = 4
+    REJEITADOAPOSORCAMENTACAO = 5
+    APROVADOPARACOMPRA = 6
+    CONCLUIDO = 7
 
 class EstadoPedManutencaoSchema(int,Enum):
     EMANALISE = 1

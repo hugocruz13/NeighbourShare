@@ -19,7 +19,7 @@ async def gerir_votacao_novo_recurso(db: Session, votacao: Criar_Votacao):
         votacao.descricao = formatar_string(votacao.descricao)
 
         #Verifica se o pedido existe
-        val, desc_estado_pedido = await existe_nr(db, votacao.id_processo)
+        val, id_estado_pedido = await existe_nr(db, votacao.id_processo)
 
         if not val:
             raise HTTPException(status_code=404, detail="Erro ao encontar pedido")
@@ -30,12 +30,13 @@ async def gerir_votacao_novo_recurso(db: Session, votacao: Criar_Votacao):
 
         tipovotacao = TipoVotacaoPedidoNovoRecurso.BINARIA
 
-        if desc_estado_pedido == EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value:
+        if id_estado_pedido == EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value:
             tipovotacao = TipoVotacaoPedidoNovoRecurso.MULTIPLA
             await cria_notificao_decisao_orcamento_novo_recurso_service(db, votacao)
         else:
             await cria_notificacao_decisao_novo_recurso_comum_service(db, votacao)
-
+        await altera_estado_pedido_novo_recurso_db(db, votacao.id_processo,
+                                                   EstadoPedNovoRecursoComumSchema.EMVOTACAO.value)
         return await criar_votacao_nr_db(db,votacao,tipovotacao)
     except Exception as e:
         raise e
@@ -104,11 +105,19 @@ async def processar_votacoes_expiradas(db:Session):
 
         if tipo_votacao == TipoVotacao.MANUTENCAO and resultado != "Sem votos":
             await cria_notificacao_orcamento_mais_votado(db,await obter_pedido_manutencao_db(db,votacao.id_processo),resultado)
+            await criar_manutencao_service(db, ManutencaoCreateSchema(
+                PMID=votacao.PedidoManutencao[0].PMID,
+                DataManutencao=datetime.datetime.min,
+                DescManutencao=votacao.PedidoManutencao[0].DescPedido,
+                Orcamento_id=int(resultado)))
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA and resultado != "Sem votos":
+            await altera_estado_pedido_novo_recurso_db(db,votacao.id_processo,EstadoPedNovoRecursoComumSchema.APROVADOPARACOMPRA.value)
             await cria_notificacao_anuncio_compra_novo_recurso_comum_service(db,await obter_pedido_novo_recurso_db(db,votacao.id_processo),resultado)
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Sim"):
+            await altera_estado_pedido_novo_recurso_db(db, votacao.id_processo,EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value)
             await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao,await obter_pedido_novo_recurso_db(db,votacao.id_processo))
         elif tipo_votacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Não"):
+            await altera_estado_pedido_novo_recurso_db(db, votacao.id_processo, EstadoPedNovoRecursoComumSchema.REJEITADO.value)
             await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao,await obter_pedido_novo_recurso_db(db,votacao.id_processo))
 
     db.commit()
