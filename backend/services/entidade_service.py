@@ -13,16 +13,16 @@ async def registar_entidade(entidade: EntidadeSchema, db: Session = Depends(get_
         else:
             return True, msg
     except HTTPException as e:
-        if e.status_code == 400:
             raise e
-        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Um erro não esperado ocorreu")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para ver todas as entidades registadas no sistema
 async def ver_entidades(db: Session = Depends(get_db)):
     try:
         return await visualizar_entidades_db(db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -37,11 +37,9 @@ async def eliminar_entidade_service(id_entidade: int, db: Session = Depends(get_
         else:
             return True, msg
     except HTTPException as e:
-        if e.status_code == 400:
-            raise e
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Um erro não esperado ocorreu")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para realizar um update a uma entidade externa
 async def update_entidade_service(entidade: EntidadeUpdateSchema, db: Session = Depends(get_db)):
@@ -52,8 +50,6 @@ async def update_entidade_service(entidade: EntidadeUpdateSchema, db: Session = 
         else:
             return True, msg
     except HTTPException as e:
-        if e.status_code == 400:
-            raise e
         raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Um erro não esperado ocorreu")
+        raise HTTPException(status_code=500, detail=str(e))
