@@ -177,7 +177,7 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}
+        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
