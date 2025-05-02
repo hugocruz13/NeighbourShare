@@ -43,8 +43,7 @@ async def inserir_orcamento(
 @router.get("/listar/")
 async def ver_orcamentos(
         db: Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "gestor"]))
-):
+        token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         return await listar_orcamentos_service(db)
     except HTTPException as e:
@@ -75,8 +74,7 @@ async def alterar_orcamento(
         descricao_orcamento: str = Form(...),
         pdforcamento: Optional[UploadFile] = File(...),
         db: Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "gestor"]))
-):
+        token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         orcamento = OrcamentoUpdateSchema(OrcamentoID=orcamento_id,IDEntidade=id_entidade,DescOrcamento=descricao_orcamento, Valor=valor_orcamento)
         return await alterar_orcamento_service(db, orcamento, pdforcamento)

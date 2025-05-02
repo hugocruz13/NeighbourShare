@@ -13,7 +13,6 @@ from pathlib import Path
 #Service para inserir um novo orçamento
 async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.OrcamentoSchema, pdforcamento:UploadFile):
     try:
-        raise HTTPException(status_code=300,detail="nada")
         #Verifica se a entidade externa existe!
         if not await entidade_repo.existe_entidade_db(orcamento.IDEntidade,db):
             raise HTTPException(status_code=400, detail="Entidade Externa não registada")

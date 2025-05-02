@@ -137,6 +137,9 @@ async def processar_votacoes_expiradas(db:Session):
 #Função para testar o processamento de uma votação e obtenção dos resultados
 async def processar_votacao(db:Session, votacao_id: int):
     try:
+        if not await existe_votacao(db, votacao_id):
+            raise HTTPException(status_code=404, detail="Votação não existe!")
+
         votos = await get_votos_votacao(db, votacao_id)
 
         contagem = defaultdict(int)

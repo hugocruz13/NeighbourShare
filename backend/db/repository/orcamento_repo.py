@@ -32,7 +32,6 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
 #Listagem dos orçamentos registados na base de dados
 async def listar_orcamentos_db(db: Session):
     try:
-
         orcamentos = db.query(Orcamento).all()
         return orcamentos
     except SQLAlchemyError as e:
