@@ -18,7 +18,10 @@ router = APIRouter(tags=['Autenticação'])
 
 @router.get("/health")
 async def health():
-    return {"message": "Serviço API em funcionamento!"}
+    try:
+        return {"message": "Serviço API em funcionamento!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Controler login, protegido
 @router.post("/registar")
@@ -29,10 +32,10 @@ async def registar(user: UserRegistar, token: UserJWT = Depends(role_required(["
             return {"message": "Registo realizado com sucesso"}
         else:
             raise HTTPException(status_code=400, detail=mensagem)  # Erro
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail= {str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Controller login
 @router.post("/login")
@@ -50,19 +53,20 @@ async def login(user: UserLogin, db: Session = Depends(get_db), response: Respon
                 expires=datetime.now(timezone.utc) + timedelta(minutes=int(EXPIRE_MINUTES_LOGIN)),  # Expiração
         )
         return {"message": "Login com sucesso"}
-
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Controller para obter a informação de um utilizador
 @router.get("/perfil")
 async def perfil(user: UserJWT = Depends(jwt_middleware), db: Session = Depends(get_db)):
     try:
         return await get_dados_utilizador(db, user.id)
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        return HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/verification/{token}")
 async def verificacao(token, db:Session = Depends(get_db)):
@@ -77,10 +81,10 @@ async def verificacao(token, db:Session = Depends(get_db)):
             return RedirectResponse(url=f"http://localhost/AtualizarDados?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de verificação de email inválido")
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/registar/atualizar_dados")
 async def registar_atualizar_dados(
@@ -103,17 +107,19 @@ async def registar_atualizar_dados(
         if a is True:
             mark_token_as_used(token)
         return a, message
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/password/forgot")
 async def esqueceu_password(user:ForgotPassword, db: Session = Depends(get_db)):
     try:
         return await verificar_forgot(db, str(user.email))
     except HTTPException as e:
-        raise e
+            raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/password/{token}")
 async def recuperar_password(token, db: Session = Depends(get_db)):
@@ -129,10 +135,10 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
                 url=f"http://localhost/recuperarPass?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de recuperação password inválido")
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/password/reset")
 async def resetar_password(senha: ResetPassword, token: str, db: Session = Depends(get_db)):
@@ -147,16 +153,16 @@ async def resetar_password(senha: ResetPassword, token: str, db: Session = Depen
             mark_token_as_used(token)
         return a, message
     except HTTPException as e:
-        raise e
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/me")
 async def about_me(user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:
         return {"id": user.id, "email": user.email, "role": user.role}
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/delete")
 async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
@@ -165,18 +171,18 @@ async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])
             return {"message": "Utilizador eliminado com sucesso."}
         else:
             return {"message": "Erro ao eliminar utilizador."}
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/logout")
 async def logout(response: Response):
     try:
         response.delete_cookie("access_token")
         return {"message": "Sessão terminada com sucesso."}
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -187,7 +193,7 @@ async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user
             return {"message": "Dados atualizados com sucesso."}
         else:
             return {"message": "Erro ao atualizar os dados."}
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+            raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,4 +1,6 @@
 from datetime import datetime, date, timedelta
+from http.client import HTTPException
+
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from schemas.votacao_schema import Criar_Votacao, Votar_id, Consulta_Votacao, Votacao_Return, TipoVotacaoPedidoNovoRecurso, TipoVotacao
@@ -19,10 +21,9 @@ async def criar_votacao_nr_db(db: Session, votacao: Criar_Votacao, tipovotacao:T
         db.commit()
 
         return Votacao_Return(id_votacao=votacao_new.VotacaoID, data_inicio=votacao_new.DataInicio, data_fim=votacao_new.DataFim, processada=False)
-
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar votação: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def criar_votacao_pedido_manutencao_db(db: Session, votacao: Criar_Votacao):
     try:
@@ -41,9 +42,9 @@ async def criar_votacao_pedido_manutencao_db(db: Session, votacao: Criar_Votacao
 
         return Votacao_Return(id_votacao=votacao_new.VotacaoID, data_inicio=votacao_new.DataInicio, data_fim=votacao_new.DataFim, processada=False)
 
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar votação: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def registar_voto(db: Session, voto:Votar_id):
     try:
@@ -52,9 +53,9 @@ async def registar_voto(db: Session, voto:Votar_id):
         db.commit()
         db.refresh(voto_new)
         return True
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def existe_nr(db: Session, id:int):
     try:
@@ -63,33 +64,33 @@ async def existe_nr(db: Session, id:int):
             return True, query.EstadoPedNovoRecID
         else:
             return False, "none"
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def existe_pedido_manutencao(db: Session, id:int):
     try:
         query = db.query(PedidoManutencao).filter(PedidoManutencao.PMID == id).first()
         return True if query else False
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def existe_votacao(db: Session, id:int):
     try:
         query = db.query(Votacao).filter(Votacao.VotacaoID == id).first()
         return True if query else False
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 def ja_votou(db: Session, votacao: Consulta_Votacao) -> bool:
     try:
         query = db.query(Voto).filter(Voto.VotacaoID == votacao.id_votacao,Voto.UtilizadorID == votacao.id_user).first()
         return query is not None
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao verificar se já votou: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Consulta as votações que ainda não foram processadas, contudo já se encontram expiradas
 async def get_votacoes_expiradas_e_nao_processadas(db:Session):
@@ -100,7 +101,8 @@ async def get_votacoes_expiradas_e_nao_processadas(db:Session):
 
         return votacoes
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obtem todos os votos relativos a uma votação
 async def get_votos_votacao(db:Session, votacao_id:int):
@@ -108,7 +110,8 @@ async def get_votos_votacao(db:Session, votacao_id:int):
         votos = db.query(Voto).filter(Voto.VotacaoID == votacao_id).all()
         return votos
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obtem o contexto da votação
 async def get_contexto_votacao(db:Session, votacao_id:int):
@@ -124,7 +127,8 @@ async def get_contexto_votacao(db:Session, votacao_id:int):
         return TipoVotacaoPedidoNovoRecurso.MULTIPLA
 
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obter orcamentos associados ao pedido de Manutenção
 async def get_orcamentos_pm(db:Session, votacao_id:int):
@@ -132,7 +136,8 @@ async def get_orcamentos_pm(db:Session, votacao_id:int):
         orcamentos = db.query(Orcamento).join(Orcamento.PedidoManutencao).filter(PedidoManutencao.VotacaoID==votacao_id).all()
         return orcamentos
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obter os orcamentos associados a um pedido de novo recurso
 async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
@@ -143,7 +148,8 @@ async def get_orcamentos_pedido_novo_recurso_db(db:Session, votacao_id:int):
                   .filter(VotacaoPedidoNovoRecurso.VotacaoID==votacao_id).all())
         return orcamentos
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obter todas as votações ativas, diferenciadas por tipos
 async def listar_votacoes_ativas_db(db:Session):
@@ -165,7 +171,8 @@ async def listar_votacoes_ativas_db(db:Session):
 
         return votacoes_pedido_recurso_binarias,votacoes_pedido_recurso_mutliplas,votacoes_pedido_manutencao
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Verificar se uma votação pertence a um pedido de manutencao
 async def verificar_se_votacao_corresponde_a_pedido_manutencao_db(db:Session, votacao_id:int):
@@ -177,4 +184,5 @@ async def verificar_se_votacao_corresponde_a_pedido_manutencao_db(db:Session, vo
         else: return False
 
     except SQLAlchemyError as e:
-        raise e
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

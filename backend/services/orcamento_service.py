@@ -13,7 +13,6 @@ from pathlib import Path
 #Service para inserir um novo orçamento
 async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.OrcamentoSchema, pdforcamento:UploadFile):
     try:
-
         #Verifica se a entidade externa existe!
         if not await entidade_repo.existe_entidade_db(orcamento.IDEntidade,db):
             raise HTTPException(status_code=400, detail="Entidade Externa não registada")
@@ -23,13 +22,14 @@ async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.Orcame
             return await guardar_pdf_orcamento(pdforcamento, orcamento_id)
         else:
             return False, "Erro ao inserir um orçamento"
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para guardar um pdf associado a um orçamento
 async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
     try:
-
         load_dotenv()
 
         pastapdfs = os.getenv('UPLOAD_DIR_ORCAMENTO')
@@ -45,8 +45,10 @@ async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
             f.write(pdforcamento.file.read())
 
         return True, {'message': 'Inserção feita com sucesso'}
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para mostrar todos os orçamentos registados
 async def listar_orcamentos_service(db:session):
@@ -66,8 +68,10 @@ async def listar_orcamentos_service(db:session):
                 )
             )
         return orcamentos_caminhospdf
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para eliminar um orçamento
 async def eliminar_orcamento_service(db:session, orcamento_id:int):
@@ -81,9 +85,10 @@ async def eliminar_orcamento_service(db:session, orcamento_id:int):
         shutil.rmtree(os.path.join(pastapdfs, str(orcamento_id)))
 
         return val, msg
-
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para alterar os dados de um orçamento
 async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema, pdforcamento:UploadFile):
@@ -100,7 +105,9 @@ async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema,
                         os.remove(item)
 
             await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
-
-        return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
-    except Exception as e:
+        else:
+            return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

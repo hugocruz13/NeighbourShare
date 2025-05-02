@@ -37,28 +37,43 @@ async def inserir_recurso(
         else:
             raise HTTPException(status_code=400, detail=msg)
 
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista todos os recursos registados
 @router.get("/", response_model=List[RecursoGetTodosSchema])
 async def listar_recursos(
         db:Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
-):
+        token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     """
     Endpoint para consultar todos os recursos
     """
-    return await lista_recursos_service(db)
+    try:
+        return await lista_recursos_service(db)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
 async def listar_recursos_pessoais(
         token: UserJWT = Depends(role_required(["admin","gestor","residente"])),
-        db:Session = Depends(get_db)
-):
-    return await lista_recursos_utilizador_service(db, token.id)
+        db:Session = Depends(get_db)):
+    try:
+        return await lista_recursos_utilizador_service(db, token.id)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
 async def listar_recurso( recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
-    return await lista_recurso_service(db, recurso_id)
+    try:
+        return await lista_recurso_service(db, recurso_id)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
