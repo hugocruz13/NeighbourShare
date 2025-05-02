@@ -224,9 +224,10 @@ async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_est
         estados = await obter_all_tipo_estado_manutencao(db)
         if estados is None:
             raise HTTPException(status_code=500, detail="Erro ao obter tipos de estado manutenção")
-        if tipo_estado_manutencao in estados:
-            await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
-            return True
+        for estado in estados:
+            if int(tipo_estado_manutencao) == estado.EstadoManuID:
+                await recurso_comum_repo.alterar_estado_manutencao(db, id_manutencao, tipo_estado_manutencao)
+                return True
         else:
             return False
     except Exception as e:
