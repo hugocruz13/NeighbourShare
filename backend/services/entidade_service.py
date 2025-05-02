@@ -2,7 +2,8 @@ from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
 from db.session import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
-from db.repository.entidade_repo import inserir_entidade_db, visualizar_entidades_db, update_entidade_db, remover_entidade_db
+from db.repository.entidade_repo import inserir_entidade_db, visualizar_entidades_db, update_entidade_db, \
+    remover_entidade_db, existe_entidade_db
 
 #Service para registar uma nova entidade externa
 async def registar_entidade(entidade: EntidadeSchema, db: Session = Depends(get_db)):
@@ -12,12 +13,10 @@ async def registar_entidade(entidade: EntidadeSchema, db: Session = Depends(get_
             raise HTTPException(status_code=400, detail="Dados inseridos inválidos")
         else:
             return True, msg
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        try:
-            if e.status_code == 400:
-                raise e
-        except:
-            raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para ver todas as entidades registadas no sistema
 async def ver_entidades(db: Session = Depends(get_db)):
@@ -29,29 +28,32 @@ async def ver_entidades(db: Session = Depends(get_db)):
 #Service para eliminar uma entidade externa
 async def eliminar_entidade_service(id_entidade: int, db: Session = Depends(get_db)):
     try:
+        if not await existe_entidade_db(id_entidade, db):
+            raise HTTPException(status_code=400, detail="ID da entidade não existe")
+
         val, msg = await remover_entidade_db(id_entidade, db)
+
         if val is False:
             raise HTTPException(status_code=400, detail="ID da entidade não existe ou inválido")
         else:
             return True, msg
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        try:
-            if e.status_code == 400:
-                raise e
-        except:
-            raise HTTPException(status_code=500, detail=str(e))
+         raise HTTPException(status_code=500, detail=str(e))
 
 #Service para realizar um update a uma entidade externa
 async def update_entidade_service(entidade: EntidadeUpdateSchema, db: Session = Depends(get_db)):
     try:
+        if not await existe_entidade_db(entidade.EntidadeID, db):
+            raise HTTPException(status_code=400, detail="ID da entidade não existe")
+
         val, msg = await update_entidade_db(entidade, db)
         if val is False:
             raise HTTPException(status_code=400, detail="Dados inválidos ou a entidade não existe")
         else:
             return True, msg
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        try:
-            if e.status_code == 400:
-                raise e
-        except:
-            raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))

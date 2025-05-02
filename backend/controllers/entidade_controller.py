@@ -33,6 +33,8 @@ async def endpoint_ver_entidades(token: UserJWT = Depends(role_required(["admin"
 async def endpoint_eliminar_entidade(id_entidadde : int,token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
     try:
         return await eliminar_entidade_service(id_entidadde, db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
 
@@ -41,5 +43,7 @@ async def endpoint_eliminar_entidade(id_entidadde : int,token: UserJWT = Depends
 async def endpoint_modificar_entidade(entidade: EntidadeUpdateSchema, token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
     try:
         return await update_entidade_service(entidade, db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})

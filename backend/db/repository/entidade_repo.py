@@ -58,7 +58,8 @@ async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
 #Verifica se a entidade existe
 async def existe_entidade_db(entidade_id: int, db: Session) -> bool:
     try:
-        return db.query(EntidadeExterna).filter(EntidadeExterna.EntidadeID == entidade_id).first() is not None
+        entidade = db.query(EntidadeExterna).filter(EntidadeExterna.EntidadeID == entidade_id).first()
+        return entidade
     except SQLAlchemyError as e:
         db.rollback()
         return False, {'details': str(e)}

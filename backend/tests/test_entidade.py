@@ -1,7 +1,8 @@
 import pytest
+from fastapi import HTTPException
 from db.session import get_db
-from schemas.entidade_schema import EntidadeSchema
-from services.entidade_service import registar_entidade, ver_entidades, eliminar_entidade_service
+from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
+from services.entidade_service import registar_entidade, ver_entidades, eliminar_entidade_service,  update_entidade_service
 from pydantic import ValidationError
 
 #Coneção com a base de dados
@@ -44,7 +45,7 @@ async def test_ver_entidades(db_session):
 
 async def test_eliminar_entidade_service(db_session):
     # Arrange
-    id_entidade = 2
+    id_entidade = 6
 
     #Act
     test = await eliminar_entidade_service(id_entidade, db_session)
@@ -52,12 +53,25 @@ async def test_eliminar_entidade_service(db_session):
     #Assert
     assert test[0]==True
 
+@pytest.mark.asyncio
 async def test_eliminar_entidade_service_erro(db_session):
     # Arrange
     id_entidade = 15
 
+    # Act + Assert
+    with pytest.raises(HTTPException) as exc_info:
+        await eliminar_entidade_service(id_entidade, db_session)
+
+    # Assert
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "ID da entidade não existe"
+
+async def test_update_entidade_service(db_session):
+    # Arrange
+    entidade = EntidadeUpdateSchema(EntidadeID=5,Especialidade="TESTE", Contacto=253787945,Email="teste@teste.com", Nome="Teste",Nif=123456789)
+
     #Act
-    test = await eliminar_entidade_service(id_entidade, db_session)
+    test = await update_entidade_service(entidade, db_session)
 
     #Assert
-    assert test[0]==False
+    assert test[0]==True
