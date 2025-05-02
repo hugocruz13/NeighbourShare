@@ -289,7 +289,7 @@ def test_09_confirmar_bom_estado_devolucao_caucao(client, db_session, cookie_ges
     response = client.post(
         f"/api/reserva/confirma/bomestado?reserva_id={test_flow.reserva_id}"
     )
-
+    print(response.json())
     assert response.status_code == 200
     response_data = response.json()
     assert 'Confirmação do bom estado do produto e notificação da devolução da caução registada com sucesso!' in str(response_data)
@@ -310,7 +310,7 @@ def test_10_submeter_justificativa_mau_estado(client, db_session, cookie_gestor,
     response = client.post(
         f"/api/reserva/submissao/justificacao?reserva_id={test_flow.reserva_id}&justificacao={justificativa}"
     )
-
+    print(response.json())
     assert response.status_code == 200
     response_data = response.json()
     assert 'Justificação registada com sucesso!' in str(response_data)
