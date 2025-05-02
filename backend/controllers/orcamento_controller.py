@@ -20,8 +20,7 @@ async def inserir_orcamento(
         idprocesso: int = Form(...),
         tipoorcamento: TipoOrcamento = Form(...),
         db: Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "gestor"]))
-):
+        token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         orcamento_data = OrcamentoSchema(IDEntidade=id_entidade_externa ,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
         sucesso, msg = await inserir_orcamento_service(db, orcamento_data, pdforcamento)

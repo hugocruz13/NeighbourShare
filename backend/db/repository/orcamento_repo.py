@@ -16,16 +16,20 @@ async def inserir_orcamento_db(db: Session, orcamento: OrcamentoSchema):
 
         if orcamento.TipoProcesso == TipoOrcamento.MANUTENCAO:
             pedido_manutencao = await obter_pedido_manutencao_db(db, orcamento.IDProcesso)
-            novo_orcamento.PedidoManutencao.append(pedido_manutencao)
+            if pedido_manutencao :
+                novo_orcamento.PedidoManutencao.append(pedido_manutencao)
+            else:
+                raise HTTPException(status_code=400, detail="Pedido de mantenção não existe")
         else:
             pedido_novo_recurso = await obter_pedido_novo_recurso_db(db, orcamento.IDProcesso)
-            novo_orcamento.PedidoNovoRecurso.append(pedido_novo_recurso)
-
+            if pedido_novo_recurso :
+                novo_orcamento.PedidoNovoRecurso.append(pedido_novo_recurso)
+            else:
+                raise HTTPException(status_code=400, detail="Pedido de mantenção não existe")
         db.add(novo_orcamento)
         db.commit()
         db.refresh(novo_orcamento)
         return novo_orcamento.OrcamentoID, {'message': 'Inserção do orçamento realizada com sucesso!'}
-
     except SQLAlchemyError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
