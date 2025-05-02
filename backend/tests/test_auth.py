@@ -10,6 +10,9 @@ from tests.test_email_config import testemail
 from uuid import uuid4
 import json
 
+import os
+os.environ["TESTING"] = "1"
+
 class DataFlow:
     def __init__(self):
         self.id_user = None

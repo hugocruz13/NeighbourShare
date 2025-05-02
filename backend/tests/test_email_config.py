@@ -5,6 +5,9 @@ import requests
 from dotenv import load_dotenv
 from typing import Dict, Optional, Any
 
+import os
+os.environ["TESTING"] = "1"
+
 # Load environment variables
 load_dotenv()
 
