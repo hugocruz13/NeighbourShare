@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from typing import Optional
 from sqlalchemy.orm import Session
-from db.models import EntidadeExterna
 from db.session import get_db
-from middleware.auth_middleware import role_required
-from schemas.notificacao_schema import NotificacaoOutSchema
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 from schemas.user_schemas import UserJWT
 from services.orcamento_service import *
@@ -27,7 +24,6 @@ async def inserir_orcamento(
 ):
     try:
         orcamento_data = OrcamentoSchema(IDEntidade=id_entidade_externa ,DescOrcamento=descricao_orcamento, Valor=valor_orcamento, NomePDF=pdforcamento.filename, IDProcesso = idprocesso, TipoProcesso=tipoorcamento)
-
         sucesso, msg = await inserir_orcamento_service(db, orcamento_data, pdforcamento)
 
         if sucesso:
@@ -41,9 +37,7 @@ async def inserir_orcamento(
 
 #Endpoint para ver os orçamentos registados
 @router.get("/listar/")
-async def ver_orcamentos(
-        db: Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "gestor"]))):
+async def ver_orcamentos(db: Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         return await listar_orcamentos_service(db)
     except HTTPException as e:
@@ -56,8 +50,7 @@ async def ver_orcamentos(
 async def eliminar_orcamento(
         id_orcamento: int,
         db: Session = Depends(get_db),
-        token: UserJWT = Depends(role_required(["admin", "gestor"]))
-):
+        token: UserJWT = Depends(role_required(["admin", "gestor"]))):
     try:
         return await eliminar_orcamento_service(db,id_orcamento)
     except HTTPException as e:
