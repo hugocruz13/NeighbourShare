@@ -239,7 +239,7 @@ async def inserir_justificacao_caucao_db(db:session, reserva_id: int, justificac
         return {'details': str(e)}
 
 #Indicação do bom estado do produto e que a caução será entregue
-async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id: int):
+async def inserir_bom_estado_produto_e_devolucao_caucao_db(db:session, reserva_id: int):
     try:
         reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
         reserva.DevolucaoCaucao = True

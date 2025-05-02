@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, Form
+from typing import Optional
 from db.session import get_db
 from services.recurso_comum_service import *
 from middleware.auth_middleware import *
@@ -100,13 +101,17 @@ async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depe
 async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=Depends(role_required(["admin", "residente", "gestor"]))):
     return await obter_all_tipo_estado_manutencao(db)
 
+
 @router.put("/manutencao/update/{manutencao_id}/estado")
 async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, token:UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
+
     try:
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Manutenção com o seguinte ID não existe: {pedido_id}")
+
         out = await alterar_tipo_estado_manutencao(db, manutencao_id, estado_data.novo_estado_id.value)
+
         if out is False:
             return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
         if out is True:
@@ -187,5 +192,38 @@ async def get_recurso_comum_by_id(recurso_id: int,db:Session = Depends(get_db),t
         return await get_recursos_comuns_by_id(db,recurso_id)
     except Exception as e:
         raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+
+#Atualiza os dados de um recurso comum
+@router.put("/update/{recurso_comum_id}")
+async def update_recurso_comum(
+        recurso_comum_id: int,
+        nome_recurso: Optional[str] = Form(None),
+        descricao_recurso: Optional[str] = Form(None),
+        imagem: Optional[UploadFile] = File(None),
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin","gestor"]))):
+    try:
+        path = await substitui_imagem_recurso_comum_service(recurso_comum_id, imagem)
+        if path is not False:
+            update_recurso = RecursoComunUpdate(
+                Nome= nome_recurso,
+                DescRecursoComum= descricao_recurso,
+                Path= path
+            )
+        else: update_recurso = RecursoComunUpdate(Nome = nome_recurso,DescRecursoComum= descricao_recurso)
+        return await update_recurso_comum_service(recurso_comum_id,update_recurso,db)
+    except Exception as e:
+        raise e
+
+@router.delete("/delete/{recurso_comum_id}")
+async def eliminar_recurso_comum(
+        recurso_comum_id: int,
+        db:Session = Depends(get_db),
+        token: UserJWT = Depends(role_required(["admin","gestor"]))
+):
+    try:
+        return await eliminar_recurso_comum_service(recurso_comum_id,db)
+    except Exception as e:
+        raise e
 
 #endregion
