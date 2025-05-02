@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from db.models import EntidadeExterna
 from db.session import get_db
 from middleware.auth_middleware import role_required
+from schemas.notificacao_schema import NotificacaoOutSchema
 from schemas.orcamento_schema import OrcamentoSchema, OrcamentoUpdateSchema, TipoOrcamento
 from schemas.user_schemas import UserJWT
 from services.orcamento_service import *

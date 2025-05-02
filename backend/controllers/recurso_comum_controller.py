@@ -27,7 +27,7 @@ async def inserir_manutencao_recurso_comum(
     return await inserir_pedido_manutencao_service(db, novo_pedido_manutencao)
 
 #Listar os pedidos de manutenção existentes no sistema
-@router.get("/pedidosmanutencao", response_model=List[PedidoManutencaoSchema])
+@router.get("/pedidosmanutencao")
 async def listar_pedidos_manutencao(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
 ):
     """
@@ -47,7 +47,7 @@ async def eliminar_pedido_manutencao(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pedidodsmanutencao/estados")
+@router.get("/pedidosmanutencao/estados")
 async def listar_tipos_pedido_manutencao(db:Session = Depends(get_db), token: UserJWT=Depends(role_required(["admin", "residente", "gestor"]))):
     return await obter_all_tipo_estado_pedido_manutencao(db)
 
@@ -93,7 +93,7 @@ async def inserir_manutencao(manutencao:ManutencaoCreateSchema,db:Session = Depe
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/manutencao/", response_model=List[ManutencaoSchema])
+@router.get("/manutencao/")
 async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     return await visualizar_manutencoes(db)
 
@@ -101,13 +101,17 @@ async def listar_manutencoes(db:Session = Depends(get_db), token: UserJWT = Depe
 async def listar_tipos_manutencao(db: Session = Depends(get_db), token:UserJWT=Depends(role_required(["admin", "residente", "gestor"]))):
     return await obter_all_tipo_estado_manutencao(db)
 
-@router.put("/manutencao/update{pedido_id}/estado")
-async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoManutencaoUpdate, token:UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
+
+@router.put("/manutencao/update/{manutencao_id}/estado")
+async def atualizar_estado_manutencao(manutencao_id: int, estado_data: EstadoUpdate, token:UserJWT=Depends(role_required(["admin","gestor"])),db: Session = Depends(get_db)):
+
     try:
         obter = await obter_manutencao(db, manutencao_id)
         if obter is None:
             raise HTTPException(status_code=404, detail="Manutenção com o seguinte ID não existe: {pedido_id}")
-        out = await alterar_tipo_estado_manutencao(db, manutencao_id, estado_data.value)
+
+        out = await alterar_tipo_estado_manutencao(db, manutencao_id, estado_data.novo_estado_id.value)
+
         if out is False:
             return False, "Erro ao alterar o tipo de estado da manutenção com o ID {pedido_id}"
         if out is True:
@@ -168,7 +172,7 @@ async def inserir_pedido_novo_recurso_comum(
 
     return await inserir_pedido_novo_recurso_service(db,novo_pedido)
 
-@router.get("/pedidosnovos", response_model=List[PedidoNovoRecursoSchema])
+@router.get("/pedidosnovos")
 async def listar_pedidos_novos_recursos(db:Session = Depends(get_db),token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     """
     Endpoint para consultar todos os pedidos de novos recursos comuns
