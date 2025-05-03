@@ -1,3 +1,4 @@
+import services.recurso_comum_service
 from db.repository.notificacao_repo import *
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
@@ -5,7 +6,6 @@ from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao
-from services.recurso_comum_service import obter_pedido_manutencao
 from db.models import PedidoReserva, Votacao,Reserva
 from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
@@ -321,7 +321,7 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
 #Cria notificação a indicar a conclusão da manutenção do recurso comum
 async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,manutencao:ManutencaoSchema, orcamento:OrcamentoSchema):
     try:
-        pedido = await obter_pedido_manutencao(db,manutencao.PMID)
+        pedido = await services.recurso_comum_service.obter_pedido_manutencao(db,manutencao.PMID)
         notificacao = NotificacaoSchema(
             Titulo= "Manutenção concluída com sucesso",
             Mensagem= f"""

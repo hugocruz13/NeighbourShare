@@ -1,14 +1,8 @@
 import services.notificacao_service as notificacao_service
 import os
-from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException, UploadFile
-from schemas.notificacao_schema import *
-from db.repository.notificacao_repo import get_tipo_processo_id
-from datetime import date
-from db.models import Notificacao, PedidoManutencao
-from schemas.recurso_comum_schema import *
 from services.notificacao_service import *
 from schemas.recurso_comum_schema import *
 from schemas.user_schemas import UserJWT
