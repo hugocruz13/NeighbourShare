@@ -15,10 +15,12 @@ async def endpoint_registar_entidade(entidade: EntidadeSchema, token: UserJWT = 
         val, msg = await registar_entidade(entidade, db)
         if val is True:
             return {"message": "Entidade registada com sucesso"}
-    except HTTPException as h:
-        raise h
+        else:
+            raise HTTPException(status_code=400, detail="Erro ao inserir a nova entidade.")
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Enpoint para ver as entidades externas registadas
 @router.get("/ver")
@@ -26,20 +28,26 @@ async def endpoint_ver_entidades(token: UserJWT = Depends(role_required(["admin"
     try:
         return await ver_entidades(db)
     except HTTPException as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Endpoint para eliminar uma entidade
-@router.delete("/eliminar/{id_entidade}")
-async def endpoint_eliminar_entidade(id_entidadde : int,token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
+@router.delete("/eliminar")
+async def endpoint_eliminar_entidade(id_entidade : int,token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
     try:
-        return await eliminar_entidade_service(id_entidadde, db)
+        return await eliminar_entidade_service(id_entidade, db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Endpoint para fazer update a uma entidade externa
-@router.put("/update/")
+@router.put("/update")
 async def endpoint_modificar_entidade(entidade: EntidadeUpdateSchema, token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
     try:
         return await update_entidade_service(entidade, db)
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))

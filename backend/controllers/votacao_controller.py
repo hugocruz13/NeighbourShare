@@ -37,10 +37,10 @@ async def criar_votacao(votacao: Criar_Votacao, user: UserJWT = Depends(role_req
         else:
             raise HTTPException(status_code=500, detail="Erro ao criar votação")
 
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/votar")
 async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente","gestor", "admin"])), db: Session = Depends(get_db)):
@@ -49,40 +49,44 @@ async def votar(votacao:Votar, user: UserJWT = Depends(role_required(["residente
             return {"mensagem": "Votacao registado com sucesso"}
         else:
             return {"erro": "Erro ao realizar votacao"}
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/votacao_orcamento_pm")
 async def orcamentos_pm(id_v:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db: Session = Depends(get_db)):
     try:
         return await gerir_votacoes_orcamentos_pm(db,id_v)
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/votacao_orcamento_pedido_novo_recurso")
 async def orcamentos_pedido_novo_recurso(votacao_id:int, user: UserJWT = Depends(role_required(["residente","gestor"])), db:Session = Depends(get_db)):
     try:
         return await get_orcamentos_pedido_novo_recurso_service(db,votacao_id)
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail={str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/terminar_votacao")
-async def testar_processamento_votacao(votacao_id: int,db: Session = Depends(get_db)):
+async def processamento_votacao(votacao_id: int,db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["gestor", "admin"]))):
     try:
         return await processar_votacao(db,votacao_id)
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista todas as votações ativas, 3 listas, cada uma com os seguintes tipos de votações: pedido novo recurso binária, multipla e pedidos de manutenção
 @router.get("/listar_votacaos", response_model=ObtemTodasVotacoes)
 async def listar_votacoes_abertas(db:Session = Depends(get_db), user: UserJWT = Depends(role_required(["residente","gestor", "admin"]))):
     try:
         return await listar_votacoes_ativas(db)
-    except HTTPException as he:
-        raise he
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

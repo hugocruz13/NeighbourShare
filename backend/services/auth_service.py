@@ -12,12 +12,20 @@ from utils.string_utils import formatar_string
 
 
 async def get_user_data(db: Session, id_user:int):
-
-    return await get_dados_utilizador(db, id_user)
+    try:
+        return await get_dados_utilizador(db, id_user)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def get_user_data(db: Session, id_user:int):
-
-    return await get_dados_utilizador(db, id_user)
+    try:
+        return await get_dados_utilizador(db, id_user)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:
@@ -49,8 +57,10 @@ async def registar_utilizador(user: UserRegistar, db: Session):
                 return False, f"Erro durante o envio de email ou geração do token: {e}"
         else:
             return False, "Erro ao criar o Utilizador"
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise RuntimeError(f"Erro registar_utilizador: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def atualizar_novo_utilizador(user: NewUserUpdate, imagem:UploadFile,token:UserJWT, db: Session):
     try:
@@ -63,8 +73,10 @@ async def atualizar_novo_utilizador(user: NewUserUpdate, imagem:UploadFile,token
             return True, "Utilizador atualizado com sucesso"
         else:
             return False, "Erro ao verificar utilizador"
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def guardar_imagem(imagem:UploadFile, user_id:int):
     try:
@@ -87,9 +99,10 @@ async def guardar_imagem(imagem:UploadFile, user_id:int):
         path = os.path.join(url_imagens,str(user_id), imagem.filename)
         clean_path = path.replace("\\", "/")
         return clean_path
-
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return False, {"details": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def user_auth(db: Session, user_login: UserLogin):
     try:
@@ -113,12 +126,16 @@ async def user_auth(db: Session, user_login: UserLogin):
             return generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
         else:
             raise HTTPException(status_code=401, detail="Password incorreta")
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def verificao_utilizador(db: Session, user: UserJWT):
     try:
         return await user_exists(db, user.email)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -133,6 +150,8 @@ async def verificar_forgot(db: Session, email: str):
             send_recovery_password_email(email, token)
         add_save_token(token, id_user, email, "recovery", exp)
         return "Se o endereço de email submetido estiver registado, irá receber um email com um link para alterar a password"
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -145,8 +164,10 @@ async def atualizar_nova_password(db: Session, user:ResetPassword, token:UserJWT
             return True, "Password atualizada com sucesso"
         else:
             return False, "Erro ao verificar utilizador"
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise RuntimeError(f"Erro atualizar novo utilizador: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def eliminar_utilizador(db: Session, email: str):
     try:
@@ -166,11 +187,15 @@ async def eliminar_utilizador(db: Session, email: str):
         teste= apagar(db, user.utilizador_ID)
 
         return teste
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 async def atualizar_utilizador(db: Session, id: int,dados: UserUpdateInfo):
     try:
         return atualizar_utilizador_db(db, id,dados)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

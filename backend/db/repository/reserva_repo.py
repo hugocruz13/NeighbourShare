@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from sqlalchemy.orm import joinedload, aliased
 from db import session
 from db.models import PedidoReserva, Reserva, Recurso, Utilizador, EstadoPedidoReserva
@@ -22,7 +24,7 @@ async def criar_pedido_reserva_db(db:session, pedido_reserva : PedidoReservaSche
         return {'Pedido de reserva criado com sucesso!'}, novo_pedido_reserva
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 # Muda o estado de um pedido de reserva
 async def muda_estado_pedido_reserva_db(db:session, pedido_reserva_id:int, estado:PedidoReservaEstadosSchema):
@@ -38,7 +40,8 @@ async def muda_estado_pedido_reserva_db(db:session, pedido_reserva_id:int, estad
 
         return {'Estado do pedido de reserva alterado com sucesso!'}, pedido_reserva
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def cria_reserva_db(db:session, reserva:ReservaSchemaCreate):
     try:
@@ -59,7 +62,7 @@ async def cria_reserva_db(db:session, reserva:ReservaSchemaCreate):
         return {'Reserva criada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obtem os dados de uma reserva através do seu ID
 async def get_reserva_db(db:session, reserva_id: int):
@@ -67,7 +70,8 @@ async def get_reserva_db(db:session, reserva_id: int):
         reserva = db.query(Reserva).filter(Reserva.ReservaID == reserva_id).first()
         return reserva
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Obtêm um pedido de reserva através do seu ID
 async def get_pedido_reserva_db(db:session, pedido_reserva_id: int):
@@ -75,7 +79,8 @@ async def get_pedido_reserva_db(db:session, pedido_reserva_id: int):
         pedido_reserva = db.query(PedidoReserva).filter(PedidoReserva.PedidoResevaID == pedido_reserva_id).first()
         return pedido_reserva
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 # Mostra as reservas todas de um utilizador (sendo dono e sendo solcitante)
 async def lista_reservas_db(db:session, utilizador_id: int):
@@ -133,7 +138,8 @@ async def lista_reservas_db(db:session, utilizador_id: int):
         return reservas_dono, reservas_solicitante
 
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Mostra os pedidos de reserva todos de um utlizador (sendo dono e sendo solcitante)
 async def lista_pedidos_reserva_db(db:session, utilizador_id: int):
@@ -177,7 +183,8 @@ async def lista_pedidos_reserva_db(db:session, utilizador_id: int):
         return pedidos_reserva_dono, pedidos_reserva_solicitante
 
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Confirma a entrega de um recurso para empréstimo (dono)
 async def confirma_entrega_recurso_dono_db(db:session, reserva_id: int):
@@ -188,7 +195,7 @@ async def confirma_entrega_recurso_dono_db(db:session, reserva_id: int):
         return {'Entrega do produto registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Confirma a receção de um recurso numa reserva (pessoa que vai usufrir do recurso)
 async def confirma_rececao_recurso_db(db:session, reserva_id: int):
@@ -200,7 +207,7 @@ async def confirma_rececao_recurso_db(db:session, reserva_id: int):
         return {'Receção do recurso registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Confirma a entrega da caução ao dono do produto
 async def confirma_entrega_caucao_db(db:session, reserva_id: int):
@@ -212,7 +219,7 @@ async def confirma_entrega_caucao_db(db:session, reserva_id: int):
         return {'Entrega da caução registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Confirma a receção da caução por parte da pessoa que irá usar o produto
 async def confirma_rececao_caucao_db(db:session, reserva_id: int):
@@ -224,7 +231,7 @@ async def confirma_rececao_caucao_db(db:session, reserva_id: int):
         return {'Receção da caução registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Insere justificação relativa ao mau estado do produto e não entrega da caução
 async def inserir_justificacao_caucao_db(db:session, reserva_id: int, justificacao: str):
@@ -236,7 +243,7 @@ async def inserir_justificacao_caucao_db(db:session, reserva_id: int, justificac
         return {'Justificação registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Indicação do bom estado do produto e que a caução será entregue
 async def inserir_bom_estado_produto_e_devolucao_caucao_db(db:session, reserva_id: int):
@@ -249,4 +256,4 @@ async def inserir_bom_estado_produto_e_devolucao_caucao_db(db:session, reserva_i
         return {'Confirmação do bom estado do produto e notificação da devolução da caução registada com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))

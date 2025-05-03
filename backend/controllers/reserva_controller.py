@@ -18,6 +18,8 @@ async def criar_reserva(
         reserva = ReservaSchemaCreate(PedidoReservaID=pedido_reserva_id)
         return await cria_reserva_service(db, reserva)
 
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -25,10 +27,11 @@ async def criar_reserva(
 @router.get("/lista", response_model=Tuple[List[ReservaGetDonoSchema],List[ReservaGetSolicitanteSchema]])
 async def lista_reservas(
         token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
-        db:Session = Depends(get_db)
-):
+        db:Session = Depends(get_db)):
     try:
         return await lista_reservas_service(db, token.id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -41,6 +44,8 @@ async def confirma_entrega_recurso(
 ):
     try:
         return await confirma_entrega_recurso_service(db, reserva_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -53,6 +58,8 @@ async def confirma_rececao_recurso(
 ):
     try:
         return await confirma_rececao_recurso_service(db, reserva_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -65,6 +72,8 @@ async def confirma_entrega_caucao(
 ):
     try:
         return await confirma_entrega_caucao_service(db, reserva_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -77,6 +86,8 @@ async def confirma_rececao_caucao(
 ):
     try:
         return await confirma_rececao_caucao_service(db, reserva_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -90,6 +101,8 @@ async def inserir_justificacao_caucao(
 ):
     try:
         return await inserir_justificacao_caucao_service(db, reserva_id, justificacao)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -98,10 +111,11 @@ async def inserir_justificacao_caucao(
 async def confirma_bom_estado_produto_e_devolucao_caucao(
         reserva_id: int,
         token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
-        db:Session = Depends(get_db)
-):
+        db:Session = Depends(get_db)):
     try:
         return await inserir_bom_estado_produto_e_devolucao_caucao(db, reserva_id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -112,6 +126,8 @@ async def lista_pedidos_reserva(
     token: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))):
     try:
         return await lista_pedidos_reserva_service(db, token.id)
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -132,7 +148,8 @@ async def criar_pedido_reserva(
         )
 
         return await cria_pedido_reserva_service(db,pedido_reserva)
-
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -147,5 +164,7 @@ async def recusar_pedido_reserva(
         msg, msg_noti, pedido_reserva = await muda_estado_pedido_reserva_service(db, pedido_reserva_id, PedidoReservaEstadosSchema.REJEITADO, motivo_recusacao)
 
         return msg, msg_noti
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
