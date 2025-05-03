@@ -6,7 +6,7 @@ from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao
 from services.recurso_comum_service import obter_pedido_manutencao
-from db.models import PedidoReserva, Votacao
+from db.models import PedidoReserva, Votacao, Reserva
 from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
 
@@ -463,47 +463,47 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação para indicar que a caução será devolvida
-async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int):
+async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, reserva:Reserva, reserva_id:int):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução será devolvida",
             Mensagem= f"""
             
-            A caução referente à reserva nº {reserva_id}, do recurso "{pedido.Recurso_.Nome}" será devolvida.
+            A caução referente à reserva nº {reserva_id}, do recurso "{reserva.PedidoReserva_.Recurso_.Nome}" será devolvida.
             
             O estado do recurso encontra-se aceitável, resultando assim na devolução futura da caução por parte do dono.
             
             Com isto, a reserva deste mesmo recurso dá-se por concluida.
             
-            Caso tenha algum problema com a caução, contacte o seguinte numero de telemovel, referente ao dono do produto : {pedido.Recurso_.Utilizador_.Contacto}
+            Caso tenha algum problema com a caução, contacte o seguinte numero de telemovel, referente ao dono do produto : {reserva.PedidoReserva_.Recurso_.Utilizador_.Contacto}
             """,
-            ProcessoID=pedido.PedidoResevaID,
+            ProcessoID=reserva.ReservaID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
-        return await cria_notificacao_individual_db(db,notificacao,pedido.UtilizadorID)
+        return await cria_notificacao_individual_db(db,notificacao,reserva.PedidoReserva_.Recurso_.Utilizador_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que a caução não será devolvida
-async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int, justificativa:str):
+async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, reserva:Reserva, reserva_id:int, justificativa:str):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução não será devolvida",
             Mensagem= f"""
-            A caução referente à reserva nº {reserva_id}, do recurso "{pedido.Recurso_.Nome}" não será devolvida.
+            A caução referente à reserva nº {reserva_id}, do recurso "{reserva.PedidoReserva_.Recurso_.Nome}" não será devolvida.
             
             Motivo : {justificativa}
             
             Com isto, a reserva deste mesmo recurso dá-se por concluida.
             
-            Contudo se sentir necessidade de entrar em contacto com o dono do produto, contacte o seguinte numero de telemovel : {pedido.Recurso_.Utilizador_.Contacto}
+            Contudo se sentir necessidade de entrar em contacto com o dono do produto, contacte o seguinte numero de telemovel : {reserva.PedidoReserva_.Recurso_.Utilizador_.Contacto}
             """,
-            ProcessoID= pedido.PedidoResevaID,
+            ProcessoID= reserva.ReservaID,
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
-        return await cria_notificacao_individual_db(db, notificacao, pedido.UtilizadorID)
+        return await cria_notificacao_individual_db(db, notificacao, reserva.PedidoReserva_.Recurso_.Utilizador_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
