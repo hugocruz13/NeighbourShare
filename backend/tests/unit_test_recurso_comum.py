@@ -680,7 +680,7 @@ async def test_update_manutencao_service(mock_update_manutencao_db):
 
     with pytest.raises(HTTPException) as exc_info:
         await update_manutencao(db, manutencao_data)
-    assert exc_info.value.status_code == 500
+    assert exc_info.value.status_code == 400
     assert "Erro, a atualizar manutenção" in exc_info.value.detail
 
     # -------------------------------
