@@ -6,7 +6,7 @@ from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoP
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
 from schemas.recurso_comum_schema import *
-from sqlalchemy import exists, and_, not_
+from sqlalchemy import select, exists
 
 #region Gestão de Recursos Comuns
 
@@ -44,9 +44,13 @@ async def update_recurso_comum_db(recurso_comum_id: int ,recurso_comum_update : 
 async def eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
     try:
         recurso_comum = db.query(RecursoComun).filter(RecursoComun.RecComumID == recurso_comum_id).first()
+        
+        if not recurso_comum:
+            raise HTTPException(status_code=404, detail="Recurso Comum não encontrado")
+            
         db.delete(recurso_comum)
         db.commit()
-        db.refresh(RecursoComun)
+        # Remover a linha de refresh aqui, pois não é necessária após a exclusão
 
         return {'Recurso Eliminado com sucesso!'}
     except SQLAlchemyError as e:
@@ -56,23 +60,22 @@ async def eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
 #Verifica a possibilidade de eliminar um recurso comum
 async def verifica_eliminar_recurso_comum_db(recurso_comum_id: int, db: session) -> bool:
     try:
-        # Verifica se existe algum pedido de manutenção com o recurso e estados específicos
-        existe_pedido = db.query(
-            exists().where(
-                and_(
-                    PedidoManutencao.RecComumID == recurso_comum_id,
-                    PedidoManutencao.EstadoPedManuID.in_([
-                        EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value,
-                        EstadoPedManutencaoSchema.VOTACAO.value
-                    ])
-                )
+        # Removendo o await da chamada execute()
+        pedido = db.execute(
+            select(PedidoManutencao).where(
+                PedidoManutencao.RecComumID == recurso_comum_id,
+                PedidoManutencao.EstadoPedManuID.in_([
+                    EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value,
+                    EstadoPedManutencaoSchema.VOTACAO.value
+                ])
             )
-        ).scalar()
+        )
+        pedido_resultado = pedido.scalars().first()
 
-        # Só pode eliminar se NÃO existir um pedido com essas condições
-        return not existe_pedido
+        return pedido_resultado is None
 
     except SQLAlchemyError as e:
+        # Removendo o await da chamada rollback()
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -331,6 +334,3 @@ async def eliminar_manutencao_db(db:session, id_manutencao:int):
         raise HTTPException(status_code=400, detail=str(e))
 
 #endregion
-
-
-
