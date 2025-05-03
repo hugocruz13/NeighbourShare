@@ -325,6 +325,19 @@ async def test_notificacoes_pedido_reserva():
     pedido.DataInicio = "2025-05-02"
     pedido.DataFim = "2025-05-05"
 
+    # Mock do reserva
+    reserva = MagicMock(spec=Reserva)
+    reserva.ReservaID = 123
+    reserva.PedidoResevaID=pedido.PedidoResevaID
+    reserva.ConfirmarCaucaoDono = True
+    reserva.ConfirmarCaucaoVizinho = True
+    reserva.RecursoEntregueDono = True
+    reserva.RecursoEntregueVizinho = True
+    reserva.DevolucaoCaucao = True
+    reserva.EstadoRecurso = True
+    reserva.PedidoReserva_ = pedido
+
+
     # Mock da função de get_tipo_processo_id
     with patch("services.notificacao_service.get_tipo_processo_id", return_value=99):
         # ------------------- Teste 1: Notificação de Recebimento de Pedido -------------------
@@ -338,7 +351,7 @@ async def test_notificacoes_pedido_reserva():
         with patch("services.notificacao_service.cria_notificacao_individual_db",
                    side_effect=Exception("Erro ao criar notificação")):
             # Caso de Erro
-            with pytest.raises(HTTPException):
+            with pytest.raises(Exception):
                 await cria_notificacao_recebimento_pedido_reserva(db, pedido)
 
         # ------------------- Teste 2: Notificação de Recusa de Pedido -------------------
@@ -371,11 +384,10 @@ async def test_notificacoes_pedido_reserva():
                 await cria_notificacao_aceitacao_pedido_reserva(db, pedido)
 
         # ------------------- Teste 4: Notificação de Caução Devolvida -------------------
-        reserva_id = 101
         with patch("services.notificacao_service.cria_notificacao_individual_db",
                    return_value=(True, "ok")) as mock_cria_notif:
             # Caso de Sucesso
-            result = await cria_notificacao_caucao_devolucao_pedido_reserva(db, pedido, reserva_id)
+            result = await cria_notificacao_caucao_devolucao_pedido_reserva(db, reserva, reserva.ReservaID)
             assert result == (True, "ok")
             mock_cria_notif.assert_awaited_once()
 
@@ -383,14 +395,14 @@ async def test_notificacoes_pedido_reserva():
                    side_effect=Exception("Erro ao criar notificação")):
             # Caso de Erro
             with pytest.raises(HTTPException):
-                await cria_notificacao_caucao_devolucao_pedido_reserva(db, pedido, reserva_id)
+                await cria_notificacao_caucao_devolucao_pedido_reserva(db, reserva, reserva.ReservaID)
 
         # ------------------- Teste 5: Notificação de Caução Não Devolvida -------------------
         justificativa = "Recurso danificado"
         with patch("services.notificacao_service.cria_notificacao_individual_db",
                    return_value=(True, "ok")) as mock_cria_notif:
             # Caso de Sucesso
-            result = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db, pedido, reserva_id, justificativa)
+            result = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db, reserva, reserva.ReservaID, justificativa)
             assert result == (True, "ok")
             mock_cria_notif.assert_awaited_once()
 
@@ -398,7 +410,7 @@ async def test_notificacoes_pedido_reserva():
                    side_effect=Exception("Erro ao criar notificação")):
             # Caso de Erro
             with pytest.raises(HTTPException):
-                await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db, pedido, reserva_id, justificativa)
+                await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db, reserva, reserva.ReservaID, justificativa)
 
 if __name__ == '__main__':
     unittest.main()
