@@ -1,5 +1,4 @@
-from http.client import HTTPException
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 from requests import Session
 from sqlalchemy.orm import joinedload
 from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoPedidoManutencao, EstadoManutencao, \
@@ -13,15 +12,68 @@ from schemas.recurso_comum_schema import *
 #Inserção de um novo recurso comum
 async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
     try:
-        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum)
+        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum, Path="none")
         db.add(novo_recurso_comum)
         db.commit()
-        db.refresh(novo_recurso_comum)
-
-        return {'Recurso comum inserido com sucesso!'}
+        return novo_recurso_comum
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
+
+#Faz o update dos dados de um recurso comum
+async def update_recurso_comum_db(recurso_comum_id: int ,recurso_comum_update : RecursoComunUpdate,db:session):
+    try:
+        recurso = db.query(RecursoComun).filter(RecursoComun.RecComumID == recurso_comum_id).first()
+
+        if not recurso:
+            raise HTTPException(status_code=404, detail="Recurso Comum não encontrado")
+
+        for key,value in recurso_comum_update.dict(exclude_unset=True).items():
+            setattr(recurso, key, value)
+
+        db.commit()
+        db.refresh(recurso)
+
+        return recurso
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {'details': str(e)}
+
+#Elimina um recurso comum
+async def eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
+    try:
+        recurso_comum = db.query(RecursoComun).filter(RecursoComun.RecComumID == recurso_comum_id).first()
+        db.delete(recurso_comum)
+        db.commit()
+        db.refresh(RecursoComun)
+
+        return {'Recurso Eliminado com sucesso!'}
+    except SQLAlchemyError as e:
+        raise e
+
+#Verifica a possibilidade de eliminar um recurso comum
+async def verifica_eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
+    try:
+        query = """
+                SELECT NOT EXISTS (SELECT 1 \
+                    FROM pedidos_manutencao \
+                    WHERE id_recurso = :id_recurso \
+                    AND estado IN (:estado1, :estado2)) AS pode_eliminar; \
+                """
+
+        params = {
+            "id_recurso": recurso_comum_id,  # o ID do recurso que você quer verificar
+            "estado1": EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value,
+            "estado2": EstadoPedManutencaoSchema.VOTACAO.value
+        }
+
+        result = db.query(query, params).fetchone()
+
+        if result["pode_eliminar"]:
+            return True
+        else: return False
+    except SQLAlchemyError as e:
+        raise e
 
 #endregion
 
@@ -44,18 +96,20 @@ async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSch
     except SQLAlchemyError as e:
         db.rollback()
         raise e
-from schemas.recurso_comum_schema import *
 
-#Inserção de um novo recurso comum
-async def inserir_recurso_comum_db(db:session, recurso_comum:RecursoComumSchemaCreate):
+#Altera estado do pedido de novo recurso comum
+async def altera_estado_pedido_novo_recurso_db(db:session, id_pedido: int, novo_estado : int):
     try:
-        novo_recurso_comum = RecursoComun(Nome=recurso_comum.Nome, DescRecursoComum=recurso_comum.DescRecursoComum, Path="none")
-        db.add(novo_recurso_comum)
+        pedido = db.query(PedidoNovoRecurso).filter(PedidoNovoRecurso.PedidoNovoRecID == id_pedido).first()
+
+        pedido.EstadoPedNovoRecID = novo_estado
+
         db.commit()
-        return novo_recurso_comum
+        db.refresh(pedido)
+        return True
     except SQLAlchemyError as e:
         db.rollback()
-        return {'details': str(e)}
+        raise e
 
 async  def update_imagem(db:session, path: str, id:int):
     try:
@@ -82,32 +136,6 @@ async def obter_recrusos_comuns_by_id(db:session, id:int):
         return db.query(RecursoComun).filter(RecursoComun.RecComumID == id).first()
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
-
-#Inserção de um novo pedido de um novo recurso comum
-async def inserir_pedido_novo_recurso_db(db:session, pedido:PedidoNovoRecursoSchemaCreate):
-    try:
-        novo_pedido = PedidoNovoRecurso(DescPedidoNovoRecurso=pedido.DescPedidoNovoRecurso, DataPedido=pedido.DataPedido, UtilizadorID=pedido.UtilizadorID, EstadoPedNovoRecID=pedido.EstadoPedNovoRecID)
-        db.add(novo_pedido)
-        db.commit()
-        db.refresh(novo_pedido)
-
-        return {'Pedido de novo recurso inserido com sucesso!'}, novo_pedido
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
-
-#Inserção de um pedido de manutenção de um recurso comum
-async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
-    try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
-        db.add(novo_pedido)
-        db.commit()
-        db.refresh(novo_pedido)
-
-        return {'Pedido de manutenção inserido com sucesso!'}
-    except SQLAlchemyError as e:
-        db.rollback()
-        return {'details': str(e)}
 
 async def listar_pedidos_novos_recursos_db(db:session):
     try:
@@ -138,12 +166,12 @@ async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
 #Inserção de um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
-        novo_pedido = PedidoManutencao(DescPedido=pedido.DescPedido, DataPedido=pedido.DataPedido, RecComumID=pedido.RecComumID, UtilizadorID=pedido.UtilizadorID, EstadoPedManuID=pedido.EstadoPedManuID)
+        novo_pedido = PedidoManutencao(**pedido.dict())
         db.add(novo_pedido)
         db.commit()
         db.refresh(novo_pedido)
 
-        return {'Pedido de manutenção inserido com sucesso!'}, novo_pedido
+        return {'Pedido de manutenção inserido com sucesso!'}
     except SQLAlchemyError as e:
         db.rollback()
         return {'details': str(e)}
@@ -216,9 +244,10 @@ async def criar_manutencao_db(db:session, manutencao:ManutencaoCreateSchema):
     try:
         nova_manutencao = Manutencao(
             PMID=manutencao.PMID,
-            EntidadeID=manutencao.EntidadeID,
             DataManutencao=manutencao.DataManutencao,
-            DescManutencao=manutencao.DescManutencao
+            DescManutencao=manutencao.DescManutencao,
+            EstadoManuID=1,
+            OrcamentoOrcamentoID= manutencao.Orcamento_id,
         )
 
         db.add(nova_manutencao)
@@ -240,8 +269,8 @@ async def obter_all_tipo_estado_manutencao(db:session):
 
 async def alterar_estado_manutencao(db:session, id_manutencao:int, tipo_estado_manutencao:int):
     try:
-        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
-        manutencao.TipoManuID = tipo_estado_manutencao
+        manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == id_manutencao).first()
+        manutencao.EstadoManuID = int(tipo_estado_manutencao)
         db.commit()
         return True
     except SQLAlchemyError as e:
@@ -250,7 +279,7 @@ async def alterar_estado_manutencao(db:session, id_manutencao:int, tipo_estado_m
 
 async def obter_manutencao_db(db:session, id_manutencao:int):
     try:
-        manutencao = db.query(Manutencao).filter(Manutencao.PMID == id_manutencao).first()
+        manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == id_manutencao).first()
         return manutencao
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
@@ -262,19 +291,10 @@ async def listar_manutencoes_db(db:session):
     except SQLAlchemyError as e:
         raise SQLAlchemyError(str(e))
 
-
 async def update_manutencao_db(db:session, u_manutencao: ManutencaoUpdateSchema):
     manutencao = db.query(Manutencao).filter(Manutencao.ManutencaoID == u_manutencao.ManutencaoID).first()
-    entidades = db.query(EntidadeExterna).all()
-    pmid = db.query(PedidoManutencao).all()
-    for e in entidades:
-        if e.EntidadeID != u_manutencao.EntidadeID:
-            return None
-    for e in pmid:
-        if e.PMID != u_manutencao.PMID:
-            return None
+
     manutencao.PMID = u_manutencao.PMID
-    manutencao.EntidadeID = u_manutencao.EntidadeID
     manutencao.DataManutencao = u_manutencao.DataManutencao
     manutencao.DescManutencao = u_manutencao.DescManutencao
 

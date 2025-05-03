@@ -18,23 +18,6 @@ async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReserva
     except Exception as e:
         return {'details: '+ str(e)}
 
-async def lista_pedidos_reserva_ativos_service(db: session):
-    lista_pedidos_ativos = await reserva_repo.lista_pedidos_reserva_ativos_db(db)
-
-    if not lista_pedidos_ativos:
-        raise HTTPException(status_code=400, detail="Nenhum pedido de reserva ativo encontrado")
-
-    return lista_pedidos_ativos
-
-async def lista_pedidos_reserva_cancelados_service(db:session):
-
-    lista_pedidos_cancelados = await reserva_repo.lista_pedidos_reserva_cancelados_db(db)
-
-    if not lista_pedidos_cancelados:
-        raise HTTPException(status_code=400, detail="Nenhum pedido de reserva cancelado encontrado")
-
-    return lista_pedidos_cancelados
-
 #Muda o estado de um pedido de reserva
 async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int, estado:PedidoReservaEstadosSchema, motivo_recusa:str = None):
     try:
@@ -195,7 +178,7 @@ async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justif
 #Indica o bom estado do produto e que a caução será entregue
 async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao(db,reserva_id)
+        mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao_db(db,reserva_id)
         msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db,await get_pedido_reserva_db(db, reserva_id),reserva_id)
         return mensagem, msg_noti
     except Exception as e:
