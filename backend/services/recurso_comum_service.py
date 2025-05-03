@@ -1,5 +1,6 @@
 import services.notificacao_service as notificacao_service
 import os
+from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException, UploadFile
