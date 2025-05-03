@@ -1,13 +1,9 @@
 from datetime import datetime, timedelta, date
-from sys import flags
-
 from fastapi import HTTPException
 import pytest
-from sqlalchemy import false
-
 from db.models import Reserva, PedidoReserva, Recurso
 from db.repository.recurso_repo import inserir_recurso_teste
-from db.repository.reserva_repo import criar_pedido_reserva_teste, cria_reserva_db
+from db.repository.reserva_repo import criar_pedido_reserva_teste, cria_reserva_db, cria_reserva_test
 from schemas.reserva_schema import PedidoReservaSchemaCreate, PedidoReservaEstadosSchema, ReservaSchemaCreate
 from db.session import get_db
 from services.reserva_service import cria_pedido_reserva_service, muda_estado_pedido_reserva_service, \
@@ -91,7 +87,7 @@ async def test_get_reserva_service(db_session):
     # Arrange
     recurso = await inserir_recurso_teste(db_session,Recurso(Nome="Bola Amarela", DescRecurso="Teste", Caucao=50, Path="none", UtilizadorID=1, DispID=1, CatID=1))
     pedido_reserva = await criar_pedido_reserva_teste(db_session, PedidoReserva(UtilizadorID=1, RecursoID=recurso.RecursoID,DataInicio=(datetime.today() + timedelta( days=1)).date(), DataFim=(datetime.today() + timedelta(days=2)).date(),EstadoID=1))
-    reserva = await cria_reserva_db(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID,ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False,RecursoEntregueDono=False,RecursoEntregueVizinho=False,DevolucaoCaucao=False,EstadoRecurso=False))
+    reserva = await cria_reserva_test(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID,ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False,RecursoEntregueDono=False,RecursoEntregueVizinho=False,DevolucaoCaucao=False,EstadoRecurso=False))
     #Act
     result = await get_reserva_service(db_session, reserva.ReservaID)
 
@@ -149,7 +145,7 @@ async def test_confirma_entrega_recurso_service(db_session):
     # Arrange
     recurso = await inserir_recurso_teste(db_session,Recurso(Nome="Bola Amarela", DescRecurso="Teste", Caucao=50, Path="none",UtilizadorID=1, DispID=1, CatID=1))
     pedido_reserva = await criar_pedido_reserva_teste(db_session,PedidoReserva(UtilizadorID=1, RecursoID=recurso.RecursoID,DataInicio=(datetime.today() + timedelta( days=1)).date(), DataFim=(datetime.today() + timedelta(days=2)).date(), EstadoID=1))
-    reserva = await cria_reserva_db(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
+    reserva = await cria_reserva_test(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
 
     # Act
     resultado = await confirma_entrega_recurso_service(db_session, reserva.ReservaID)
@@ -171,7 +167,7 @@ async def test_confirma_entrega_caucao_service(db_session):
     # Arrange
     recurso = await inserir_recurso_teste(db_session,Recurso(Nome="Bola Amarela", DescRecurso="Teste", Caucao=50, Path="none",UtilizadorID=1, DispID=1, CatID=1))
     pedido_reserva = await criar_pedido_reserva_teste(db_session,PedidoReserva(UtilizadorID=1, RecursoID=recurso.RecursoID,DataInicio=(datetime.today() + timedelta( days=1)).date(), DataFim=(datetime.today() + timedelta(days=2)).date(), EstadoID=1))
-    reserva = await cria_reserva_db(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
+    reserva = await cria_reserva_test(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
 
     # Act
     resultado = await confirma_entrega_caucao_service(db_session, reserva.ReservaID)
@@ -193,7 +189,7 @@ async def test_inserir_justificacao_caucao_service(db_session):
     # Arrange
     recurso = await inserir_recurso_teste(db_session,Recurso(Nome="Bola Amarela", DescRecurso="Teste", Caucao=50, Path="none",UtilizadorID=1, DispID=1, CatID=1))
     pedido_reserva = await criar_pedido_reserva_teste(db_session,PedidoReserva(UtilizadorID=1, RecursoID=recurso.RecursoID,DataInicio=(datetime.today() + timedelta( days=1)).date(), DataFim=(datetime.today() + timedelta(days=2)).date(), EstadoID=1))
-    reserva = await cria_reserva_db(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
+    reserva = await cria_reserva_test(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
     just = "Testar"
     # Act
     resultado = await inserir_justificacao_caucao_service(db_session, reserva.ReservaID,just)
@@ -215,7 +211,7 @@ async def test_inserir_bom_estado_produto_e_devolucao_caucao(db_session):
     # Arrange
     recurso = await inserir_recurso_teste(db_session, Recurso(Nome="Bola Amarela", DescRecurso="Teste", Caucao=50, Path="none",UtilizadorID=1, DispID=1, CatID=1))
     pedido_reserva = await criar_pedido_reserva_teste(db_session, PedidoReserva(UtilizadorID=1, RecursoID=recurso.RecursoID,DataInicio=(datetime.today() + timedelta(days=1)).date(), DataFim=(datetime.today() + timedelta(days=2)).date(),EstadoID=1))
-    reserva = await cria_reserva_db(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
+    reserva = await cria_reserva_test(db_session,Reserva(PedidoResevaID=pedido_reserva.PedidoResevaID, ConfirmarCaucaoDono=False,ConfirmarCaucaoVizinho=False, RecursoEntregueDono=False,RecursoEntregueVizinho=False, DevolucaoCaucao=False, EstadoRecurso=False))
 
     # Act
     resultado = await inserir_bom_estado_produto_e_devolucao_caucao(db_session, reserva.ReservaID)

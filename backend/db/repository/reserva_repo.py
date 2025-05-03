@@ -271,7 +271,7 @@ async def criar_pedido_reserva_teste(db:session, pedido_reserva : PedidoReserva)
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-async def cria_reserva_db(db:session, reserva:Reserva):
+async def cria_reserva_test(db:session, reserva:Reserva):
     try:
         db.add(reserva)
         db.commit()
