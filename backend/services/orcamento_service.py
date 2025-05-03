@@ -112,7 +112,7 @@ async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema,
             else:
                 raise HTTPException(status_code=400, detail="Orçamento não registado!")
 
-            await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
+            return await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
         else:
             return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
     except HTTPException as e:
