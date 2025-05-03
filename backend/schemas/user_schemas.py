@@ -50,7 +50,7 @@ class NewUserUpdate(BaseModel):
 class UserUpdateInfo(BaseModel):
     nome: Optional[str] = Field(default=None, example= "")
     contacto: Optional[int]
-    data_nascimento: Optional[date]
+    dataNascimento: Optional[date]
 
 class ForgotPassword(BaseModel):
     email: EmailStr
@@ -60,3 +60,7 @@ class ResetPassword(BaseModel):
     @validator('password')
     def validate_password(cls, value):
         return validate_password_strength(value)
+
+class ChangeRole(BaseModel):
+    id: conint(gt=0)
+    role: constr(min_length=3, max_length=20)
