@@ -1,5 +1,8 @@
 import pytest
 from fastapi import HTTPException
+
+from db.models import EntidadeExterna
+from db.repository.entidade_repo import inserir_entidade_testes
 from db.session import get_db
 from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
 from services.entidade_service import registar_entidade, ver_entidades, eliminar_entidade_service,  update_entidade_service
@@ -45,10 +48,10 @@ async def test_ver_entidades(db_session):
 
 async def test_eliminar_entidade_service(db_session):
     # Arrange(ajustar id)
-    id_entidade = 7
+    entidade =await inserir_entidade_testes(db_session, EntidadeExterna(Especialidade="Elevadores", Contacto=253787945,Email="teste@teste.com",Nome="Elevadores", Nif=123456789))
 
     #Act
-    test = await eliminar_entidade_service(id_entidade, db_session)
+    test = await eliminar_entidade_service(entidade.EntidadeID, db_session)
 
     #Assert
     assert test[0]==True
@@ -56,7 +59,7 @@ async def test_eliminar_entidade_service(db_session):
 @pytest.mark.asyncio
 async def test_eliminar_entidade_service_erro(db_session):
     # Arrange
-    id_entidade = 15
+    id_entidade = 5000
 
     # Act + Assert
     with pytest.raises(HTTPException) as exc_info:
@@ -68,8 +71,8 @@ async def test_eliminar_entidade_service_erro(db_session):
 
 async def test_update_entidade_service(db_session):
     # Arrange
-    entidade = EntidadeUpdateSchema(EntidadeID=2,Especialidade="TESTE", Contacto=253787945,Email="teste@teste.com", Nome="Teste",Nif=123456789)
-
+    entidade =await inserir_entidade_testes(db_session, EntidadeExterna(Especialidade="Elevadores", Contacto=253787945,Email="teste@teste.com",Nome="Elevadores", Nif=123456789))
+    entidade_teste = EntidadeUpdateSchema(EntidadeID=entidade.EntidadeID,Especialidade="Carros",Contacto=253945787,Email="carros@teste.com",Nome="Carrps",Nif=678912345)
     #Act
     test = await update_entidade_service(entidade, db_session)
 
