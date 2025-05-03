@@ -31,18 +31,19 @@ async def test_inserir_orcamento_service_Manutencao(db_session):
 
 async def test_inserir_orcamento_service_Manutencao_erro(db_session):
     #Arrange (Pedido de manutenção não existe)
-    orcamento = OrcamentoSchema(IDEntidade=3, Valor=100,DescOrcamento="Teste",NomePDF="Teste",IDProcesso=6, TipoProcesso=TipoOrcamento.MANUTENCAO)
+    orcamento = OrcamentoSchema(IDEntidade=3, Valor=100,DescOrcamento="Teste",NomePDF="Teste",IDProcesso=999, TipoProcesso=TipoOrcamento.MANUTENCAO)
     fake_pdf = AsyncMock(spec=UploadFile)
     fake_pdf.filename = "teste.pdf"
     fake_pdf.file = BytesIO(b"conteudo de teste")
     fake_pdf.content_type = "application/pdf"
 
     #Act
-    result = await inserir_orcamento_service(db_session, orcamento,fake_pdf)
+    with pytest.raises(HTTPException) as exc_info:
+        await inserir_orcamento_service(db_session, orcamento,fake_pdf)
 
     #Assert
-    assert result[0] == False
-    assert result[1] == {'message': 'Erro ao encontrar o pedido de manutenção!'}
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Pedido de mantenção não existe"
 
 
 async def test_inserir_orcamento_service_Aquisicao(db_session):
@@ -85,7 +86,7 @@ async def test_listar_orcamentos_service(db_session):
 
 async def test_eliminar_orcamento_service(db_session):
     # Arrange
-    id_orcamento = 7
+    id_orcamento = 10
 
     # Act
     with pytest.raises(HTTPException) as exc_info:

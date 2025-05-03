@@ -44,8 +44,8 @@ async def test_ver_entidades(db_session):
     assert isinstance(lista, list)
 
 async def test_eliminar_entidade_service(db_session):
-    # Arrange
-    id_entidade = 8
+    # Arrange(ajustar id)
+    id_entidade = 7
 
     #Act
     test = await eliminar_entidade_service(id_entidade, db_session)
@@ -63,8 +63,8 @@ async def test_eliminar_entidade_service_erro(db_session):
         await eliminar_entidade_service(id_entidade, db_session)
 
     # Assert
-    assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == "ID da entidade não existe"
+    assert exc_info.value.status_code == 404
+    assert exc_info.value.detail == "Entidade não existe"
 
 async def test_update_entidade_service(db_session):
     # Arrange
