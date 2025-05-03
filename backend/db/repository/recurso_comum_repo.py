@@ -6,6 +6,7 @@ from db.models import PedidoNovoRecurso, PedidoManutencao, RecursoComun, EstadoP
 from sqlalchemy.exc import SQLAlchemyError
 import db.session as session
 from schemas.recurso_comum_schema import *
+from sqlalchemy import exists, and_, not_
 
 #region Gestão de Recursos Comuns
 
@@ -52,26 +53,24 @@ async def eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
         raise e
 
 #Verifica a possibilidade de eliminar um recurso comum
-async def verifica_eliminar_recurso_comum_db(recurso_comum_id: int, db:session):
+async def verifica_eliminar_recurso_comum_db(recurso_comum_id: int, db: session) -> bool:
     try:
-        query = """
-                SELECT NOT EXISTS (SELECT 1 \
-                    FROM pedidos_manutencao \
-                    WHERE id_recurso = :id_recurso \
-                    AND estado IN (:estado1, :estado2)) AS pode_eliminar; \
-                """
+        # Verifica se existe algum pedido de manutenção com o recurso e estados específicos
+        existe_pedido = db.query(
+            exists().where(
+                and_(
+                    PedidoManutencao.RecComumID == recurso_comum_id,
+                    PedidoManutencao.EstadoPedManuID.in_([
+                        EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value,
+                        EstadoPedManutencaoSchema.VOTACAO.value
+                    ])
+                )
+            )
+        ).scalar()
 
-        params = {
-            "id_recurso": recurso_comum_id,  # o ID do recurso que você quer verificar
-            "estado1": EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value,
-            "estado2": EstadoPedManutencaoSchema.VOTACAO.value
-        }
+        # Só pode eliminar se NÃO existir um pedido com essas condições
+        return not existe_pedido
 
-        result = db.query(query, params).fetchone()
-
-        if result["pode_eliminar"]:
-            return True
-        else: return False
     except SQLAlchemyError as e:
         raise e
 
