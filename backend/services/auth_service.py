@@ -1,4 +1,7 @@
 import os
+import time
+from typing import reveal_type
+
 from db.repository.user_repo import *
 from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo, ChangeRole
 from fastapi import HTTPException, UploadFile
@@ -7,7 +10,7 @@ from db.repository.user_repo import get_id_role, create_user, user_exists, get_u
 from utils.PasswordHasher import hash_password, verificar_password
 from services.jwt_services import generate_jwt_token_login, generate_jwt_token_registo, generate_jwt_token_recovery
 from services.email_service import send_verification_email, send_recovery_password_email
-from utils.tokens_record import add_save_token
+from utils.tokens_record import add_save_token, revoke_token, save_tokens_record_list_login
 from utils.string_utils import formatar_string
 
 
@@ -110,7 +113,9 @@ async def user_auth(db: Session, user_login: UserLogin):
         # Verifica a password e o salt
         if verificar_password(user_login.password, user.password_hash, user.salt):
             # Gera o token JWT
-            return generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
+            token = generate_jwt_token_login(user.utilizador_ID, user.email, user.role )
+            save_tokens_record_list_login(user.utilizador_ID, token, user.role)
+            return token
         else:
             raise HTTPException(status_code=401, detail="Password incorreta")
     except Exception as e:
@@ -180,9 +185,14 @@ async def mudar_role(dados: ChangeRole, user: UserJWT, db: Session):
     utilizador = await get_utilizador_por_id(dados.id, db)
     role_id = await get_id_role(db, dados.role)
     if role_id is None:
-        return False, "Cargo inserido inválido"
+        raise HTTPException(status_code=400, detail="Cargo inserido inválido")
     if not utilizador:
         raise HTTPException(status_code=404, detail="Utilizador não encontrado")
-    await atualizar_role_utilizador(utilizador, role_id, db)
-    return True
+    try:
+        await atualizar_role_utilizador(utilizador, role_id, db)
+        revoke_token(None, dados.id, time.time())
+        return True
+    except HTTPException as e:
+        raise e
+
 

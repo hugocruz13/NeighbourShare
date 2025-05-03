@@ -3,6 +3,8 @@ from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
 from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserUpdateInfo, UserData
+from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
@@ -141,6 +143,10 @@ async def get_utilizador_por_id(user_id: int, db: Session):
     return db.query(Utilizador).filter(Utilizador.UtilizadorID == user_id).first()
 
 async def atualizar_role_utilizador(utilizador: Utilizador, novo_role: int, db: Session):
-    utilizador.TUID = novo_role
-    db.commit()
-    db.refresh(utilizador)
+    try:
+        utilizador.TUID = novo_role
+        db.commit()
+        db.refresh(utilizador)
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
