@@ -1,5 +1,6 @@
 from fastapi import APIRouter, File, Form
 from typing import Optional
+from datetime import date
 from db.session import get_db
 from services.recurso_comum_service import *
 from middleware.auth_middleware import *
