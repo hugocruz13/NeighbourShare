@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db.models import EntidadeExterna
 from schemas.entidade_schema import EntidadeSchema, EntidadeUpdateSchema
@@ -11,16 +12,14 @@ async def inserir_entidade_db(db: Session, entidade: EntidadeSchema):
             Nome=entidade.Nome,
             Email=str(entidade.Email),
             Contacto=entidade.Contacto,
-            Nif=entidade.Nif
-        )
+            Nif=entidade.Nif)
         db.add(nova_entidade)
         db.commit()
         db.refresh(nova_entidade)
-
         return True, {'Nova entidade inserida com sucesso.'}
     except SQLAlchemyError as e:
         db.rollback()
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Visualização de todas as entidades externas registadas na base de dados
 async def visualizar_entidades_db(db: Session):
@@ -28,7 +27,8 @@ async def visualizar_entidades_db(db: Session):
         entidades = db.query(EntidadeExterna).all()
         return entidades
     except SQLAlchemyError as e:
-        raise SQLAlchemyError(str(e))
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Eliminação de uma entidade externa na base de dados
 async def remover_entidade_db(entidade_id: int,db: Session):
@@ -38,7 +38,7 @@ async def remover_entidade_db(entidade_id: int,db: Session):
         return True, {'Entidade removida com sucesso.'}
     except SQLAlchemyError as e:
         db.rollback()
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Update a uma entidade externa na base de dados
 async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
@@ -53,7 +53,7 @@ async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
         return True, {'Entidade atualizada com sucesso.'}
     except SQLAlchemyError as e:
         db.rollback()
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Verifica se a entidade existe
 async def existe_entidade_db(entidade_id: int, db: Session) -> bool:
@@ -62,4 +62,4 @@ async def existe_entidade_db(entidade_id: int, db: Session) -> bool:
         return entidade
     except SQLAlchemyError as e:
         db.rollback()
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=400, detail=str(e))

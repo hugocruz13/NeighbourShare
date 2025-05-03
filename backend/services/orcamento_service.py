@@ -22,9 +22,11 @@ async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.Orcame
         if orcamento_id :
             return await guardar_pdf_orcamento(pdforcamento, orcamento_id)
         else:
-            return False, mensagem
-    except Exception as e:
+            return False, "Erro ao inserir um orçamento"
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para guardar um pdf associado a um orçamento
 async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
@@ -45,8 +47,10 @@ async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
             f.write(pdforcamento.file.read())
 
         return True, {'message': 'Inserção feita com sucesso'}
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return False, {'details': str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para mostrar todos os orçamentos registados
 async def listar_orcamentos_service(db:session):
@@ -58,7 +62,7 @@ async def listar_orcamentos_service(db:session):
         for orcamento in orcamentos:
             orcamentos_caminhospdf.append(OrcamentoGetSchema(
                 OrcamentoID = orcamento.OrcamentoID,
-                EntidadeID = orcamento.EntidadeExternaEntidadeID,
+                IDEntidade= orcamento.EntidadeExternaEntidadeID,
                 Entidade= orcamento.EntidadeExterna_.Nome,
                 Valor = orcamento.Valor,
                 DescOrcamento = orcamento.DescOrcamento,
@@ -66,8 +70,10 @@ async def listar_orcamentos_service(db:session):
                 )
             )
         return orcamentos_caminhospdf
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para eliminar um orçamento
 async def eliminar_orcamento_service(db:session, orcamento_id:int):
@@ -85,9 +91,10 @@ async def eliminar_orcamento_service(db:session, orcamento_id:int):
             else:
                 raise HTTPException(status_code=400,detail="Erro ao encontrar o caminho")
         return val, msg
-
-    except Exception as e:
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Service para alterar os dados de um orçamento
 async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema, pdforcamento:UploadFile):
@@ -106,7 +113,9 @@ async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema,
                 raise HTTPException(status_code=400, detail="Orçamento não registado!")
 
             await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
-
-        return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
-    except Exception as e:
+        else:
+            return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
+    except HTTPException as e:
         raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -56,14 +56,14 @@ class EstadoPedManuSchema(BaseModel):
     class Config:
         from_attributes = True
 
-class EstadoPedNovoRecursoComumSchema(str,Enum):
-    PENDENTE = 'Pendente'
-    EMVOTACAO = 'Em votação'
-    REJEITADO = 'Rejeitado'
-    APROVADOPARAORCAMENTACAO = 'Aprovado para orçamentação'
-    REJEITADOAPOSORCAMENTACAO = 'Rejeitado após orçamentação'
-    APROVADOPARACOMPRA = 'Aprovado para compra'
-    CONCLUIDO = 'Concluído'
+class EstadoPedNovoRecursoComumSchema(int,Enum):
+    PENDENTE = 1
+    EMVOTACAO = 2
+    REJEITADO = 3
+    APROVADOPARAORCAMENTACAO = 4
+    REJEITADOAPOSORCAMENTACAO = 5
+    APROVADOPARACOMPRA = 6
+    CONCLUIDO = 7
 
 class EstadoPedManutencaoSchema(int,Enum):
     EMANALISE = 1
@@ -71,6 +71,10 @@ class EstadoPedManutencaoSchema(int,Enum):
     NEGOCIACAOENTIDADESEXTERNAS = 3
     VOTACAO = 5
     REJEITADO = 4
+
+class EstadoManutencaoSchema(int,Enum):
+    EMPROGRESSO = 1
+    CONCLUIDO = 2
 
 
 # === Pedidos de Novo Recurso ===
@@ -85,10 +89,12 @@ class PedidoNovoRecursoSchema(BaseModel):
     class Config:
         from_attributes = True
 
-class PedidoNovoRecursoSchemaCreate(BaseModel):
-    UtilizadorID: conint(gt=0)
+class PedidoNovoRecursoBase(BaseModel):
     DescPedidoNovoRecurso: constr(min_length=5, max_length=300)
     DataPedido: datetime.date
+
+class PedidoNovoRecursoSchemaCreate(PedidoNovoRecursoBase):
+    UtilizadorID: conint(gt=0)
     EstadoPedNovoRecID: conint(gt=0)
 
 
@@ -117,37 +123,34 @@ class PedidoManutencaoUpdateSchema(BaseModel):
     DescPedido: constr(min_length=5, max_length=300)
 
 # === Manutenções ===
-class ManutencaoInserir(BaseModel):
+class ManutencaoBase(BaseModel):
     PMID: conint(gt=0)
     DataManutencao: datetime.date
     DescManutencao: constr(min_length=5, max_length=300)
+
+class ManutencaoInserir(ManutencaoBase):
     EstadoManuID: conint(gt=0)
 
 
-class ManutencaoSchema(BaseModel):
+class ManutencaoSchema(ManutencaoBase):
     ManutencaoID: conint(gt=0)
-    PMID: conint(gt=0)
-    DataManutencao: datetime.date
-    DescManutencao: constr(min_length=5, max_length=300)
     EstadoManuID: conint(gt=0)
 
-class ManutencaoCreateSchema(BaseModel):
-    PMID: conint(gt=0)
-    DataManutencao: datetime.date
-    DescManutencao: constr(min_length=5, max_length=300)
+class ManutencaoCreateSchema(ManutencaoBase):
     Orcamento_id: conint(gt=0)
 
 
-class ManutencaoUpdateSchema(BaseModel):
+class ManutencaoUpdateSchema(ManutencaoBase):
     ManutencaoID: conint(gt=0)
-    PMID: conint(gt=0)
-    DataManutencao: datetime.date
-    DescManutencao: constr(min_length=5, max_length=300)
+
 
 # === Atualização de estado ===
 
 class EstadoUpdate(BaseModel):
     novo_estado_id: EstadoPedManutencaoSchema
+
+class EstadoManutencaoUpdate(BaseModel):
+    novo_estado_id: EstadoManutencaoSchema
 
 class PedidoManutencaoRequest(BaseModel):
     recurso_comum_id: int

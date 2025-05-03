@@ -4,6 +4,13 @@ import time
 API_URL = "http://localhost:8000/"
 WEB_URL = "http://localhost:80/"
 
+import os
+os.environ["TESTING"] = "1"
+
+"""
+Teste só funciona com todas as imagens backend, frontend e db a funcionar (docker compose build).
+"""
+
 def test_api_response_time():
     start = time.time()
     response = httpx.get(f"{API_URL}api/health")
