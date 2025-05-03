@@ -94,3 +94,11 @@ async def get_orcamento_by_id(db: Session, orcamento_id: int):
         return orcamento
     except SQLAlchemyError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+#Metedo APENAS para teste
+async def get_last_id(db:Session):
+    try:
+        orcamento = db.query(Orcamento).order_by(Orcamento.OrcamentoID.desc()).first()
+        return orcamento
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -335,5 +335,35 @@ async def eliminar_manutencao_db(db:session, id_manutencao:int):
 
 #endregion
 
+#Metedos APENAS para testes
+async def inserir_pedido_novo_recurso_teste(db:session, pedido:PedidoNovoRecurso):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
 
+        return pedido
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
+#Metedos APENAS para testes
+async def inserir_pedido_manutencao_test(db:session, pedido:PedidoManutencao):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return pedido
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def inserir_recurso_comum_teste(db:session, recurso_comum:RecursoComun):
+    try:
+        db.add(recurso_comum)
+        db.commit()
+        return recurso_comum
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
