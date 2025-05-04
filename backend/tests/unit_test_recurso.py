@@ -164,7 +164,7 @@ async def test_lista_recursos_service_erro_na_imagem(mock_recurso_repo, mock_lis
 
 async def test_lista_recurso_service_sucesso(db_session):
     # Supondo que existe um recurso com ID 1 no banco de testes
-    recurso_id = 1
+    recurso_id = 2
     recurso = await lista_recurso_service(db_session, recurso_id)
     assert recurso is not None
     assert hasattr(recurso, "Image")  # Verifica se atribuiu o campo Image
