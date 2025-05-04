@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from typing import List
 import jwt
 import os
+from utils.tokens_record import verify_token_is_revoked
+
 
 # Load environment variables
 load_dotenv()
@@ -95,6 +97,10 @@ async def jwt_middleware(request: Request, response: Response):
     email = payload["email"]
     role = payload["role"]
     user=UserJWT(id=user_id, email=email, role=role)
+
+    if verify_token_is_revoked(user_id, token, role):
+        raise HTTPException(status_code=403,
+                            detail="Utilizador sofreu alteração nas permisões, por favor faça login novamente.")
 
     if exp - datetime.now(timezone.utc).timestamp() < 5 * 60:
 

@@ -5,9 +5,11 @@ from sqlalchemy.orm import Session
 from db.session import get_db
 from middleware.auth_middleware import role_required, verify_token_verification, verify_token_recuperacao, \
     jwt_middleware
-from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword, UserUpdateInfo
+from schemas.user_schemas import UserRegistar, UserLogin, UserJWT, NewUserUpdate, ResetPassword, ForgotPassword, \
+    UserUpdateInfo, ChangeRole
 from services.auth_service import registar_utilizador, user_auth, atualizar_novo_utilizador, verificar_forgot, \
-    verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador, atualizar_utilizador
+    verificao_utilizador, atualizar_nova_password, eliminar_utilizador, get_dados_utilizador, atualizar_utilizador, \
+    mudar_role
 from fastapi.responses import RedirectResponse
 from utils.tokens_record import validate_token_entry, mark_token_as_used
 
@@ -164,6 +166,7 @@ async def about_me(user: UserJWT = Depends(role_required(["admin","residente","g
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##Admin para apagar conta
 @router.delete("/delete")
 async def delete_user(email:str,user: UserJWT = Depends(role_required(["admin"])), db: Session = Depends(get_db)):
     try:
@@ -186,6 +189,16 @@ async def logout(response: Response):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##Falta BLACKLIST
+@router.put("/user/role")
+async def change_role(dados: ChangeRole,user: UserJWT = Depends(role_required(["admin"])),db: Session = Depends(get_db)):
+    try:
+        if await mudar_role(dados, user, db):
+            return {"message": "Role atualizado com sucesso."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+##Update a info de qualquer user
 @router.put("/user/update")
 async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user: UserJWT = Depends(role_required(["admin","residente","gestor"]))):
     try:
@@ -197,3 +210,4 @@ async def update_user(dados: UserUpdateInfo, db: Session = Depends(get_db), user
             raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
