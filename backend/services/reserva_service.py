@@ -1,8 +1,7 @@
 import db.repository.reserva_repo as reserva_repo
 import db.session as session
 from fastapi import HTTPException
-
-from db.repository.recurso_repo import muda_recurso_para_indisponivel_db
+from db.repository.recurso_repo import muda_recurso_para_indisponivel_db, existe_recurso
 from db.repository.reserva_repo import get_pedido_reserva_db
 from schemas.reserva_schema import *
 from services import notificacao_service
@@ -11,11 +10,14 @@ from services.notificacao_service import *
 async def cria_pedido_reserva_service(db:session, pedido_reserva : PedidoReservaSchemaCreate):
     try:
         if pedido_reserva.DataInicio > pedido_reserva.DataFim:
-            raise HTTPException(status_code=500, detail='Data de inicio é depois da data de fim')
+            raise HTTPException(status_code=400, detail='Data de inicio é depois da data de fim')
         else:
-            mensagem, pedido_reserva_1 = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
-            msg_noti = await cria_notificacao_recebimento_pedido_reserva(db,pedido_reserva_1)
-            return mensagem, msg_noti
+            if not await existe_recurso(db, pedido_reserva.RecursoID):
+                raise HTTPException(status_code=400, detail="Recurso não existe")
+            else:
+                mensagem, pedido_reserva_1 = await reserva_repo.criar_pedido_reserva_db(db,pedido_reserva)
+                msg_noti = await cria_notificacao_recebimento_pedido_reserva(db,pedido_reserva_1)
+                return mensagem, msg_noti
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -36,13 +38,16 @@ async def muda_estado_pedido_reserva_service(db:session, pedido_reserva_id: int,
 
 async def cria_reserva_service(db:session, reserva: ReservaSchemaCreate):
     try:
-        mensagem = await reserva_repo.cria_reserva_db(db,reserva)
-        msg_muda_estado_pedido, msg_noti ,pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
-        if pedido_reserva.DataInicio == datetime.date.today():
-            await muda_recurso_para_indisponivel(db,pedido_reserva.RecursoID)
-        msg_noti = await cria_notificacao_aceitacao_pedido_reserva(db,pedido_reserva)
+        if not await get_pedido_reserva_db(db,reserva.PedidoReservaID):
+            raise HTTPException(status_code=400, detail="Pedido de reserva não existe")
+        else:
+            mensagem = await reserva_repo.cria_reserva_db(db,reserva)
+            msg_muda_estado_pedido, msg_noti ,pedido_reserva = await muda_estado_pedido_reserva_service(db,reserva.PedidoReservaID,PedidoReservaEstadosSchema.APROVADO)
+            if pedido_reserva.DataInicio == datetime.date.today():
+                await muda_recurso_para_indisponivel(db,pedido_reserva.RecursoID)
+            msg_noti = await cria_notificacao_aceitacao_pedido_reserva(db,pedido_reserva)
 
-        return mensagem, msg_muda_estado_pedido, msg_noti
+            return mensagem, msg_muda_estado_pedido, msg_noti
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -58,7 +63,11 @@ async def muda_recurso_para_indisponivel(db:session, recurso_id:int):
 
 async def get_reserva_service(db:session, reserva_id:int):
     try:
-        return await reserva_repo.get_reserva_db(db,reserva_id)
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            return  reserva
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -155,8 +164,12 @@ async def lista_pedidos_reserva_service(db:session, utilizador_id:int):
 #Confirma a entrega de um recurso para empréstimo (dono)
 async def confirma_entrega_recurso_service(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.confirma_entrega_recurso_dono_db(db,reserva_id)
-        return mensagem
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.confirma_entrega_recurso_dono_db(db, reserva_id)
+            return mensagem
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -165,8 +178,12 @@ async def confirma_entrega_recurso_service(db:session, reserva_id:int):
 #Confirma a receção de um recurso numa reserva (pessoa que vai usufrir do recurso)
 async def confirma_rececao_recurso_service(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.confirma_rececao_recurso_db(db,reserva_id)
-        return mensagem
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.confirma_rececao_recurso_db(db, reserva_id)
+            return mensagem
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -175,8 +192,12 @@ async def confirma_rececao_recurso_service(db:session, reserva_id:int):
 #Confirma a entrega da caução ao dono do produto
 async def confirma_entrega_caucao_service(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.confirma_entrega_caucao_db(db,reserva_id)
-        return mensagem
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.confirma_entrega_caucao_db(db, reserva_id)
+            return mensagem
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -185,8 +206,12 @@ async def confirma_entrega_caucao_service(db:session, reserva_id:int):
 #Confirma a receção da caução por parte da pessoa que irá usar o produto
 async def confirma_rececao_caucao_service(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.confirma_rececao_caucao_db(db,reserva_id)
-        return mensagem
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.confirma_rececao_caucao_db(db, reserva_id)
+            return mensagem
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -195,9 +220,13 @@ async def confirma_rececao_caucao_service(db:session, reserva_id:int):
 #Submete a justificação da não entrega da caução e mau estado do produto
 async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justificacao:str):
     try:
-        mensagem = await reserva_repo.inserir_justificacao_caucao_db(db,reserva_id,justificacao)
-        msg_noti = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db,await reserva_repo.get_reserva_db(db, reserva_id),reserva_id,justificacao)
-        return mensagem, msg_noti
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.inserir_justificacao_caucao_db(db, reserva_id, justificacao)
+            msg_noti = await cria_notificacao_nao_caucao_devolucao_pedido_reserva(db,await reserva_repo.get_reserva_db(db,reserva_id),reserva_id, justificacao)
+            return mensagem, msg_noti
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -206,9 +235,13 @@ async def inserir_justificacao_caucao_service(db:session, reserva_id:int, justif
 #Indica o bom estado do produto e que a caução será entregue
 async def inserir_bom_estado_produto_e_devolucao_caucao(db:session, reserva_id:int):
     try:
-        mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao_db(db,reserva_id)
-        msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db, await reserva_repo.get_reserva_db(db, reserva_id), reserva_id)
-        return mensagem, msg_noti
+        reserva = await reserva_repo.get_reserva_db(db,reserva_id)
+        if reserva:
+            mensagem = await reserva_repo.inserir_bom_estado_produto_e_devolucao_caucao_db(db, reserva_id)
+            msg_noti = await cria_notificacao_caucao_devolucao_pedido_reserva(db, await reserva_repo.get_reserva_db(db,reserva_id),reserva_id)
+            return mensagem, msg_noti
+        else:
+            raise HTTPException(status_code=400, detail="Reserva não existe!")
     except HTTPException as e:
         raise e
     except Exception as e:

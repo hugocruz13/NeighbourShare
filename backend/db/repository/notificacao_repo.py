@@ -23,11 +23,11 @@ async def cria_notificacao_individual_db(db: Session, notificacao: NotificacaoSc
 
             db.execute(t_NotificacaoUser.insert().values(UtilizadorID=user_id, NotificacaoID=nova_notificao.NotificacaoID))
             db.commit()
-
-            return True, {'Inserção de nova notifcação realizada com sucesso!'}
+            db.refresh(nova_notificao)
+            return True, {'Inserção de nova notifcação realizada com sucesso!'}, nova_notificao
     except SQLAlchemyError as e:
         db.rollback()
-        return False ,{'details': str(e)}
+        return False ,{'details': str(e)}, None
 
 # Cria notificação para somente os gestores/admins
 async def cria_notificacao_admin_db(db: Session, notificacao: NotificacaoSchema):

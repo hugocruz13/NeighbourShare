@@ -1,13 +1,9 @@
 import services.notificacao_service as notificacao_service
 import os
+from requests import Session
 import db.repository.recurso_comum_repo as recurso_comum_repo
 import db.session as session
 from fastapi import HTTPException, UploadFile
-from schemas.notificacao_schema import *
-from db.repository.notificacao_repo import get_tipo_processo_id
-from datetime import date
-from db.models import Notificacao, PedidoManutencao
-from schemas.recurso_comum_schema import *
 from services.notificacao_service import *
 from schemas.recurso_comum_schema import *
 from schemas.user_schemas import UserJWT
@@ -38,11 +34,13 @@ async def guardar_imagem(imagem:UploadFile, id:int):
 
         pasta_imagens = os.getenv('UPLOAD_DIR_RECURSOCOMUM')
 
-        imagem_path = os.path.join(pasta_imagens, str(id))
+        imagem_path = os.path.join(pasta_imagens, str(id)).replace("\\", "/")
+
 
         os.makedirs(imagem_path, exist_ok=True)
 
-        caminho_arquivo = os.path.join(imagem_path, imagem.filename)
+        caminho_arquivo = os.path.join(imagem_path, imagem.filename).replace("\\", "/")
+
         with open(caminho_arquivo,'wb+') as f:
             f.write(imagem.file.read())
 
@@ -64,12 +62,11 @@ async def substitui_imagem_recurso_comum_service(id_recurso_comum: int, imagem:O
         elif imagem.content_type not in ['image/png', 'image/jpeg', 'image/jpg']:
             raise HTTPException (status_code=400, detail="Apenas imagens são permitidas (png, jpeg, jpg)")
 
-        caminho_pasta_recurso = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum))
-        caminho_nova_imagem = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum), imagem.filename)
+        caminho_pasta_recurso = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum)).replace("\\", "/")
+        caminho_nova_imagem = os.path.join(os.getenv('UPLOAD_DIR_RECURSOCOMUM'),str(id_recurso_comum), imagem.filename).replace("\\", "/")
 
         for nome_arquivo in os.listdir(caminho_pasta_recurso):
-            caminho_arquivo = os.path.join(caminho_pasta_recurso, nome_arquivo)
-
+            caminho_arquivo = os.path.join(caminho_pasta_recurso, nome_arquivo).replace("\\", "/")
             if os.path.isfile(caminho_arquivo):
                 if nome_arquivo != imagem.filename:
                     os.remove(caminho_arquivo)
@@ -145,6 +142,18 @@ async def inserir_pedido_novo_recurso_service(db:session, pedido:PedidoNovoRecur
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+async def listar_pedidos_novos_recursos_service(db:session):
+    pedidos_novos_recursos = await recurso_comum_repo.listar_pedidos_novos_recursos_db(db)
+
+    if not pedidos_novos_recursos:
+        raise HTTPException(status_code=400, detail="Nenhum pedido de novo recurso encontrado")
+
+    return pedidos_novos_recursos
+
+#endregion
+
+#region Pedidos de Manutenção
 
 #Inserir um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_service(db:session, pedido:PedidoManutencaoSchemaCreate):
@@ -231,9 +240,9 @@ async def alterar_tipo_estado_pedido_manutencao(db:session, id_pedido_manutencao
         for e in estados:
             if e.EstadoPedManuID == int(tipo_estado_pedido_manutencao):
                 await recurso_comum_repo.alterar_estado_pedido_manutencao(db, id_pedido_manutencao, tipo_estado_pedido_manutencao)
-                if e.EstadoPedManuID == 2:  # Estado -> Aprovado para manutenção interna
+                if e.EstadoPedManuID == 2:  # Estado - Aprovado para manutenção interna
                     await notificacao_service.cria_notificacao_nao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
-                elif e.EstadoPedManuID == 3: # Estado -> Em negociação com entidades externas
+                elif e.EstadoPedManuID == 3: # Estado - Em negociação com entidades externas
                     await notificacao_service.cria_notificacao_necessidade_entidade_externa(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
                 elif e.EstadoPedManuID == 4: # Estado -> Rejeitado
                     await notificacao_service.cria_notificacao_rejeicao_manutencao_recurso_comum(db,await obter_pedido_manutencao(db,id_pedido_manutencao))
@@ -258,9 +267,9 @@ async def update_pedido_manutencao(db:Session, u_pedido:PedidoManutencaoUpdateSc
         pedido_manutencao = await obter_pedido_manutencao(db, u_pedido.PMID)
         if u_pedido.DescPedido is None:
             return False, "Descrição do Pedido não introduzida"
-        elif token.role == "residente" and pedido_manutencao.UtilizadorID != token.id:
+        elif  pedido_manutencao.UtilizadorID != token.id:
             return False, "Utilizador não têm permissão para alterar os dados do pedido de manutenção"
-        return await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
+        return True, await recurso_comum_repo.update_pedido_manutencao_db(db, u_pedido)
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -335,7 +344,10 @@ async def alterar_tipo_estado_manutencao(db:session, id_manutencao:int, tipo_est
 
 async def obter_manutencao(db:Session, id_manutencao:int):
     try:
-        return await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+        manutencao = await recurso_comum_repo.obter_manutencao_db(db, id_manutencao)
+        if manutencao is None:
+            raise HTTPException(status_code=500, detail=str("Manutenção não encontrada"))
+        return manutencao
     except HTTPException as e:
         raise e
     except Exception as e:

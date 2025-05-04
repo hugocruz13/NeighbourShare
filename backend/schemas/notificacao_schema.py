@@ -34,6 +34,9 @@ class NotificacaoOutSchema(BaseModel):
     Estado : bool
     TipoProcID : int
 
+    class Config:
+        from_attributes = True
+
 class TipoProcessoOpcoes(Enum):
     AQUISICAO = "Aquisição"
     MANUTENCAO = "Manutenção"

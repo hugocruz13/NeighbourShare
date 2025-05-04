@@ -257,3 +257,27 @@ async def inserir_bom_estado_produto_e_devolucao_caucao_db(db:session, reserva_i
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+
+#Metedo APENAS para testes
+async def criar_pedido_reserva_teste(db:session, pedido_reserva : PedidoReserva):
+
+    try:
+        db.add(pedido_reserva)
+        db.commit()
+        db.refresh(pedido_reserva)
+
+        return pedido_reserva
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def cria_reserva_test(db:session, reserva:Reserva):
+    try:
+        db.add(reserva)
+        db.commit()
+        db.refresh(reserva)
+
+        return reserva
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

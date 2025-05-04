@@ -138,3 +138,23 @@ async def muda_recurso_para_indisponivel_db(db:session, recurso_id:int):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+
+async def existe_recurso(db:session, recurso_id:int):
+    try:
+        recurso = db.query(Recurso).filter(Recurso.RecursoID == recurso_id).first()
+        return recurso
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+#Apenas para testes
+async def inserir_recurso_teste(db:session, recurso:Recurso):
+    try:
+        db.add(recurso)
+        db.commit()
+        db.refresh(recurso)
+
+        return recurso
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

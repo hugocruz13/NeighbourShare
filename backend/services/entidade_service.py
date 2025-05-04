@@ -5,7 +5,6 @@ from fastapi import Depends, HTTPException
 from db.repository.entidade_repo import inserir_entidade_db, visualizar_entidades_db, update_entidade_db, \
     remover_entidade_db, existe_entidade_db
 
-
 #Service para registar uma nova entidade externa
 async def registar_entidade(entidade: EntidadeSchema, db: Session = Depends(get_db)):
     try:

@@ -22,14 +22,6 @@ async def get_user_data(db: Session, id_user:int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-async def get_user_data(db: Session, id_user:int):
-    try:
-        return await get_dados_utilizador(db, id_user)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 async def registar_utilizador(user: UserRegistar, db: Session):
     try:
         # Remove os espaços

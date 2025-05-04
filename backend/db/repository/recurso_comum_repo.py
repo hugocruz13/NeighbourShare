@@ -174,7 +174,7 @@ async def obter_pedido_novo_recurso_db(db:session, id_pedido: int):
 #Inserção de um pedido de manutenção de um recurso comum
 async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchemaCreate):
     try:
-        novo_pedido = PedidoManutencao(**pedido.dict())
+        novo_pedido = PedidoManutencao(DescPedido=pedido.DescPedido, DataPedido=pedido.DataPedido, RecComumID=pedido.RecComumID, UtilizadorID=pedido.UtilizadorID, EstadoPedManuID=pedido.EstadoPedManuID)
         db.add(novo_pedido)
         db.commit()
         db.refresh(novo_pedido)
@@ -185,6 +185,7 @@ async def inserir_pedido_manutencao_db(db:session, pedido:PedidoManutencaoSchema
         raise HTTPException(status_code=400, detail=str(e))
 
 async def listar_pedidos_manutencao_db(db:session):
+
     try:
         pedidos_manutencao = (
             db.query(PedidoManutencao)
@@ -197,6 +198,7 @@ async def listar_pedidos_manutencao_db(db:session):
         )
 
         return pedidos_manutencao
+
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
@@ -332,5 +334,37 @@ async def eliminar_manutencao_db(db:session, id_manutencao:int):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
-
 #endregion
+
+#Metedos APENAS para testes
+async def inserir_pedido_novo_recurso_teste(db:session, pedido:PedidoNovoRecurso):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return pedido
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+#Metedos APENAS para testes
+async def inserir_pedido_manutencao_test(db:session, pedido:PedidoManutencao):
+    try:
+        db.add(pedido)
+        db.commit()
+        db.refresh(pedido)
+
+        return pedido
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def inserir_recurso_comum_teste(db:session, recurso_comum:RecursoComun):
+    try:
+        db.add(recurso_comum)
+        db.commit()
+        return recurso_comum
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

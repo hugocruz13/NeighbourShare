@@ -13,6 +13,7 @@ from pathlib import Path
 #Service para inserir um novo orçamento
 async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.OrcamentoSchema, pdforcamento:UploadFile):
     try:
+
         #Verifica se a entidade externa existe!
         if not await entidade_repo.existe_entidade_db(orcamento.IDEntidade,db):
             raise HTTPException(status_code=400, detail="Entidade Externa não registada")
@@ -30,6 +31,7 @@ async def inserir_orcamento_service(db:session, orcamento:orcamentoschema.Orcame
 #Service para guardar um pdf associado a um orçamento
 async def guardar_pdf_orcamento(pdforcamento:UploadFile, orcamento_id:int):
     try:
+
         load_dotenv()
 
         pastapdfs = os.getenv('UPLOAD_DIR_ORCAMENTO')
@@ -82,8 +84,12 @@ async def eliminar_orcamento_service(db:session, orcamento_id:int):
 
         val, msg = await orcamento_repo.eliminar_orcamento_db(db, orcamento_id)
 
-        shutil.rmtree(os.path.join(pastapdfs, str(orcamento_id)))
-
+        if val:
+            caminho_pasta = os.path.join(pastapdfs, str(orcamento_id))
+            if os.path.exists(caminho_pasta):
+                shutil.rmtree(caminho_pasta)
+            else:
+                raise HTTPException(status_code=400,detail="Erro ao encontrar o caminho")
         return val, msg
     except HTTPException as e:
         raise e
@@ -99,12 +105,14 @@ async def alterar_orcamento_service(db:session, orcamento:OrcamentoUpdateSchema,
 
             pasta = Path(os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID)))
 
-            if pasta:
+            if pasta.exists() and pasta.is_dir():
                 for item in pasta.iterdir():
                     if item.is_file():
                         os.remove(item)
+            else:
+                raise HTTPException(status_code=400, detail="Orçamento não registado!")
 
-            await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
+            return await guardar_pdf_orcamento(pdforcamento, orcamento.OrcamentoID)
         else:
             return await orcamento_repo.altera_orcamento_db(db, orcamento, pdforcamento.filename)
     except HTTPException as e:
