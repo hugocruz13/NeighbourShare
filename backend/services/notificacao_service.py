@@ -1,3 +1,4 @@
+import services.recurso_comum_service
 from db.repository.notificacao_repo import *
 from fastapi import HTTPException
 from schemas.notificacao_schema import *
@@ -5,8 +6,7 @@ from schemas.recurso_comum_schema import *
 from schemas.orcamento_schema import *
 from schemas.reserva_schema import *
 from schemas.votacao_schema import Criar_Votacao
-from services.recurso_comum_service import obter_pedido_manutencao
-from db.models import PedidoReserva, Votacao
+from db.models import PedidoReserva, Votacao,Reserva
 from services.web_sockets_service import send_notification, active_connections
 from db.repository.user_repo import get_all_admin_gestores_ids
 
@@ -97,7 +97,7 @@ async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, vota
             Mensagem=f"""
                         Caros residentes,
 
-                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a compra do recurso associado ao pedido nº: {votacao.id_pedido}
+                        Foi criada uma nova votação com o objetivo de decidir qual orçamento será escolhido para a compra do recurso associado ao pedido nº: {votacao.id_processo}
 
                         A votação em questão tem os seguintes dados:
 
@@ -107,7 +107,7 @@ async def cria_notificao_decisao_orcamento_novo_recurso_service(db:Session, vota
 
                         A participação dos residentes é fundamental para assegurar que a decisão reflita a vontade da maioria.
                         """,
-            ProcessoID=votacao.id_pedido,
+            ProcessoID=votacao.id_processo,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.VOTACAO)
         )
 
@@ -227,7 +227,7 @@ async def cria_notificacao_nao_necessidade_entidade_externa(db:Session,pedido:Pe
             Titulo= "Atualização sobre o seu pedido de manutenção",
             Mensagem= f"""
             
-            Olá {pedido.Utilizador_.Nome},
+            Olá {pedido.Utilizador_.NomeUtilizador},
 
             Agradecemos o seu pedido de manutenção referente a {pedido.DescPedido}.
             
@@ -321,7 +321,7 @@ async def cria_notificacao_orcamento_mais_votado(db:Session,pedido:PedidoManuten
 #Cria notificação a indicar a conclusão da manutenção do recurso comum
 async def cria_notificacao_conclusao_manutencao_recurso_comum(db:Session,manutencao:ManutencaoSchema, orcamento:OrcamentoSchema):
     try:
-        pedido = await obter_pedido_manutencao(db,manutencao.PMID)
+        pedido = await services.recurso_comum_service.obter_pedido_manutencao(db,manutencao.PMID)
         notificacao = NotificacaoSchema(
             Titulo= "Manutenção concluída com sucesso",
             Mensagem= f"""
@@ -463,47 +463,47 @@ async def cria_notificacao_aceitacao_pedido_reserva(db:Session, pedido:PedidoRes
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação para indicar que a caução será devolvida
-async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int):
+async def cria_notificacao_caucao_devolucao_pedido_reserva(db:Session, reserva:Reserva, reserva_id:int):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução será devolvida",
             Mensagem= f"""
             
-            A caução referente à reserva nº {reserva_id}, do recurso "{pedido.Recurso_.Nome}" será devolvida.
+            A caução referente à reserva nº {reserva_id}, do recurso "{reserva.PedidoReserva_.Recurso_.Nome}" será devolvida.
             
             O estado do recurso encontra-se aceitável, resultando assim na devolução futura da caução por parte do dono.
             
             Com isto, a reserva deste mesmo recurso dá-se por concluida.
             
-            Caso tenha algum problema com a caução, contacte o seguinte numero de telemovel, referente ao dono do produto : {pedido.Recurso_.Utilizador_.Contacto}
+            Caso tenha algum problema com a caução, contacte o seguinte numero de telemovel, referente ao dono do produto : {reserva.PedidoReserva_.Recurso_.Utilizador_.Contacto}
             """,
-            ProcessoID=pedido.PedidoResevaID,
+            ProcessoID=reserva.ReservaID,
             TipoProcessoID=await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
-        return await cria_notificacao_individual_db(db,notificacao,pedido.UtilizadorID)
+        return await cria_notificacao_individual_db(db,notificacao,reserva.PedidoReserva_.Recurso_.Utilizador_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #Cria notificação a indicar que a caução não será devolvida
-async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, pedido:PedidoReserva, reserva_id:int, justificativa:str):
+async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, reserva:Reserva, reserva_id:int, justificativa:str):
     try:
         notificacao = NotificacaoSchema(
             Titulo= "Caução não será devolvida",
             Mensagem= f"""
-            A caução referente à reserva nº {reserva_id}, do recurso "{pedido.Recurso_.Nome}" não será devolvida.
+            A caução referente à reserva nº {reserva_id}, do recurso "{reserva.PedidoReserva_.Recurso_.Nome}" não será devolvida.
             
             Motivo : {justificativa}
             
             Com isto, a reserva deste mesmo recurso dá-se por concluida.
             
-            Contudo se sentir necessidade de entrar em contacto com o dono do produto, contacte o seguinte numero de telemovel : {pedido.Recurso_.Utilizador_.Contacto}
+            Contudo se sentir necessidade de entrar em contacto com o dono do produto, contacte o seguinte numero de telemovel : {reserva.PedidoReserva_.Recurso_.Utilizador_.Contacto}
             """,
-            ProcessoID= pedido.PedidoResevaID,
+            ProcessoID= reserva.ReservaID,
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
-        return await cria_notificacao_individual_db(db, notificacao, pedido.UtilizadorID)
+        return await cria_notificacao_individual_db(db, notificacao, reserva.PedidoReserva_.Recurso_.Utilizador_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

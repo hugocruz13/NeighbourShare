@@ -11,15 +11,22 @@ import dotenv
 from tempfile import SpooledTemporaryFile
 
 async def get_disponibilidade_id_service(db:session, disponibilidade:str):
-
-    disponibilidade_id = recurso_repo.get_disponibilidade_id_db(disponibilidade,db)
-
-    return disponibilidade_id
+    try:
+        disponibilidade_id = recurso_repo.get_disponibilidade_id_db(disponibilidade,db)
+        return disponibilidade_id
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def get_categoria_id_service(db:session, categoria:str):
-    categoria_id = recurso_repo.get_categoria_id_db(categoria,db)
-
-    return categoria_id
+    try:
+        categoria_id = recurso_repo.get_categoria_id_db(categoria,db)
+        return categoria_id
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def inserir_recurso_service(db:session, novo_recurso, imagem_recurso:UploadFile):
     try:
@@ -28,8 +35,10 @@ async def inserir_recurso_service(db:session, novo_recurso, imagem_recurso:Uploa
             return await guardar_imagem_recurso(imagem_recurso, recurso_id, db)
         else:
             return False, "Erro ao guardar a imagem referente ao recurso"
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return False, "details: "+str(e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def guardar_imagem_recurso(imagem_recurso:UploadFile, recurso_id:int,db:session):
     try:
@@ -56,110 +65,133 @@ async def guardar_imagem_recurso(imagem_recurso:UploadFile, recurso_id:int,db:se
             return True, {"message": "Imagem guardada com sucesso"}
         else:
             return False, {"message": "Erro ao guardada imagem"}
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return False, {"details": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista todos os recursos existentes no sistema
 async def lista_recursos_service(db:session):
+    try:
+        lista_recursos = await recurso_repo.listar_recursos_db(db)
 
-    lista_recursos = await recurso_repo.listar_recursos_db(db)
+        if not lista_recursos:
+            raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
 
-    if not lista_recursos:
-        raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
+        lista_recursos_imagens = await lista_imagens_recursos_service(lista_recursos)
 
-    lista_recursos_imagens = await lista_imagens_recursos_service(lista_recursos)
+        if not lista_recursos_imagens:
+            raise HTTPException(status_code=400, detail="Erro no carregameto das imagens dos recursos")
 
-    if not lista_recursos_imagens:
-        raise HTTPException(status_code=400, detail="Erro no carregameto das imagens dos recursos")
-
-    return lista_recursos_imagens
+        return lista_recursos_imagens
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista as informações relativas a um recurso registado no sistema
 async def lista_recurso_service(db:session, recurso_id:int):
+    try:
+        recurso = await recurso_repo.listar_recurso_db(db, recurso_id)
+        if not recurso:
+            raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
 
-    recurso = await recurso_repo.listar_recurso_db(db, recurso_id)
+        recurso.Image = recurso.Path
 
-    if not recurso:
-        raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
-
-    recurso.Image = recurso.Path
-
-    return recurso
+        return recurso
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Lista os recursos de um utilizador
 async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
+    try:
+        lista_recursos = await recurso_repo.listar_recursos_utilizador_db(db, utilizador_id)
 
-    lista_recursos = await recurso_repo.listar_recursos_utilizador_db(db, utilizador_id)
+        if not lista_recursos:
+            raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
 
-    if not lista_recursos:
-        raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
+        lista_recursos_utilizador = []
 
-    lista_recursos_utilizador = []
+        for recurso in lista_recursos:
 
-    for recurso in lista_recursos:
+            recurso_utilizador = RecursoGetUtilizadorSchema(
+                RecursoID= recurso.RecursoID,
+                Nome=recurso.Nome,
+                Caucao=recurso.Caucao,
+                Categoria_=recurso.Categoria_,
+                Disponibilidade_=recurso.Disponibilidade_,
+            )
 
-        recurso_utilizador = RecursoGetUtilizadorSchema(
-            RecursoID= recurso.RecursoID,
-            Nome=recurso.Nome,
-            Caucao=recurso.Caucao,
-            Categoria_=recurso.Categoria_,
-            Disponibilidade_=recurso.Disponibilidade_,
-        )
+            lista_recursos_utilizador.append(recurso_utilizador)
 
-        lista_recursos_utilizador.append(recurso_utilizador)
-
-    return lista_recursos_utilizador
+        return lista_recursos_utilizador
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Obtem as imagens referentes a uma lista de recursos
 async def lista_imagens_recursos_service(lista_recursos:list):
+    try:
+        lista_recursos_imagens = []
 
-    lista_recursos_imagens = []
+        for recurso in lista_recursos:
 
-    for recurso in lista_recursos:
+            caminho_foto_recurso = await carrega_imagem_recurso_service(recurso.RecursoID)
 
-        caminho_foto_recurso = await carrega_imagem_recurso_service(recurso.RecursoID)
+            if not caminho_foto_recurso:
+                caminho_foto_recurso = None
 
-        if not caminho_foto_recurso:
-            caminho_foto_recurso = None
+            novo_recurso = RecursoGetTodosSchema(
+                RecursoID = recurso.RecursoID,
+                Nome = recurso.Nome,
+                DescRecurso = recurso.DescRecurso,
+                Caucao = recurso.Caucao,
+                Categoria_ = recurso.Categoria_,
+                Utilizador_=recurso.Utilizador_,
+                Disponibilidade_ = recurso.Disponibilidade_,
+                Image = recurso.Path
+            )
 
-        novo_recurso = RecursoGetTodosSchema(
-            RecursoID = recurso.RecursoID,
-            Nome = recurso.Nome,
-            DescRecurso = recurso.DescRecurso,
-            Caucao = recurso.Caucao,
-            Categoria_ = recurso.Categoria_,
-            Utilizador_=recurso.Utilizador_,
-            Disponibilidade_ = recurso.Disponibilidade_,
-            Image = recurso.Path
-        )
+            lista_recursos_imagens.append(novo_recurso)
 
-        lista_recursos_imagens.append(novo_recurso)
-
-    return lista_recursos_imagens
+        return lista_recursos_imagens
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def carrega_imagem_recurso_service(recurso_id:int):
+    try:
+        load_dotenv()
 
-    load_dotenv()
+        pasta_path = os.path.join(os.getenv('UPLOAD_DIR_RECURSO'), str(recurso_id))
 
-    pasta_path = os.path.join(os.getenv('UPLOAD_DIR_RECURSO'), str(recurso_id))
+        if not os.path.exists(pasta_path):
+            os.makedirs(pasta_path)
 
-    if not os.path.exists(pasta_path):
-        os.makedirs(pasta_path)
+        pasta = Path(pasta_path)
 
-    pasta = Path(pasta_path)
+        arquivos = [f for f in pasta.iterdir() if f.is_file()]
 
-    arquivos = [f for f in pasta.iterdir() if f.is_file()]
+        if not arquivos:
+            return None
 
-    if not arquivos:
-        return None
+        imagem_path = str(arquivos[0])
 
-    imagem_path = str(arquivos[0])
-
-    return imagem_path
+        return imagem_path
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 def checkar_estado_recurso():
-    db: Session = next(get_db())
+    db:session = get_db()
     try:
         recurso_repo.atualizar_disponibilidade_recurso_db(db)
-    finally:
-        db.close()
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

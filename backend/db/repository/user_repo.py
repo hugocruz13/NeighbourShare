@@ -1,8 +1,12 @@
 import datetime
+from fastapi import HTTPException
 from pydantic import EmailStr
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from db.models import Utilizador, TipoUtilizador
 from schemas.user_schemas import UserRegistar, User, NewUserUpdate, UserUpdateInfo, UserData
+from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 
 async def create_user(db: Session, user: UserRegistar, id_role: int):
     try:
@@ -12,16 +16,17 @@ async def create_user(db: Session, user: UserRegistar, id_role: int):
         db.commit()
         db.refresh(new_user)
         return True
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao criar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def rollback_user(db: Session, email: EmailStr):
     try:
         db.query(Utilizador).filter(Utilizador.Email == email).delete()
         db.commit()
-    except Exception as e:
-        raise RuntimeError(f"Erro ao rollback utilizador: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def update_new_password(db: Session, user_identifier: int, password_hashed: str,salt: str):
     try:
@@ -30,9 +35,9 @@ async def update_new_password(db: Session, user_identifier: int, password_hashed
             new_user.PasswordHash = password_hashed
             new_user.Salt = salt
             db.commit()
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao atualizar password utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int, password_hashed: str,salt: str, path: str):
     try:
@@ -53,22 +58,24 @@ async def update_new_user(db: Session, user: NewUserUpdate, user_identifier: int
             db.commit()
         else:
             raise RuntimeError("ID do utilizador inválido!")
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.rollback()
-        raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def get_id_role(db: Session, role: str):
     try:
         query = db.query(TipoUtilizador).filter(TipoUtilizador.DescTU == role).first()
         return query.TUID if query else None
-    except Exception as e:
-        raise RuntimeError(f"Erro ao obter ID do cargo: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 async def user_exists(db: Session, email: str):
     try:
         return db.query(Utilizador).filter(Utilizador.Email == email).first() is not None
-    except Exception as e:
-        raise RuntimeError(f"Erro ao verificar utilizador: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 def get_user_by_email(db: Session, email: str):
     try:
@@ -83,8 +90,9 @@ def get_user_by_email(db: Session, email: str):
                 role=role
             )
         return None
-    except Exception as e:
-        raise RuntimeError(f"Erro ao obter utilizador: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 def apagar(db: Session, id: int):
     try:
@@ -94,8 +102,9 @@ def apagar(db: Session, id: int):
             db.commit()
             return True
         return False
-    except Exception as e:
-        raise RuntimeError(f"Erro ao apagar utilizador: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Função para obter os dados aquando da consulta de perfil do utilizador
 async def get_dados_utilizador(db:Session, id_user:int):
@@ -111,14 +120,18 @@ async def get_dados_utilizador(db:Session, id_user:int):
             )
         else:
             return None
-    except Exception as e:
-        raise RuntimeError(f"Erro ao obter utilizador: {e}")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 #Função que obtêm os ID's de todos os admins/gestores
 async def get_all_admin_gestores_ids(db:Session):
-
-    lista_ids = db.query(Utilizador.UtilizadorID).filter(TipoUtilizador.DescTU != "residente").all()
-    return lista_ids
+    try:
+        lista_ids = db.query(Utilizador.UtilizadorID).filter(TipoUtilizador.DescTU != "residente").all()
+        return lista_ids
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
 
 def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
     try:
@@ -136,3 +149,15 @@ def atualizar_utilizador_db(db: Session, id: int,dados: UserUpdateInfo):
         return True
     except Exception as e:
         raise RuntimeError(f"Erro ao atualizar utilizador: {e}")
+
+async def get_utilizador_por_id(user_id: int, db: Session):
+    return db.query(Utilizador).filter(Utilizador.UtilizadorID == user_id).first()
+
+async def atualizar_role_utilizador(utilizador: Utilizador, novo_role: int, db: Session):
+    try:
+        utilizador.TUID = novo_role
+        db.commit()
+        db.refresh(utilizador)
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

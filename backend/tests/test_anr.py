@@ -119,6 +119,7 @@ def test_04_processar_votos(client, gestor_token, data_flow):
     """Teste de processamento dos resultados da votação"""
     client.cookies.set("access_token", gestor_token)
     response = client.get(f"/api/terminar_votacao?votacao_id={data_flow.votacao_id}")
+    print(response.json())
     assert response.status_code == 200
     # O resultado deve indicar aprovação
     data = response.json()

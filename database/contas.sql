@@ -37,7 +37,8 @@ INSERT INTO [dbo].[Utilizador]
            ,[Salt]
            ,[Verificado]
            ,[TUID]
-		   ,[Path])
+           ,[Path])
+
      VALUES
            ('gestor'
            ,'2025-04-18'
@@ -47,7 +48,8 @@ INSERT INTO [dbo].[Utilizador]
            ,'lMvfKy4UtMG27ayKFw7yCw=='
            ,1
            ,3
-		   ,'null')
+           ,'null')
+
 GO
 
 INSERT INTO [dbo].[Utilizador]
@@ -59,7 +61,8 @@ INSERT INTO [dbo].[Utilizador]
            ,[Salt]
            ,[Verificado]
            ,[TUID]
-		   ,[Path])
+           ,[Path])
+
      VALUES
            ('residente'
            ,'2025-04-18'
@@ -69,5 +72,6 @@ INSERT INTO [dbo].[Utilizador]
            ,'+rNaQUKMZtnMrvYj9g1law=='
            ,1
            ,2
-		   ,'null')
+           ,'null')
+
 GO
