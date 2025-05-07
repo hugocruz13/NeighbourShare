@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 from pydantic import BaseModel, EmailStr, validator,conint, constr, Field
 from typing import Optional
-=======
-from pydantic import BaseModel, EmailStr, validator,conint, constr
->>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 from datetime import date
 from utils.PasswordHasher import validate_password_strength
 
@@ -38,11 +34,8 @@ class UserData(BaseModel):
     nome: constr(min_length=3, max_length=100)
     email: EmailStr
     contacto: conint(ge=100000000, le=999999999)
-<<<<<<< HEAD
     data_nascimento: date
     imagem: str
-=======
->>>>>>> 7999925 (Atualização de validações e restrições nos dados passados pelos schemas)
 
 class NewUserUpdate(BaseModel):
     nome: constr(min_length=3, max_length=100)

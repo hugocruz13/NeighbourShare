@@ -37,12 +37,8 @@ async def remover_entidade_db(entidade_id: int,db: Session):
         db.commit()
         return True, {'Entidade removida com sucesso.'}
     except SQLAlchemyError as e:
-<<<<<<< HEAD
         db.rollback()
         return False, {'details': str(e)}
-=======
-        raise SQLAlchemyError(str(e))
->>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)
 
 #Update a uma entidade externa na base de dados
 async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
@@ -56,7 +52,6 @@ async def update_entidade_db(entidade: EntidadeUpdateSchema, db: Session):
         db.commit()
         return True, {'Entidade atualizada com sucesso.'}
     except SQLAlchemyError as e:
-<<<<<<< HEAD
         db.rollback()
         return False, {'details': str(e)}
 
@@ -67,6 +62,3 @@ async def existe_entidade_db(entidade_id: int, db: Session) -> bool:
     except SQLAlchemyError as e:
         db.rollback()
         return False, {'details': str(e)}
-=======
-        raise SQLAlchemyError(str(e))
->>>>>>> def1d6c (Add new services, schemas, and endpoints for entity, budget, and resource management)

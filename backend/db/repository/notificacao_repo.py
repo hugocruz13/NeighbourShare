@@ -88,13 +88,8 @@ async def listar_notificacoes_db(db: Session, user_id: int):
         notificacao_user_alias = aliased(t_NotificacaoUser)
         lista_notificacoes = (
             db.query(Notificacao)
-<<<<<<< HEAD
             .join(notificacao_user_alias, Notificacao.NotificacaoID == notificacao_user_alias.c.NotificacaoID)
             .filter(notificacao_user_alias.c.UtilizadorID == user_id)
-=======
-            .join(NotificacaoUser)
-            .filter(NotificacaoUser.UtilizadorID == user_id)
->>>>>>> 9109c73 (Refactor reserva and notificacao services for consistency)
             .order_by(Notificacao.DataHora.desc())
         )
         return lista_notificacoes

@@ -60,13 +60,5 @@ async def listar_recursos_pessoais(
     return await lista_recursos_utilizador_service(db, token.id)
 
 @router.get("/{recurso_id}", response_model=RecursoGetTodosSchema)
-<<<<<<< HEAD
 async def listar_recurso( recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
-=======
-async def listar_recurso(
-        recurso_id: int,
-        token: UserJWT = Depends(role_required(["admin","gestor","residente"])),
-        db:Session = Depends(get_db)
-):
->>>>>>> 90e6d21 (Restrição do acesso aos controllers para apenas uma pessoa com um token poder aceder, existindo em alguns caso restrições pelos cargos dos mesmos)
     return await lista_recurso_service(db, recurso_id)
