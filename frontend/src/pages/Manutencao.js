@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PedidosManutencao.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from "../components/Tabela.jsx";
 
 const Manutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -96,66 +97,19 @@ const Manutencao = () => {
   return (
     <div className="page-content">
       <Navbar2 />
-
+  
       <div className="home-container">
         <div className='fundoMeusRecursos'>
           <p className='p-meusRecursos'>Pedidos de Manutenção</p>
-          {pedidos.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Nº Manutenção</th>
-                  <th>Descrição</th>
-                  <th>Data Manutenção</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidos.filter(manutencao => manutencao.EstadoManuID !== 2).map((manutencao) => (
-                  <tr key={manutencao.ManutencaoID}>
-                    <td>{manutencao.ManutencaoID}</td>
-                    <td>{manutencao.DescManutencao}</td>
-                    <td>
-                      {editDateId === manutencao.ManutencaoID ? (
-                        <>
-                          <input
-                            type="date"
-                            value={newDate}
-                            onChange={(e) => setNewDate(e.target.value)}
-                          />
-                          <button onClick={() => handleDateUpdate(manutencao)}>💾</button>
-                          <button onClick={() => setEditDateId(null)}>❌</button>
-                        </>
-                      ) : (
-                        <>
-                          {manutencao.DataManutencao}
-                          <button onClick={() => {
-                            setEditDateId(manutencao.ManutencaoID);
-                            setNewDate(manutencao.DataManutencao);
-                          }}>✏️</button>
-                        </>
-                      )}
-                    </td>
-                    <td>
-                      <select
-                        value={manutencao.estado}
-                        onChange={(e) => handleStatusChange(manutencao.ManutencaoID, e.target.value)}
-                      >
-                        {statusOptions.map((option) => (
-                          <option key={option.EstadoManuID} value={option.EstadoManuID}>
-                            {option.DescEstadoManutencao}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum pedido de manutenção encontrado.</p>
-          )}
+          <Tabela
+            colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado']}
+            dados={pedidos}
+            aoClicarAcao={(pedido) => handleDateUpdate(pedido)}
+            tipoAcao="link"
+            mensagemVazio="Nenhum pedido de manutenção encontrado."
+          />
         </div>
+  
         <ToastContainer />
       </div>
     </div>

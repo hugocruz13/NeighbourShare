@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/ListaReservas.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from '../components/Tabela.jsx';
 
 const MeusPedidosReserva = () => {
   const [disabledButtons, setDisabledButtons] = useState(new Set());
@@ -155,136 +156,108 @@ const handleJustification = (id) => {
   return (
     <div className="page-content">
       <Navbar2 />
-    <div className="home-container">
-      <div className='fundoListaReserva'>
-        <p className='tituloReserva'>Os Meus Pedidos de Reserva de Recursos</p>
-        {Array.isArray(filteredComoSolicitante) && filteredComoSolicitante.length > 0 ? (
-        <table>
-        <thead>
-          <tr>
-            <th>N° da Reserva</th>
-            <th>Dono do recurso</th>
-            <th>Data Início</th>
-            <th>Data Fim</th>
-            <th>Recurso</th>
-            <th>Recurso Recebido</th>
-            <th>Caução Entregue</th>
-          </tr>
-        </thead>
-        <tbody>
-          {comoSolicitante.map((reservation) => (
-            <tr key={reservation.ReservaID}>
-              <td>{reservation.ReservaID}</td>
-              <td>{reservation.Dono}</td>
-              <td>{reservation.DataInicio}</td>
-              <td>{reservation.DataFim}</td>
-              <td>{reservation.NomeRecurso}</td>
-              <td>
-              <button className='btnConfirmacoes' onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue', !reservation.RecursoEntregueSolicitante, 'solicitante')}
-                disabled={disabledButtons.has(`recursoEntregue-${reservation.ReservaID}`)}
+      <div className="home-container">
+        <div className="fundoListaReserva">
+          <p className="tituloReserva">Os Meus Pedidos de Reserva de Recursos</p>
+          <Tabela
+            colunas={[
+              'ReservaID',
+              'Dono',
+              'DataInicio',
+              'DataFim',
+              'NomeRecurso',
+              'Recurso Recebido',
+              'Caução Entregue'
+            ]}
+            dados={comoSolicitante.map((res) => ({
+              ...res,
+              'Recurso Recebido': (
+                <button
+                  className="btnConfirmacoes"
+                  onClick={() => handleUpdate(res.ReservaID, 'recursoEntregue', !res.RecursoEntregueSolicitante, 'solicitante')}
+                  disabled={disabledButtons.has(`recursoEntregue-${res.ReservaID}`)}
                 >
-                {reservation.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
-              </button>
-              </td>
-              <td>
-              <button
-                className='btnConfirmacoes'
-                onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue', !reservation.ConfirmarCaucaoSolicitante, 'solicitante')}
-                disabled={disabledButtons.has(`caucaoEntregue-${reservation.ReservaID}`)}
+                  {res.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
+                </button>
+              ),
+              'Caução Entregue': (
+                <button
+                  className="btnConfirmacoes"
+                  onClick={() => handleUpdate(res.ReservaID, 'caucaoEntregue', !res.ConfirmarCaucaoSolicitante, 'solicitante')}
+                  disabled={disabledButtons.has(`caucaoEntregue-${res.ReservaID}`)}
                 >
-                {reservation.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
-              </button>
-              </td>
-            </tr>
-          ) ) }
-        </tbody>
-      </table>
-) : (
-   <p>Nenhum pedido de reserva encontrado.</p>
- )}
-
-      </div>
-
-      <div className='fundoListaReserva'>
-        <p className='tituloReserva'>Reservas</p>
-
-        {Array.isArray(filteredComoDono) && filteredComoDono.length > 0 ? (
-        <table>
-        <thead>
-          <tr>
-            <th>N° da Reserva</th>
-            <th>Solicitante</th>
-            <th>Data Início</th>
-            <th>Data Fim</th>
-            <th>Recurso</th>
-            <th>Recurso Entregue</th>
-            <th>Caucao Recebida</th>
-            <th>Confirmar Estado Recurso</th>
-          </tr>
-        </thead>
-        <tbody>
-          {comoDono.map((reservation) => (
-            <tr key={reservation.ReservaID}>
-              <td>{reservation.ReservaID}</td>
-              <td>{reservation.Solicitante}</td>
-              <td>{reservation.DataInicio}</td>
-              <td>{reservation.DataFim}</td>
-              <td>{reservation.NomeRecurso}</td>
-              <td>
-              <button
-              className='btnConfirmacoes'
-              onClick={() => handleUpdate(reservation.ReservaID, 'recursoEntregue2', !reservation.RecursoEntregueDono, 'dono')}
-              disabled={disabledButtons.has(`recursoEntregue2-${reservation.ReservaID}`)}
-              >
-              {reservation.RecursoEntregueDono ? 'Sim' : 'Não'}
-              </button>
-              </td>
-              <td>
-              <button
-              className='btnConfirmacoes'
-              onClick={() => handleUpdate(reservation.ReservaID, 'caucaoEntregue2', !reservation.ConfirmarCaucaoDono, 'dono')}
-              disabled={disabledButtons.has(`caucaoEntregue2-${reservation.ReservaID}`)}
-              >
-              {reservation.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
-              </button>
-              </td>
-              <td>
-                 <button className='btnSimReserva' onClick={() => handleUpdate(reservation.ReservaID, 'bomEstado', true, 'dono')}>Sim</button>
-
-                  <button className='btnNaoReserva' onClick={() => {setSelectedReservaID(reservation.ReservaID); setShowModal(true);}}>Não</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-) : (
- <p>Nenhuma reserva encontrada.</p>
- )}
-
-      </div>
-
-         
-      {showModal && (
-
-      <>
-        <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-          <div className="modal-content">
-            <h2>Enviar Justificação</h2>
-            <textarea placeholder="Descrição" value={newResource.justification} onChange={(e) => setNewResource({ ...newResource, justification: e.target.value })}/>
-            <div>
-              <button onClick={() => handleJustification(selectedReservaID)}>Enviar</button>
-              <button onClick={() => setShowModal(false)}>Cancelar</button>
+                  {res.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
+                </button>
+              )
+            }))}
+            mensagemVazio="Nenhum pedido de reserva encontrado."
+          />
+        </div>
+  
+        <div className="fundoListaReserva">
+          <p className="tituloReserva">Reservas</p>
+          <Tabela
+            colunas={[
+              'ReservaID',
+              'Solicitante',
+              'DataInicio',
+              'DataFim',
+              'NomeRecurso',
+              'Recurso Entregue',
+              'Caucao Recebida',
+              'Confirmar Estado Recurso'
+            ]}
+            dados={comoDono.map((res) => ({
+              ...res,
+              'Recurso Entregue': (
+                <button
+                  className="btnConfirmacoes"
+                  onClick={() => handleUpdate(res.ReservaID, 'recursoEntregue2', !res.RecursoEntregueDono, 'dono')}
+                  disabled={disabledButtons.has(`recursoEntregue2-${res.ReservaID}`)}
+                >
+                  {res.RecursoEntregueDono ? 'Sim' : 'Não'}
+                </button>
+              ),
+              'Caucao Recebida': (
+                <button
+                  className="btnConfirmacoes"
+                  onClick={() => handleUpdate(res.ReservaID, 'caucaoEntregue2', !res.ConfirmarCaucaoDono, 'dono')}
+                  disabled={disabledButtons.has(`caucaoEntregue2-${res.ReservaID}`)}
+                >
+                  {res.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
+                </button>
+              ),
+              'Confirmar Estado Recurso': (
+                <>
+                  <button className="btnSimReserva" onClick={() => handleUpdate(res.ReservaID, 'bomEstado', true, 'dono')}>Sim</button>
+                  <button className="btnNaoReserva" onClick={() => { setSelectedReservaID(res.ReservaID); setShowModal(true); }}>Não</button>
+                </>
+              )
+            }))}
+            mensagemVazio="Nenhuma reserva encontrada."
+          />
+        </div>
+  
+        {showModal && (
+          <>
+            <div className="modal-backdrop" onClick={() => setShowModal(false)} />
+            <div className="modal-content">
+              <h2>Enviar Justificação</h2>
+              <textarea
+                placeholder="Descrição"
+                value={newResource.justification}
+                onChange={(e) => setNewResource({ ...newResource, justification: e.target.value })}
+              />
+              <div>
+                <button onClick={() => handleJustification(selectedReservaID)}>Enviar</button>
+                <button onClick={() => setShowModal(false)}>Cancelar</button>
+              </div>
             </div>
-          </div>
-      </>
-      )}
-
-
+          </>
+        )}
+      </div>
+      <ToastContainer />
     </div>
-    <ToastContainer />
-    </div>
-
-    
   );
 };
 

@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PedidosNovosRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from "../components/Tabela.jsx";
 
 const PedidosAquisicao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -72,6 +73,7 @@ const PedidosAquisicao = () => {
       <Navbar2 />
       <div className="home-container">
         <div className='fundoMeusRecursos'>
+  
           {/* Modal de Adicionar Recurso */}
           {showModal && pedidoAtual && (
             <>
@@ -90,41 +92,30 @@ const PedidosAquisicao = () => {
               </div>
             </>
           )}
-
+  
           <p className='p-NovosRecursos'>Pedidos De Aquisição Pendentes</p>
-          {Array.isArray(pedidos) && pedidos.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Nº do Pedido</th>
-                  <th>Solicitante</th>
-                  <th>Data Do Pedido</th>
-                  <th>Descrição</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidos.map((pedido) => (
-                  <tr key={pedido.PedidoNovoRecID}>
-                    <td>{pedido.PedidoNovoRecID}</td>
-                    <td>{pedido.Utilizador_.NomeUtilizador}</td>
-                    <td>{pedido.DataPedido}</td>
-                    <td>{pedido.DescPedidoNovoRecurso}</td>
-                    <td>
-                      <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>Consultar</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum pedido de novo recurso encontrado.</p>
-          )}
+  
+          <Tabela
+            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Ação']}
+            dados={pedidos.map((pedido) => ({
+              'Nº do Pedido': pedido.PedidoNovoRecID,
+              'Solicitante': pedido.Utilizador_.NomeUtilizador,
+              'Data Do Pedido': pedido.DataPedido,
+              'Descrição': pedido.DescPedidoNovoRecurso,
+              'Ação': (
+                <Link className='linkStyle' onClick={() => handleConsultarClick(pedido)}>
+                  Consultar
+                </Link>
+              )
+            }))}
+            mensagemVazio="Nenhum pedido de novo recurso encontrado."
+          />
         </div>
       </div>
       <ToastContainer />
     </div>
   );
+  
 };
 
 export default PedidosAquisicao;

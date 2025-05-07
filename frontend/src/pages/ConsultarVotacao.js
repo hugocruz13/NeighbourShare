@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Tabela from '../components/Tabela';
 
 const ConsultarVotacao = () => {
   const { id } = useParams();
@@ -31,6 +32,16 @@ const ConsultarVotacao = () => {
     setPedidoAtual(pedido);
     setShowModal2(true);
   };
+
+  const colunas = [
+    'Opção',
+    'Entidade',
+    'Recurso',
+    'Descrição',
+    'Data',
+    'Valor',
+    'Ação'
+  ]
 
   return (
     <div>
@@ -64,34 +75,13 @@ const ConsultarVotacao = () => {
         </>
       )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>Opção</th>
-            <th>Entidade</th>
-            <th>Recurso</th>
-            <th>Descrição</th>
-            <th>Data</th>
-            <th>Valor</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody> 
-          {orcamentos.map((orcamento, index) => (
-            <tr key={orcamento.id}>
-              <td>{String.fromCharCode(65 + index)}</td> {/* Serve para colocar opção A, B, C*/}
-              <td>{orcamento.entidade}</td>
-              <td>{orcamento.recurso}</td>
-              <td>{orcamento.descricao}</td>
-              <td>{orcamento.data}</td>
-              <td>{orcamento.valor}</td>
-              <td>
-                <Link className='linkStyle' onClick={() => handleConsultarClick(orcamento)}>Consultar</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Tabela
+        colunas={colunas}
+        dados={orcamentos}
+        aoClicarAcao={handleConsultarClick}
+        tipoAcao="link"
+        mensagemVazio="Sem orçamentos disponíveis"
+      />
     </div>
   );
 };

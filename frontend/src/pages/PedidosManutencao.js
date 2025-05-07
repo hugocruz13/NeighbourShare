@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/PedidosManutencao.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from "../components/Tabela.jsx";
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -96,14 +97,14 @@ const PedidosManutencao = () => {
   return (
     <div className="page-content">
       <Navbar2 />
-
+  
       <div className="home-container">
         <div className='fundoMeusRecursos'>
-
+  
           {/* Modal de Adicionar Recurso */}
           {showModal && pedidoAtual && (
-          <>
-            <div className="modal-backdrop" onClick={() => setShowModal(false)} />
+            <>
+              <div className="modal-backdrop" onClick={() => setShowModal(false)} />
               <div className="modal-content">
                 <div className='detalhesManutencao'>
                   <p><strong>Nº do Pedido:</strong> {pedidoAtual.PMID}</p>
@@ -112,75 +113,60 @@ const PedidosManutencao = () => {
                   <p><strong>Descrição:</strong> {pedidoAtual.DescPedido}</p>
                   <p><strong>Recurso:</strong> {pedidoAtual.RecursoComun_.Nome}</p>
                 </div>
-              <div>
-                <p>Pedido necessita de entidade externa</p>
-                <button>Sim</button>
-                <button onClick={handleNaoClick}>Não</button>
+                <div>
+                  <p>Pedido necessita de entidade externa</p>
+                  <button>Sim</button>
+                  <button onClick={handleNaoClick}>Não</button>
+                </div>
               </div>
-            </div>
-          </>
+            </>
           )}
-
+  
           {/* Modal de Justificação */}
           {showJustificationModal && (
-          <>
-            <div className="modal-backdrop" onClick={() => setShowJustificationModal(false)} />
+            <>
+              <div className="modal-backdrop" onClick={() => setShowJustificationModal(false)} />
               <div className="modal-content">
                 <h2>Justificação</h2>
-                <textarea value={justificacao} onChange={(e) => setJustificacao(e.target.value)} required/>
-              <div>
-              <button onClick={handleJustificationSubmit}>Enviar</button>
-              <button onClick={() => setShowJustificationModal(false)}>Cancelar</button>
-            </div>
-            </div>
-          </>
+                <textarea value={justificacao} onChange={(e) => setJustificacao(e.target.value)} required />
+                <div>
+                  <button onClick={handleJustificationSubmit}>Enviar</button>
+                  <button onClick={() => setShowJustificationModal(false)}>Cancelar</button>
+                </div>
+              </div>
+            </>
           )}
-
+  
           <p className='p-meusRecursos'>Pedidos de Manutenção</p>
-          {pedidos.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Nº do Pedido</th>
-                  <th>Solicitante</th>
-                  <th>Data Do Pedido</th>
-                  <th>Descrição</th>
-                  <th>Recurso</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidos.map((pedido) => (
-                  <tr key={pedido.PMID}>
-                    <td>{pedido.PMID}</td>
-                    <td>{pedido.Utilizador_.NomeUtilizador}</td>
-                    <td>{pedido.DataPedido}</td>
-                    <td>{pedido.DescPedido}</td>
-                    <td>{pedido.RecursoComun_.Nome}</td>
-                    <td>
-                      <select
-                        value={pedido.estado}
-                        onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
-                      >
-                        {statusOptions.map((option) => (
-                          <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
-                            {option.DescEstadoPedidoManutencao}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum pedido de manutenção encontrado.</p>
-          )}
+          <Tabela
+            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Recurso', 'Ação']}
+            dados={pedidos.map((pedido) => ({
+              'Nº do Pedido': pedido.PMID,
+              'Solicitante': pedido.Utilizador_.NomeUtilizador,
+              'Data Do Pedido': pedido.DataPedido,
+              'Descrição': pedido.DescPedido,
+              'Recurso': pedido.RecursoComun_.Nome,
+              'Ação': (
+                <select
+                  value={pedido.estado}
+                  onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
+                >
+                  {statusOptions.map((option) => (
+                    <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
+                      {option.DescEstadoPedidoManutencao}
+                    </option>
+                  ))}
+                </select>
+              )
+            }))}
+            mensagemVazio="Nenhum pedido de manutenção encontrado."
+          />
         </div>
       </div>
       <ToastContainer />
     </div>
   );
+  
 };
 
 export default PedidosManutencao;

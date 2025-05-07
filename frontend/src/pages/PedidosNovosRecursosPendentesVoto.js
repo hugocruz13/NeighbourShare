@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from "../components/Tabela.jsx";
 
 const PedidosNovosRecursosPendentesVoto = () => {
   const [recurso, setUsers] = useState([]);
@@ -37,33 +38,27 @@ const PedidosNovosRecursosPendentesVoto = () => {
       <div className="home-container">
         <div className='fundoMeusRecursos'>
           <p className='p-meusRecursos'>Detalhes Pedido</p>
-          <table >
-            <thead>
-              <tr>
-                <th>Nº Pedido</th>
-                <th>Descrição</th>
-                <th>Concorda com a Aquisição?</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recurso.map((recurso) => (
-              <tr key={recurso.RecursoID}>
-                <td>{recurso.RecursoID}</td>
-                <td>{recurso.Desc}</td>
-                <td>
-                  <button className='btnSimReserva' >Sim</button>
-                  <button className='btnNaoReserva' >Não</button>
-                </td>
-              </tr>
-              ))}
-            </tbody>
-          </table>
-
+  
+          <Tabela
+            colunas={['Nº Pedido', 'Descrição', 'Concorda com a Aquisição?']}
+            dados={recurso.map((recurso) => ({
+              'Nº Pedido': recurso.RecursoID,
+              'Descrição': recurso.Desc,
+              'Concorda com a Aquisição?': (
+                <div>
+                  <button className='btnSimReserva'>Sim</button>
+                  <button className='btnNaoReserva'>Não</button>
+                </div>
+              )
+            }))}
+            mensagemVazio="Nenhum recurso encontrado."
+          />
+        </div>
       </div>
+      <ToastContainer />
     </div>
-    <ToastContainer />
-</div>
   );
+  
 };
 
 export default PedidosNovosRecursosPendentesVoto;

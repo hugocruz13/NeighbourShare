@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from '../components/Tabela.jsx';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);
@@ -69,6 +70,15 @@ const EntidadesExternas = () => {
     }
   };
 
+  const colunas = [
+    'ID',
+    'Nome',
+    'Nif',
+    'Contacto',
+    'Email',
+    'Especialidade'
+  ];
+
   return (
     <div className="page-content">
       <Navbar2 />
@@ -77,34 +87,12 @@ const EntidadesExternas = () => {
         <div className='fundoEntidadesExternas'>
           <p className='p-entidadesExternas'>Entidades Externas</p>
           <button onClick={() => setShowModal(true)}>Adicionar Entidade</button>
-          {entidades.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>Nif</th>
-                  <th>Contacto</th>
-                  <th>Email</th>
-                  <th>Especialidade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {entidades.map((entidade) => (
-                  <tr key={entidade.EntidadeID}>
-                    <td>{entidade.EntidadeID}</td>
-                    <td>{entidade.Nome}</td>
-                    <td>{entidade.Nif}</td>
-                    <td>{entidade.Contacto}</td>
-                    <td>{entidade.Email}</td>
-                    <td>{entidade.Especialidade}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhuma entidade externa encontrada.</p>
-          )}
+            <Tabela
+              colunas={colunas}
+              dados={entidades}
+              aoClicarAcao={() => {}}
+              tipoAcao="link"
+              mensagemVazio="Nenhuma entidade externa encontrada."/>
         </div>
 
         {showModal && (

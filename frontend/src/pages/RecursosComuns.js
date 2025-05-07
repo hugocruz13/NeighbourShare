@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
+import Tabela from "../components/Tabela.jsx";
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -73,59 +74,55 @@ const MeusRecursos = () => {
 
   return (
     <div className="page-content">
-<Navbar2 />
-    <div className="home-container">
-      
-      <div className='fundoMeusRecursos'>
-
-
-      {/* Botão para abrir o modal de adicionar recurso */}
-      <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
-
-      {/* Modal de Adicionar Recurso */}
-      {showModal && (
-
-        <>
-          <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-            <div className="modal-content">
-              <h2>Adicionar Recurso Comum</h2>
-              <input type="text" placeholder="Nome do Recurso" value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
-              <textarea placeholder="Descrição" value={newResource.descricao_recurso} onChange={(e) => setNewResource({ ...newResource, descricao_recurso: e.target.value })}/>
-              <input type="file" onChange={handleFileChange} />
-              <div>
-                <button onClick={handleAddResource}>Adicionar</button>
-                <button onClick={() => setShowModal(false)}>Cancelar</button>
+      <Navbar2 />
+      <div className="home-container">
+        <div className='fundoMeusRecursos'>
+          
+          {/* Botão para abrir o modal de adicionar recurso */}
+          <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
+  
+          {/* Modal de Adicionar Recurso */}
+          {showModal && (
+            <>
+              <div className="modal-backdrop" onClick={() => setShowModal(false)} />
+              <div className="modal-content">
+                <h2>Adicionar Recurso Comum</h2>
+                <input
+                  type="text"
+                  placeholder="Nome do Recurso"
+                  value={newResource.nome_recurso}
+                  onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}
+                />
+                <textarea
+                  placeholder="Descrição"
+                  value={newResource.descricao_recurso}
+                  onChange={(e) => setNewResource({ ...newResource, descricao_recurso: e.target.value })}
+                />
+                <input type="file" onChange={handleFileChange} />
+                <div>
+                  <button onClick={handleAddResource}>Adicionar</button>
+                  <button onClick={() => setShowModal(false)}>Cancelar</button>
+                </div>
               </div>
-          </div>
-        </>
-
-      )}
-
-
-      <p className='p-meusRecursos'>Recursos Comuns</p>
-      <table >
-        <thead>
-          <tr>
-            <th>Nº Recurso</th>
-            <th>Nome do Recurso</th>
-            <th>Descrição</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recurso.map((recurso) => (
-            <tr key={recurso.RecComumID}>
-              <td>{recurso.RecComumID}</td>
-              <td>{recurso.Nome}</td>
-              <td>{recurso.DescRecursoComum}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </>
+          )}
+  
+          <p className='p-meusRecursos'>Recursos Comuns</p>
+          <Tabela
+            colunas={['Nº Recurso', 'Nome do Recurso', 'Descrição']}
+            dados={recurso.map((recurso) => ({
+              'Nº Recurso': recurso.RecComumID,
+              'Nome do Recurso': recurso.Nome,
+              'Descrição': recurso.DescRecursoComum,
+            }))}
+            mensagemVazio="Nenhum recurso comum encontrado."
+          />
+        </div>
       </div>
+      <ToastContainer />
     </div>
-    <ToastContainer />
-</div>
   );
+  
 };
 
 export default MeusRecursos;

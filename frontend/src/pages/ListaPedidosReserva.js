@@ -4,6 +4,7 @@ import "../styles/ListaPedidosReserva.css";
 import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Tabela from '../components/Tabela.jsx';
 
 const ReservarRecurso = ({ match }) => {
   const [product, setProduct] = useState(null);
@@ -83,69 +84,30 @@ const ReservarRecurso = ({ match }) => {
       <div className="home-container">
         <div className='fundoListaPedidosReserva'>
           <p className='tituloPedidosReserva'>Os Meus Pedidos de Reserva Feitos</p>
-          {pedidosEmAnaliseSolicitante.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>N° Pedido Reserva</th>
-                  <th>Nome Recurso</th>
-                  <th>Dono</th>
-                  <th>Data Inicio</th>
-                  <th>Data Fim</th>
-                  <th>Estado Pedido</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidosEmAnaliseSolicitante.map((reservation) => (
-                  <tr key={reservation.PedidoReservaID}>
-                    <td>{reservation.PedidoReservaID}</td>
-                    <td>{reservation.RecursoNome}</td>
-                    <td>{reservation.NomeDono}</td>
-                    <td>{reservation.DataInicio}</td>
-                    <td>{reservation.DataFim}</td>
-                    <td>{reservation.EstadoPedidoReserva}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum pedido de reserva encontrado.</p>
-          )}
+            <Tabela
+              colunas={['PedidoReservaID', 'RecursoNome', 'NomeDono', 'DataInicio', 'DataFim', 'EstadoPedidoReserva']}
+              dados={pedidosEmAnaliseSolicitante}
+              mensagemVazio="Nenhum pedido de reserva encontrado."
+            />
         </div>
 
         <div className='fundoListaPedidosReserva'>
           <p className='tituloPedidosReserva'>Pedidos de Reserva</p>
-          {pedidosEmAnaliseDono.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>N° Pedido Reserva</th>
-                  <th>Solicitante</th>
-                  <th>Nome Recurso</th>
-                  <th>Data Inicio</th>
-                  <th>Data Fim</th>
-                  <th>Aceitar Reserva</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pedidosEmAnaliseDono.map((reservation) => (
-                  <tr key={reservation.PedidoReservaID}>
-                    <td>{reservation.PedidoReservaID}</td>
-                    <td>{reservation.UtilizadorNome}</td>
-                    <td>{reservation.RecursoNome}</td>
-                    <td>{reservation.DataInicio}</td>
-                    <td>{reservation.DataFim}</td>
-                    <td>
-                      <button className='btnSimPedidoReserva' onClick={() => handleReserve(reservation.PedidoReservaID)}>Sim</button>
-                      <button className='btnNaoPedidoReserva' onClick={() => { setShowRejectModal(true); setPedidoReservaID(reservation.PedidoReservaID); }}>Não</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Nenhum pedido de reserva encontrado.</p>
-          )}
+            <Tabela
+            colunas={['PedidoReservaID', 'UtilizadorNome', 'RecursoNome', 'DataInicio', 'DataFim', 'Ação']}
+            dados={pedidosEmAnaliseDono.map(p => ({
+              ...p,
+              acaoTexto: (
+                <>
+                  <button className="btnSimPedidoReserva" onClick={() => handleReserve(p.PedidoReservaID)}>Sim</button>
+                  <button className="btnNaoPedidoReserva" onClick={() => { setShowRejectModal(true); setPedidoReservaID(p.PedidoReservaID); }}>Não</button>
+                </>
+              )
+            }))}
+            tipoAcao="botao"
+            aoClicarAcao={() => {}}
+            mensagemVazio="Nenhum pedido de reserva encontrado."
+          />
         </div>
       </div>
 
