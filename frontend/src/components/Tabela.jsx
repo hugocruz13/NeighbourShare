@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import styles from './Tabela.module.css';
 
 // Função para obter valores aninhados com segurança
@@ -7,18 +7,50 @@ const getNestedValue = (obj, path) => {
   };
 
 const Tabela = ({ colunas, dados, aoClicarAcao, tipoAcao, mensagemVazio }) => {
+
+    const [filtros, setFiltros] = useState({});
+
+    const handleFiltroChange = (coluna, valor) => {
+        setFiltros((prev) => ({ ...prev, [coluna]: valor }));
+    };
+
+    const dadosFiltrados = dados.filter((linha) =>
+        colunas.every((coluna) => {
+        if (!filtros[coluna] || coluna === 'Ação') return true;
+        const valor = getNestedValue(linha, coluna);
+        return valor?.toString().toLowerCase().includes(filtros[coluna].toLowerCase());
+        })
+    );
+
+
     return(
+        <div className={styles.containerTabela}>
         <table className={styles.tabela}>
-            <thead className={styles.cabecalho}>
-                <tr>
-                    {colunas.map((coluna, index) => (
-                        <th key={index}>{coluna}</th>
-                    ))}
-                </tr>
-            </thead>
-            {Array.isArray(dados) && dados.length > 0 ? (
+        <thead className={styles.cabecalho}>
+          <tr>
+            {colunas.map((coluna, index) => (
+              <th key={index}>{coluna}</th>
+            ))}
+          </tr>
+          <tr>
+            {colunas.map((coluna, index) => (
+              <th key={index}>
+                {coluna !== 'Ação' && (
+                  <input
+                    type="text"
+                    placeholder={`Filtrar`}
+                    value={filtros[coluna] || ''}
+                    onChange={(e) => handleFiltroChange(coluna, e.target.value)}
+                    className={styles.inputFiltro}
+                  />
+                )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        {Array.isArray(dados) && dados.length > 0 ? (
             <tbody className={styles.corpo}>
-                {dados.map((linha, index) => (
+                {dadosFiltrados.map((linha, index) => (
                     <tr key={index}>
                         {colunas.map((coluna, colunaIndex) => (
                             <td key={colunaIndex}>
@@ -55,9 +87,8 @@ const Tabela = ({ colunas, dados, aoClicarAcao, tipoAcao, mensagemVazio }) => {
                 </tbody>
             )}
         </table>
+        </div>
     )
-
-
 }
 
 export default Tabela;

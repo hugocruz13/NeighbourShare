@@ -1,56 +1,76 @@
 /* TabelaGenerica.module.css */
 
 .tabela {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  
-  .cabecalho {
-    background-color: #eeeeee;
-  }
-  
-  .cabecalho th {
-    font-weight: bold;
-    padding: 14px 20px;
-    text-align: left;
-  }
-  
-  .corpo td {
-    padding: 14px 20px;
-    text-align: left;
-  }
-  
-  .corpo tr:nth-child(even) {
-    background-color: #f5f5f5;
-  }
-  
-  .btnConfirmacoes {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .btnConfirmacoes:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  .linkStyle {
-    color: #007bff;
-    text-decoration: underline;
-    cursor: pointer;
-  }
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  .semDados {
-    text-align: center;
-    padding: 20px;
-    font-size: 18px;
-    color: #888888;
-  }
+.cabecalho {
+  background-color: #eeeeee;
+}
+
+.cabecalho th {
+  font-weight: bold;
+  padding: 10px 20px 6px 20px; /* topo reduzido, fundo menor */
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.corpo td {
+  padding: 14px 20px;
+  text-align: center;
+}
+
+.corpo tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.inputFiltro {
+  width: 90%;
+  padding: 6px 10px;
+  margin-top: 2px; /* caixa mais próxima do título */
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  text-align: center;
+}
+
+.inputFiltro:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #ffffff;
+}
+
+.btnConfirmacoes {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.btnConfirmacoes:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.linkStyle {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.semDados {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #888888;
+}
+
+
   
