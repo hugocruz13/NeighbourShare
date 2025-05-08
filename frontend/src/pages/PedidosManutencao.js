@@ -7,6 +7,7 @@ import Tabela from "../components/Tabela.jsx";
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
+  const [mensagemErro, setMensagemErro] = useState(null);
   const [statusOptions, setStatusOptions] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -25,9 +26,25 @@ const PedidosManutencao = () => {
         });
         const data = await res.json();
         console.log(data);
-        setPedidos(data);
+        if (data && Array.isArray(data.pedidos)) {
+          // Se for um array, atualiza os pedidos
+          setPedidos(data.pedidos);
+          setMensagemErro(null);  // Limpar erro caso haja pedidos
+        } else if (data && data.detail) {
+          // Se a resposta contiver a chave 'detail', trata como erro
+          setMensagemErro(data.detail);
+          setPedidos([]);  // Limpa os pedidos
+        } else {
+          // Caso não seja nem um array nem um erro, define um erro genérico
+          setMensagemErro('Erro inesperado ao carregar os dados');
+          setPedidos([]);
+        }
+
       } catch (error) {
+        // Caso ocorra um erro durante a requisição
         console.error('Erro ao buscar pedidos de manutenção:', error);
+        setMensagemErro('Falha ao carregar os dados');
+        setPedidos([]);
       }
     };
 
@@ -98,10 +115,9 @@ const PedidosManutencao = () => {
   return (
     <div className="page-content">
       <Navbar2 />
-  
       <div className="home-container">
         <div className='fundoMeusRecursos'>
-  
+
           {/* Modal de Adicionar Recurso */}
           {showModal && pedidoAtual && (
             <>

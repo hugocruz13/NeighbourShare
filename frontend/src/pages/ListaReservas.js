@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "../styles/ListaReservas.css";
+import styles from "../styles/LayoutPaginasTabelas.module.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
 
@@ -25,8 +25,8 @@ const MeusPedidosReserva = () => {
         });
         const data = await res.json();
         console.log(data);
-        setComoDono(data[0]);         // Dono → Segunda tabela
-        setComoSolicitante(data[1]);  // Solicitante → Primeira tabela
+        setComoDono(data[0] || []);         // Dono → Segunda tabela
+        setComoSolicitante(data[1] || []);  // Solicitante → Primeira tabela
       } catch (error) {
         console.error('Erro ao buscar pedidos de reserva:', error);
       }
@@ -157,8 +157,8 @@ const handleJustification = (id) => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className="fundoListaReserva">
-          <p className="tituloReserva">Os Meus Pedidos de Reserva de Recursos</p>
+        <div className={styles.fundo}>
+          <p className={styles.titulo}>Os Meus Pedidos de Reserva de Recursos</p>
           <Tabela
             colunas={[
               'ReservaID',
@@ -194,8 +194,8 @@ const handleJustification = (id) => {
           />
         </div>
   
-        <div className="fundoListaReserva">
-          <p className="tituloReserva">Reservas</p>
+        <div className={styles.fundo}>
+          <p className={styles.titulo}>Reservas</p>
           <Tabela
             colunas={[
               'ReservaID',
@@ -240,8 +240,8 @@ const handleJustification = (id) => {
   
         {showModal && (
           <>
-            <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-            <div className="modal-content">
+            <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
+            <div className={styles.modalcontent}>
               <h2>Enviar Justificação</h2>
               <textarea
                 placeholder="Descrição"

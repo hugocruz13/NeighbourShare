@@ -1,0 +1,73 @@
+.fundo{
+  max-width: 1000px;
+  margin: 40px auto 0 auto;
+  padding: 30px 30px 40px 30px;
+  background-color: #f9f9f9;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.titulo{
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.modalbackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Pop-up central */
+.modalcontent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  width: 90%;
+  max-width: 500px;
+}
+
+/* Botões */
+.modalcontent button {
+  margin: 10px 5px 0 0;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalcontent button:hover {
+  background-color: #45a049;
+}
+
+.modalcontent button:last-child {
+  background-color: #f44336;
+}
+
+.modalcontent button:last-child:hover {
+  background-color: #d32f2f;
+}
+
+.modalcontent input,
+.modalcontent textarea {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
