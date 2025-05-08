@@ -100,10 +100,11 @@ const MeusPedidosReserva = () => {
           setComoDono(updateState);
         }
   
+        toast.success('Registado com sucesso!');
         // Adiciona o botão desativado
         setDisabledButtons(prev => new Set(prev).add(`${field}-${id}`));
       } else {
-        console.error('Erro na resposta da API:', result);
+        toast.error('Erro ao registar.');
       }
     } catch (error) {
       console.error('Erro ao atualizar pedido de reserva:', error);
