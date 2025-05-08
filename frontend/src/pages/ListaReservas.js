@@ -25,8 +25,16 @@ const MeusPedidosReserva = () => {
         });
         const data = await res.json();
         console.log(data);
-        setComoDono(data[0]);         // Dono → Segunda tabela
-        setComoSolicitante(data[1]);  // Solicitante → Primeira tabela
+
+        if (Array.isArray(data)) {
+          setComoDono(data[0]);         // Dono → Segunda tabela
+          setComoSolicitante(data[1]);  // Solicitante → Primeira tabel
+        } else if (data.detail === 'Nenhum recurso encontrado') {
+          setComoDono([]);  
+          setComoSolicitante([]);  
+        } else {
+          throw new Error("Resposta inesperada da API");
+        }
       } catch (error) {
         console.error('Erro ao buscar pedidos de reserva:', error);
       }
