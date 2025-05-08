@@ -76,7 +76,7 @@ async def lista_recursos_service(db:session):
         lista_recursos = await recurso_repo.listar_recursos_db(db)
 
         if not lista_recursos:
-            raise HTTPException(status_code=400, detail="Nenhum recurso encontrado")
+            raise HTTPException(status_code=200, detail="Nenhum recurso encontrado")
 
         lista_recursos_imagens = await lista_imagens_recursos_service(lista_recursos)
 
