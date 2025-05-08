@@ -17,7 +17,7 @@ function Residente() {
           <Link className="btnMenu" to="/perfil">Perfil</Link><br />
           <Link className="btnMenu" to="/notificacoes">Notificações</Link><br />
           <Link className="btnMenu" to="/listaPedidosReserva">Pedidos de Reserva</Link><br />
-          <Link className="btnMenu" to="/listaReservas">Reservas</Link><br />
+          <Link className="btnMenu" to="/listaReserva">Reservas</Link><br />
           <Link className="btnMenu" to="/meusRecursos">Meus Recursos</Link><br />
           <Link className="btnMenu" to="/realizarPedidoManutencao">Realizar Pedido Manutenção</Link><br />
           <Link className="btnMenu" to="/realizarPedidoNovoRecurso">Realizar Pedido Novo Recurso</Link><br />
