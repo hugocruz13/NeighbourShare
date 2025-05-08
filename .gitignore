@@ -93,3 +93,5 @@ backend/.idea/misc.xml
 backend/.idea/backend.iml
 backend/tokens_login_log.json
 backend/tests/tokens_login_log.json
+backend/tests/999
+backend/tokens_login_log.json

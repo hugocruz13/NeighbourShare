@@ -5,25 +5,13 @@ import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const RecursosDisponiveis = () => {
+const Exemplo = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        const data = await res.json();
-
-        setUserId(data.id); // Supondo que o ID do utilizador está na propriedade 'id'
-      } catch (error) {
-        console.error('Erro ao buscar ID do utilizador:', error);
-      }
-    };
+    
 
     const fetchProducts = async () => {
       try {
@@ -32,15 +20,8 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else if (data.detail === 'Nenhum recurso encontrado') {
-          setProducts([]);
-        } else {
-          throw new Error("Resposta inesperada da API");
-        }
-
+        console.log(data);
+        setProducts(data);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
@@ -48,23 +29,21 @@ const RecursosDisponiveis = () => {
       }
     };
 
-    fetchUserId();
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter(product => product.Utilizador_.UtilizadorID !== userId && product.Disponibilidade_.DispID === 1);
 
   return (
     <div className="page-content">
       <Navbar2 />
       <div className='home-container'>
         <div className='fundoRecursos'>
-          <p className='p-Recursos'>Recursos Disponíveis ({filteredProducts.length})</p>
+          <p className='p-Recursos'>Recursos Disponíveis</p>
           <div className="grid-recursos">
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <div key={product.RecursoID}>
                 <Link to={`/pedidosReserva/${product.RecursoID}`}>
-                  <img src={product.Image} alt={product.name} style={{ width: '100%' }} />
+                  <img src="http://127.0.0.1:8000/api/imagens/recursos/1/Circulo_amarelo.png" alt={product.Nome} style={{ width: '100%' }} />
                 </Link>
                 <h2>{product.Nome}</h2>
                 <h2>{product.DescRecurso}</h2>
@@ -77,4 +56,4 @@ const RecursosDisponiveis = () => {
   );
 };
 
-export default RecursosDisponiveis;
+export default Exemplo;

@@ -84,7 +84,7 @@ class ReservaSchemaCreate(BaseModel):
     PedidoReservaID: conint(gt=0)
 
 class ReservaGetDonoSchema(BaseModel):
-    ReservaID: conint(gt=0)
+    ReservaID: int
     Solicitante: constr(min_length=3, max_length=100)
     DataInicio: datetime.date
     DataFim: datetime.date
@@ -96,7 +96,7 @@ class ReservaGetDonoSchema(BaseModel):
     JustificacaoEstadoProduto : Optional[constr(min_length=2, max_length=500)]
 
 class ReservaGetSolicitanteSchema(BaseModel):
-    ReservaID: conint(gt=0)
+    ReservaID: int
     Dono: constr(min_length=3, max_length=100)
     DataInicio: datetime.date
     DataFim: datetime.date
@@ -111,7 +111,7 @@ class ReservaGetSolicitanteSchema(BaseModel):
 # === Listagem de Pedidos de Reserva ===
 
 class PedidoReservaGetDonoSchema(BaseModel):
-    PedidoReservaID: conint(gt=0)
+    PedidoReservaID: int
     RecursoID: conint(gt=0)
     RecursoNome: constr(min_length=2, max_length=100)
     UtilizadorNome: constr(min_length=3, max_length=100)

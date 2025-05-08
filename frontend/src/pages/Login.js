@@ -1,12 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { InputLogin, InputPassword } from "../components/Inputs.js";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../styles/Login.css";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [emailRecuperacao, setEmailRecuperacao] = useState("");
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -36,7 +40,7 @@ function Login() {
         setUser(userData);
 
         if (userData.role === "admin") {
-          navigate("/admin");
+          navigate("/menu");
         } else if (userData.role === "residente" || userData.role === "gestor") {
           navigate("/menu");
         } else {
@@ -49,6 +53,27 @@ function Login() {
       setError("Erro");
     }
   };
+
+  const handleRecuperacaoSenha = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/password/forgot", { // endpoint para recuperação de senha
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailRecuperacao }),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        toast.success('Email de recuperação enviado com sucesso!');
+        setShowModal(false);
+      } else {
+        toast.error('Erro ao enviar email de recuperação.');
+      }
+    } catch (error) {
+      toast.error('Erro ao enviar email de recuperação.');
+    }
+  };
+
   return (
     <div className="container-login">
       <div className="container-esquerda">
@@ -73,6 +98,7 @@ function Login() {
                 </button>
               </div>
               <p className="erro">{error && error}</p>
+              <p className="link-recuperacao" onClick={() => setShowModal(true)}>Esqueceu a senha?</p>
             </div>
           </form>
         </div>
@@ -80,6 +106,25 @@ function Login() {
       <div className="container-direita">
         <img className="imagem" src="img/fundo.jpg" alt="Imagem" />
       </div>
+      {showModal && (
+        <>
+          <div className="modal-backdrop" onClick={() => setShowModal(false)} />
+          <div className="modal-content">
+            <h3>Recuperação de Senha</h3>
+            <p>Digite seu email para receber instruções de recuperação de senha.</p>
+            <input
+              type="email"
+              name="emailRecuperacao"
+              value={emailRecuperacao}
+              onChange={(e) => setEmailRecuperacao(e.target.value)}
+              placeholder="Email"
+            />
+            <button onClick={handleRecuperacaoSenha}>Enviar</button>
+            <button onClick={() => setShowModal(false)}>Cancelar</button>
+          </div>
+        </>
+      )}
+      <ToastContainer />
     </div>
   );
 }

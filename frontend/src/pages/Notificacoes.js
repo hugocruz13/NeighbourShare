@@ -1,66 +1,86 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Notificacoes.css";
 import Navbar2 from "../components/Navbar2.js";
 
-const notificacoesExemplo = [
-  {
-    id: 1,
-    titulo: "Pedido de Recurso Aprovado",
-    resumo: "O seu pedido para o recurso 'Projetor' foi aprovado.",
-    data: "14/04/2025",
-    conteudo: "O seu pedido de utilização do projetor comunitário foi aprovado. Pode utilizá-lo no dia 15/04 das 14h às 16h. Obrigado pela colaboração.",
-  },
-  {
-    id: 2,
-    titulo: "Reserva Cancelada",
-    resumo: "A sua reserva da sala de reuniões foi cancelada.",
-    data: "13/04/2025",
-    conteudo: "Infelizmente, a sua reserva da sala de reuniões no dia 14/04 foi cancelada por motivos técnicos. Pedimos desculpa pelo incómodo.",
-  },
-  {
-    id: 3,
-    titulo: "Novo Recurso Disponível",
-    resumo: "Foi adicionado um novo recurso: Barbecue.",
-    data: "12/04/2025",
-    conteudo: "Temos o prazer de anunciar que um novo recurso está disponível: o barbecue comunitário! Já pode reservá-lo através da plataforma.",
-  },
-];
-
 function Notificacoes() {
-  const [notificacoes] = useState(notificacoesExemplo);
-  const [selecionada, setSelecionada] = useState(notificacoes[0]);
+  const [notificacoes, setNotificacoes] = useState([]);
+  const [selecionada, setSelecionada] = useState(null);
+
+  useEffect(() => {
+    const fetchNotificacoes = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/notificacoes/', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        console.log(data);
+        setNotificacoes(data);
+      } catch (error) {
+        console.error('Erro ao buscar notificações:', error);
+      }
+    };
+
+    fetchNotificacoes();
+  }, []);
+
+  const marcarComoLida = async (NotificacaoID) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/notificacoes/${NotificacaoID}/lida`, {
+        method: 'PUT',
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        throw new Error('Erro ao marcar notificação como lida');
+      }
+      // Atualiza o estado para refletir que a notificação foi lida
+      setNotificacoes((prevNotificacoes) =>
+        prevNotificacoes.map((noti) =>
+          noti.NotificacaoID === NotificacaoID ? { ...noti, lida: true } : noti
+        )
+      );
+    } catch (error) {
+      console.error('Erro ao marcar notificação como lida:', error);
+    }
+  };
+
+  const handleNotificacaoClick = (noti) => {
+    setSelecionada(noti);
+    if (!noti.lida) {
+      marcarComoLida(noti.NotificacaoID);
+    }
+  };
 
   return (
     <div className="page-content">
-  
-    <div className="notificacoes-container">
-      
-      <div className="notificacoes-lista">
-        {notificacoes.map((noti) => (
-          <div
-            key={noti.id}
-            className={`notificacao-preview ${
-              selecionada.id === noti.id ? "ativa" : ""
-            }`}
-            onClick={() => setSelecionada(noti)}
-          >
-            <h4>{noti.titulo}</h4>
-            <p>{noti.resumo}</p>
-            <span className="data">{noti.data}</span>
-          </div>
-        ))}
-      </div>
-      <div className="notificacao-detalhe">
-        {selecionada && (
-          <>
-            <h2>{selecionada.titulo}</h2>
-            <span className="data">{selecionada.data}</span>
-            <p>{selecionada.conteudo}</p>
-          </>
-        )}
+      <Navbar2 />
+      <div className="notificacoes-container">
+        <div className="notificacoes-lista">
+          {notificacoes.map((noti) => (
+            <div
+              key={noti.NotificacaoID}
+              className={`notificacao-preview ${
+                selecionada && selecionada.NotificacaoID === noti.NotificacaoID ? "ativa" : ""
+              }`}
+              onClick={() => handleNotificacaoClick(noti)}
+            >
+              <h4>{noti.Titulo}</h4>
+              <p>{noti.Mensagem.substring(0, 100)}...</p>
+              <span className="data">{noti.data}</span>
+            </div>
+          ))}
+        </div>
+        <div className="notificacao-detalhe">
+          {selecionada && (
+            <>
+              <h2>{selecionada.Titulo}</h2>
+              <span className="data">{selecionada.DataHora}</span>
+              <p>{selecionada.Mensagem}</p>
+            </>
+          )}
+        </div>
       </div>
     </div>
-</div>
   );
 }
 

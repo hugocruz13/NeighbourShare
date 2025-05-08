@@ -1,10 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Navbar2 from "../components/Navbar2.js";
+import "../styles/RealizarPedidoManutencao.css";
 
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
   const [desc_manutencao_recurso_comum, setDescricao] = useState('');
+  const [recursos, setRecursos] = useState([]);
+
+  useEffect(() => {
+    const fetchRecursos = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/recursoscomuns/', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const data = await response.json();
+        console.log(data);
+        setRecursos(data);
+      } catch (error) {
+        console.error('Erro ao buscar recursos comuns:', error);
+        toast.error('Erro ao buscar recursos comuns.');
+      }
+    };
+
+    fetchRecursos();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,37 +59,41 @@ const RealizarPedidoManutencao = () => {
 
   return (
     <div className="page-content">
+      <Navbar2 />
       <ToastContainer />
-      <h1>Realizar Pedido de Manutenção</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Id:
-            <input
-              value={recurso_comum_id}
-              onChange={(e) => setRecursoId(e.target.value)}
-              required
-            />
-          </label>
-        </div>
+      <div className="home-container">
+        <div className='fundoNovosRecursos'>
+          <div className='textoEsquerda'>
+            <h1>Realizar Pedido de Manutenção</h1>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label>Id:</label><br></br>
+                <select value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} required>
+                  <option value="">Selecione um recurso</option>
+                  {recursos.map((recurso) => (
+                    <option key={recurso.RecComumID} value={recurso.RecComumID}>
+                      {recurso.Nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div>
-          <label>
-            Descrição:
-            <textarea
-              value={desc_manutencao_recurso_comum}
-              onChange={(e) => setDescricao(e.target.value)}
-              required
-            />
-          </label>
-        </div>
+              <div>
+                <label>Descrição:</label><br></br>
+                <textarea className='inputNovoRecurso' value={desc_manutencao_recurso_comum} onChange={(e) => setDescricao(e.target.value)} required/>
+              </div>
 
-        <button type="submit">Realizar pedido</button>
-      </form>
-      <p>
-        Se achas que existe algum recurso avariado, como um elevador, porta ou entre outros,
-        realiza aqui o teu pedido de manutenção.
-      </p>
+              <button className='btnNovoRecurso' type="submit">Realizar pedido</button>
+            </form>
+          </div>
+
+          <div className='imagemDireita'>
+            <img className='imgNovosRecursos' src="./img/fundo2.png" alt="Imagem"/>
+          </div>
+
+        </div>
+      </div>
+      <ToastContainer />
     </div>
   );
 };

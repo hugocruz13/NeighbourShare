@@ -47,7 +47,7 @@ const MeusRecursos = () => {
     formData.append('recurso_disponivel', newResource.recurso_disponivel);
     formData.append('categoria_recurso', newResource.categoria_recurso);  
     formData.append('fotos_recurso', newResource.fotos_recurso);
-    formData.append('utilizador_recurso', 2); // Adicione o ID do utilizador aqui
+    //formData.append('utilizador_recurso', 2); // Adicione o ID do utilizador aqui
     
 
     // Enviar os dados para a API
@@ -83,7 +83,7 @@ const MeusRecursos = () => {
 
   return (
     <div className="page-content">
-
+<Navbar2 />
     <div className="home-container">
       
       <div className='fundoMeusRecursos'>
@@ -102,8 +102,19 @@ const MeusRecursos = () => {
               <input type="text" placeholder="Nome do Recurso" value={newResource.nome_recurso} onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}/>
               <textarea placeholder="Descrição" value={newResource.descricao_recurso} onChange={(e) => setNewResource({ ...newResource, descricao_recurso: e.target.value })}/>
               <input type="text" placeholder="Caução" value={newResource.caucao_recurso} onChange={(e) => setNewResource({ ...newResource, caucao_recurso: e.target.value })}/>
-              <input type="text" placeholder="Disponível" value={newResource.recurso_disponivel} onChange={(e) => setNewResource({ ...newResource, recurso_disponivel: e.target.value })}/>
-              <input type="text" placeholder="Categoria" value={newResource.categoria_recurso} onChange={(e) => setNewResource({ ...newResource, categoria_recurso: e.target.value })}/>
+              <select className='input-style' value={newResource.recurso_disponivel} onChange={(e) => setNewResource({ ...newResource, recurso_disponivel: e.target.value })}>
+                <option value="">Disponível?</option>
+                <option value="Disponível">Disponível</option>
+                <option value="Indisponível">Indisponível</option>
+              </select>
+              <select className='input-style' value={newResource.categoria_recurso} onChange={(e) => setNewResource({ ...newResource, categoria_recurso: e.target.value })}>
+                <option value="">Selecione a Categoria</option>
+                <option value="Lazer">Lazer</option>
+                <option value="Tecnologia">Tecnologia</option>
+                <option value="Ferramentas">Ferramentas</option>
+                <option value="Cozinha">Cozinha</option>
+                <option value="Outros">Outros</option>
+              </select>
               <input type="file" onChange={handleFileChange} />
               <div>
                 <button onClick={handleAddResource}>Adicionar</button>
@@ -122,9 +133,8 @@ const MeusRecursos = () => {
             <th>Nº Recurso</th>
             <th>Nome do Recurso</th>
             <th>Caução</th>
-            <th>Disponibilidade</th>
             <th>Categoria</th>
-            <th>Eliminar Recurso</th>
+            <th>Disponibilidade</th>
           </tr>
         </thead>
         <tbody>
@@ -135,15 +145,13 @@ const MeusRecursos = () => {
               <td>{recurso.Caucao}</td>
               <td>{recurso.Categoria_.DescCategoria}</td>
               <td>{recurso.Disponibilidade_.DescDisponibilidade}</td>
-              <td>
-                <img className='deleteIcon' src="img/delete.png"></img>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
       </div>
     </div>
+    <ToastContainer />
 </div>
   );
 };

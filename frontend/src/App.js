@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.js";
 import Login from "./pages/Login.js";
+import Registar from "./pages/Registar.js";
 import Admin from "./pages/Admin.js"
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,20 +18,27 @@ import RealizarPedidoNovoRecurso from "./pages/RealizarPedidoNovoRecurso.js";
 import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.js";
 import PedidosManutencao from "./pages/PedidosManutencao.js";
 import Notificacoes from "./pages/Notificacoes.js";
-import Navbar2 from "./components/Navbar2";
-import EntidadeExterna from "./pages/EntidadeExterna.js";
 import Orcamentos from "./pages/Orcamentos.js";
+import Manutencao from "./pages/Manutencao.js";
+import Votacoes from "./pages/Votacoes.js";
+import ConsultarVotacao from "./pages/ConsultarVotacao.js";
+import PedidosNovosRecursosPendentesVoto from "./pages/PedidosNovosRecursosPendentesVoto.js";
+import AtualizarDados from "./pages/AtualizarDados.js";
+import RecuperarPass from "./pages/RecuperarPass.js";
+import Exemplo from "./pages/Exemplo.js";
+import EntidadeExterna from "./pages/EntidadeExterna.js";
+import RecursosComuns from "./pages/RecursosComuns.js";
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <Router>
-          <Navbar2 /> {/* Aqui colocas a barra no topo */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><Admin /></ProtectedRoute>}/>
+            <Route path="/registar" element={<ProtectedRoute allowedRoles={["admin"]}><Registar /></ProtectedRoute>}/>
             <Route path="/menu" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Menu /></ProtectedRoute>}/>
             <Route path="/recursosDisponiveis" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RecursosDisponiveis /></ProtectedRoute>}/>
             <Route path="/pedidosNovosRecursos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosNovosRecursos /></ProtectedRoute>}/>
@@ -43,8 +51,16 @@ function App() {
             <Route path="/realizarPedidoManutencao" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RealizarPedidoManutencao /></ProtectedRoute>}/>
             <Route path="/pedidosManutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><PedidosManutencao /></ProtectedRoute>}/>
             <Route path="/notificacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Notificacoes /></ProtectedRoute>}/>
-            <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
             <Route path="/orcamentos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Orcamentos /></ProtectedRoute>}/>
+            <Route path="/manutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Manutencao /></ProtectedRoute>}/>
+            <Route path="/votacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Votacoes /></ProtectedRoute>}/>
+            <Route path="/consultarVotacao/:id" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ConsultarVotacao  /></ProtectedRoute>}/>
+            <Route path="/pedidosNovosRecursosPendentesVoto" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosNovosRecursosPendentesVoto  /></ProtectedRoute>}/>
+            <Route path="/atualizarDados" element={<AtualizarDados  />}/>
+            <Route path="/recuperarPass" element={<RecuperarPass  />}/>
+            <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
+            <Route path="/exemplo" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Exemplo /></ProtectedRoute>}/>
+            <Route path="/recursosComuns" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><RecursosComuns /></ProtectedRoute>}/>
           </Routes>
         </Router>
       </AuthProvider>
