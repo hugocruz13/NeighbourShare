@@ -161,6 +161,7 @@ async def processar_votacao(db:Session, votacao_id: int):
                     Orcamento_id= int(resultado)
                 ))
                 await alterar_tipo_estado_pedido_manutencao(db,votacao.PedidoManutencao[0].PMID, EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value)
+                await cria_notificacao_orcamento_mais_votado(db,await obter_pedido_manutencao_db(db, votacao.PedidoManutencao[0].PMID),resultado)
             else:
 
                 votacao_pedido_novo_recurso = db.query(VotacaoPedidoNovoRecurso).filter(VotacaoPedidoNovoRecurso.VotacaoID == votacao_id).first()
