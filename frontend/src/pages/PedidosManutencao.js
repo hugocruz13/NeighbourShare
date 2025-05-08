@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "../styles/PedidosManutencao.css";
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
@@ -26,9 +26,9 @@ const PedidosManutencao = () => {
         });
         const data = await res.json();
         console.log(data);
-        if (data && Array.isArray(data.pedidos)) {
+        if (data && Array.isArray(data)) {
           // Se for um array, atualiza os pedidos
-          setPedidos(data.pedidos);
+          setPedidos(data);
           setMensagemErro(null);  // Limpar erro caso haja pedidos
         } else if (data && data.detail) {
           // Se a resposta contiver a chave 'detail', trata como erro
@@ -116,14 +116,14 @@ const PedidosManutencao = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className='fundoMeusRecursos'>
-
+        <div className={styles.fundo}>
+  
           {/* Modal de Adicionar Recurso */}
           {showModal && pedidoAtual && (
             <>
-              <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-              <div className="modal-content">
-                <div className='detalhesManutencao'>
+              <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
+              <div className={styles.modalcontent}>
+                <div className={styles.detalhesManutencao}>
                   <p><strong>Nº do Pedido:</strong> {pedidoAtual.PMID}</p>
                   <p><strong>Solicitante:</strong> {pedidoAtual.Utilizador_.NomeUtilizador}</p>
                   <p><strong>Data Do Pedido:</strong> {pedidoAtual.DataPedido}</p>
@@ -142,8 +142,8 @@ const PedidosManutencao = () => {
           {/* Modal de Justificação */}
           {showJustificationModal && (
             <>
-              <div className="modal-backdrop" onClick={() => setShowJustificationModal(false)} />
-              <div className="modal-content">
+              <div className={styles.modalbackdrop} onClick={() => setShowJustificationModal(false)} />
+              <div className={styles.modalcontent}>
                 <h2>Justificação</h2>
                 <textarea value={justificacao} onChange={(e) => setJustificacao(e.target.value)} required />
                 <div>
@@ -154,7 +154,7 @@ const PedidosManutencao = () => {
             </>
           )}
   
-          <p className='p-meusRecursos'>Pedidos de Manutenção</p>
+          <p className={styles.pmeusRecursos}>Pedidos de Manutenção</p>
           <Tabela
             colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Recurso', 'Ação']}
             dados={pedidos.map((pedido) => ({

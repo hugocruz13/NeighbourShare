@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "../styles/Orcamentos.css";
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
@@ -10,8 +10,8 @@ const Orcamentos = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
   const [newResource, setNewResource] = useState({
-    id_entidade_externa: '', 
-    valor_orcamento: '', 
+    id_entidade_externa: '',
+    valor_orcamento: '',
     descricao_orcamento: '',
     pdforcamento: null,
     idprocesso: '',
@@ -33,10 +33,8 @@ const Orcamentos = () => {
           method: 'GET',
           credentials: 'include',
         });
-
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
-        console.log(data);
         setOrcamentos(data);
       } catch (error) {
         console.error('Erro ao buscar orcamentos:', error);
@@ -49,10 +47,8 @@ const Orcamentos = () => {
           method: 'GET',
           credentials: 'include',
         });
-
         if (!res.ok) throw new Error('Erro ao buscar fornecedores');
         const data = await res.json();
-        console.log(data);
         setFornecedores(data);
       } catch (error) {
         console.error('Erro ao buscar fornecedores:', error);
@@ -81,17 +77,15 @@ const Orcamentos = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.error(errorData);
         throw new Error(errorData.detail || 'Erro ao adicionar recurso');
       }
 
       toast.success('Recurso adicionado com sucesso!');
       setShowModal(false);
-
-      setNewResource({ 
-        id_entidade_externa: '', 
-        valor_orcamento: '', 
-        descricao_orcamento: '', 
+      setNewResource({
+        id_entidade_externa: '',
+        valor_orcamento: '',
+        descricao_orcamento: '',
         pdforcamento: null,
         idprocesso: '',
         tipoorcamento: ''
@@ -114,7 +108,6 @@ const Orcamentos = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.error(errorData);
         throw new Error(errorData.detail || 'Erro ao criar votação');
       }
 
@@ -137,18 +130,22 @@ const Orcamentos = () => {
   };
 
   return (
-    <div className="page-content">
+    <div className="page-container">
       <Navbar2 />
-  
+
       <div className="home-container">
-        <div className='fundoMeusRecursos'>
-          <button className="btn-registarRecurso" onClick={() => { setShowModal(true); setModalType('orcamento'); }}>Inserir Orçamento</button>
-          <button className="btn-criarVotacao" onClick={() => { setShowModal(true); setModalType('votacao'); }}>Criar Votação</button>
-  
+        <div className={styles.fundo}>
+          <button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }}>
+            Inserir Orçamento
+          </button>
+          <button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }}>
+            Criar Votação
+          </button>
+
           {showModal && (
             <>
-              <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-              <div className="modal-content">
+              <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
+              <div className={styles.modalcontent}>
                 {modalType === 'orcamento' ? (
                   <>
                     <h2>Adicionar Orçamento</h2>
@@ -176,36 +173,11 @@ const Orcamentos = () => {
                 ) : (
                   <>
                     <h2>Criar Votação</h2>
-                    <input
-                      type="text"
-                      placeholder="Título"
-                      value={votacao.titulo}
-                      onChange={(e) => setVotacao({ ...votacao, titulo: e.target.value })}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Descrição"
-                      value={votacao.descricao}
-                      onChange={(e) => setVotacao({ ...votacao, descricao: e.target.value })}
-                    />
-                    <input
-                      type="number"
-                      placeholder="ID do Processo"
-                      value={votacao.id_processo}
-                      onChange={(e) => setVotacao({ ...votacao, id_processo: parseInt(e.target.value) })}
-                    />
-                    <input
-                      type="date"
-                      placeholder="Data de Fim"
-                      value={votacao.data_fim}
-                      onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Tipo"
-                      value={votacao.tipo_votacao}
-                      onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })}
-                    />
+                    <input type="text" placeholder="Título" value={votacao.titulo} onChange={(e) => setVotacao({ ...votacao, titulo: e.target.value })} />
+                    <input type="text" placeholder="Descrição" value={votacao.descricao} onChange={(e) => setVotacao({ ...votacao, descricao: e.target.value })} />
+                    <input type="number" placeholder="ID do Processo" value={votacao.id_processo} onChange={(e) => setVotacao({ ...votacao, id_processo: parseInt(e.target.value) })} />
+                    <input type="date" placeholder="Data de Fim" value={votacao.data_fim} onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })} />
+                    <input type="text" placeholder="Tipo" value={votacao.tipo_votacao} onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })} />
                     <div>
                       <button onClick={handleCreateVotacao}>Criar</button>
                       <button onClick={() => setShowModal(false)}>Cancelar</button>
@@ -215,8 +187,8 @@ const Orcamentos = () => {
               </div>
             </>
           )}
-  
-          <p className='p-meusRecursos'>Orçamentos</p>
+
+          <p className={styles.titulo}>Orçamentos</p>
           <Tabela
             colunas={['Nº Orçamento', 'Fornecedor', 'Valor', 'Descrição']}
             dados={orcamentos.map((orcamento) => ({
@@ -229,11 +201,10 @@ const Orcamentos = () => {
           />
         </div>
       </div>
-  
+
       <ToastContainer />
     </div>
   );
-  
 };
 
 export default Orcamentos;

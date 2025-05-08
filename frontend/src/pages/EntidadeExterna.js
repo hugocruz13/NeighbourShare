@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
 
@@ -23,7 +24,6 @@ const EntidadesExternas = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setEntidades(data);
       } catch (error) {
         console.error('Erro ao buscar entidades externas:', error);
@@ -49,11 +49,9 @@ const EntidadesExternas = () => {
         credentials: 'include',
         body: JSON.stringify(novaEntidade)
       });
-      if (!res.ok) {
-        throw new Error('Erro ao registrar entidade.');
-      }
+      if (!res.ok) throw new Error('Erro ao registrar entidade.');
+      
       const data = await res.json();
-      console.log(data);
       toast.success('Entidade registrada com sucesso!');
       setShowModal(false);
       setNovaEntidade({
@@ -83,22 +81,32 @@ const EntidadesExternas = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className='fundoEntidadesExternas'>
-          <p className='p-entidadesExternas'>Entidades Externas</p>
-          <button onClick={() => setShowModal(true)}>Adicionar Entidade</button>
-            <Tabela
-              colunas={colunas}
-              dados={entidades}
-              aoClicarAcao={() => {}}
-              tipoAcao="link"
-              mensagemVazio="Nenhuma entidade externa encontrada."/>
+        <div className={styles.fundo}>
+          <p className={styles.pmeusRecursos}>Entidades Externas</p>
+          <button
+            onClick={() => setShowModal(true)}
+            className={styles.btnregistarRecurso}
+          >
+            Adicionar Entidade
+          </button>
+
+          <Tabela
+            colunas={colunas}
+            dados={entidades}
+            aoClicarAcao={() => {}}
+            tipoAcao="link"
+            mensagemVazio="Nenhuma entidade externa encontrada."
+          />
         </div>
 
         {showModal && (
           <>
-            <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-            <div className="modal-content">
-              <h3>Adicionar Nova Entidade</h3>
+            <div
+              className={styles.modalbackdrop}
+              onClick={() => setShowModal(false)}
+            />
+            <div className={styles.modalcontent}>
+              <h3 className={styles.titulo}>Adicionar Nova Entidade</h3>
               <form onSubmit={handleSubmit}>
                 <label>
                   Nome:
@@ -152,7 +160,9 @@ const EntidadesExternas = () => {
                 </label>
                 <div>
                   <button type="submit">Registrar</button>
-                  <button type="button" onClick={() => setShowModal(false)}>Fechar</button>
+                  <button type="button" onClick={() => setShowModal(false)}>
+                    Fechar
+                  </button>
                 </div>
               </form>
             </div>
