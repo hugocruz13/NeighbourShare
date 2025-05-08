@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "../styles/PedidosManutencao.css";
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
@@ -112,10 +112,10 @@ const Manutencao = () => {
   return (
     <div className="page-content">
       <Navbar2 />
-  
+    
       <div className="home-container">
-        <div className='fundoMeusRecursos'>
-          <p className='p-meusRecursos'>Pedidos de Manutenção</p>
+        <div className={styles.fundo}>
+          <p className={styles.pmeusRecursos}>Pedidos de Manutenção</p>
           <Tabela
             colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado']}
             dados={pedidos}
@@ -124,7 +124,7 @@ const Manutencao = () => {
             mensagemVazio="Nenhum pedido de manutenção encontrado."
           />
         </div>
-  
+    
         <ToastContainer />
       </div>
     </div>
