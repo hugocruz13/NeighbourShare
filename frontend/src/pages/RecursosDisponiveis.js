@@ -18,7 +18,7 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-        console.log(data);
+
         setUserId(data.id); // Supondo que o ID do utilizador está na propriedade 'id'
       } catch (error) {
         console.error('Erro ao buscar ID do utilizador:', error);
@@ -32,8 +32,15 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-        console.log(data);
-        setProducts(data);
+
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (data.detail === 'Nenhum recurso encontrado') {
+          setProducts([]);
+        } else {
+          throw new Error("Resposta inesperada da API");
+        }
+
         setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
