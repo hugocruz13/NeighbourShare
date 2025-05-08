@@ -171,7 +171,10 @@ const Votacoes = () => {
               </select>
               <div>
                 <button disabled={!selectedOrcamento} onClick={submeterVoto}>Votar</button>
-                <button onClick={() => setModalAberto('')}>Fechar</button>
+                <button onClick={() => {
+                  setModalAberto('');
+                  setVotacaoAtual(null);
+                }}>Fechar</button>
               </div>
             </>
           )}
