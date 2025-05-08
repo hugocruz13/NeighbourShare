@@ -83,6 +83,30 @@ const PedidosManutencao = () => {
     }
   };
 
+  const handleAprovarInterna = async (pedido) => {
+    if (pedido.EstadoPedManuID !== 1) {
+      toast.error('Só pode aprovar pedidos que estão "Em análise".');
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedido.PMID}/estado`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ novo_estado_id: 2 }), // 2 = Aprovado para manutenção interna
+      });
+      if (!res.ok) throw new Error('Erro ao aprovar para manutenção interna.');
+      toast.success('Pedido aprovado para manutenção interna!');
+      setPedidos((prev) =>
+        prev.map((p) =>
+          p.PMID === pedido.PMID ? { ...p, EstadoPedManuID: 2 } : p
+        )
+      );
+    } catch (error) {
+      toast.error(error.message || 'Erro ao aprovar pedido.');
+    }
+  };
+
   const handleNaoClick = () => {
     setShowModal(false);
     setShowJustificationModal(true);
@@ -140,7 +164,7 @@ const PedidosManutencao = () => {
   
           <p className='p-meusRecursos'>Pedidos de Manutenção</p>
           <Tabela
-            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Recurso', 'Ação']}
+            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Recurso', 'Ação', 'Execução Interna']}
             dados={pedidos.map((pedido) => ({
               'Nº do Pedido': pedido.PMID,
               'Solicitante': pedido.Utilizador_.NomeUtilizador,
@@ -158,6 +182,15 @@ const PedidosManutencao = () => {
                     </option>
                   ))}
                 </select>
+              ),
+              'Execução Interna': (
+                <button
+                  className="btnAprovarInterna"
+                  onClick={() => handleAprovarInterna(pedido)}
+                  disabled={pedido.EstadoPedManuID !== 1}
+                >
+                  Aprovar Execução Interna
+                </button>
               )
             }))}
             mensagemVazio="Nenhum pedido de manutenção encontrado."

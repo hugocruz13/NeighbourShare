@@ -145,4 +145,23 @@ th {
   display: inline-block;
   width: 150px;
 }
-  
+
+.btnAprovarInterna {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btnAprovarInterna:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.btnAprovarInterna:hover:not(:disabled) {
+  background-color: #023e8a;
+}
