@@ -6,34 +6,32 @@ import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
 const Manutencao = () => {
-  const [pedidos, setPedidos] = useState([]);
+  const [manutencoes, setManutencoes] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [editDateId, setEditDateId] = useState(null);
   const [newDate, setNewDate] = useState('');
 
   useEffect(() => {
-    const fetchPedidos = async () => {
+    const fetchManutencoes = async () => {
       try {
         const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao/', {
           method: 'GET',
           credentials: 'include'
         });
         const data = await res.json();
-
         if (Array.isArray(data)) {
-          setPedidos(data);
+          setManutencoes(data);
         } else if (data.detail === 'Nenhuma manutenção encontrada') {
-          setPedidos([]);
+          setManutencoes([]);
         } else {
           throw new Error("Resposta inesperada da API");
         }
-
       } catch (error) {
-        console.error('Erro ao buscar pedidos de manutenção:', error);
+        console.error('Erro ao buscar manutenções:', error);
+        toast.error('Erro ao buscar manutenções.');
       }
     };
-
-    fetchPedidos();
+    fetchManutencoes();
   }, []);
 
   useEffect(() => {
@@ -49,7 +47,6 @@ const Manutencao = () => {
         console.error('Erro ao buscar opções de estado:', error);
       }
     };
-
     fetchStatusOptions();
   }, []);
 
@@ -64,59 +61,87 @@ const Manutencao = () => {
 
       if (!res.ok) throw new Error();
 
-      toast.success('Estado do pedido atualizado com sucesso!');
-      setPedidos((prev) =>
-        prev.map((p) => p.ManutencaoID === manutencao_id ? { ...p, estado: novo_estado_id } : p)
+      toast.success('Estado da manutenção atualizado com sucesso!');
+      setManutencoes((prev) =>
+        prev.map((p) =>
+          p.ManutencaoID === manutencao_id
+            ? { ...p, EstadoManuID: parseInt(novo_estado_id) }
+            : p
+        )
       );
     } catch (error) {
-      toast.error('Erro ao atualizar estado do pedido.');
+      toast.error('Erro ao atualizar estado da manutenção.');
     }
   };
 
-  const handleDateUpdate = async (pedido) => {
+  const handleDateUpdate = async (manutencao) => {
     try {
       const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao/update/', {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ManutencaoID: pedido.ManutencaoID,
-          PMID: pedido.PMID,
+          ManutencaoID: manutencao.ManutencaoID,
+          PMID: manutencao.PMID,
           DataManutencao: newDate,
-          DescManutencao: pedido.DescManutencao
+          DescManutencao: manutencao.DescManutencao
         })
       });
 
       if (!res.ok) throw new Error();
 
       toast.success('Data de manutenção atualizada com sucesso!');
-      setPedidos((prev) =>
+      setManutencoes((prev) =>
         prev.map((p) =>
-          p.ManutencaoID === pedido.ManutencaoID ? { ...p, DataManutencao: newDate } : p
+          p.ManutencaoID === manutencao.ManutencaoID
+            ? { ...p, DataManutencao: newDate }
+            : p
         )
       );
       setEditDateId(null);
+      setNewDate('');
     } catch (error) {
       toast.error('Erro ao atualizar a data.');
     }
   };
 
+  // Helper para mostrar o nome do estado
+  const getEstadoNome = (estadoId) => {
+    const estado = statusOptions.find(opt => opt.EstadoManuID === estadoId);
+    return estado ? estado.DescEstadoManutencao : estadoId;
+  };
+
   return (
     <div className="page-content">
       <Navbar2 />
-  
+
       <div className="home-container">
         <div className='fundoMeusRecursos'>
-          <p className='p-meusRecursos'>Manutenção</p>
+          <p className='p-meusRecursos'>Manutenções Registadas</p>
           <Tabela
-            colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado']}
-            dados={pedidos}
-            aoClicarAcao={(pedido) => handleDateUpdate(pedido)}
-            tipoAcao="link"
-            mensagemVazio="Nenhum pedido de manutenção encontrado."
+            colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado', 'Alterar Estado']}
+            dados={manutencoes.map((manutencao) => ({
+              'Nº Manutenção': manutencao.ManutencaoID,
+              'Descrição': manutencao.DescManutencao,
+              'Data Manutenção': manutencao.DataManutencao,
+              'Estado': getEstadoNome(manutencao.EstadoManuID),
+              'Alterar Estado': (
+                <select
+                  value={manutencao.EstadoManuID}
+                  onChange={e => handleStatusChange(manutencao.ManutencaoID, e.target.value)}
+                >
+                  {statusOptions.map(option => (
+                    <option key={option.EstadoManuID} value={option.EstadoManuID}>
+                      {option.DescEstadoManutencao}
+                    </option>
+                  ))}
+                </select>
+              )
+            }))}
+            mensagemVazio="Nenhuma manutenção registada encontrada."
           />
         </div>
-  
+
         <ToastContainer />
       </div>
     </div>
