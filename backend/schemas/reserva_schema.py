@@ -111,7 +111,7 @@ class ReservaGetSolicitanteSchema(BaseModel):
 # === Listagem de Pedidos de Reserva ===
 
 class PedidoReservaGetDonoSchema(BaseModel):
-    PedidoReservaID: conint(gt=0)
+    PedidoReservaID: int
     RecursoID: conint(gt=0)
     RecursoNome: constr(min_length=2, max_length=100)
     UtilizadorNome: constr(min_length=3, max_length=100)

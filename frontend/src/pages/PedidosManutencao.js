@@ -38,13 +38,14 @@ const PedidosManutencao = () => {
   useEffect(() => {
     const fetchStatusOptions = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidodsmanutencao/estados', {
+        const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosmanutencao/estados', {
           method: 'GET',
           credentials: 'include'
         });
         const data = await res.json();
         console.log(data);
         setStatusOptions(data); // Assuming data is an array of status options
+        console.log("Resposta dos status:", data);
       } catch (error) {
         console.error('Erro ao buscar opções de estado:', error);
       }
