@@ -172,7 +172,7 @@ async def processar_votacao(db:Session, votacao_id: int):
                 elif votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == "sim":
                     await altera_estado_pedido_novo_recurso_db(db, votacao_pedido_novo_recurso.PedidoNovoRecID,EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value)
                     await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao,await obter_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID))
-                elif votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == "não":
+                elif votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == "nao":
                     await altera_estado_pedido_novo_recurso_db(db, votacao_pedido_novo_recurso.PedidoNovoRecID, EstadoPedNovoRecursoComumSchema.REJEITADO.value)
                     await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao,await obter_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID))
 
