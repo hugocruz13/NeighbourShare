@@ -160,6 +160,20 @@ async def processar_votacao(db:Session, votacao_id: int):
                     DescManutencao=votacao.PedidoManutencao[0].DescPedido,
                     Orcamento_id= int(resultado)
                 ))
+                await alterar_tipo_estado_pedido_manutencao(db,votacao.PedidoManutencao[0].PMID, EstadoPedManutencaoSchema.NEGOCIACAOENTIDADESEXTERNAS.value)
+            else:
+
+                votacao_pedido_novo_recurso = db.query(VotacaoPedidoNovoRecurso).filter(VotacaoPedidoNovoRecurso.VotacaoID == votacao_id).first()
+
+                if votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.MULTIPLA and resultado != "Sem votos":
+                    await altera_estado_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID,EstadoPedNovoRecursoComumSchema.APROVADOPARACOMPRA.value)
+                    await cria_notificacao_anuncio_compra_novo_recurso_comum_service(db,await obter_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID),resultado)
+                elif votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Sim"):
+                    await altera_estado_pedido_novo_recurso_db(db, votacao_pedido_novo_recurso.PedidoNovoRecID,EstadoPedNovoRecursoComumSchema.APROVADOPARAORCAMENTACAO.value)
+                    await cria_notificacao_decisao_compra_recurso_positiva_service(db,votacao,await obter_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID))
+                elif votacao_pedido_novo_recurso.TipoVotacao == TipoVotacaoPedidoNovoRecurso.BINARIA and resultado == formatar_string("Não"):
+                    await altera_estado_pedido_novo_recurso_db(db, votacao_pedido_novo_recurso.PedidoNovoRecID, EstadoPedNovoRecursoComumSchema.REJEITADO.value)
+                    await cria_notificacao_decisao_nao_compra_recurso_service(db, votacao,await obter_pedido_novo_recurso_db(db,votacao_pedido_novo_recurso.PedidoNovoRecID))
 
         else:
             resultado = "Sem votos"
