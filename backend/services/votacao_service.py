@@ -58,7 +58,7 @@ async def gerir_votacao_pedido_manutencao(db: Session, votacao: Criar_Votacao):
             raise HTTPException(status_code=400, detail="A data de fim da votação deve ser posterior à data de início (mínimo 1 dia de duração).")
 
         await cria_notificacao_decisao_orcamento_manutencao_service(db, votacao)
-
+        await alterar_tipo_estado_pedido_manutencao(db,votacao.id_processo, EstadoPedManutencaoSchema.VOTACAO.value)
         return await criar_votacao_pedido_manutencao_db(db,votacao)
     except HTTPException as e:
         raise e
