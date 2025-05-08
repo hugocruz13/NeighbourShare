@@ -244,12 +244,14 @@ const Orcamentos = () => {
                       value={votacao.data_fim}
                       onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })}
                     />
-                    <input
-                      type="text"
-                      placeholder="Tipo"
+                    <select className='input-style'
                       value={votacao.tipo_votacao}
                       onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })}
-                    />
+                    >
+                      <option value="">Selecione o tipo</option>
+                          <option value="Aquisição">Aquisição</option>
+                          <option value="Manutenção">Manutenção</option>
+                    </select>
                     <div>
                       <button onClick={handleCreateVotacao}>Criar</button>
                       <button onClick={() => setShowModal(false)}>Cancelar</button>
