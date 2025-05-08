@@ -6,6 +6,7 @@ import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
 const Orcamentos = () => {
+  const [pedidos, setPedidos] = useState([]);
   const [orcamentos, setOrcamentos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
@@ -25,6 +26,38 @@ const Orcamentos = () => {
     tipo_votacao: 'Aquisição',
   });
   const [fornecedores, setFornecedores] = useState([]);
+
+  useEffect(() => {
+    const fetchPedidos = async () => {
+      if (!newResource.tipoorcamento) return; // se não escolheu nada, não faz nada
+  
+      let url = '';
+      if (newResource.tipoorcamento === 'Aquisição') {
+        url = 'http://localhost:8000/api/recursoscomuns/pedidosnovos';
+      } else if (newResource.tipoorcamento === 'Manutenção') {
+        url = 'http://localhost:8000/api/recursoscomuns/pedidosmanutencao';
+      } else {
+        return;
+      }
+  
+      try {
+        const res = await fetch(url, {
+          method: 'GET',
+          credentials: 'include',
+        });
+  
+        if (!res.ok) throw new Error('Erro ao buscar pedidos');
+        const data = await res.json();
+        console.log(data)
+        setPedidos(data);
+      } catch (error) {
+        console.error('Erro ao buscar pedidos:', error);
+      }
+    };
+  
+    fetchPedidos();
+  }, [newResource.tipoorcamento]);
+  
 
   useEffect(() => {
     const fetchOrcamentos = async () => {
@@ -165,8 +198,19 @@ const Orcamentos = () => {
                     </select>
                     <input type="number" placeholder="valor" value={newResource.valor_orcamento} onChange={(e) => setNewResource({ ...newResource, valor_orcamento: e.target.value })} />
                     <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })} />
-                    <input type="text" placeholder="ID Processo" value={newResource.idprocesso} onChange={(e) => setNewResource({ ...newResource, idprocesso: e.target.value })} />
-                    <input type="text" placeholder="Tipo Orçamento" value={newResource.tipoorcamento} onChange={(e) => setNewResource({ ...newResource, tipoorcamento: e.target.value })} />
+                    <select className='input-style' value={newResource.idprocesso} onChange={(e) => setNewResource({ ...newResource, idprocesso: e.target.value })} style={{ margin: '10px 0' }}>
+                        <option value="">Selecione um pedido</option>
+                        {pedidos.map((pedido) => (
+                          <option key={pedido.PedidoNovoRecID || pedido.PMID} value={pedido.PedidoNovoRecID || pedido.PMID}>
+                            {pedido.DescPedidoNovoRecurso || pedido.DescPedido}
+                          </option>
+                        ))}
+                      </select>
+                    <select className='input-style' value={newResource.tipoorcamento}  onChange={(e) => setNewResource({ ...newResource, tipoorcamento: e.target.value })}>
+                          <option value="">Selecione o tipo de orçamento</option>
+                          <option value="Aquisição">Aquisição</option>
+                          <option value="Manutenção">Manutenção</option>
+                    </select>
                     <input type="file" onChange={handleFileChange} />
                     <div>
                       <button onClick={handleAddResource}>Adicionar</button>

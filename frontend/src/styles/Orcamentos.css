@@ -58,7 +58,14 @@
   border-radius: 6px;
 }
 
-
+.input-style {
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 104%;
+  box-sizing: border-box;
+}
 
 
 .fundoNovosRecursos {

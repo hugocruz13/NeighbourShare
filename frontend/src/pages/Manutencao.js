@@ -19,8 +19,15 @@ const Manutencao = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
-        setPedidos(data);
+
+        if (Array.isArray(data)) {
+          setPedidos(data);
+        } else if (data.detail === 'Nenhuma manutenção encontrada') {
+          setPedidos([]);
+        } else {
+          throw new Error("Resposta inesperada da API");
+        }
+
       } catch (error) {
         console.error('Erro ao buscar pedidos de manutenção:', error);
       }
@@ -100,7 +107,7 @@ const Manutencao = () => {
   
       <div className="home-container">
         <div className='fundoMeusRecursos'>
-          <p className='p-meusRecursos'>Pedidos de Manutenção</p>
+          <p className='p-meusRecursos'>Manutenção</p>
           <Tabela
             colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado']}
             dados={pedidos}
