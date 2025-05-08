@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import "../styles/ListaPedidosReserva.css";
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -79,28 +79,28 @@ const ReservarRecurso = ({ match }) => {
   const pedidosEmAnaliseDono = Array.isArray(comoDono) ? comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
 
   return (
-    <div className="page-content">
+    <div className={styles.pageContent}>
       <Navbar2 />
-      <div className="home-container">
-        <div className='fundoListaPedidosReserva'>
-          <p className='tituloPedidosReserva'>Os Meus Pedidos de Reserva Feitos</p>
-            <Tabela
-              colunas={['PedidoReservaID', 'RecursoNome', 'NomeDono', 'DataInicio', 'DataFim', 'EstadoPedidoReserva']}
-              dados={pedidosEmAnaliseSolicitante}
-              mensagemVazio="Nenhum pedido de reserva encontrado."
-            />
+      <div className={styles.homeContainer}>
+        <div className={styles.fundoListaPedidosReserva}>
+          <p className={styles.tituloPedidosReserva}>Os Meus Pedidos de Reserva Feitos</p>
+          <Tabela
+            colunas={['PedidoReservaID', 'RecursoNome', 'NomeDono', 'DataInicio', 'DataFim', 'EstadoPedidoReserva']}
+            dados={pedidosEmAnaliseSolicitante}
+            mensagemVazio="Nenhum pedido de reserva encontrado."
+          />
         </div>
 
-        <div className='fundoListaPedidosReserva'>
-          <p className='tituloPedidosReserva'>Pedidos de Reserva</p>
-            <Tabela
+        <div className={styles.fundoListaPedidosReserva}>
+          <p className={styles.tituloPedidosReserva}>Pedidos de Reserva</p>
+          <Tabela
             colunas={['PedidoReservaID', 'UtilizadorNome', 'RecursoNome', 'DataInicio', 'DataFim', 'Ação']}
             dados={pedidosEmAnaliseDono.map(p => ({
               ...p,
               acaoTexto: (
                 <>
-                  <button className="btnSimPedidoReserva" onClick={() => handleReserve(p.PedidoReservaID)}>Sim</button>
-                  <button className="btnNaoPedidoReserva" onClick={() => { setShowRejectModal(true); setPedidoReservaID(p.PedidoReservaID); }}>Não</button>
+                  <button className={styles.btnSimPedidoReserva} onClick={() => handleReserve(p.PedidoReservaID)}>Sim</button>
+                  <button className={styles.btnNaoPedidoReserva} onClick={() => { setShowRejectModal(true); setPedidoReservaID(p.PedidoReservaID); }}>Não</button>
                 </>
               )
             }))}
@@ -113,8 +113,8 @@ const ReservarRecurso = ({ match }) => {
 
       {showRejectModal && (
         <>
-          <div className="modal-backdrop" onClick={() => setShowRejectModal(false)} />
-          <div className="modal-content">
+          <div className={styles.modalBackdrop} onClick={() => setShowRejectModal(false)} />
+          <div className={styles.modalContent}>
             <h3>Motivo da Recusa</h3>
             <textarea
               value={motivoRecusacao}
@@ -123,8 +123,8 @@ const ReservarRecurso = ({ match }) => {
               required
             />
             <div>
-              <button onClick={handleReject}>Enviar</button>
-              <button onClick={() => setShowRejectModal(false)}>Cancelar</button>
+              <button className={styles.modalButton} onClick={handleReject}>Enviar</button>
+              <button className={styles.modalButton} onClick={() => setShowRejectModal(false)}>Cancelar</button>
             </div>
           </div>
         </>
@@ -136,3 +136,4 @@ const ReservarRecurso = ({ match }) => {
 };
 
 export default ReservarRecurso;
+
