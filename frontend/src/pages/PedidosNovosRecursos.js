@@ -19,8 +19,13 @@ const PedidosAquisicao = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
-        setPedidos(data);
+        if (Array.isArray(data)) {
+          setPedidos(data);
+        } else if (data.detail === 'Nenhum recurso encontrado') {
+          setPedidos([]);
+        } else {
+          throw new Error("Resposta inesperada da API");
+        }       
       } catch (error) {
         console.error('Erro ao buscar pedidos de aquisição:', error);
       }
