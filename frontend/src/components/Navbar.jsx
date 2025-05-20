@@ -3,7 +3,6 @@ import "../styles/Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
-
   const handleLoginClick = () => {
     navigate("/login");
   };
