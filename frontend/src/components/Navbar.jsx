@@ -50,12 +50,18 @@ function Navbar() {
           <span></span>
         </div>
 
-        <div className={`${styles["nav-elements"]} ${menuOpen ? styles.active : ""}`}>
+        <div
+          className={`${styles["nav-elements"]} ${
+            menuOpen ? styles.active : ""
+          }`}
+        >
           <ul className={styles.links}>
             <li>
               <Link
                 to="/"
-                className={`${styles.link} ${location.pathname === "/" ? styles.active : ""}`}
+                className={`${styles.link} ${
+                  location.pathname === "/" ? styles.active : ""
+                }`}
                 onClick={handleLinkClick}
               >
                 Home
@@ -64,32 +70,36 @@ function Navbar() {
             <li>
               <Link
                 to="/sobre"
-                className={`${styles.link} ${location.pathname === "/sobre" ? styles.active : ""}`}
+                className={`${styles.link} ${
+                  location.pathname === "/sobre" ? styles.active : ""
+                }`}
                 onClick={handleLinkClick}
               >
                 Sobre
               </Link>
             </li>
             <li>
-              <Link
-                to="/funcionalidade"
-                className={`${styles.link} ${location.pathname === "/funcionalidade" ? styles.active : ""}`}
+              <a
+                href="#funcionalidades"
+                className={styles.link}
                 onClick={handleLinkClick}
               >
-                Funcionalidades
-              </Link>
+                  Funcionalidades
+              </a>
             </li>
             <li>
               <Link
                 to="/contactos"
-                className={`${styles.link} ${location.pathname === "/contactos" ? styles.active : ""}`}
+                className={`${styles.link} ${
+                  location.pathname === "/contactos" ? styles.active : ""
+                }`}
                 onClick={handleLinkClick}
               >
                 Contactos
               </Link>
             </li>
           </ul>
-          <Button variant = "login" onClick={handleLoginClick}>
+          <Button variant="login" onClick={handleLoginClick}>
             Login
           </Button>
         </div>
