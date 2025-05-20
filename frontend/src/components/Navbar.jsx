@@ -1,21 +1,99 @@
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/Navbar.css";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Button from "./Button";
+import styles from "./Navbar.module.css";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Detectar scroll para mudar o estilo do navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleLoginClick = () => {
     navigate("/login");
   };
 
+  // Fechar menu móvel após clique em link
+  const handleLinkClick = () => {
+    if (menuOpen) setMenuOpen(false);
+  };
+
   return (
-    <nav className="navbar">
-      <ul className="links">
-        <li><Link to="/" className="link">Home</Link></li>
-        <li><Link to="/sobre" className="link">Sobre</Link></li>
-        <li><Link to="/funcionalidade" className="link">Funcionalidades</Link></li>
-        <li><Link to="/contactos" className="link">Contactos</Link></li>
-      </ul>
-      <button className="login-button" onClick={handleLoginClick}>Login</button>
+    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
+      <div className={styles["navbar-container"]}>
+        <Link to="/" className={styles.logo}>
+          <span className={styles["logo-text"]}>Neighbour Share</span>
+        </Link>
+
+        <div
+          className={`${styles["menu-icon"]} ${menuOpen ? styles.active : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div className={`${styles["nav-elements"]} ${menuOpen ? styles.active : ""}`}>
+          <ul className={styles.links}>
+            <li>
+              <Link
+                to="/"
+                className={`${styles.link} ${location.pathname === "/" ? styles.active : ""}`}
+                onClick={handleLinkClick}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/sobre"
+                className={`${styles.link} ${location.pathname === "/sobre" ? styles.active : ""}`}
+                onClick={handleLinkClick}
+              >
+                Sobre
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/funcionalidade"
+                className={`${styles.link} ${location.pathname === "/funcionalidade" ? styles.active : ""}`}
+                onClick={handleLinkClick}
+              >
+                Funcionalidades
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contactos"
+                className={`${styles.link} ${location.pathname === "/contactos" ? styles.active : ""}`}
+                onClick={handleLinkClick}
+              >
+                Contactos
+              </Link>
+            </li>
+          </ul>
+          <Button variant = "login" onClick={handleLoginClick}>
+            Login
+          </Button>
+        </div>
+      </div>
     </nav>
   );
 }

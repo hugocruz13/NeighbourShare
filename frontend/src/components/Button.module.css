@@ -3,7 +3,7 @@
   background-color: #00b4d8;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 60px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
@@ -18,7 +18,8 @@
   cursor: not-allowed;
 }
 
-.button-green{
+/* Variante verde */
+.button-green {
   width: 50%;
   background-color: #4caf50;
   border: none;
@@ -29,7 +30,17 @@
   cursor: pointer;
 }
 
-.button-red{
+.button-green:hover {
+  background-color: #3e8e41;
+}
+
+.button-green:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+/* Variante vermelha */
+.button-red {
   width: 50%;
   background-color: #f44336;
   border: none;
@@ -38,4 +49,26 @@
   border-radius: 10px;
   transition: 0.2s;
   cursor: pointer;
+}
+
+.button-red:hover {
+  background-color: #d32f2f;
+}
+
+.button-red:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.button-login {
+    width: 100px;
+    height: 40px;
+    border-radius: 60px;
+    padding: 0.5rem 1.5rem;
+    background-color: #00b4d8;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from "./Button.module.css";
 
 /**
  * Button Component
@@ -24,16 +25,20 @@ const Button = ({
 
   // Mapeamento entre as variantes e as classes CSS correspondentes
   const variantClasses = {
-    default: '',
-    green: 'button-green',
-    red: 'button-red',
+    default: styles.button,
+    green: styles['button-green'],
+    red: styles['button-red'],
+    login: styles['button-login'],
   };
+
+  // Para variantes green e red, não precisamos da classe button base
+  const baseClass = variant === 'default' ? styles.button : variantClasses[variant];
 
   return (
     <button 
       type={type} 
       onClick={onClick} 
-      className={`button ${variantClasses[variant] || ''} ${className}`} 
+      className={`${baseClass} ${className}`} 
       {...props}
     >
       {children}
