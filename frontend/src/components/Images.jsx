@@ -7,7 +7,7 @@ function MainImg({ path, alt, titulo, frase }) {
       <div className="left">
         <h1 className="text">{titulo}</h1>
         <p className="frase">{frase}</p>
-        <Link to="/contactos"><button className="cta-button">Fala connosco</button></Link>
+        <Link to="/contactos" className="link"><button className="cta-button">Fala connosco</button></Link>
       </div>
       <div className="right">
         <img className="img" src={path} alt={alt} />
