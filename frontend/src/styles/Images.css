@@ -18,13 +18,13 @@
   flex-direction: column;
   justify-content: center;
   padding: 40px;
-  gap: 40px;
+  gap: 75px;
 }
 
 
 .text {
   font-family: 'Poppins', sans-serif;
-  font-size: 35px;
+  font-size: 30px;
   font-weight: 700;
   color: #2c3e50;
   margin: 0;
@@ -32,7 +32,7 @@
 
 .frase {
   font-family: 'Lato', sans-serif;
-  font-size: 1.4rem;
+  font-size: 20px;
   color: #555;
   line-height: 1.8;
 }
