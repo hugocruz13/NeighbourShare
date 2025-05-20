@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home.js";
+import { AuthProvider } from "./context/AuthContext.js";
+import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.js";
 import Registar from "./pages/Registar.js";
 import Admin from "./pages/Admin.js"
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext.js";
-import "./App.css";
 import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";
 import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.js";
 import PedidosReserva from "./pages/PedidosReserva.js";
@@ -28,6 +27,7 @@ import RecuperarPass from "./pages/RecuperarPass.js";
 import Exemplo from "./pages/Exemplo.js";
 import EntidadeExterna from "./pages/EntidadeExterna.js";
 import RecursosComuns from "./pages/RecursosComuns.js";
+import "./App.css";
 
 function App() {
   return (
