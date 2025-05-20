@@ -25,7 +25,7 @@ const Tabela = ({ colunas, dados, aoClicarAcao, tipoAcao, mensagemVazio }) => {
         })
       );
       setDadosFiltrados(dadosFiltrados);
-    }, [filtros, dados, colunas]);
+    }, [filtros]);
 
     // Função para aplicar a ordenação dos dados
     const handleSort = (coluna) => {

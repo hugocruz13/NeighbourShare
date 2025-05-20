@@ -28,5 +28,17 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDY3MjExMjR9.SagKx0Jzi7XbtXERufwuGYJJuJZYuguM2L4q_ExNIiE",
         "role": "gestor",
         "timestamp": 1746719324.8116143
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDcxMzI3NzR9.eV0r8NXwE6po4onK9wQYUGhCu-Gt9SClexMVJGft0zE",
+        "role": "gestor",
+        "timestamp": 1747130974.7960174
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDcxMzM1NDd9.RvoXROGyWwEGL2PLay3UbtSzEB2fGWQynujRzBVZc-o",
+        "role": "gestor",
+        "timestamp": 1747131747.8426223
     }
 ]
