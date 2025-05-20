@@ -12,9 +12,9 @@ router = APIRouter(prefix="/entidades", tags=["Entidades Externas"])
 @router.post("/registar")
 async def endpoint_registar_entidade(entidade: EntidadeSchema, token: UserJWT = Depends(role_required(["admin", "gestor"])), db: Session = Depends(get_db)):
     try:
-        val, msg = await registar_entidade(entidade, db)
-        if val is True:
-            return {"message": "Entidade registada com sucesso"}
+        val = await registar_entidade(entidade, db)
+        if val is not None:
+            return val
         else:
             raise HTTPException(status_code=400, detail="Erro ao inserir a nova entidade.")
     except HTTPException as e:

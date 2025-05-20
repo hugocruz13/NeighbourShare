@@ -16,7 +16,7 @@ async def inserir_entidade_db(db: Session, entidade: EntidadeSchema):
         db.add(nova_entidade)
         db.commit()
         db.refresh(nova_entidade)
-        return True, {'Nova entidade inserida com sucesso.'}
+        return nova_entidade
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))

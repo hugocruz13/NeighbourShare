@@ -8,11 +8,11 @@ from db.repository.entidade_repo import inserir_entidade_db, visualizar_entidade
 #Service para registar uma nova entidade externa
 async def registar_entidade(entidade: EntidadeSchema, db: Session = Depends(get_db)):
     try:
-        val, msg = await inserir_entidade_db(db, entidade)
-        if val is False:
+        val = await inserir_entidade_db(db, entidade)
+        if val is None:
             raise HTTPException(status_code=400, detail="Erro ao inserir a nova entidade.")
         else:
-            return True, msg
+            return val
     except HTTPException as e:
             raise e
     except Exception as e:

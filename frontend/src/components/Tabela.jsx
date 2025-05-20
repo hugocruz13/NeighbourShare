@@ -9,7 +9,7 @@ import {
 import {motion, AnimatePresence} from 'framer-motion';
 import styles from './Tabela.module.css';
 
-const Tabela = ({ colunas, dados }) => {
+const Tabela = ({ colunas, dados, destaqueId }) => {
   const [ordenacao, setOrdenacao] = useState([]);
   const [filtroGlobal, setFiltroGlobal] = useState('');
   const tabela = useReactTable({
@@ -68,6 +68,9 @@ const Tabela = ({ colunas, dados }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
+              className={
+                row.original.EntidadeID === destaqueId ? styles.highlightedRow : ''
+              }
             >
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id}>
