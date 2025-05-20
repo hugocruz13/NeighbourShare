@@ -83,30 +83,36 @@ const ReservarRecurso = ({ match }) => {
       <Navbar2 />
       <div className="home-container">
         <div className={styles.fundo}>
-          <p className={styles.titulo}>Os Meus Pedidos de Reserva Feitos</p>
+          <p className={styles.titulo}>Pedidos de Reserva</p>
+          <p className={styles.subtitulo}>Como Solicitante</p>
           <Tabela
-            colunas={['PedidoReservaID', 'RecursoNome', 'NomeDono', 'DataInicio', 'DataFim', 'EstadoPedidoReserva']}
+            colunas={[
+              { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
+              { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
+              { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
+              { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
+              { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
+              { id: 'acaoTexto', accessorKey: 'acaoTexto', header: 'Ação' },
+            ]}
             dados={pedidosEmAnaliseSolicitante}
-            mensagemVazio="Nenhum pedido de reserva encontrado."
           />
         </div>
 
         <div className={styles.fundo}>
           <p className={styles.titulo}>Pedidos de Reserva</p>
+          <p className={styles.subtitulo}>Como Dono</p>
           <Tabela
-            colunas={['PedidoReservaID', 'UtilizadorNome', 'RecursoNome', 'DataInicio', 'DataFim', 'Ação']}
+            colunas={[
+              { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
+              { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
+              { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
+              { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
+              { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
+              { id: 'acaoTexto', accessorKey: 'acaoTexto', header: 'Ação' },
+            ]}
             dados={pedidosEmAnaliseDono.map(p => ({
-              ...p,
-              acaoTexto: (
-                <>
-                  <button className={styles.btnSimPedidoReserva} onClick={() => handleReserve(p.PedidoReservaID)}>Sim</button>
-                  <button className={styles.btnNaoPedidoReserva} onClick={() => { setShowRejectModal(true); setPedidoReservaID(p.PedidoReservaID); }}>Não</button>
-                </>
-              )
+              ...p
             }))}
-            tipoAcao="botao"
-            aoClicarAcao={() => {}}
-            mensagemVazio="Nenhum pedido de reserva encontrado."
           />
         </div>
       </div>

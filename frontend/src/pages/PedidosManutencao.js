@@ -154,16 +154,23 @@ const PedidosManutencao = () => {
             </>
           )}
   
-          <p className={styles.pmeusRecursos}>Pedidos de Manutenção</p>
+          <p className={styles.titulo}>Pedidos de Manutenção</p>
           <Tabela
-            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Recurso', 'Ação']}
+            colunas = {[
+              { accessorKey: 'NumPedido', header: 'Nº do Pedido' },
+              { accessorKey: 'Solicitante', header: 'Solicitante' },
+              { accessorKey: 'DataPedido', header: 'Data Do Pedido' },
+              { accessorKey: 'Descricao', header: 'Descrição' },
+              { accessorKey: 'Recurso', header: 'Recurso' },
+              { accessorKey: 'Acao', header: 'Ação' }
+            ]}
             dados={pedidos.map((pedido) => ({
-              'Nº do Pedido': pedido.PMID,
+              'NumPedido': pedido.PMID,
               'Solicitante': pedido.Utilizador_.NomeUtilizador,
-              'Data Do Pedido': pedido.DataPedido,
-              'Descrição': pedido.DescPedido,
+              'DataPedido': pedido.DataPedido,
+              'Descricao': pedido.DescPedido,
               'Recurso': pedido.RecursoComun_.Nome,
-              'Ação': (
+              'Acao': (
                 <select
                   value={pedido.estado}
                   onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}

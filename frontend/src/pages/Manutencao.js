@@ -115,9 +115,14 @@ const Manutencao = () => {
     
       <div className="home-container">
         <div className={styles.fundo}>
-          <p className={styles.pmeusRecursos}>Pedidos de Manutenção</p>
+          <p className={styles.titulo}>Pedidos de Manutenção</p>
           <Tabela
-            colunas={['Nº Manutenção', 'Descrição', 'Data Manutenção', 'Estado']}
+            colunas = {[
+              { accessorKey: 'NumManutencao', header: 'Nº Manutenção' },
+              { accessorKey: 'Descricao', header: 'Descrição' },
+              { accessorKey: 'DataManutencao', header: 'Data Manutenção' },
+              { accessorKey: 'Estado', header: 'Estado' }
+            ]}
             dados={pedidos}
             aoClicarAcao={(pedido) => handleDateUpdate(pedido)}
             tipoAcao="link"

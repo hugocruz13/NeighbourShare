@@ -84,7 +84,15 @@ const Votacoes = () => {
   };
 
   const renderTabela = (titulo, lista, tipo) => {
-    const colunas = ['ID', 'Título', 'Descrição', 'Data de Início', 'Data de Fim', 'Ação'];
+    const colunas = [
+      { accessorKey: 'ID', header: 'ID' },
+      { accessorKey: 'Titulo', header: 'Título' },
+      { accessorKey: 'Descricao', header: 'Descrição' },
+      { accessorKey: 'DataInicio', header: 'Data de Início' },
+      { accessorKey: 'DataFim', header: 'Data de Fim' },
+      { accessorKey: 'Acao', header: 'Ação' }
+    ];
+
     const dados = lista.map((v) => ({
       ID: v.votacao_id || v.id,
       Título: v.titulo,

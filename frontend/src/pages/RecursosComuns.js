@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
+import styles from '../styles/LayoutPaginasTabelas.module.css';
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -76,10 +77,11 @@ const MeusRecursos = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className='fundoMeusRecursos'>
-          
+        <div className={styles.fundo}>
+
+          <p className={styles.titulo}>Recursos Comuns</p>
           {/* Botão para abrir o modal de adicionar recurso */}
-          <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
+          <button className={styles.btnRegistar} onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
   
           {/* Modal de Adicionar Recurso */}
           {showModal && (
@@ -107,15 +109,18 @@ const MeusRecursos = () => {
             </>
           )}
   
-          <p className='p-meusRecursos'>Recursos Comuns</p>
+          
           <Tabela
-            colunas={['Nº Recurso', 'Nome do Recurso', 'Descrição']}
+            colunas = {[
+            { accessorKey: 'NumRecurso', header: 'Nº Recurso' },
+            { accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
+            { accessorKey: 'Descricao', header: 'Descrição' },
+          ]} 
             dados={recurso.map((recurso) => ({
-              'Nº Recurso': recurso.RecComumID,
-              'Nome do Recurso': recurso.Nome,
-              'Descrição': recurso.DescRecursoComum,
+              'NumRecurso': recurso.RecComumID,
+              'NomeRecurso': recurso.Nome,
+              'Descricao': recurso.DescRecursoComum,
             }))}
-            mensagemVazio="Nenhum recurso comum encontrado."
           />
         </div>
       </div>

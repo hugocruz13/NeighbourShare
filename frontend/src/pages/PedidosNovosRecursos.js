@@ -104,16 +104,23 @@ const PedidosAquisicao = () => {
             </>
           )}
 
-          <p className={styles.pmeusRecursos}>Pedidos De Aquisição Pendentes</p>
+          <p className={styles.titulo}>Pedidos De Aquisição Pendentes</p>
 
           <Tabela
-            colunas={['Nº do Pedido', 'Solicitante', 'Data Do Pedido', 'Descrição', 'Ação']}
+            colunas = {[
+              { accessorKey: 'NumPedido', header: 'Nº do Pedido' },
+              { accessorKey: 'Solicitante', header: 'Solicitante' },
+              { accessorKey: 'DataPedido', header: 'Data Do Pedido' },
+              { accessorKey: 'Descricao', header: 'Descrição' },
+              { accessorKey: 'Acao', header: 'Ação' }
+            ]}
+
             dados={pedidos.map((pedido) => ({
-              'Nº do Pedido': pedido.PedidoNovoRecID,
+              'NumPedido': pedido.PedidoNovoRecID,
               'Solicitante': pedido.Utilizador_.NomeUtilizador,
-              'Data Do Pedido': pedido.DataPedido,
-              'Descrição': pedido.DescPedidoNovoRecurso,
-              'Ação': (
+              'DataPedido': pedido.DataPedido,
+              'Descricao': pedido.DescPedidoNovoRecurso,
+              'Acao': (
                 <Link className={styles.btn_registarRecurso} onClick={() => handleConsultarClick(pedido)}>
                   Consultar
                 </Link>

@@ -190,7 +190,12 @@ const Orcamentos = () => {
 
           <p className={styles.titulo}>Orçamentos</p>
           <Tabela
-            colunas={['Nº Orçamento', 'Fornecedor', 'Valor', 'Descrição']}
+            const colunas = {[
+              { accessorKey: 'NumOrcamento', header: 'Nº Orçamento' },
+              { accessorKey: 'Fornecedor', header: 'Fornecedor' },
+              { accessorKey: 'Valor', header: 'Valor' },
+              { accessorKey: 'Descricao', header: 'Descrição' }
+            ]}
             dados={orcamentos.map((orcamento) => ({
               'Nº Orçamento': orcamento.OrcamentoID,
               'Fornecedor': orcamento.Entidade,

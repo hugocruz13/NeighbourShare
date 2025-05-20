@@ -1,11 +1,24 @@
 /* TabelaGenerica.module.css */
 
+.inputPesquisa {
+  width: 25%;
+  padding: 6px 10px;
+  margin-left: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  text-align: center;
+}
+
 .tabela {
   width: 100%;
   border-collapse: collapse;
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
+  overflow-x: auto;
 }
 
 .cabecalho {
@@ -14,11 +27,11 @@
 
 .cabecalho th {
   font-weight: bold;
-  padding: 10px 20px 6px 20px; /* topo reduzido, fundo menor */
+  padding: 10px 20px 6px 20px;
   text-align: center;
   vertical-align: bottom;
-  cursor: pointer; /* Indica que a célula é clicável para ordenação */
-  position: relative; /* Necessário para posicionar as setas de ordenação */
+  cursor: pointer;
+  position: relative;
 }
 
 .cabecalho th:hover {

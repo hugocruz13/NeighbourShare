@@ -161,13 +161,14 @@ const handleJustification = (id) => {
           <p className={styles.titulo}>Os Meus Pedidos de Reserva de Recursos</p>
           <Tabela
             colunas={[
-              'ReservaID',
-              'Dono',
-              'DataInicio',
-              'DataFim',
-              'NomeRecurso',
-              'Recurso Recebido',
-              'Caução Entregue'
+              { accessorKey: 'ReservaID', header: 'ID' },
+              { accessorKey: 'Dono', header: 'Dono' },
+              { accessorKey: 'DataInicio', header: 'Data Inicio' },
+              { accessorKey: 'DataFim', header: 'Data Fim' },
+              { accessorKey: 'NomeRecurso', header: 'Recurso' },
+              { accessorKey: 'RecursoRecebido', header: 'Recurso Recebido ?' },
+              { accessorKey: 'CaucaoEntregue', header: 'Caução Entregue ?' },
+              { accessorKey: 'Acao', header: 'Ações' }
             ]}
             dados={comoSolicitante.map((res) => ({
               ...res,
@@ -190,7 +191,6 @@ const handleJustification = (id) => {
                 </button>
               )
             }))}
-            mensagemVazio="Nenhum pedido de reserva encontrado."
           />
         </div>
   
@@ -198,14 +198,15 @@ const handleJustification = (id) => {
           <p className={styles.titulo}>Reservas</p>
           <Tabela
             colunas={[
-              'ReservaID',
-              'Solicitante',
-              'DataInicio',
-              'DataFim',
-              'NomeRecurso',
-              'Recurso Entregue',
-              'Caucao Recebida',
-              'Confirmar Estado Recurso'
+              { accessorKey: 'ReservaID', header: 'ID' },
+              { accessorKey: 'Solicitante', header: 'Solicitante' },
+              { accessorKey: 'DataInicio', header: 'Data Inicio' },
+              { accessorKey: 'DataFim', header: 'Data Fim' },
+              { accessorKey: 'NomeRecurso', header: 'Recurso' },
+              { accessorKey: 'RecursoEntregue', header: 'Recurso Entregue ?' },
+              { accessorKey: 'CaucaoRecebida', header: 'Caucao Recebida ?' },
+              { accessorKey: 'ConfirmarEstadoRecurso', header: 'Confirmar Estado Recurso' },
+              { accessorKey: 'Acao', header: 'Ações' }
             ]}
             dados={comoDono.map((res) => ({
               ...res,
