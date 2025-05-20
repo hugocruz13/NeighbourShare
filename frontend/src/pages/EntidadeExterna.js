@@ -4,7 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
-
+import ModalForm from '../components/ModalForm.jsx'; 
+import { motion } from 'framer-motion';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);
@@ -16,6 +17,7 @@ const EntidadesExternas = () => {
     Nome: '',
     Nif: ''
   });
+  const [ultimaEntidadeId, setUltimaEntidadeId] = useState(null);
   const fetchEntidades = async () => {
       try {
         const res = await fetch('http://localhost:8000/api/entidades/ver', {
@@ -40,6 +42,7 @@ const EntidadesExternas = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log('Submitting form with data:', novaEntidade);
     e.preventDefault();
     try {
       const res = await fetch('http://localhost:8000/api/entidades/registar', {
@@ -53,7 +56,15 @@ const EntidadesExternas = () => {
       if (!res.ok) throw new Error('Erro ao registrar entidade.');
       
       const data = await res.json();
-      toast.success('Entidade registrada com sucesso!');
+
+      console.log('Entidade registrada com sucesso:', data);
+
+      setEntidades((prevEntidades) => [...prevEntidades, data]);
+      setUltimaEntidadeId(data.EntidadeID);
+
+      toast.success('Entidade registrada com sucesso!', {
+        autoClose: 2500
+      });
       setShowModal(false);
       setNovaEntidade({
         Especialidade: '',
@@ -62,7 +73,7 @@ const EntidadesExternas = () => {
         Nome: '',
         Nif: ''
       });
-      setEntidades([...entidades, data]);
+      
     } catch (error) {
       console.error('Erro ao registrar entidade:', error);
       toast.error('Erro ao registrar entidade.');
@@ -102,78 +113,25 @@ const EntidadesExternas = () => {
                 )}*/
               ]}
             dados={entidades}
+            destaqueId={ultimaEntidadeId}
           />
         </div>
-
-        {showModal && (
-          <>
-            <div
-              className={styles.modalbackdrop}
-              onClick={() => setShowModal(false)}
-            />
-            <div className={styles.modalcontent}>
-              <h3 className={styles.titulo}>Adicionar Nova Entidade</h3>
-              <form onSubmit={handleSubmit}>
-                <label>
-                  Nome:
-                  <input
-                    type="text"
-                    name="Nome"
-                    value={novaEntidade.Nome}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-                <label>
-                  Especialidade:
-                  <input
-                    type="text"
-                    name="Especialidade"
-                    value={novaEntidade.Especialidade}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-                <label>
-                  Contato:
-                  <input
-                    type="text"
-                    name="Contacto"
-                    value={novaEntidade.Contacto}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-                <label>
-                  Email:
-                  <input
-                    type="email"
-                    name="Email"
-                    value={novaEntidade.Email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-                <label>
-                  NIF:
-                  <input
-                    type="text"
-                    name="Nif"
-                    value={novaEntidade.Nif}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-                <div>
-                  <button type="submit">Registrar</button>
-                  <button type="button" onClick={() => setShowModal(false)}>
-                    Fechar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </>
-        )}
+        
+        <ModalForm
+            show={showModal}
+            onclose={() => setShowModal(false)}
+            title="Nova Entidade Externa"
+            fields={[
+              { label: 'Nome', name: 'Nome', type: 'text', required: true },
+              { label: 'Especialidade', name: 'Especialidade', type: 'text', required: true },
+              { label: 'Contacto', name: 'Contacto', type: 'text', required: true },
+              { label: 'Email', name: 'Email', type: 'email', required: true },
+              { label: 'NIF', name: 'Nif', type: 'text', required: true },
+            ]}
+            formData={novaEntidade}
+            onChange={handleInputChange}
+            onSubmit={handleSubmit}
+          />       
         <ToastContainer />
       </div>
     </div>

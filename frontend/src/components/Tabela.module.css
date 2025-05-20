@@ -172,3 +172,17 @@
 .code-highlight-purple {
   color: #977582;
 }
+
+.highlightedRow {
+  background-color: #fff8b3;
+  animation: fadeOutBg 3s ease-in-out forwards;
+}
+
+@keyframes fadeOutBg {
+  0% {
+    background-color: #fff8b3;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
