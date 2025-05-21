@@ -86,7 +86,7 @@ function Login() {
               <Input name="email" value={formData.email} onChange={handleChange} placeholder="Email" type="email" variant="default"/>
               <Input name="password" value={formData.password} onChange={handleChange} placeholder="Password" type="password"></Input>
               <div className="container-button">
-                <Button variant= "login"  type="submit" text={"Entrar"}>Entrar</Button>
+                <Button className="btn-login" variant= "login"  type="submit" text={"Entrar"}>Entrar</Button>
               </div>
               <p className="erro">{error && error}</p>
               <p className="link-recuperacao" onClick={() => setShowModal(true)}>Esqueceu a senha?</p>
