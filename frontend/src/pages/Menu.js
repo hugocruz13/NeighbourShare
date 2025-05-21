@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import "../styles/Menu.css";
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import Button from "../components/Button.jsx";
 import { useState, useEffect } from "react";
 
@@ -30,7 +30,7 @@ function Residente() {
       <Navbar2 />
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1>{greeting}, <span className="user-name">{user?.name || 'Residente'}</span></h1>
+          <h1>{greeting}, <span className="user-name">{user?.name || "Vizinho"}</span></h1>
           <p className="welcome-text">Bem-vindo ao seu painel de gestão NeighbourShare</p>
         </div>
         

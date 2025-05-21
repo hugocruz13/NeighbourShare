@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { data, useNavigate } from 'react-router-dom';
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import "../styles/Perfil.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
