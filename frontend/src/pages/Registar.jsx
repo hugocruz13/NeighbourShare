@@ -60,7 +60,7 @@ const Registar = () => {
         </div>
       </div>
       <div className="container-direita">
-        <img className="imagem" src="img/fundo.jpg" alt="Imagem" />
+        <img className="imagem" src="img/new.jpg" alt="Imagem" />
       </div>
       <ToastContainer />
     </div>
