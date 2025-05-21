@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar.jsx";
 import { Img_Right, Img_Left } from "../components/Images.jsx";
 import Funcionalidades from "../components/Funcionalidades.jsx";
+import Contactos from "../components/Contact.jsx";
 import "../styles/Home.css";
 
 function Home() {
@@ -62,6 +63,9 @@ function Home() {
         <br />
         <div className="about" id="sobre">
           <Img_Left path="logo512.png" alt="Prédios" />
+        </div>
+        <div id="contacto">
+          <Contactos/>
         </div>
       </main>
       <footer className="home-footer">

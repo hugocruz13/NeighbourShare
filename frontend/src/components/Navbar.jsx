@@ -86,15 +86,13 @@ function Navbar() {
               </a>
             </li>
             <li>
-              <Link
-                to="/contactos"
-                className={`${styles.link} ${
-                  location.pathname === "/contactos" ? styles.active : ""
-                }`}
+              <a
+                href="#contacto"
+                className={styles.link}
                 onClick={handleLinkClick}
               >
                 Contactos
-              </Link>
+              </a>
             </li>
           </ul>
           <Button variant="login" onClick={handleLoginClick}>
