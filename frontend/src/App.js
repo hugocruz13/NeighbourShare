@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.js";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import Registar from "./pages/Registar.js";
+import Registar from "./pages/Registar.jsx";
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
 import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";

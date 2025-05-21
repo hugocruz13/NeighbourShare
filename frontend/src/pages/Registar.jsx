@@ -46,17 +46,13 @@ const Registar = () => {
             <h2>Registar Novo Utilizador</h2><br></br>
             <div className="container-form">
               <Input  className="inputRegisto" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" variant="default"/>
-
               <Select className="inputRegisto" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Escolha a função"
                 options={[
                 { value: "residente", label: "Residente" },
                 { value: "gestor", label: "Gestor" },
                 { value: "admin", label: "Admin" }
                 ]}
-                variant="default"/>
-
-
-              
+                variant="default"/>             
               <div className="container-btn">
                 <Button className='btn' onClick={handleRegister} text={"Registrar"}>Registrar</Button>
               </div>
