@@ -6,6 +6,8 @@ import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Button from '../components/Button.jsx';
+import ModalForm from '../components/ModalForm.jsx';
+import Modal from '../components/ModalForm.jsx';
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -78,40 +80,27 @@ const MeusRecursos = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className={styles.fundo}>
-
-          <p className={styles.titulo}>Recursos Comuns</p>
           {/* Botão para abrir o modal de adicionar recurso */}
-          <Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>
+          
   
           {/* Modal de Adicionar Recurso */}
-          {showModal && (
-            <>
-              <div className="modal-backdrop" onClick={() => setShowModal(false)} />
-              <div className="modal-content">
-                <h2>Adicionar Recurso Comum</h2>
-                <input
-                  type="text"
-                  placeholder="Nome do Recurso"
-                  value={newResource.nome_recurso}
-                  onChange={(e) => setNewResource({ ...newResource, nome_recurso: e.target.value })}
-                />
-                <textarea
-                  placeholder="Descrição"
-                  value={newResource.descricao_recurso}
-                  onChange={(e) => setNewResource({ ...newResource, descricao_recurso: e.target.value })}
-                />
-                <input type="file" onChange={handleFileChange} />
-                <div>
-                  <button onClick={handleAddResource}>Adicionar</button>
-                  <button onClick={() => setShowModal(false)}>Cancelar</button>
-                </div>
-              </div>
-            </>
-          )}
-  
-          
+          <ModalForm
+            show={showModal}
+            onClose={() => setShowModal(false)}
+            onSubmit={handleAddResource}
+            title="Adicionar Recurso Comum"
+            fields={[
+              { name: 'nome_recurso', label: 'Nome do Recurso', type: 'text', required: true },
+              { name: 'descricao_recurso', label: 'Descrição', type: 'textarea', required: true },
+              { name: 'imagem', label: 'Imagem', type: 'file', required: true },
+            ]}
+            formData={newResource}
+            onChange={(e) => setNewResource({ ...newResource, [e.target.name]: e.target.value })}
+            textBotao="Adicionar"
+          />
           <Tabela
+            titulo={"Recursos Comuns"}
+            botoesOpcoes={[<Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>]}
             colunas = {[
             { accessorKey: 'NumRecurso', header: 'Nº Recurso' },
             { accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
@@ -123,7 +112,6 @@ const MeusRecursos = () => {
               'Descricao': recurso.DescRecursoComum,
             }))}
           />
-        </div>
       </div>
       <ToastContainer />
     </div>

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
+import styles from '../components/Tabela.module.css';
 import ModalForm from '../components/ModalForm.jsx'; 
 import { motion } from 'framer-motion';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
+import { FaTrash, FaPen } from 'react-icons/fa';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);
@@ -86,11 +87,8 @@ const EntidadesExternas = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Entidades Externas</p>
-          <Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Entidade"}>Adicionar Entidade</Button>
-
           <Tabela
+              titulo={'Entidades Externas'}
               colunas={[
                 { accessorKey: 'EntidadeID', header: 'ID' },
                 { accessorKey: 'Nome', header: 'Nome' },
@@ -98,20 +96,30 @@ const EntidadesExternas = () => {
                 { accessorKey: 'Contacto', header: 'Contacto' },
                 { accessorKey: 'Email', header: 'Email' },
                 { accessorKey: 'Especialidade', header: 'Especialidade' },
-                {accessorKey: 'Acao',header: 'Ações'},/*, cell: ({ row }) => (
-                  <button
-                    onClick={() => {
-                      const id = row.original.EntidadeID;
-                      // Implementar a lógica para editar ou excluir a entidade
-                      console.log(`Editar ou excluir entidade com ID: ${id}`);
-                    }}
-                  >
-                    Editar/Excluir
-                  </button>
-                )}*/
+                {
+                  accessorKey: 'Acao',
+                  header: 'Ações',
+                  cell: ({ row }) => (
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <Button
+                        variant="editar"
+                        onClick={() => {}}
+                      >
+                        <FaPen color="white" size={18} />
+                      </Button>
+                      <Button
+                        variant="eliminar"
+                        onClick={() => {}}
+                      >
+                        <FaTrash color="white" size={18} />
+                      </Button>
+                    </div>
+                  ),
+                },
               ]}
             dados={entidades}
             destaqueId={ultimaEntidadeId}
+            botoesOpcoes={[<Button key="1" onClick={setShowModal}>Adicionar Entidade Externa</Button>]}
           />
         </div>
         
@@ -129,10 +137,10 @@ const EntidadesExternas = () => {
             formData={novaEntidade}
             onChange={handleInputChange}
             onSubmit={handleSubmit}
+            textBotao={'Adicionar Entidade Externa'}
           />       
         <ToastContainer />
       </div>
-    </div>
   );
 };
 

@@ -1,76 +1,178 @@
 .button {
   padding: 0.5rem 1.5rem;
-  background-color: #00b4d8;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
   color: #fff;
   border: none;
   border-radius: 60px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+  outline-offset: 4px;
+  outline-color: transparent;
 }
 
 .button:hover {
-  background-color: #0077b6;
+  background: linear-gradient(135deg, #0077b6, #005f86);
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.6);
+  transform: translateY(-2px);
+}
+
+.button:focus-visible {
+  outline: 3px solid #90e0ef;
+  outline-offset: 4px;
+  animation: pulseOutline 1.2s infinite ease-in-out;
+}
+
+.button:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 8px rgba(0, 119, 182, 0.7);
 }
 
 .button:disabled {
   background-color: #bdbdbd;
+  box-shadow: none;
   cursor: not-allowed;
+  color: #666;
+}
+
+/* Pulse animation para foco */
+@keyframes pulseOutline {
+  0%, 100% {
+    outline-color: #90e0ef;
+    box-shadow: 0 0 10px 3px rgba(144, 224, 239, 0.7);
+  }
+  50% {
+    outline-color: #48cae4;
+    box-shadow: 0 0 20px 6px rgba(72, 202, 228, 0.8);
+  }
 }
 
 /* Variante verde */
 .button-green {
   width: 50%;
-  background-color: #4caf50;
-  border: none;
+  background: linear-gradient(135deg, #4caf50, #388e3c);
   color: white;
   padding: 5px 20px;
   border-radius: 10px;
-  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
 }
 
 .button-green:hover {
-  background-color: #3e8e41;
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  box-shadow: 0 6px 20px rgba(56, 142, 60, 0.6);
+  transform: translateY(-2px);
 }
 
 .button-green:disabled {
   background-color: #bdbdbd;
+  box-shadow: none;
   cursor: not-allowed;
+  color: #666;
 }
 
 /* Variante vermelha */
 .button-red {
   width: 50%;
-  background-color: #f44336;
-  border: none;
+  background: linear-gradient(135deg, #f44336, #d32f2f);
   color: white;
   padding: 5px 20px;
   border-radius: 10px;
-  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
 }
 
 .button-red:hover {
-  background-color: #d32f2f;
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.6);
+  transform: translateY(-2px);
 }
 
 .button-red:disabled {
   background-color: #bdbdbd;
+  box-shadow: none;
   cursor: not-allowed;
+  color: #666;
 }
 
+/* Variante login */
 .button-login {
-    width: 100px;
-    height: 40px;
-    border-radius: 60px;
-    padding: 0.5rem 1.5rem;
-    background-color: #00b4d8;
-    color: #fff;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-bottom: 10%;
-    margin-top: 10%;
+  width: 100px;
+  height: 40px;
+  border-radius: 60px;
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10%;
+  margin-top: 10%;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+}
+
+.button-login:hover {
+  background: linear-gradient(135deg, #0077b6, #005f86);
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.6);
+  transform: translateY(-2px);
+}
+
+.button-login:disabled {
+  background-color: #bdbdbd;
+  box-shadow: none;
+  cursor: not-allowed;
+  color: #666;
+}
+
+/* Botões editar e eliminar da tabela */
+.button-editar-tabela,
+.button-eliminar-tabela {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: white;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  user-select: none;
+}
+
+.button-editar-tabela {
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  box-shadow: 0 4px 8px rgba(0, 180, 216, 0.5);
+}
+
+.button-editar-tabela:hover {
+  background: linear-gradient(135deg, #0077b6, #005f86);
+  box-shadow: 0 6px 12px rgba(17, 145, 200, 0.7);
+  transform: translateY(-2px);
+}
+
+.button-eliminar-tabela {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.5);
+}
+
+.button-eliminar-tabela:hover {
+  background: linear-gradient(135deg, #c0392b, #992d22);
+  box-shadow: 0 6px 12px rgba(231, 76, 60, 0.7);
+  transform: translateY(-2px);
+}
+
+.button-editar-tabela:active,
+.button-eliminar-tabela:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
 }

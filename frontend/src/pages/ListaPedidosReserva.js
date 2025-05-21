@@ -5,6 +5,10 @@ import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Tabela from '../components/Tabela.jsx';
+import { IoMdCloseCircle } from "react-icons/io";
+import { FaCheck } from 'react-icons/fa';
+import Button from '../components/Button.jsx';
+import ModalFrom from '../components/ModalForm.jsx';
 
 const ReservarRecurso = ({ match }) => {
   const [product, setProduct] = useState(null);
@@ -82,60 +86,72 @@ const ReservarRecurso = ({ match }) => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Pedidos de Reserva</p>
-          <p className={styles.subtitulo}>Como Solicitante</p>
           <Tabela
+            titulo={'Pedidos de Reserva - Solicitante'}
             colunas={[
               { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
               { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
               { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
               { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
               { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
-              { id: 'acaoTexto', accessorKey: 'acaoTexto', header: 'Ação' },
+              {
+                  accessorKey: 'Estado do Pedido',
+                  header: 'Estado',
+                },
             ]}
             dados={pedidosEmAnaliseSolicitante}
           />
-        </div>
 
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Pedidos de Reserva</p>
-          <p className={styles.subtitulo}>Como Dono</p>
           <Tabela
+           titulo={'Pedidos de Reserva - Dono'}
             colunas={[
               { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
               { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
               { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
               { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
               { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
-              { id: 'acaoTexto', accessorKey: 'acaoTexto', header: 'Ação' },
+              {
+                  accessorKey: 'Acao',
+                  header: 'Aceitar ?',
+                  cell: ({ row }) => (
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <Button
+                        variant="editar"
+                        onClick={() => {}}
+                      >
+                        <FaCheck  color="white" size={18} />
+                      </Button>
+                      <Button
+                        variant="eliminar"
+                        onClick={() => {}}
+                      >
+                        <IoMdCloseCircle  color="white" size={18} />
+                      </Button>
+                    </div>
+                  ),
+                },
             ]}
             dados={pedidosEmAnaliseDono.map(p => ({
               ...p
             }))}
           />
-        </div>
       </div>
 
-      {showRejectModal && (
-        <>
-          <div className={styles.modalBackdrop} onClick={() => setShowRejectModal(false)} />
-          <div className={styles.modalContent}>
-            <h3>Motivo da Recusa</h3>
-            <textarea
-              value={motivoRecusacao}
-              onChange={(e) => setMotivoRecusacao(e.target.value)}
-              placeholder="Digite o motivo da recusa"
-              required
-            />
-            <div>
-              <button className={styles.modalButton} onClick={handleReject}>Enviar</button>
-              <button className={styles.modalButton} onClick={() => setShowRejectModal(false)}>Cancelar</button>
-            </div>
-          </div>
-        </>
-      )}
-
+      <ModalFrom
+        show={showRejectModal}
+        onclose={() => setShowRejectModal(false)}
+        title="Recusar Pedido de Reserva"
+        fields={[
+          { name: 'motivoRecusacao', label: 'Motivo da Recusa', type: 'text', required: true }
+        ]}
+        formData={{ motivoRecusacao }}
+        onChange={(e) => setMotivoRecusacao(e.target.value)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleReject();
+        }}
+        textBotao={'Recusar Pedido'}
+      />
       <ToastContainer />
     </div>
   );

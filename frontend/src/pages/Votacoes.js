@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from  "../styles/LayoutPaginasTabelas.module.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela";
+import ModalForm from "../components/ModalForm.jsx";
 
 const Votacoes = () => {
   const [votacoes, setVotacoes] = useState({
@@ -108,16 +108,14 @@ const Votacoes = () => {
     }));
 
     return (
-      <div className={styles.fundo}>
-        <p className={styles.titulo}>{titulo}</p>
         <Tabela
+          titulo={titulo}
           colunas={colunas}
           dados={dados}
           tipoAcao="botao"
           aoClicarAcao={(linha) => abrirModal(linha.linhaOriginal, tipo)}
           mensagemVazio="Nenhuma votação encontrada."
         />
-      </div>
     );
   };
 
@@ -126,60 +124,44 @@ const Votacoes = () => {
 
     return (
       <>
-        <div className={styles.modalbackdrop} onClick={() => setModalAberto('')} />
-        <div className={styles.modalcontent}>
-          <h3>Votação: {votacaoAtual.titulo}</h3>
-          <p>{votacaoAtual.descricao}</p>
-
-          {modalAberto === 'binario' ? (
-            <>
-              <label htmlFor="votoBinario">Selecione o seu voto:</label>
-              <select
-                id="votoBinario"
-                value={votoBinario}
-                onChange={(e) => setVotoBinario(e.target.value)}
-              >
-                <option value="">-- Escolher --</option>
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-              </select>
-            </>
-          ) : (
-            <>
-              <label htmlFor="orcamentos">Selecione um orçamento:</label>
-              <select
-                id="orcamentos"
-                value={selectedOrcamento}
-                onChange={(e) => setSelectedOrcamento(e.target.value)}
-              >
-                <option value="">-- Escolher --</option>
-                {orcamentos.map((orc) => (
-                  <option key={orc.OrcamentoID} value={orc.OrcamentoID}>
-                    {orc.DescOrcamento}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-          <div>
-            <button
-              onClick={submeterVoto}
-              disabled={
-                modalAberto === 'binario' ? !votoBinario : !selectedOrcamento
-              }
-            >
-              Votar
-            </button>
-            <button
-              onClick={() => {
-                setModalAberto('');
-                setVotacaoAtual(null);
-              }}
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
+        <ModalForm
+          show={modalAberto !== ''}
+          onclose={() => {
+            setModalAberto('');
+            setVotacaoAtual(null);
+          }}
+          title={`Votação: ${votacaoAtual.titulo}`}
+          fields={[
+            {
+              name: 'voto',
+              label: modalAberto === 'binario' ? 'Selecione o seu voto:' : 'Selecione um orçamento:',
+              type: modalAberto === 'binario' ? 'select' : 'select',
+              options: modalAberto === 'binario'
+                ? [
+                    { value: '', label: '-- Escolher --' },
+                    { value: 'sim', label: 'Sim' },
+                    { value: 'nao', label: 'Não' }
+                  ]
+                : orcamentos.map((orc) => ({
+                    value: orc.OrcamentoID,
+                    label: orc.DescOrcamento
+                  }))
+            }
+          ]}
+          formData={{ voto: modalAberto === 'binario' ? votoBinario : selectedOrcamento }}
+          onChange={(e) => {
+            if (modalAberto === 'binario') {
+              setVotoBinario(e.target.value);
+            } else {
+              setSelectedOrcamento(e.target.value);
+            }
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            submeterVoto();
+          }}
+          textBotao="Votar"
+        />
       </>
     );
   };

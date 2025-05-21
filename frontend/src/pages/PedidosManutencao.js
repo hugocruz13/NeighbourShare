@@ -4,6 +4,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
+import ModalForm from '../components/ModalForm.jsx';
+import Modal from '../components/ModalForm.jsx';
+import Select from '../components/Select.jsx';
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -116,76 +119,52 @@ const PedidosManutencao = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className={styles.fundo}>
-  
-          {/* Modal de Adicionar Recurso */}
-          {showModal && pedidoAtual && (
-            <>
-              <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
-              <div className={styles.modalcontent}>
-                <div className={styles.detalhesManutencao}>
-                  <p><strong>Nº do Pedido:</strong> {pedidoAtual.PMID}</p>
-                  <p><strong>Solicitante:</strong> {pedidoAtual.Utilizador_.NomeUtilizador}</p>
-                  <p><strong>Data Do Pedido:</strong> {pedidoAtual.DataPedido}</p>
-                  <p><strong>Descrição:</strong> {pedidoAtual.DescPedido}</p>
-                  <p><strong>Recurso:</strong> {pedidoAtual.RecursoComun_.Nome}</p>
-                </div>
-                <div>
-                  <p>Pedido necessita de entidade externa</p>
-                  <button>Sim</button>
-                  <button onClick={handleNaoClick}>Não</button>
-                </div>
-              </div>
-            </>
-          )}
   
           {/* Modal de Justificação */}
-          {showJustificationModal && (
-            <>
-              <div className={styles.modalbackdrop} onClick={() => setShowJustificationModal(false)} />
-              <div className={styles.modalcontent}>
-                <h2>Justificação</h2>
-                <textarea value={justificacao} onChange={(e) => setJustificacao(e.target.value)} required />
-                <div>
-                  <button onClick={handleJustificationSubmit}>Enviar</button>
-                  <button onClick={() => setShowJustificationModal(false)}>Cancelar</button>
-                </div>
-              </div>
-            </>
-          )}
-  
-          <p className={styles.titulo}>Pedidos de Manutenção</p>
-          <Tabela
-            colunas = {[
-              { accessorKey: 'NumPedido', header: 'Nº do Pedido' },
-              { accessorKey: 'Solicitante', header: 'Solicitante' },
-              { accessorKey: 'DataPedido', header: 'Data Do Pedido' },
-              { accessorKey: 'Descricao', header: 'Descrição' },
-              { accessorKey: 'Recurso', header: 'Recurso' },
-              { accessorKey: 'Acao', header: 'Ação' }
+          <ModalForm
+            show={showJustificationModal}
+            onClose={() => setShowJustificationModal(false)}
+            onSubmit={handleJustificationSubmit}
+            title="Justificação"
+            fields={[
+              { name: 'justificacao', label: 'Justificação', type: 'textarea', required: true }
             ]}
-            dados={pedidos.map((pedido) => ({
-              'NumPedido': pedido.PMID,
-              'Solicitante': pedido.Utilizador_.NomeUtilizador,
-              'DataPedido': pedido.DataPedido,
-              'Descricao': pedido.DescPedido,
-              'Recurso': pedido.RecursoComun_.Nome,
-              'Acao': (
-                <select
-                  value={pedido.estado}
-                  onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
-                      {option.DescEstadoPedidoManutencao}
-                    </option>
-                  ))}
-                </select>
-              )
-            }))}
-            mensagemVazio="Nenhum pedido de manutenção encontrado."
+            formData={{ justificacao }}
+            onChange={(e) => setJustificacao(e.target.value)}
+            textBotao="Enviar"
           />
-        </div>
+          <Tabela
+            titulo="Pedidos de Manutenção"
+            colunas={[
+              { accessorKey: 'PMID', header: 'Nº Pedido' },
+              { accessorKey: 'Utilizador_.NomeUtilizador', header: 'Solicitante' },
+              { accessorKey: 'DataPedido', header: 'Data do Pedido' },
+              { accessorKey: 'DescPedido', header: 'Descrição' },
+              { accessorKey: 'RecursoComun_.Nome', header: 'Recurso' },
+              {
+                accessorKey: 'Acao',
+                header: 'Ação',
+                cell: ({ row }) => {
+                  const pedido = row.original;
+                  return (
+                    <Select
+                      options={statusOptions.map((option) => ({
+                        value: option.id,
+                        label: option.estado
+                      }))}
+                      value={pedido.estado}
+                      onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.value)}
+                      onClick={() => {
+                        setSelectedPedido(pedido.PMID);
+                        setShowModal(true);
+                      }}
+                    />
+                  );
+                }
+              }
+            ]}
+            dados={pedidos}
+          />
       </div>
       <ToastContainer />
     </div>

@@ -4,6 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from "../styles/LayoutPaginasTabelas.module.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
+import Button from '../components/Button.jsx';
+import ModalForm from '../components/ModalForm.jsx';
 
 const MeusPedidosReserva = () => {
   const [disabledButtons, setDisabledButtons] = useState(new Set());
@@ -157,105 +159,169 @@ const handleJustification = (id) => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Os Meus Pedidos de Reserva de Recursos</p>
           <Tabela
+            titulo="Reservas como Solicitante"
             colunas={[
               { accessorKey: 'ReservaID', header: 'ID' },
               { accessorKey: 'Dono', header: 'Dono' },
-              { accessorKey: 'DataInicio', header: 'Data Inicio' },
+              { accessorKey: 'DataInicio', header: 'Data Início' },
               { accessorKey: 'DataFim', header: 'Data Fim' },
               { accessorKey: 'NomeRecurso', header: 'Recurso' },
-              { accessorKey: 'RecursoRecebido', header: 'Recurso Recebido ?' },
-              { accessorKey: 'CaucaoEntregue', header: 'Caução Entregue ?' },
-              { accessorKey: 'Acao', header: 'Ações' }
+              {
+                accessorKey: 'RecursoRecebido',
+                header: 'Recurso Recebido ?',
+                cell: ({ row }) => {
+                  const res = row.original;
+                  return (
+                    <Button
+                      variant="green"
+                      onClick={() =>
+                        handleUpdate(
+                          res.ReservaID,
+                          'recursoEntregue',
+                          !res.RecursoEntregueSolicitante,
+                          'solicitante'
+                        )
+                      }
+                      disabled={disabledButtons.has(`recursoEntregue-${res.ReservaID}`)}
+                    >
+                      {res.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
+                    </Button>
+                  );
+                }
+              },
+
+              {
+                accessorKey: 'CaucaoEntregue',
+                header: 'Caução Entregue ?',
+                cell: ({ row }) => {
+                  const res = row.original;
+                  return (
+                    <Button
+                      variant="green"
+                      onClick={() =>
+                        handleUpdate(
+                          res.ReservaID,
+                          'caucaoEntregue',
+                          !res.ConfirmarCaucaoSolicitante,
+                          'solicitante'
+                        )
+                      }
+                      disabled={disabledButtons.has(`caucaoEntregue-${res.ReservaID}`)}
+                    >
+                      {res.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
+                    </Button>
+                  );
+                }
+              },
+              
             ]}
-            dados={comoSolicitante.map((res) => ({
-              ...res,
-              'Recurso Recebido': (
-                <button
-                  className="btnConfirmacoes"
-                  onClick={() => handleUpdate(res.ReservaID, 'recursoEntregue', !res.RecursoEntregueSolicitante, 'solicitante')}
-                  disabled={disabledButtons.has(`recursoEntregue-${res.ReservaID}`)}
-                >
-                  {res.RecursoEntregueSolicitante ? 'Sim' : 'Não'}
-                </button>
-              ),
-              'Caução Entregue': (
-                <button
-                  className="btnConfirmacoes"
-                  onClick={() => handleUpdate(res.ReservaID, 'caucaoEntregue', !res.ConfirmarCaucaoSolicitante, 'solicitante')}
-                  disabled={disabledButtons.has(`caucaoEntregue-${res.ReservaID}`)}
-                >
-                  {res.ConfirmarCaucaoSolicitante ? 'Sim' : 'Não'}
-                </button>
-              )
-            }))}
+            dados={comoSolicitante}
           />
-        </div>
-  
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Reservas</p>
           <Tabela
+            titulo="Reservas como Dono"
             colunas={[
               { accessorKey: 'ReservaID', header: 'ID' },
               { accessorKey: 'Solicitante', header: 'Solicitante' },
-              { accessorKey: 'DataInicio', header: 'Data Inicio' },
+              { accessorKey: 'DataInicio', header: 'Data Início' },
               { accessorKey: 'DataFim', header: 'Data Fim' },
               { accessorKey: 'NomeRecurso', header: 'Recurso' },
-              { accessorKey: 'RecursoEntregue', header: 'Recurso Entregue ?' },
-              { accessorKey: 'CaucaoRecebida', header: 'Caucao Recebida ?' },
-              { accessorKey: 'ConfirmarEstadoRecurso', header: 'Confirmar Estado Recurso' },
-              { accessorKey: 'Acao', header: 'Ações' }
+
+              {
+                accessorKey: 'RecursoEntregue',
+                header: 'Recurso Entregue ?',
+                cell: ({ row }) => {
+                  const res = row.original;
+                  return (
+                    <Button
+                      variant="editar"
+                      onClick={() =>
+                        handleUpdate(
+                          res.ReservaID,
+                          'recursoEntregue2',
+                          !res.RecursoEntregueDono,
+                          'dono'
+                        )
+                      }
+                      disabled={disabledButtons.has(`recursoEntregue2-${res.ReservaID}`)}
+                    >
+                      {res.RecursoEntregueDono ? 'Sim' : 'Não'}
+                    </Button>
+                  );
+                }
+              },
+
+              {
+                accessorKey: 'CaucaoRecebida',
+                header: 'Caução Recebida ?',
+                cell: ({ row }) => {
+                  const res = row.original;
+                  return (
+                    <Button
+                      variant="editar"
+                      onClick={() =>
+                        handleUpdate(
+                          res.ReservaID,
+                          'caucaoEntregue2',
+                          !res.ConfirmarCaucaoDono,
+                          'dono'
+                        )
+                      }
+                      disabled={disabledButtons.has(`caucaoEntregue2-${res.ReservaID}`)}
+                    >
+                      {res.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
+                    </Button>
+                  );
+                }
+              },
+
+              {
+                accessorKey: 'ConfirmarEstadoRecurso',
+                header: 'Confirmar Estado Recurso',
+                cell: ({ row }) => {
+                  const res = row.original;
+                  return (
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <Button
+                        variant="green"
+                        onClick={() => handleUpdate(res.ReservaID, 'bomEstado', true, 'dono')}
+                      >
+                        Sim
+                      </Button>
+                      <Button
+                        variant="red"
+                        onClick={() => {
+                          setSelectedReservaID(res.ReservaID);
+                          setShowModal(true);
+                        }}
+                      >
+                        Não
+                      </Button>
+                    </div>
+                  );
+                }
+              },
             ]}
-            dados={comoDono.map((res) => ({
-              ...res,
-              'Recurso Entregue': (
-                <button
-                  className="btnConfirmacoes"
-                  onClick={() => handleUpdate(res.ReservaID, 'recursoEntregue2', !res.RecursoEntregueDono, 'dono')}
-                  disabled={disabledButtons.has(`recursoEntregue2-${res.ReservaID}`)}
-                >
-                  {res.RecursoEntregueDono ? 'Sim' : 'Não'}
-                </button>
-              ),
-              'Caucao Recebida': (
-                <button
-                  className="btnConfirmacoes"
-                  onClick={() => handleUpdate(res.ReservaID, 'caucaoEntregue2', !res.ConfirmarCaucaoDono, 'dono')}
-                  disabled={disabledButtons.has(`caucaoEntregue2-${res.ReservaID}`)}
-                >
-                  {res.ConfirmarCaucaoDono ? 'Sim' : 'Não'}
-                </button>
-              ),
-              'Confirmar Estado Recurso': (
-                <>
-                  <button className="btnSimReserva" onClick={() => handleUpdate(res.ReservaID, 'bomEstado', true, 'dono')}>Sim</button>
-                  <button className="btnNaoReserva" onClick={() => { setSelectedReservaID(res.ReservaID); setShowModal(true); }}>Não</button>
-                </>
-              )
-            }))}
-            mensagemVazio="Nenhuma reserva encontrada."
+            dados={comoDono}
           />
-        </div>
   
-        {showModal && (
-          <>
-            <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
-            <div className={styles.modalcontent}>
-              <h2>Enviar Justificação</h2>
-              <textarea
-                placeholder="Descrição"
-                value={newResource.justification}
-                onChange={(e) => setNewResource({ ...newResource, justification: e.target.value })}
-              />
-              <div>
-                <button onClick={() => handleJustification(selectedReservaID)}>Enviar</button>
-                <button onClick={() => setShowModal(false)}>Cancelar</button>
-              </div>
-            </div>
-          </>
-        )}
+
+        <ModalForm
+          show={showModal}
+          onclose={() => setShowModal(false)}
+          title="Justificação"
+          fields={[
+            { label: 'Justificação', name: 'justification', type: 'text', required: true },
+          ]}
+          formData={newResource}
+          onChange={(e) => setNewResource({ ...newResource, [e.target.name]: e.target.value })}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleJustification(selectedReservaID);
+          }}
+          textBotao="Enviar Justificação"
+        />
+
       </div>
       <ToastContainer />
     </div>
