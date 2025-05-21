@@ -5,6 +5,7 @@ import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 import Button from '../components/Button.jsx';
+import ModalForm from '../components/ModalForm.jsx';
 
 const Orcamentos = () => {
   const [orcamentos, setOrcamentos] = useState([]);
@@ -134,60 +135,46 @@ const Orcamentos = () => {
   return (
     <div className="page-container">
       <Navbar2 />
-
       <div className="home-container">
-        <div className={styles.fundo}>
-          <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>
-          <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>
-
-          {showModal && (
-            <>
-              <div className={styles.modalbackdrop} onClick={() => setShowModal(false)} />
-              <div className={styles.modalcontent}>
-                {modalType === 'orcamento' ? (
-                  <>
-                    <h2>Adicionar Orçamento</h2>
-                    <select
-                      value={newResource.id_entidade_externa}
-                      onChange={(e) => setNewResource({ ...newResource, id_entidade_externa: e.target.value })}
-                    >
-                      <option value="">Selecione um fornecedor</option>
-                      {fornecedores.map((fornecedor) => (
-                        <option key={fornecedor.EntidadeID} value={fornecedor.EntidadeID}>
-                          {fornecedor.Nome}
-                        </option>
-                      ))}
-                    </select>
-                    <input type="number" placeholder="valor" value={newResource.valor_orcamento} onChange={(e) => setNewResource({ ...newResource, valor_orcamento: e.target.value })} />
-                    <input type="text" placeholder="descricao" value={newResource.descricao_orcamento} onChange={(e) => setNewResource({ ...newResource, descricao_orcamento: e.target.value })} />
-                    <input type="text" placeholder="ID Processo" value={newResource.idprocesso} onChange={(e) => setNewResource({ ...newResource, idprocesso: e.target.value })} />
-                    <input type="text" placeholder="Tipo Orçamento" value={newResource.tipoorcamento} onChange={(e) => setNewResource({ ...newResource, tipoorcamento: e.target.value })} />
-                    <input type="file" onChange={handleFileChange} />
-                    <div>
-                      <button onClick={handleAddResource}>Adicionar</button>
-                      <button onClick={() => setShowModal(false)}>Cancelar</button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <h2>Criar Votação</h2>
-                    <input type="text" placeholder="Título" value={votacao.titulo} onChange={(e) => setVotacao({ ...votacao, titulo: e.target.value })} />
-                    <input type="text" placeholder="Descrição" value={votacao.descricao} onChange={(e) => setVotacao({ ...votacao, descricao: e.target.value })} />
-                    <input type="number" placeholder="ID do Processo" value={votacao.id_processo} onChange={(e) => setVotacao({ ...votacao, id_processo: parseInt(e.target.value) })} />
-                    <input type="date" placeholder="Data de Fim" value={votacao.data_fim} onChange={(e) => setVotacao({ ...votacao, data_fim: e.target.value })} />
-                    <input type="text" placeholder="Tipo" value={votacao.tipo_votacao} onChange={(e) => setVotacao({ ...votacao, tipo_votacao: e.target.value })} />
-                    <div>
-                      <button onClick={handleCreateVotacao}>Criar</button>
-                      <button onClick={() => setShowModal(false)}>Cancelar</button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </>
-          )}
-
-          <p className={styles.titulo}>Orçamentos</p>
+          <ModalForm
+            show={showModal}
+            onclose={() => setShowModal(false)}
+            title={modalType === 'orcamento' ? 'Adicionar Orçamento' : 'Criar Votação'}
+            fields={modalType === 'orcamento' ? [
+              { name: 'id_entidade_externa', label: 'Fornecedor', type: 'select', options: fornecedores.map(f => ({ value: f.EntidadeID, label: f.Nome })) },
+              { name: 'valor_orcamento', label: 'Valor', type: 'number', required: true },
+              { name: 'descricao_orcamento', label: 'Descrição', type: 'text' },
+              { name: 'idprocesso', label: 'ID Processo', type: 'text' },
+              { name: 'tipoorcamento', label: 'Tipo Orçamento', type: 'text' },
+              { name: 'pdforcamento', label: 'Arquivo', type: 'file' }
+            ] : [
+              { name: 'titulo', label: 'Título', type: 'text' },
+              { name: 'descricao', label: 'Descrição', type: 'text' },
+              { name: 'id_processo', label: 'ID do Processo', type: 'number' },
+              { name: 'data_fim', label: 'Data de Fim', type: 'date' },
+              { name: 'tipo_votacao', label: 'Tipo Votação', type: 'text' }
+            ]}
+            formData={modalType === 'orcamento' ? newResource : votacao}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              if (modalType === 'orcamento') {
+                setNewResource({ ...newResource, [name]: value });
+              } else {
+                setVotacao({ ...votacao, [name]: value });
+              }
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (modalType === 'orcamento') {
+                handleAddResource();
+              } else {
+                handleCreateVotacao();
+              }
+            }}
+            textBotao={modalType === 'orcamento' ? 'Adicionar' : 'Criar'}
+          />
           <Tabela
+            titulo={"Orçamentos"}
             const colunas = {[
               { accessorKey: 'NumOrcamento', header: 'Nº Orçamento' },
               { accessorKey: 'Fornecedor', header: 'Fornecedor' },
@@ -200,9 +187,9 @@ const Orcamentos = () => {
               'Valor': orcamento.Valor,
               'Descrição': orcamento.DescOrcamento,
             }))}
-            mensagemVazio="Nenhum orçamento encontrado."
+            botoesOpcoes={[<Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>, 
+            <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>]}
           />
-        </div>
       </div>
 
       <ToastContainer />

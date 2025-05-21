@@ -3,7 +3,7 @@ import React, {useState,useEffect} from 'react';
 import styles from './ModalForm.module.css';
 import Input from '../components/Input.jsx';
 
-const Modal = ({show, onclose, title, fields = [], formData, onChange, onSubmit}) => {  
+const Modal = ({show, onclose, title, fields = [], formData, onChange, onSubmit, textBotao}) => {  
     return(
         <AnimatePresence>
             {show && (
@@ -25,13 +25,13 @@ const Modal = ({show, onclose, title, fields = [], formData, onChange, onSubmit}
                         <label htmlFor={field.name} className={styles.label}>
                         {field.label}
                         </label>
-                        <Input id={field.name} name={field.name} value={formData[field.name]} onChange={onChange} required={field.required} placeholder="Digite aqui..." type={field.type} className={styles.input} variant="modal"/>
+                        <Input id={field.name} name={field.name} value={formData[field.name]} onChange={onChange} required={field.required} placeholder="Digite aqui..." type={field.type} className={styles.inputContainer} variant="modal"/>
                        
                     </div>
                     ))}
 
                     <div>
-                        <button type="submit">Registar</button>
+                        <button type="submit">{textBotao}</button>
                     </div>
                 </form>
                 </motion.div>

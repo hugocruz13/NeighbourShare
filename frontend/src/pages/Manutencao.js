@@ -114,9 +114,8 @@ const Manutencao = () => {
       <Navbar2 />
     
       <div className="home-container">
-        <div className={styles.fundo}>
-          <p className={styles.titulo}>Pedidos de Manutenção</p>
           <Tabela
+            titulo="Pedidos de Manutenção"
             colunas = {[
               { accessorKey: 'NumManutencao', header: 'Nº Manutenção' },
               { accessorKey: 'Descricao', header: 'Descrição' },
@@ -124,15 +123,10 @@ const Manutencao = () => {
               { accessorKey: 'Estado', header: 'Estado' }
             ]}
             dados={pedidos}
-            aoClicarAcao={(pedido) => handleDateUpdate(pedido)}
-            tipoAcao="link"
-            mensagemVazio="Nenhum pedido de manutenção encontrado."
           />
         </div>
-    
         <ToastContainer />
       </div>
-    </div>
   );
 };
 

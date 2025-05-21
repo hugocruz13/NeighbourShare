@@ -8,8 +8,9 @@ import {
 } from '@tanstack/react-table';
 import {motion, AnimatePresence} from 'framer-motion';
 import styles from './Tabela.module.css';
+import Input from './Input.jsx';
 
-const Tabela = ({ colunas, dados, destaqueId }) => {
+const Tabela = ({ titulo,colunas, dados, destaqueId, botoesOpcoes = [] }) => {
   const [ordenacao, setOrdenacao] = useState([]);
   const [filtroGlobal, setFiltroGlobal] = useState('');
   const tabela = useReactTable({
@@ -29,19 +30,31 @@ const Tabela = ({ colunas, dados, destaqueId }) => {
 
   return (
     <>
-        <label htmlFor="globalFilter">Procure: </label>
-        <input
-          id="globalFilter"
-          type="text"
-          value={filtroGlobal}
-          onChange={e => setFiltroGlobal(e.target.value)}
-          placeholder="Filtre por qualquer coluna"
-          className={styles.inputPesquisa}
-        />
+    <div className={styles.fundo}>
+      <p className={styles.titulo}>{titulo}</p>
+        <div className={styles.containerOpcoes}>
+          <div className={styles.leftGroup}>
+            <label htmlFor="globalFilter">Procure: </label>
+            <Input
+              id="globalFilter"
+              type="text"
+              placeholder="Filtre por qualquer coluna"
+              value={filtroGlobal}
+              onChange={e => setFiltroGlobal(e.target.value)}
+              className={styles.inputPesquisa}
+            />
+          </div>
+           <div className={styles.rightGroup}>
+              {botoesOpcoes.map((botao, idx) => (
+                <React.Fragment key={idx}>{botao}</React.Fragment>
+              ))}
+            </div>
+        </div>
+    <div className={styles.tabelaWrapper} >
     <table className={styles.tabela}>
-      <thead>
+      <thead className={styles.cabecalho}>
         {tabela.getHeaderGroups().map(headerGroup => (
-          <tr key ={headerGroup.id} className={styles.cabecalho}>
+          <tr key ={headerGroup.id} >
             {headerGroup.headers.map(header => (
               <th key={header.id} onClick={header.column.getToggleSortingHandler()}>
                 {flexRender(header.column.columnDef.header, header.getContext())}
@@ -83,6 +96,8 @@ const Tabela = ({ colunas, dados, destaqueId }) => {
         )}
       </tbody>
     </table>
+    </div>
+    </div>
     </>
   );
 };

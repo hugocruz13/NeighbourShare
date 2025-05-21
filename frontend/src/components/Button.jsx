@@ -29,6 +29,8 @@ const Button = ({
     green: styles['button-green'],
     red: styles['button-red'],
     login: styles['button-login'],
+    eliminar: styles['button-eliminar-tabela'],
+    editar: styles['button-editar-tabela'],
   };
 
   // Para variantes green e red, não precisamos da classe button base
