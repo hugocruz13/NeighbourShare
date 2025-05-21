@@ -94,5 +94,11 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc4MjkyMDd9.ixd0v6yyzfdhpTET4Y43XmCFHgvyuNODYNDAcW-b424",
         "role": "residente",
         "timestamp": 1747827407.287598
+    },
+    {
+        "user_id": 3,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc4MzA0Mzh9.mV_irer1ODXt066b3oyQodzaKYUXz0lSPK8peg-931o",
+        "role": "residente",
+        "timestamp": 1747828638.3589728
     }
 ]

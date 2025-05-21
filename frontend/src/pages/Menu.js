@@ -41,12 +41,6 @@ function Residente() {
             <h3>Meu Perfil</h3>
             <Button variant="default" onClick={() => navigateTo('/perfil')}>Acessar</Button>
           </div>
-
-          <div className="dashboard-card" onClick={() => navigateTo('/notificacoes')}>
-            <div className="card-icon notification-icon"></div>
-            <h3>Notificações</h3>
-            <Button variant="default" onClick={() => navigateTo('/notificacoes')}>Visualizar</Button>
-          </div>
           
           <div className="dashboard-card" onClick={() => navigateTo('/recursosDisponiveis')}>
             <div className="card-icon resources-icon"></div>
