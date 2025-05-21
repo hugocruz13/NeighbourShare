@@ -58,3 +58,11 @@
   gap: 20px;
 }
 
+.about{
+  margin: 100px 100px 10px 100px;
+}
+
+.contacto-container {
+  max-width: 1300px;
+  margin: 0 auto;
+}

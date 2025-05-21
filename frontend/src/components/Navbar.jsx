@@ -68,15 +68,13 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <Link
-                to="/sobre"
-                className={`${styles.link} ${
-                  location.pathname === "/sobre" ? styles.active : ""
-                }`}
+              <a
+                href="#sobre"
+                className={styles.link}
                 onClick={handleLinkClick}
               >
                 Sobre
-              </Link>
+              </a>
             </li>
             <li>
               <a

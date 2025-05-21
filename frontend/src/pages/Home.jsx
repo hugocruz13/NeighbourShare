@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar.jsx";
-import { MainImg } from "../components/Images.jsx";
+import { Img_Right, Img_Left } from "../components/Images.jsx";
 import Funcionalidades from "../components/Funcionalidades.jsx";
 import "../styles/Home.css";
 
@@ -15,7 +15,7 @@ function Home() {
             eficiente.
           </p>
         </header>
-        <MainImg
+        <Img_Right
           path="/img/main.jpg"
           alt="Prédios"
           titulo="Juntos, cuidamos melhor do nosso espaço — peça, compartilhe e colabore para uma convivência mais harmoniosa."
@@ -57,6 +57,11 @@ function Home() {
               desc="Notificações automáticas e entre outras."
             />
           </div>
+        </div>
+        <br />
+        <br />
+        <div className="about" id="sobre">
+          <Img_Left path="logo512.png" alt="Prédios" />
         </div>
       </main>
       <footer className="home-footer">
