@@ -30,7 +30,7 @@ function Residente() {
       <Navbar2 />
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1>{greeting}, <span className="user-name">{user?.name || 'Vizinho'}</span></h1>
+          <h1>{greeting}, <span className="user-name">{user?.name || 'Residente'}</span></h1>
           <p className="welcome-text">Bem-vindo ao seu painel de gestão NeighbourShare</p>
         </div>
         
@@ -51,7 +51,7 @@ function Residente() {
           <div className="dashboard-card" onClick={() => navigateTo('/listaReserva')}>
             <div className="card-icon booking-icon"></div>
             <h3>Minhas Reservas</h3>
-            <Button variant="default" onClick={() => navigateTo('/listaReserva')}>Gerenciar</Button>
+            <Button variant="default" onClick={() => navigateTo('/listaReserva')}>Gerir</Button>
           </div>
 
           <div className="dashboard-card" onClick={() => navigateTo('/listaPedidosReserva')}>
@@ -63,7 +63,7 @@ function Residente() {
           <div className="dashboard-card" onClick={() => navigateTo('/meusRecursos')}>
             <div className="card-icon my-resources-icon"></div>
             <h3>Meus Recursos</h3>
-            <Button variant="default" onClick={() => navigateTo('/meusRecursos')}>Visualizar</Button>
+            <Button variant="default" onClick={() => navigateTo('/meusRecursos')}>Ver</Button>
           </div>          <div className="dashboard-card" onClick={() => navigateTo('/votacoes')}>
             <div className="card-icon vote-icon"></div>
             <h3>Votações Ativas</h3>
@@ -90,15 +90,15 @@ function Residente() {
             <div className="admin-grid">
               <div className="admin-card" onClick={() => navigateTo('/manutencao')}>
                 <h3>Manutenções</h3>
-                <Button variant="default" onClick={() => navigateTo('/manutencao')}>Acessar</Button>
+                <Button variant="default" onClick={() => navigateTo('/manutencao')}>Ver</Button>
               </div>
               <div className="admin-card" onClick={() => navigateTo('/entidadeExterna')}>
                 <h3>Entidades Externas</h3>
-                <Button variant="default" onClick={() => navigateTo('/entidadeExterna')}>Gerenciar</Button>
+                <Button variant="default" onClick={() => navigateTo('/entidadeExterna')}>Gerir</Button>
               </div>
               <div className="admin-card" onClick={() => navigateTo('/orcamentos')}>
                 <h3>Orçamentos</h3>
-                <Button variant="default" onClick={() => navigateTo('/orcamentos')}>Visualizar</Button>
+                <Button variant="default" onClick={() => navigateTo('/orcamentos')}>Ver</Button>
               </div>
               <div className="admin-card" onClick={() => navigateTo('/pedidosManutencao')}>
                 <h3>Pedidos de Manutenção</h3>
@@ -110,7 +110,7 @@ function Residente() {
               </div>
               <div className="admin-card" onClick={() => navigateTo('/recursosComuns')}>
                 <h3>Recursos Comuns</h3>
-                <Button variant="default" onClick={() => navigateTo('/recursosComuns')}>Gerenciar</Button>
+                <Button variant="default" onClick={() => navigateTo('/recursosComuns')}>Gerir</Button>
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@ function Residente() {
             <h2 className="section-title">Administração do Sistema</h2>
             <div className="admin-grid">
               <div className="admin-card" onClick={() => navigateTo('/registar')}>
-                <h3>Registrar Novos Usuários</h3>
+                <h3>Registrar Novos Utilizadores</h3>
                 <Button variant="default" onClick={() => navigateTo('/registar')}>Registrar</Button>
               </div>
             </div>
