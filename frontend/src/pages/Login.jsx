@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { InputLogin, InputPassword } from "../components/Inputs.js";
+import { useAuth } from "../context/AuthContext.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/Login.css";
@@ -84,13 +83,10 @@ function Login() {
           <form className="formulario" onSubmit={handleSubmit}>
             <h2 className="subtitle">Acesse a sua conta!</h2>
             <div className="container-center">
-              <Input name="email" value={formData.email} onChange={handleChange} placeholder="email" type="email" variant="default"/>
-              <Input name="password" value={formData.password} onChange={handleChange} placeholder="password" type="password"></Input>
-
+              <Input name="email" value={formData.email} onChange={handleChange} placeholder="Email" type="email" variant="default"/>
+              <Input name="password" value={formData.password} onChange={handleChange} placeholder="Password" type="password"></Input>
               <div className="container-button">
-                <Button variant= "login"  type="submit" text={"Entrar"}>
-                  Entrar
-                </Button>
+                <Button className="btn-login" variant= "login"  type="submit" text={"Entrar"}>Entrar</Button>
               </div>
               <p className="erro">{error && error}</p>
               <p className="link-recuperacao" onClick={() => setShowModal(true)}>Esqueceu a senha?</p>
@@ -108,7 +104,6 @@ function Login() {
             <h3>Recuperação de Senha</h3>
             <p>Digite seu email para receber instruções de recuperação de senha.</p>
             <Input name="emailRecuperacao" value={emailRecuperacao} onChange={(e) => setEmailRecuperacao(e.target.value)} placeholder="email" type="email" variant="modal"/>
-            
             <button onClick={handleRecuperacaoSenha}>Enviar</button>
             <button onClick={() => setShowModal(false)}>Cancelar</button>
           </div>

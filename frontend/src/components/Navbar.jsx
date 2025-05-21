@@ -57,26 +57,22 @@ function Navbar() {
         >
           <ul className={styles.links}>
             <li>
-              <Link
-                to="/"
-                className={`${styles.link} ${
-                  location.pathname === "/" ? styles.active : ""
-                }`}
+              <a
+                href="/"
+                className={styles.link} 
                 onClick={handleLinkClick}
               >
                 Home
-              </Link>
+              </a>
             </li>
             <li>
-              <Link
-                to="/sobre"
-                className={`${styles.link} ${
-                  location.pathname === "/sobre" ? styles.active : ""
-                }`}
+              <a
+                href="#sobre"
+                className={styles.link}
                 onClick={handleLinkClick}
               >
                 Sobre
-              </Link>
+              </a>
             </li>
             <li>
               <a
@@ -88,15 +84,13 @@ function Navbar() {
               </a>
             </li>
             <li>
-              <Link
-                to="/contactos"
-                className={`${styles.link} ${
-                  location.pathname === "/contactos" ? styles.active : ""
-                }`}
+              <a
+                href="#contacto"
+                className={styles.link}
                 onClick={handleLinkClick}
               >
                 Contactos
-              </Link>
+              </a>
             </li>
           </ul>
           <Button variant="login" onClick={handleLoginClick}>
