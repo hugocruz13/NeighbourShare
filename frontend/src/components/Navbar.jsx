@@ -57,15 +57,13 @@ function Navbar() {
         >
           <ul className={styles.links}>
             <li>
-              <Link
-                to="/"
-                className={`${styles.link} ${
-                  location.pathname === "/" ? styles.active : ""
-                }`}
+              <a
+                href="/"
+                className={styles.link} 
                 onClick={handleLinkClick}
               >
                 Home
-              </Link>
+              </a>
             </li>
             <li>
               <a

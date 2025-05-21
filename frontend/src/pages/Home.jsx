@@ -6,7 +6,7 @@ import "../styles/Home.css";
 
 function Home() {
   return (
-    <div className="home-container">
+    <div className="home-container" id="/">
       <Navbar />
       <main className="main">
         <header className="home-hero">
