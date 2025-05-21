@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
+import Button from '../components/Button.jsx';
 
 const Orcamentos = () => {
   const [orcamentos, setOrcamentos] = useState([]);
@@ -136,12 +137,8 @@ const Orcamentos = () => {
 
       <div className="home-container">
         <div className={styles.fundo}>
-          <button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }}>
-            Inserir Orçamento
-          </button>
-          <button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }}>
-            Criar Votação
-          </button>
+          <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>
+          <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>
 
           {showModal && (
             <>

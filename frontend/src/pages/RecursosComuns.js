@@ -5,6 +5,7 @@ import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 import styles from '../styles/LayoutPaginasTabelas.module.css';
+import Button from '../components/Button.jsx';
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -81,7 +82,7 @@ const MeusRecursos = () => {
 
           <p className={styles.titulo}>Recursos Comuns</p>
           {/* Botão para abrir o modal de adicionar recurso */}
-          <button className={styles.btnRegistar} onClick={() => setShowModal(true)}>Adicionar Recurso Comum</button>
+          <Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>
   
           {/* Modal de Adicionar Recurso */}
           {showModal && (

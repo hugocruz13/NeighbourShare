@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
+import Button from '../components/Button.jsx';
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -83,14 +84,14 @@ const MeusRecursos = () => {
 
   return (
     <div className="page-content">
-<Navbar2 />
+    <Navbar2 />
     <div className="home-container">
       
       <div className='fundoMeusRecursos'>
 
 
       {/* Botão para abrir o modal de adicionar recurso */}
-      <button className="btn-registarRecurso" onClick={() => setShowModal(true)}>Adicionar Recurso</button>
+      <Button className='btn-registarRecurso' onClick={() => setShowModal(true)} text={"Adicionar Recurso"}>Adicionar Recurso</Button>
 
       {/* Modal de Adicionar Recurso */}
       {showModal && (

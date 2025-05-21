@@ -4,6 +4,7 @@ import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Textarea from '../components/Textarea.jsx';
+import Button from '../components/Button.jsx';
 
 const RealizarPedidoNovoRecurso = () => {
   const [desc_pedido_novo_recurso, setDescricao] = useState('');
@@ -39,7 +40,7 @@ const RealizarPedidoNovoRecurso = () => {
                 <label>Descrição:</label><br></br>
                 <Textarea value={desc_pedido_novo_recurso} onChange={(e) => setDescricao(e.target.value)} placeholder="Escreve aqui..." rows={6} variant="desc" required/>
               </div>
-              <button className='btnNovoRecurso' type="submit">Realizar Pedido</button>
+              <Button className='btnNovoRecurso' type="submit" text={"Realizar Pedido"}>Realizar Pedido</Button>
             </form>
           </div>
 

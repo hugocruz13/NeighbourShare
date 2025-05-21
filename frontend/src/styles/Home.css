@@ -6,6 +6,10 @@
   overflow-x: hidden;
 }
 
+.page-content{
+  margin-top:50px;
+}
+
 .home-hero {
   font-family: "Poppins", sans-serif;
   color: #2c3e50;

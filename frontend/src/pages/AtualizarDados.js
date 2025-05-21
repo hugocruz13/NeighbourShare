@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../styles/AtualizarDados.css'; // importa o CSS personalizado
 import Input from '../components/Input.jsx';
+import Button from '../components/Button.jsx';
+import Navbar from "../components/Navbar.jsx";
 
 const AtualizarDados = () => {
   const [data_nascimento, setDataNascimento] = useState('');
@@ -13,18 +16,17 @@ const AtualizarDados = () => {
   const [foto, setFoto] = useState(null);
 
   const location = useLocation();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const search = location.search;
     if (search.startsWith('?')) {
-      const tokenFromUrl = search.substring(1); // remove o '?'
+      const tokenFromUrl = search.substring(1);
       setToken(tokenFromUrl);
     }
   }, [location]);
-  
 
   const handleUpdate = async () => {
-
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])([^\s]){8,}$/;
 
     if (!passwordRegex.test(password)) {
@@ -38,9 +40,7 @@ const AtualizarDados = () => {
     formData.append('contacto', contacto);
     formData.append('password', password);
     formData.append('token', token);
-    if (foto) {
-      formData.append('foto', foto);
-    }
+    if (foto) formData.append('foto', foto);
 
     try {
       const res = await fetch('http://localhost:8000/api/registar/atualizar_dados', {
@@ -50,7 +50,6 @@ const AtualizarDados = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.error(errorData);
         throw new Error(errorData.detail || 'Erro ao atualizar dados');
       }
 
@@ -60,25 +59,36 @@ const AtualizarDados = () => {
       setContacto('');
       setPassword('');
       setFoto(null);
+
+      setTimeout(() => {
+        navigate('/login'); 
+      }, 2000);
     } catch (error) {
       toast.error('Erro ao atualizar dados: ' + error.message);
     }
   };
 
   return (
-    <div className="page-content">
+    <div>
+      <Navbar />
+    <div className="page-content-update">
+      
       <div className="update-container">
-        <h2>Atualizar Dados</h2>
-        <Input value={data_nascimento} onChange={(e) => setDataNascimento(e.target.value)} placeholder="Data de Nascimento" type="date" variant="default"/>
+        <h1>Atualizar Dados</h1>
+        <Input value={data_nascimento} onChange={(e) => setDataNascimento(e.target.value)} placeholder="Data de Nascimento" type="date"/>
         <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome" type="text" variant="default"/>
         <Input value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="Contacto" type="number" variant="default"/>
         <Input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" variant="default"/>
         <Input onChange={(e) => setFoto(e.target.files[0])} type="file" variant="default"/>
-  
-        <button onClick={handleUpdate}>Atualizar</button>
+       
+        <div className="btn-update-wrapper">
+          <Button className='btn' variant= "login" onClick={handleUpdate} text={"Atualizar"}>Atualizar</Button>
+        </div>
       </div>
       <ToastContainer />
     </div>
+    </div>
+
   );
 };
 

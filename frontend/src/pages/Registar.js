@@ -4,6 +4,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../styles/Registar.css";
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
+import Navbar2 from "../components/Navbar2.js";
+import Button from '../components/Button.jsx';
+
 const Registar = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
@@ -35,7 +38,9 @@ const Registar = () => {
 
   return (
     <div className="container-registar">
+      <Navbar2 />
       <div className="container-esquerda">
+        <br></br>
         <h1>Registar Utilizador</h1>
         <div className="container-formulario">
             <h2>Registar Novo Utilizador</h2><br></br>
@@ -53,7 +58,7 @@ const Registar = () => {
 
               
               <div className="container-btn">
-                 <button onClick={handleRegister} className='btn'>Registrar</button>
+                <Button className='btn' onClick={handleRegister} text={"Registrar"}>Registrar</Button>
               </div>
             </div>
         </div>

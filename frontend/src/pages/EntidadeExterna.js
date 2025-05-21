@@ -7,6 +7,7 @@ import Tabela from '../components/Tabela.jsx';
 import ModalForm from '../components/ModalForm.jsx'; 
 import { motion } from 'framer-motion';
 import Input from '../components/Input.jsx';
+import Button from '../components/Button.jsx';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);
@@ -87,12 +88,8 @@ const EntidadesExternas = () => {
       <div className="home-container">
         <div className={styles.fundo}>
           <p className={styles.titulo}>Entidades Externas</p>
-            <button
-              onClick={() => setShowModal(true)}
-              className={styles.btnRegistar}
-            >
-              Adicionar Entidade
-            </button>
+          <Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Entidade"}>Adicionar Entidade</Button>
+
           <Tabela
               colunas={[
                 { accessorKey: 'EntidadeID', header: 'ID' },

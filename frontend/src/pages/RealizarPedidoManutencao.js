@@ -5,6 +5,8 @@ import Navbar2 from "../components/Navbar2.js";
 import "../styles/RealizarPedidoManutencao.css";
 import Select from '../components/Select.jsx';
 import Textarea from '../components/Textarea.jsx';
+import Button from '../components/Button.jsx';
+
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
   const [desc_manutencao_recurso_comum, setDescricao] = useState('');
@@ -90,8 +92,7 @@ const RealizarPedidoManutencao = () => {
 
 
               </div>
-
-              <button className='btnNovoRecurso' type="submit">Realizar pedido</button>
+              <Button className='btnNovoRecurso' type="submit" text={"Realizar pedido"}>Realizar pedido</Button>
             </form>
           </div>
 

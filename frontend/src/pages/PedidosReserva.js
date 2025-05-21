@@ -5,6 +5,7 @@ import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Input from '../components/Input.jsx';
+import Button from '../components/Button.jsx';
 
 const ReservarRecurso = () => {
   const { id } = useParams();
@@ -83,7 +84,7 @@ const ReservarRecurso = () => {
           <div>
         <label>Data Início:<Input value={startDate} onChange={(e) => setStartDate(e.target.value)} type="date" variant="default"/></label>
         <label>Data Fim:<Input value={endDate} onChange={(e) => setEndDate(e.target.value)} type="date" variant="default"/></label>
-        <button onClick={handleReserve}>Reservar!</button>
+        <Button variant= "login" onClick={handleReserve} text={"Reservar"}>Reservar</Button>
       </div>
         </div>
         
