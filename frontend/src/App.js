@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.js";
 import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.js";
+import Login from "./pages/Login.jsx";
 import Registar from "./pages/Registar.js";
 import Admin from "./pages/Admin.js"
 import Menu from "./pages/Menu.js"
