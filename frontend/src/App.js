@@ -3,7 +3,6 @@ import { AuthProvider } from "./context/AuthContext.js";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Registar from "./pages/Registar.js";
-import Admin from "./pages/Admin.js"
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
 import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";
@@ -37,7 +36,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
-            <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><Admin /></ProtectedRoute>}/>
             <Route path="/registar" element={<ProtectedRoute allowedRoles={["admin"]}><Registar /></ProtectedRoute>}/>
             <Route path="/menu" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Menu /></ProtectedRoute>}/>
             <Route path="/recursosDisponiveis" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><RecursosDisponiveis /></ProtectedRoute>}/>
