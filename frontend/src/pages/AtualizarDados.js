@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Input from '../components/Input.jsx';
 
 const AtualizarDados = () => {
   const [data_nascimento, setDataNascimento] = useState('');
@@ -68,35 +69,12 @@ const AtualizarDados = () => {
     <div className="page-content">
       <div className="update-container">
         <h2>Atualizar Dados</h2>
-        <input
-          type="date"
-          placeholder="Data de Nascimento"
-          value={data_nascimento}
-          onChange={(e) => setDataNascimento(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Contacto"
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="file"
-          onChange={(e) => setFoto(e.target.files[0])}
-        />
+        <Input value={data_nascimento} onChange={(e) => setDataNascimento(e.target.value)} placeholder="Data de Nascimento" type="date" variant="default"/>
+        <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome" type="text" variant="default"/>
+        <Input value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="Contacto" type="number" variant="default"/>
+        <Input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" variant="default"/>
+        <Input onChange={(e) => setFoto(e.target.files[0])} type="file" variant="default"/>
+  
         <button onClick={handleUpdate}>Atualizar</button>
       </div>
       <ToastContainer />

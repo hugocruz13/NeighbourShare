@@ -35,6 +35,7 @@ const Orcamentos = () => {
         });
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
+        console.log(data);
         setOrcamentos(data);
       } catch (error) {
         console.error('Erro ao buscar orcamentos:', error);

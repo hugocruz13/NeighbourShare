@@ -3,7 +3,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.js";
 import "../styles/RealizarPedidoManutencao.css";
-
+import Select from '../components/Select.jsx';
+import Textarea from '../components/Textarea.jsx';
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
   const [desc_manutencao_recurso_comum, setDescricao] = useState('');
@@ -68,19 +69,26 @@ const RealizarPedidoManutencao = () => {
             <form onSubmit={handleSubmit}>
               <div>
                 <label>Id:</label><br></br>
-                <select value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} required>
-                  <option value="">Selecione um recurso</option>
-                  {recursos.map((recurso) => (
-                    <option key={recurso.RecComumID} value={recurso.RecComumID}>
-                      {recurso.Nome}
-                    </option>
-                  ))}
-                </select>
+
+                <Select value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} placeholder="Escolha um recurso"
+                options={recursos.map(recurso => ({
+                  value: recurso.RecComumID,
+                  label: recurso.Nome
+                }))}
+                required/>
+
+
+
+                
               </div>
 
               <div>
                 <label>Descrição:</label><br></br>
-                <textarea className='inputNovoRecurso' value={desc_manutencao_recurso_comum} onChange={(e) => setDescricao(e.target.value)} required/>
+
+                <Textarea value={desc_manutencao_recurso_comum} onChange={(e) => setDescricao(e.target.value)} placeholder="Escreve aqui..." rows={6} variant="desc" required/>
+
+
+
               </div>
 
               <button className='btnNovoRecurso' type="submit">Realizar pedido</button>

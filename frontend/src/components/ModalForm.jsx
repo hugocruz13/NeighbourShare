@@ -1,6 +1,7 @@
 import {motion,AnimatePresence} from 'framer-motion';
 import React, {useState,useEffect} from 'react';
 import styles from './ModalForm.module.css';
+import Input from '../components/Input.jsx';
 
 const Modal = ({show, onclose, title, fields = [], formData, onChange, onSubmit}) => {  
     return(
@@ -24,16 +25,8 @@ const Modal = ({show, onclose, title, fields = [], formData, onChange, onSubmit}
                         <label htmlFor={field.name} className={styles.label}>
                         {field.label}
                         </label>
-                        <input
-                        type={field.type}
-                        id={field.name}
-                        name={field.name}
-                        value={formData[field.name]}
-                        onChange={onChange}
-                        required={field.required}
-                        placeholder="Digite aqui..."
-                        className={styles.input}
-                        />
+                        <Input id={field.name} name={field.name} value={formData[field.name]} onChange={onChange} required={field.required} placeholder="Digite aqui..." type={field.type} className={styles.input} variant="modal"/>
+                       
                     </div>
                     ))}
 

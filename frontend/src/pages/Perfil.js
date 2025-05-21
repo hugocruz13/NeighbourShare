@@ -4,7 +4,7 @@ import Navbar2 from "../components/Navbar2.js";
 import "../styles/Perfil.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Input from '../components/Input.jsx';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -111,12 +111,7 @@ const updatedUser = {
             <div className='textosPerfil'>
               <p>Utilizador</p>
               {editingField === 'nome' ? (
-                <input
-                  type="text"
-                  value={newFieldValue}
-                  onChange={(e) => setNewFieldValue(e.target.value)}
-                  onBlur={handleSaveField}
-                />
+                <Input value={newFieldValue} onChange={(e) => setNewFieldValue(e.target.value)} type="text" onBlur={handleSaveField} variant="default"/>
               ) : (
                 <p className='infoUser'>{user?.nome} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('nome')} /></p>
               )}
@@ -130,12 +125,7 @@ const updatedUser = {
             <div className='textosPerfil'>
               <p>Contacto</p>
               {editingField === 'contacto' ? (
-                <input
-                  type="text"
-                  value={newFieldValue}
-                  onChange={(e) => setNewFieldValue(e.target.value)}
-                  onBlur={handleSaveField}
-                />
+                <Input value={newFieldValue} onChange={(e) => setNewFieldValue(e.target.value)} type="text" onBlur={handleSaveField} variant="default"/>
               ) : (
                 <p className='infoUser'>{user?.contacto} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('contacto')} /></p>
               )}
@@ -144,12 +134,7 @@ const updatedUser = {
             <div className='textosPerfil'>
               <p>Data de Nascimento</p>
               {editingField === 'data_nascimento' ? (
-                <input
-                  type="text"
-                  value={newFieldValue}
-                  onChange={(e) => setNewFieldValue(e.target.value)}
-                  onBlur={handleSaveField}
-                />
+                <Input value={newFieldValue} onChange={(e) => setNewFieldValue(e.target.value)} type="text" onBlur={handleSaveField} variant="default"/>
               ) : (
                 <p className='infoUser'>{user?.data_nascimento} <img className='lapisEdit' src="/img/lapis.png" alt="Editar" onClick={() => handleEditField('data_nascimento')} /></p>
               )}

@@ -3,6 +3,7 @@ import "../styles/RealizarPedidoNovoRecurso.css";
 import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Textarea from '../components/Textarea.jsx';
 
 const RealizarPedidoNovoRecurso = () => {
   const [desc_pedido_novo_recurso, setDescricao] = useState('');
@@ -36,7 +37,7 @@ const RealizarPedidoNovoRecurso = () => {
             <form onSubmit={handleSubmit}>
               <div>
                 <label>Descrição:</label><br></br>
-                <textarea className='inputNovoRecurso' value={desc_pedido_novo_recurso} onChange={(e) => setDescricao(e.target.value)} required/>
+                <Textarea value={desc_pedido_novo_recurso} onChange={(e) => setDescricao(e.target.value)} placeholder="Escreve aqui..." rows={6} variant="desc" required/>
               </div>
               <button className='btnNovoRecurso' type="submit">Realizar Pedido</button>
             </form>

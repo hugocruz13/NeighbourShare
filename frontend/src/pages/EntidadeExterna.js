@@ -6,6 +6,7 @@ import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
 import ModalForm from '../components/ModalForm.jsx'; 
 import { motion } from 'framer-motion';
+import Input from '../components/Input.jsx';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);

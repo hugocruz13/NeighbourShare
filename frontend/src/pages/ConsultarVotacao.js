@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Tabela from '../components/Tabela';
+import { motion } from 'framer-motion';
 
 const ConsultarVotacao = () => {
   const { id } = useParams();

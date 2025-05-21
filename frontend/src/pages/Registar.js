@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import "../styles/Registar.css";
+import Input from '../components/Input.jsx';
+import Select from '../components/Select.jsx';
 const Registar = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
@@ -20,37 +22,49 @@ const Registar = () => {
       if (!res.ok) {
         const errorData = await res.json();
         console.error(errorData);
-        throw new Error(errorData.detail || 'Erro ao registrar usuário');
+        throw new Error(errorData.detail || 'Erro ao registrar utilizador');
       }
 
-      toast.success('Usuário registrado com sucesso!');
+      toast.success('Utilizador registrado com sucesso!');
       setEmail('');
       setRole('');
     } catch (error) {
-      toast.error('Erro ao registrar usuário: ' + error.message);
+      toast.error('Erro ao registrar utilizador: ' + error.message);
     }
   };
 
   return (
-    <div className="page-content">
-      <div className="register-container">
-        <h2>Registrar Usuário</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Role"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        />
-        <button onClick={handleRegister}>Registrar</button>
+    <div className="container-registar">
+      <div className="container-esquerda">
+        <h1>Registar Utilizador</h1>
+        <div className="container-formulario">
+            <h2>Registar Novo Utilizador</h2><br></br>
+            <div className="container-form">
+              <Input  className="inputRegisto" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" variant="default"/>
+
+              <Select className="inputRegisto" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Escolha a função"
+                options={[
+                { value: "residente", label: "Residente" },
+                { value: "gestor", label: "Gestor" },
+                { value: "admin", label: "Admin" }
+                ]}
+                variant="default"/>
+
+
+              
+              <div className="container-btn">
+                 <button onClick={handleRegister} className='btn'>Registrar</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div className="container-direita">
+        <img className="imagem" src="img/fundo.jpg" alt="Imagem" />
       </div>
       <ToastContainer />
     </div>
+
+        
   );
 };
 

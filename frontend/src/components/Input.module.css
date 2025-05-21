@@ -1,0 +1,18 @@
+.input {
+    border-radius: 20px;
+    border: 1px solid black;
+    width: 75%;
+    padding: 10px;
+    transition: all 0.10s ease-in-out; /* Transição suave */
+    margin: 15px;
+}
+
+.input:focus {
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Aumenta o efeito ao focar */
+    border-color: #555; /* Muda a cor da borda */
+    outline: none;
+}
+
+.input-modal{
+  width: 100%;
+}

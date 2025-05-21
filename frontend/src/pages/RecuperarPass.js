@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Input from '../components/Input.jsx';
 
 function RecuperarPass() {
   const [password, setPassword] = useState("");
@@ -49,13 +50,8 @@ function RecuperarPass() {
       <h1>Recuperar Senha</h1>
       <form className="form-recuperar-pass" onSubmit={handleSubmit}>
         <div className="container-center">
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Nova Senha"
-          />
+          <Input name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Nova Senha" type="password" variant="default"/>
+
           <div className="container-btn">
             <button className="btn" type="submit">
               Alterar Senha
