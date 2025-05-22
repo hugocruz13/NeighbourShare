@@ -27,6 +27,7 @@ const Select = ({
   const variantClasses = {
     default: styles.select,
     outlined: styles["select-outlined"],
+    geral: styles["inputGeral"],
   };
 
   const baseClass = variantClasses[variant] || styles.select;

@@ -77,7 +77,7 @@ const RealizarPedidoManutencao = () => {
                   value: recurso.RecComumID,
                   label: recurso.Nome
                 }))}
-                required/>
+                required variant='geral'/>
 
 
 

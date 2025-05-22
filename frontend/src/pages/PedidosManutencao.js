@@ -83,8 +83,8 @@ const PedidosManutencao = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ novo_estado_id: novo_estado_id }),
+        
       });
-
       if (!res.ok) {
         throw new Error('Erro ao atualizar estado do pedido.');
       }
@@ -149,16 +149,16 @@ const PedidosManutencao = () => {
                   return (
                     <Select
                       options={statusOptions.map((option) => ({
-                        value: option.id,
-                        label: option.estado
+                        value: option.EstadoPedManuID,
+                        label: option.DescEstadoPedidoManutencao
                       }))}
-                      value={pedido.estado}
+                      value={pedido.EstadoPedManuID}
                       onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.value)}
                       onClick={() => {
                         setSelectedPedido(pedido.PMID);
                         setShowModal(true);
                       }}
-                    />
+                    variant='geral'/>
                   );
                 }
               }

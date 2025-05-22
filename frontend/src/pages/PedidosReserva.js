@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import "../styles/RecursosDisponiveis.css";
+import "../styles/PedidosReserva.css";
 import Navbar2 from "../components/Navbar2.js";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -66,33 +66,40 @@ const ReservarRecurso = () => {
     return <div>Erro ao carregar o produto.</div>;
   }
 
-  return (
-    <div className="page-content">
-      <Navbar2 />
-      <div className='home-container'>
-
-        <div>
-          <div>
-            <div key={product.RecursoID}>
-              <img src={product.Image} alt={product.name} />
-              <h2>{product.Nome}</h2>
-              <h2>{product.Categoria_.DescCategoria}</h2>
-              <h2>{product.Caucao}</h2>
-            </div>
-          </div>
-
-          <div>
-        <label>Data Início:<Input value={startDate} onChange={(e) => setStartDate(e.target.value)} type="date" variant="default"/></label>
-        <label>Data Fim:<Input value={endDate} onChange={(e) => setEndDate(e.target.value)} type="date" variant="default"/></label>
-        <Button variant= "login" onClick={handleReserve} text={"Reservar"}>Reservar</Button>
+return (
+  <div className="reservar-page">
+    <Navbar2 />
+    <div className="reservar-container">
+      
+      <div className="reservar-left">
+        <img src={product.Image} alt={product.name} />
       </div>
-        </div>
-        
-
-      </div>
-      <ToastContainer />
     </div>
-  );
+
+      <div className="reservar-right">
+        <div className="reservar-details">
+          <h2>Nome: {product.Nome}</h2>
+          <h2>Descrição: {product.Categoria_.DescCategoria}</h2>
+          <h2>Caução: {product.Caucao}€</h2>
+        </div>
+
+        <label className="reservar-label">
+          Data Início:
+          <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} type="date" variant="geral" />
+        </label>
+
+        <label className="reservar-label">
+          Data Fim:
+          <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} type="date" variant="geral" />
+        </label>
+
+        <div className="reservar-buttons">
+          <button className="reservar-button" onClick={handleReserve}>Reservar</button>
+        </div>
+      </div>
+    <ToastContainer />
+  </div>
+);
 };
 
 export default ReservarRecurso;

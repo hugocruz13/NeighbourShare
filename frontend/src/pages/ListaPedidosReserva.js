@@ -80,7 +80,7 @@ const ReservarRecurso = ({ match }) => {
   };
 
   const pedidosEmAnaliseSolicitante = Array.isArray(comoSolicitante) ? comoSolicitante.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
-  const pedidosEmAnaliseDono = Array.isArray(comoDono) ? comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
+  const pedidosEmAnaliseDono = Array.isArray(comoDono) ? comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em análise" ) : [];
 
   return (
     <div className="page-content">
@@ -90,8 +90,8 @@ const ReservarRecurso = ({ match }) => {
             titulo={'Pedidos de Reserva - Solicitante'}
             colunas={[
               { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
-              { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
-              { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
+              { id: 'UtilizadorNome',accessorKey: 'UtilizadorNome', header: 'Nome Utilizador' },
+              { id: 'RecursoNome',accessorKey: 'RecursoNome', header: 'Nome do Recurso' },
               { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
               { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
               {
@@ -106,8 +106,8 @@ const ReservarRecurso = ({ match }) => {
            titulo={'Pedidos de Reserva - Dono'}
             colunas={[
               { id: 'PedidoReservaID',accessorKey: 'PedidoReservaID', header: 'ID' },
-              { id: 'NomeUtilizador',accessorKey: 'NomeUtilizador', header: 'Nome Utilizador' },
-              { id: 'NomeRecurso',accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
+              { id: 'UtilizadorNome',accessorKey: 'UtilizadorNome', header: 'Nome Utilizador' },
+              { id: 'RecursoNome',accessorKey: 'RecursoNome', header: 'Nome do Recurso' },
               { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
               { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
               {

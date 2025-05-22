@@ -147,11 +147,11 @@ const handleJustification = (id) => {
    
    
   const filteredComoDono = (comoDono || []).filter(reservation => 
-   !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
+   reservation.DevolucaoCaucao === false && reservation.EstadoRecurso === false && reservation.JustificacaoEstadoProduto === null
   );
 
   const filteredComoSolicitante = (comoSolicitante || []).filter(reservation =>
-    !reservation.DevolucaoCaucao === true && !reservation.EstadoRecurso === true && reservation.JustificacaoEstadoProduto === null
+    reservation.DevolucaoCaucao === false && reservation.EstadoRecurso === false && reservation.JustificacaoEstadoProduto === null
   );
   
 
@@ -216,7 +216,7 @@ const handleJustification = (id) => {
               },
               
             ]}
-            dados={comoSolicitante}
+            dados={filteredComoSolicitante}
           />
           <Tabela
             titulo="Reservas como Dono"
@@ -302,7 +302,7 @@ const handleJustification = (id) => {
                 }
               },
             ]}
-            dados={comoDono}
+            dados={filteredComoDono}
           />
   
 

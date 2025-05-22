@@ -1,0 +1,58 @@
+.reservar-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to top, #b3e0f2, #ffffff);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.reservar-container {
+  display: flex;
+  width: 75%;
+  max-width: 100%;
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.reservar-left {
+  flex: 2;
+  background-color: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.reservar-left img {
+  width: 50%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.reservar-right {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 550px;
+}
+
+.reservar-details h2 {
+  font-size: 1.2rem;
+}
+
+.reservar-label {
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+}
+
+
+

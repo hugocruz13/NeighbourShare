@@ -25,8 +25,7 @@ const Textarea = ({
   const variantClasses = {
     default: styles.textarea,
     error: styles.textareaError,
-    desc: styles.textarea_descricao,
-    // podes adicionar mais variantes se quiseres
+    desc: styles.textareaDescricao,
   };
 
   const baseClass = variantClasses[variant] || variantClasses.default;

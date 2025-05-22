@@ -88,5 +88,47 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc4NDQzNDZ9.DUScjxuEoMcdrBAhj_4zzU-zI8ukehE6TplB9-NZfPk",
         "role": "gestor",
         "timestamp": 1747842546.88704
+    },
+    {
+        "user_id": 1,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBlbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3OTA0NjEzfQ.g5XhXkrphmjl_oRxjPBQEl15fyguidCKEfscEf_TeoE",
+        "role": "admin",
+        "timestamp": 1747902813.2772331
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc5MDQ2NDh9.0SoaF107To0c5GRqTlzF7-wDQk_u2Vna3GglwSTR4fQ",
+        "role": "gestor",
+        "timestamp": 1747902848.62316
+    },
+    {
+        "user_id": 1,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBlbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3OTA0OTcyfQ.eEb8gE5V4Pt5067oTmrEs8Yxy99QAICgPx7Pgfe5jto",
+        "role": "admin",
+        "timestamp": 1747903172.5936532
+    },
+    {
+        "user_id": 1,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBlbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3OTA1MzU1fQ.PEUCgQv4FFAmecglcXk8dy4j2TLLtfmzFraSZsWlFbI",
+        "role": "admin",
+        "timestamp": 1747903555.0708675
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc5MDU0Njl9.LrcxIPDOp54XbI9Wd5nwKnhlyuIGeb3xGAaM54BbOf0",
+        "role": "gestor",
+        "timestamp": 1747903669.10505
+    },
+    {
+        "user_id": 3,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc5MDU4MDF9.cjyqpZ4JMB8uQFGsGgMkV2eBsPazfXKc2gqDXB5ywRQ",
+        "role": "residente",
+        "timestamp": 1747904001.4570065
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc5MDY3Mzh9.Daqa5vnYm3aE3w9VHIQB0bOWJGYqPsISCL538K8Hj-c",
+        "role": "gestor",
+        "timestamp": 1747904938.8040938
     }
 ]

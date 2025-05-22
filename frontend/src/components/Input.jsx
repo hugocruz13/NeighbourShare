@@ -29,6 +29,7 @@ const Input = ({
     error: styles['input-error'],
     success: styles['input-success'],
     modal: styles['input-modal'],
+    geral: styles['inputGeral'],
   };
 
   const baseClass = variantClasses[variant] || styles.input;
