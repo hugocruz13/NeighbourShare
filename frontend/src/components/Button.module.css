@@ -61,6 +61,7 @@
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .button-green:hover {
@@ -86,6 +87,7 @@
   box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .button-red:hover {

@@ -104,7 +104,7 @@ function Navbar2() {
                     <img
                         src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
                         alt="Notificações"
-                        className="notification-icon"
+                        className="notification-icon-navbar"
                     />
                     {notifications.some(n => !n.Estado) && <span className="noti-dot"></span>}
                 </div>
