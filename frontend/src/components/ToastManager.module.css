@@ -1,0 +1,54 @@
+.toastContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-left: 4px solid #2563eb;
+  border-right: 4px solid #2563eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  color: #111827;
+  max-width: 360px;
+}
+
+.toastMessage {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.toastButtons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.toastButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirmButton {
+  background-color: #22c55e;
+  color: white;
+}
+
+.confirmButton:hover {
+  background-color: #16a34a;
+}
+
+.cancelButton {
+  background-color: #ef4444;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #dc2626;
+}
