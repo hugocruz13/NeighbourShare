@@ -37,9 +37,9 @@ function Navbar() {
   return (
     <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles["navbar-container"]}>
-        <Link to="/" className={styles.logo}>
+        <a href="/" className={styles.logo}>
           <span className={styles["logo-text"]}>Neighbour Share</span>
-        </Link>
+        </a>
 
         <div
           className={`${styles["menu-icon"]} ${menuOpen ? styles.active : ""}`}
