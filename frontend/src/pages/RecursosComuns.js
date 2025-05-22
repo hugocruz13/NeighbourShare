@@ -80,9 +80,7 @@ const MeusRecursos = () => {
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
-          {/* Botão para abrir o modal de adicionar recurso */}
-          
-  
+          {/* Botão para abrir o modal de adicionar recurso */} 
           {/* Modal de Adicionar Recurso */}
           <ModalForm
             show={showModal}

@@ -40,10 +40,9 @@ const Registar = () => {
     <div className="container-registar">
       <Navbar2 />
       <div className="container-esquerda">
-        <br></br>
-        <h1>Registar Utilizador</h1>
         <div className="container-formulario">
-            <h2>Registar Novo Utilizador</h2><br></br>
+           <h1>Registar Utilizador</h1>
+            <h2>Junte-se à nossa vizinhança!</h2><br></br>
             <div className="container-form">
               <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" variant="geral"/>
               <Select value={role} onChange={(e) => setRole(e.target.value)} placeholder="Escolha a função"
