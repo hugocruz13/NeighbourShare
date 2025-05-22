@@ -83,7 +83,7 @@ function Login() {
           <form className="formulario" onSubmit={handleSubmit}>
             <h2 className="subtitle">Acesse a sua conta!</h2>
             <div className="container-center">
-              <Input name="email" value={formData.email} onChange={handleChange} placeholder="Email" type="email" variant="geral"/>
+              <Input className="input" name="email" value={formData.email} onChange={handleChange} placeholder="Email" type="email" variant="geral"/>
               <Input name="password" value={formData.password} onChange={handleChange} placeholder="Password" type="password" variant="geral"></Input>
               <div className="container-button">
                 <Button className="btn-login" variant= "login"  type="submit" text={"Entrar"}>Entrar</Button>
