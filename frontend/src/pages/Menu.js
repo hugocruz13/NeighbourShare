@@ -6,7 +6,7 @@ import Button from "../components/Button.jsx";
 import { useState, useEffect } from "react";
 
 function Residente() {
-  const { user } = useAuth();
+  const [ user, setUser ] = useState(null);
   const navigate = useNavigate();
   const [greeting, setGreeting] = useState("");
 
@@ -19,6 +19,25 @@ function Residente() {
     } else {
       setGreeting("Boa noite");
     }
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/perfil", {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao buscar perfil');
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setUser(data);
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    };
+    fetchProfile();
   }, []);
 
   const navigateTo = (path) => {
@@ -30,7 +49,7 @@ function Residente() {
       <Navbar2 />
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1>{greeting}, <span className="user-name">{user?.name || "Vizinho"}</span></h1>
+          <h1>{greeting}, <span className="user-name">{user?.nome || "Vizinho"}</span></h1>
           <p className="welcome-text">Bem-vindo ao seu painel de gestão NeighbourShare</p>
         </div>
         
