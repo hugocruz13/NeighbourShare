@@ -71,7 +71,7 @@ const MeusPedidosReserva = () => {
  /*Função para atualizar o estado da entrega/receção do recurso/caução*/
   const handleUpdate = async (id, field, value, origem) => {
     const fieldName = FIELD_MAP[field];
-    const irreversiveFields = ['recursoEntregue', 'caucaoEntregue', 'recursoEntregue2', 'caucaoEntregue2'];
+    const irreversiveFields = ['recursoEntregue', 'caucaoEntregue', 'recursoEntregue2', 'caucaoEntregue2', 'bomEstado'];
     
     const removeReservaDaTabela = (prev) => prev.filter(res => res.ReservaID !== id);
 
@@ -247,10 +247,11 @@ const MeusPedidosReserva = () => {
                 header: 'Confirmar Estado Recurso',
                 cell: ({ row }) => {
                   const res = row.original;
+                  const podeConfirmarEstado = res.RecursoEntregueDono === true && res.ConfirmarCaucaoDono === true;
                   return (
                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                      <Button variant="green" onClick={() => handleUpdate(res.ReservaID, 'bomEstado', true, 'dono')}>Sim</Button>
-                      <Button variant="red" onClick={() => { setSelectedReservaID(res.ReservaID); setShowModal(true); }}>Não</Button>
+                      <Button variant="green" onClick={() => handleUpdate(res.ReservaID, 'bomEstado', true, 'dono')} disabled={!podeConfirmarEstado}>Sim</Button>
+                      <Button variant="red" onClick={() => { setSelectedReservaID(res.ReservaID); setShowModal(true)}} disabled={!podeConfirmarEstado}>Não</Button>
                     </div>
                   );
                 }
