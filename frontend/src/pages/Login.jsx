@@ -78,8 +78,8 @@ function Login() {
   return (
     <div className="container-login">
       <div className="container-esquerda">
-        <h1>Bem-vindo de volta!</h1>
         <div className="container-formulario">
+          <h1>Bem-vindo de volta!</h1>
           <form className="formulario" onSubmit={handleSubmit}>
             <h2 className="subtitle">Acesse a sua conta!</h2>
             <div className="container-center">
