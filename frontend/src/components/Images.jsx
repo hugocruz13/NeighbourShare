@@ -1,4 +1,5 @@
 import styles from "./Images.module.css";
+import Button from "../components/Button.jsx";
 import { Link } from "react-router-dom";
 
 function Img_Right({ path, alt, titulo, frase }) {
@@ -7,9 +8,9 @@ function Img_Right({ path, alt, titulo, frase }) {
       <div className={styles.left}>
         <h1 className={styles.text}>{titulo}</h1>
         <p className={styles.frase}>{frase}</p>
-        <Link to="/contactos" className={styles.link}>
-          <button className={styles["cta-button"]}>Fala connosco</button>
-        </Link>
+        <a href="#contacto" className={styles.link}>
+          <Button className={styles["cta-button"]}>Fala connosco</Button>
+        </a>
       </div>
       <div className={styles.right}>
         <img className={styles.img} src={path} alt={alt} />
