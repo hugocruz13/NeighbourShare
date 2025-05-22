@@ -33,7 +33,7 @@ async def endpoint_ver_entidades(token: UserJWT = Depends(role_required(["admin"
         raise HTTPException(status_code=500, detail=str(e))
 
 #Endpoint para eliminar uma entidade
-@router.delete("/eliminar")
+@router.delete("/eliminar/{id_entidade}")
 async def endpoint_eliminar_entidade(id_entidade : int,token: UserJWT = Depends(role_required(["admin", "gestor"])), db:Session = Depends(get_db)):
     try:
         return await eliminar_entidade_service(id_entidade, db)
