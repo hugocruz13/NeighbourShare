@@ -125,7 +125,6 @@ function Navbar2() {
           <ul className={styles.links}>
             <li><Link to="/" className={styles.link} onClick={handleLinkClick}>Home</Link></li>
             <li><Link to="/menu" className={styles.link} onClick={handleLinkClick}>Menu</Link></li>
-            <li><Link to="/contactos" className={styles.link} onClick={handleLinkClick}>Contactos</Link></li>
           </ul>
 
           <div className={styles.profileSection}>
@@ -171,9 +170,6 @@ function Navbar2() {
             {showMenu && (
               <div ref={dropdownMenuRef} className={styles.dropdownMenu}>
                 <Link to="/perfil" className={styles.dropdownItem}>Perfil</Link>
-                <Link to="/reservas" className={styles.dropdownItem}>Minhas Reservas</Link>
-                <Link to="/pedidos" className={styles.dropdownItem}>Os meus Pedidos</Link>
-                <Link to="/definicoes" className={styles.dropdownItem}>Definições</Link>
                 <Link to="#" className={styles.dropdownItem} onClick={handleLogout}>Terminar Sessão</Link>
               </div>
             )}
