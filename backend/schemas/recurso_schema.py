@@ -64,6 +64,7 @@ class RecursoGetUtilizadorSchema(BaseModel):
     Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
+    Image: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -101,7 +101,6 @@ const Votacoes = () => {
 
   const renderTabela = (titulo, lista, tipo) => {
     const colunas = [
-      { accessorKey: 'ID', header: 'ID' },
       { accessorKey: 'Titulo', header: 'Título' },
       { accessorKey: 'Descricao', header: 'Descrição' },
       { accessorKey: 'DataInicio', header: 'Data de Início' },
@@ -126,7 +125,6 @@ const Votacoes = () => {
     ];
     console.log(lista);
     const dados = lista.map((item) => ({
-      ID: item.votacao_id,
       Titulo: item.titulo,
       Descricao: item.descricao,
       DataInicio: new Date(item.data_inicio).toLocaleDateString(),

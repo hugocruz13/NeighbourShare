@@ -158,7 +158,6 @@ const MeusPedidosReserva = () => {
           <Tabela
             titulo="Reservas como Solicitante"
             colunas={[
-              { accessorKey: 'ReservaID', header: 'ID' },
               { accessorKey: 'Dono', header: 'Dono' },
               { accessorKey: 'DataInicio', header: 'Data Início' },
               { accessorKey: 'DataFim', header: 'Data Fim' },
@@ -203,7 +202,6 @@ const MeusPedidosReserva = () => {
           <Tabela
             titulo="Reservas como Dono"
             colunas={[
-              { accessorKey: 'ReservaID', header: 'ID' },
               { accessorKey: 'Solicitante', header: 'Solicitante' },
               { accessorKey: 'DataInicio', header: 'Data Início' },
               { accessorKey: 'DataFim', header: 'Data Fim' },

@@ -122,6 +122,7 @@ async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
                 Caucao=recurso.Caucao,
                 Categoria_=recurso.Categoria_,
                 Disponibilidade_=recurso.Disponibilidade_,
+                Image=recurso.Path
             )
 
             lista_recursos_utilizador.append(recurso_utilizador)

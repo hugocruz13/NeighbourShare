@@ -144,7 +144,6 @@ const EntidadesExternas = () => {
           <Tabela
               titulo={'Entidades Externas'}
               colunas={[
-                { accessorKey: 'EntidadeID', header: 'ID' },
                 { 
                   accessorKey: 'Nome', 
                   header: 'Nome',

@@ -6,9 +6,14 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.votacao_service import check_votacoes_expiradas
 from services.recurso_service import checkar_estado_recurso
 import os
+from fastapi.staticfiles import StaticFiles
+
+
 
 scheduler = AsyncIOScheduler()
 app = FastAPI()
+
+app.mount("/uploadFiles", StaticFiles(directory="uploadFiles"), name="uploadFiles")
 
 allow_origins = [
     "http://localhost",

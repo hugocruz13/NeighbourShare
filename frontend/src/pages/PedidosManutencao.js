@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
@@ -91,17 +92,18 @@ const PedidosManutencao = () => {
         throw new Error('Erro ao atualizar estado do pedido.');
       }
 
-      toast.success('Estado do pedido atualizado com sucesso!');
+      ToastManager.success('Estado do pedido atualizado com sucesso!');
       
       // Update local state
       setPedidos((prevPedidos) =>
         prevPedidos.map((pedido) =>
-          pedido.PMID === pedido_id ? { ...pedido, estado: novo_estado_id } : pedido
+          pedido.PMID === pedido_id ? { ...pedido, EstadoPedManuID: novo_estado_id } : pedido
         )
       );
+
     } catch (error) {
       console.error('Erro ao atualizar estado do pedido:', error);
-      toast.error('Erro ao atualizar estado do pedido.');
+      ToastManager.error('Erro ao atualizar estado do pedido.');
     }
   };
 
@@ -167,7 +169,7 @@ const PedidosManutencao = () => {
             dados={pedidos}
           />
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
   

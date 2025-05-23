@@ -11,12 +11,12 @@ const Orcamentos = () => {
   const [orcamentos, setOrcamentos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [newResource, setNewResource] = useState({
+  const [newOrcamento, setNewOrcamento] = useState({
     id_entidade_externa: '',
     valor_orcamento: '',
     descricao_orcamento: '',
     pdforcamento: null,
-    idprocesso: '',
+    id_processo: '',
     tipoorcamento: ''
   });
   const [votacao, setVotacao] = useState({
@@ -27,23 +27,25 @@ const Orcamentos = () => {
     tipo_votacao: 'Aquisição',
   });
   const [fornecedores, setFornecedores] = useState([]);
+  const [pedidosAquisicao, setPedidosAquisicao] = useState([]);
+  const [pedidosManutencao, setPedidosManutencao] = useState([]);
 
-  useEffect(() => {
-    const fetchOrcamentos = async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/orcamentos/listar', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!res.ok) throw new Error('Erro ao buscar dados');
-        const data = await res.json();
-        setOrcamentos(data);
-      } catch (error) {
-        console.error('Erro ao buscar orcamentos:', error);
-      }
-    };
+  const fetchOrcamentos = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/orcamentos/listar', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Erro ao buscar dados');
+      const data = await res.json();
+      setOrcamentos(data);
+      console.log('Orcamentos:', data);
+    } catch (error) {
+      console.error('Erro ao buscar orcamentos:', error);
+    }
+  };
 
-    const fetchFornecedores = async () => {
+  const fetchFornecedores = async () => {
       try {
         const res = await fetch('http://localhost:8000/api/entidades/ver', {
           method: 'GET',
@@ -55,76 +57,105 @@ const Orcamentos = () => {
       } catch (error) {
         console.error('Erro ao buscar fornecedores:', error);
       }
-    };
+  };
 
+  const fetchPedidosAquisicao = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosnovos', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Erro ao buscar pedidos de aquisição');
+      const data = await res.json();
+      setPedidosAquisicao(data);
+      console.log('Pedidos de Aquisição:', data);
+    } catch (error) {
+      console.error('Erro ao buscar pedidos de aquisição:', error);
+    }
+  }
+
+  const fecthPedidosManutencao = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/recursoscomuns/pedidosmanutencao', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Erro ao buscar pedidos de manutenção');
+      const data = await res.json();
+      console.log('Pedidos de Manutenção:', data);
+      setPedidosManutencao(data);
+    } catch (error) {
+      console.error('Erro ao buscar pedidos de manutenção:', error);
+    }
+  }
+
+  useEffect(() => {
     fetchOrcamentos();
     fetchFornecedores();
+    fetchPedidosAquisicao();
+    fecthPedidosManutencao();
   }, []);
 
   const handleAddOrcamento = async () => {
     try {
 
-      if (!newResource.id_entidade_externa || isNaN(parseInt(newResource.id_entidade_externa))) {
+      if (!newOrcamento.id_entidade_externa || isNaN(parseInt(newOrcamento.id_entidade_externa))) {
             ToastManager.error('ID da entidade externa deve ser um número válido');
             return;
           }
           
-          if (!newResource.valor_orcamento || isNaN(parseFloat(newResource.valor_orcamento))) {
+          if (!newOrcamento.valor_orcamento || isNaN(parseFloat(newOrcamento.valor_orcamento))) {
             ToastManager.error('Valor do orçamento deve ser um número válido');
             return;
           }
           
-          if (!newResource.idprocesso || isNaN(parseInt(newResource.idprocesso))) {
+          if (!newOrcamento.id_processo || isNaN(parseInt(newOrcamento.id_processo))) {
             ToastManager.error('ID do processo deve ser um número válido');
             return;
           }
           
-          if (!newResource.tipoorcamento) {
+          if (!newOrcamento.tipoorcamento) {
             ToastManager.error('Tipo de orçamento é obrigatório');
             return;
           }
           
-          if (!newResource.pdforcamento) {
+          if (!newOrcamento.pdforcamento) {
             ToastManager.error('Arquivo PDF é obrigatório');
             return;
           }
 
       const formData = new FormData();
 
-      formData.append('id_entidade_externa', parseInt(newResource.id_entidade_externa).toString());
-      formData.append('valor_orcamento', parseFloat(newResource.valor_orcamento).toString());
-      formData.append('descricao_orcamento', newResource.descricao_orcamento);
-      formData.append('pdforcamento', newResource.pdforcamento);
-      formData.append('idprocesso', parseInt(newResource.idprocesso).toString());
-      formData.append('tipoorcamento', newResource.tipoorcamento);
-
-      const tipoMapping = {
-        'Manutenção': 'MANUTENCAO',
-        'Aquisição': 'AQUISICAO'
-      };
-      const tipoFinal = tipoMapping[newResource.tipoorcamento] || newResource.tipoorcamento;
-      formData.append('tipoorcamento', tipoFinal);
+      formData.append('id_entidade_externa', newOrcamento.id_entidade_externa);
+      formData.append('valor_orcamento', Number(newOrcamento.valor_orcamento).toFixed(2));
+      formData.append('descricao_orcamento', newOrcamento.descricao_orcamento);
+      formData.append('pdforcamento', newOrcamento.pdforcamento);
+      formData.append('idprocesso', newOrcamento.id_processo);
+      formData.append('tipoorcamento', newOrcamento.tipoorcamento);
 
       const res = await fetch('http://localhost:8000/api/orcamentos/inserir', {
         method: 'POST',
         credentials: 'include',
         body: formData,
       });
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || 'Erro ao adicionar recurso');
       }
 
-      ToastManager.success('Recurso adicionado com sucesso!');
+      ToastManager.success('Orçamento adicionado com sucesso!');
+      await fetchOrcamentos(); // <== aqui
       setShowModal(false);
-      setNewResource({
+      setNewOrcamento({
         id_entidade_externa: '',
         valor_orcamento: '',
         descricao_orcamento: '',
         pdforcamento: null,
-        idprocesso: '',
+        id_processo: '',
         tipoorcamento: ''
       });
+      
     } catch (error) {
       
       console.error('Erro ao adicionar recurso:', error);
@@ -142,7 +173,7 @@ const Orcamentos = () => {
         },
         body: JSON.stringify(votacao),
       });
-
+      console.log('Resposta da criação de votação:', res.text());
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || 'Erro ao criar votação');
@@ -169,14 +200,19 @@ const Orcamentos = () => {
       if (type === 'file') {
         const file = files?.[0];
         if (file) {
-          setNewResource(prev => ({ ...prev, [name]: file }));
+          setNewOrcamento(prev => ({ ...prev, [name]: file }));
         }
       } else {
-        setNewResource(prev => ({ ...prev, [name]: value }));
+        setNewOrcamento(prev => ({ ...prev, [name]: value }));
       }
     } else {
       setVotacao(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleDownloadPDF = (caminho) => {
+    const url = `http://localhost:8000/${caminho.replace(/\\/g, '/')}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -191,17 +227,30 @@ const Orcamentos = () => {
               { name: 'id_entidade_externa', label: 'Fornecedor', type: 'select', options: fornecedores.map(f => ({ value: f.EntidadeID, label: f.Nome })) },
               { name: 'valor_orcamento', label: 'Valor', type: 'number', required: true },
               { name: 'descricao_orcamento', label: 'Descrição', type: 'text' },
-              { name: 'idprocesso', label: 'ID Processo', type: 'text' },
-              { name: 'tipoorcamento', label: 'Tipo Orçamento', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] },
+              { name: 'tipoorcamento', label: 'Tipo', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] },
+              { name: 'id_processo', label: 'Processo', type: 'select',
+                options:
+                  newOrcamento.tipoorcamento === 'Aquisição'
+                    ? pedidosAquisicao.map(p => ({ value: p.PedidoNovoRecID, label: p.PedidoNovoRecID + ' - ' + p.DescPedidoNovoRecurso }))
+                    : newOrcamento.tipoorcamento === 'Manutenção'
+                      ? pedidosManutencao.map(p => ({ value: p.PMID, label: p.PMID + ' - ' + p.DescPedido }))
+                      : [] },
               { name: 'pdforcamento', label: 'Arquivo', type: 'file' }
             ] : [
               { name: 'titulo', label: 'Título', type: 'text' },
               { name: 'descricao', label: 'Descrição', type: 'text' },
-              { name: 'id_processo', label: 'ID do Processo', type: 'number' },
-              { name: 'data_fim', label: 'Data de Fim', type: 'date' },
-              { name: 'tipo_votacao', label: 'Tipo Votação', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] }
+              { name: 'tipo_votacao', label: 'Tipo Votação', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] },
+              { name: 'id_processo', label: 'Processo', type: 'select',
+                options:
+                   votacao.tipo_votacao === 'Aquisição'
+                    ? pedidosAquisicao.map(p => ({ value: p.PedidoNovoRecID, label: p.PedidoNovoRecID + ' - ' + p.DescPedidoNovoRecurso }))
+                    : votacao.tipo_votacao === 'Manutenção'
+                      ? pedidosManutencao.map(p => ({ value: p.PMID, label: p.PMID + ' - ' + p.DescPedido }))
+                      : [] },
+              { name: 'data_fim', label: 'Data de Fim', type: 'date' }
+              
             ]}
-            formData={modalType === 'orcamento' ? newResource : votacao}
+            formData={modalType === 'orcamento' ? newOrcamento : votacao}
             onChange={handleChange}
             onSubmit={(e) => {
               e.preventDefault();
@@ -220,14 +269,19 @@ const Orcamentos = () => {
               { accessorKey: 'Fornecedor', header: 'Fornecedor' },
               { accessorKey: 'Valor', header: 'Valor' },
               { accessorKey: 'Descricao', header: 'Descrição' },
-              { accessorKey: 'PDF', header: 'PDF' }
+              { accessorKey: 'PDF', 
+                header: 'PDF',
+              cell: ({ row }) => (
+                  <Button variant='default' onClick={() => handleDownloadPDF(row.original.CaminhoPDF)}text={"Download"}>Abrir</Button>
+              )
+              }
             ]}
             dados={orcamentos.map((orcamento) => ({
-              'Nº Orçamento': orcamento.OrcamentoID,
+              'NumOrcamento': orcamento.OrcamentoID,
               'Fornecedor': orcamento.Entidade,
               'Valor': orcamento.Valor,
-              'Descrição': orcamento.DescOrcamento,
-              'PDF': <Button variant='defaultTabela' onClick={() => {}}text={"Download"}>Download</Button>
+              'Descricao': orcamento.DescOrcamento,
+              'CaminhoPDF': orcamento.CaminhoPDF
             }))}
             botoesOpcoes={[<Button  onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>, 
             <Button onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>]}
