@@ -1,0 +1,17 @@
+.inputGeralManu {
+  width: 350px;
+  padding: 8px 14px;
+  border: 1.8px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  text-align: center;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+  margin-bottom: 20px;
+}
+
+.inputGeralManu:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+  outline: none;
+}

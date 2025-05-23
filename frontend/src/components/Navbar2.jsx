@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./Navbar2.module.css";
 
 function Navbar2() {
@@ -11,39 +11,37 @@ function Navbar2() {
   const [profileImage, setProfileImage] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Detectar scroll para mudar o estilo do navbar
+  // Refs para detectar cliques fora dos elementos
+  const fotoPerfilRef = useRef(null);
+  const dropdownMenuRef = useRef(null);
+  const notificationContainerRef = useRef(null);
+  const notificationBellRef = useRef(null);
+
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Handlers para interações do usuário
   const handlePerfilClick = () => setShowMenu(!showMenu);
   const handleBellClick = () => setShowNotifications(!showNotifications);
-  
+
   const handleOutsideClick = (event) => {
+    const target = event.target;
     if (
-      !event.target.closest(`.${styles.fotoPerfilNav}`) &&
-      !event.target.closest(`.${styles.dropdownMenu}`) &&
-      !event.target.closest(`.${styles.notificationContainer}`) &&
-      !event.target.closest(`.${styles.notificationBell}`)
+      fotoPerfilRef.current && !fotoPerfilRef.current.contains(target) &&
+      dropdownMenuRef.current && !dropdownMenuRef.current.contains(target) &&
+      notificationContainerRef.current && !notificationContainerRef.current.contains(target) &&
+      notificationBellRef.current && !notificationBellRef.current.contains(target)
     ) {
       setShowMenu(false);
       setShowNotifications(false);
     }
   };
 
-  // Fechar menu móvel após clique em link
   const handleLinkClick = () => {
     if (menuOpen) setMenuOpen(false);
   };
@@ -66,9 +64,8 @@ function Navbar2() {
         method: "PUT",
         credentials: "include",
       });
-      if (!res.ok) {
-        throw new Error("Erro ao marcar notificação como lida");
-      }
+      if (!res.ok) throw new Error("Erro ao marcar notificação como lida");
+
       setNotifications(
         notifications.map((n) =>
           n.NotificacaoID === NotificacaoID ? { ...n, Estado: true } : n
@@ -79,7 +76,6 @@ function Navbar2() {
     }
   };
 
-  // Buscar notificações e imagem de perfil
   useEffect(() => {
     const fetchNotificacoes = async () => {
       try {
@@ -110,16 +106,12 @@ function Navbar2() {
     fetchNotificacoes();
     fetchProfileImage();
     document.addEventListener("click", handleOutsideClick);
-    
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
+    return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
   return (
     <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.navbarContainer}>
-
         <div
           className={`${styles.menuIcon} ${menuOpen ? styles.active : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -131,28 +123,13 @@ function Navbar2() {
 
         <div className={`${styles.navElements} ${menuOpen ? styles.active : ""}`}>
           <ul className={styles.links}>
-            <li>
-              <Link
-                to="/"
-                className={styles.link}
-                onClick={handleLinkClick}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/menu"
-                className={styles.link}
-                onClick={handleLinkClick}
-              >
-                Menu
-              </Link>
-            </li>
+            <li><Link to="/" className={styles.link} onClick={handleLinkClick}>Home</Link></li>
+            <li><Link to="/menu" className={styles.link} onClick={handleLinkClick}>Menu</Link></li>
+            <li><Link to="/contactos" className={styles.link} onClick={handleLinkClick}>Contactos</Link></li>
           </ul>
 
           <div className={styles.profileSection}>
-            <div className={styles.notificationBell} onClick={handleBellClick}>
+            <div ref={notificationBellRef} className={styles.notificationBell} onClick={handleBellClick}>
               <img
                 src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
                 alt="Notificações"
@@ -161,30 +138,20 @@ function Navbar2() {
               {notifications.some((n) => !n.Estado) && <span className={styles.notiDot}></span>}
             </div>
 
-            {/* Painel lateral de notificações */}
             {showNotifications && (
-              <div className={styles.notificationContainer}>
+              <div ref={notificationContainerRef} className={styles.notificationContainer}>
                 <div className={styles.notificationHeader}>
                   <h3>Notificações</h3>
-                  <Link to="/notificacoes" className={styles.verTodas}>
-                    Ver todas
-                  </Link>
+                  <Link to="/notificacoes" className={styles.verTodas}>Ver todas</Link>
                 </div>
                 <div className={styles.notificationList}>
                   {notifications.filter((n) => !n.Estado).length > 0 ? (
                     notifications
                       .filter((n) => !n.Estado)
                       .map((notif) => (
-                        <div
-                          key={notif.NotificacaoID}
-                          className={`${styles.notificationItem} ${styles.naoLida}`}
-                        >
+                        <div key={notif.NotificacaoID} className={`${styles.notificationItem} ${styles.naoLida}`}>
                           <span>{notif.Titulo.substring(0, 100)}...</span>
-                          <button
-                            onClick={() => marcarComoLida(notif.NotificacaoID)}
-                          >
-                            Marcar como lida
-                          </button>
+                          <button onClick={() => marcarComoLida(notif.NotificacaoID)}>Marcar como lida</button>
                         </div>
                       ))
                   ) : (
@@ -194,25 +161,20 @@ function Navbar2() {
               </div>
             )}
 
-            {/* Foto de perfil */}
             <img
+              ref={fotoPerfilRef}
               src={profileImage || "default-profile.png"}
               alt="foto"
               className={styles.fotoPerfilNav}
               onClick={handlePerfilClick}
             />
             {showMenu && (
-              <div className={styles.dropdownMenu}>
-                <Link to="/perfil" className={styles.dropdownItem}>
-                  Perfil
-                </Link>
-                <Link
-                  to="#"
-                  className={styles.dropdownItem}
-                  onClick={handleLogout}
-                >
-                  Terminar Sessão
-                </Link>
+              <div ref={dropdownMenuRef} className={styles.dropdownMenu}>
+                <Link to="/perfil" className={styles.dropdownItem}>Perfil</Link>
+                <Link to="/reservas" className={styles.dropdownItem}>Minhas Reservas</Link>
+                <Link to="/pedidos" className={styles.dropdownItem}>Os meus Pedidos</Link>
+                <Link to="/definicoes" className={styles.dropdownItem}>Definições</Link>
+                <Link to="#" className={styles.dropdownItem} onClick={handleLogout}>Terminar Sessão</Link>
               </div>
             )}
           </div>

@@ -31,6 +31,8 @@ const RealizarPedidoNovoRecurso = () => {
   return (
     <div className="page-content">
       <Navbar2 />
+      <br></br>
+      <br></br>
       <div className="home-container">
         <div className='fundoNovosRecursos'>
           <div className='textoEsquerda'>
@@ -44,8 +46,8 @@ const RealizarPedidoNovoRecurso = () => {
             </form>
           </div>
 
-          <div className='imagemDireita'>
-            <img className='imgNovosRecursos' src="./img/fundo2.png" alt="Imagem"/>
+          <div className='imagemDireitaManu'>
+            <img className='imgNovosRecursosManu' src="./img/fundo2.png" alt="Imagem"/>
           </div>
         </div>
       </div>
