@@ -40,7 +40,7 @@ const Registar = () => {
     <div className="container-registar">
       <Navbar2 />
       <div className="container-esquerda">
-        <div className="container-formulario">
+        <div className="container-formulario-reg">
            <h1>Registar Utilizador</h1>
             <h2>Junte-se à nossa vizinhança!</h2><br></br>
             <div className="container-form">
