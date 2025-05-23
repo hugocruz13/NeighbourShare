@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import "../styles/RealizarPedidoManutencao.css";
 import Select from '../components/Select.jsx';
 import Textarea from '../components/Textarea.jsx';

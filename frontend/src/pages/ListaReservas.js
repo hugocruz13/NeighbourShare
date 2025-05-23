@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from '../components/Tabela.jsx';
 import Button from '../components/Button.jsx';
 import ModalForm from '../components/ModalForm.jsx';

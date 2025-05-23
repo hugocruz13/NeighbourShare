@@ -149,15 +149,6 @@ function Navbar2() {
                 Menu
               </Link>
             </li>
-            <li>
-              <Link
-                to="/contactos"
-                className={styles.link}
-                onClick={handleLinkClick}
-              >
-                Contactos
-              </Link>
-            </li>
           </ul>
 
           <div className={styles.profileSection}>
@@ -214,15 +205,6 @@ function Navbar2() {
               <div className={styles.dropdownMenu}>
                 <Link to="/perfil" className={styles.dropdownItem}>
                   Perfil
-                </Link>
-                <Link to="/reservas" className={styles.dropdownItem}>
-                  Minhas Reservas
-                </Link>
-                <Link to="/pedidos" className={styles.dropdownItem}>
-                  Os meus Pedidos
-                </Link>
-                <Link to="/definicoes" className={styles.dropdownItem}>
-                  Definições
                 </Link>
                 <Link
                   to="#"

@@ -33,7 +33,7 @@
 .fundo {
   max-width: 75%;
   max-height: 75vh;
-  margin: 80px auto 30px auto;
+  margin: 40px auto 30px auto;
   padding: 30px;
   background-color: #ffffff;
   border-radius: 20px;
@@ -186,8 +186,7 @@
   color: #2c3e50;
   font-size: 1rem;
   transition: background-color 0.3s ease;
-  outline: none;
-  user-select: none;
+  
 }
 
 .corpo tr:nth-child(even) {

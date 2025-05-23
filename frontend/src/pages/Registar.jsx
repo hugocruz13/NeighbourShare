@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../styles/Registar.css";
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import Button from '../components/Button.jsx';
 
 const Registar = () => {

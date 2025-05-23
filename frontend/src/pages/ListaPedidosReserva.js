@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import Tabela from '../components/Tabela.jsx';
 import { IoMdCloseCircle } from "react-icons/io";

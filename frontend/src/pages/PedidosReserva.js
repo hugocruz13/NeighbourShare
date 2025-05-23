@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "../styles/PedidosReserva.css";
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Input from '../components/Input.jsx';
@@ -67,8 +67,10 @@ const ReservarRecurso = () => {
   }
 
 return (
+  <>
+  <Navbar2 />
   <div className="reservar-page">
-    <Navbar2 />
+    
     <div className="reservar-container">
       
       <div className="reservar-left">
@@ -99,6 +101,7 @@ return (
       </div>
     <ToastContainer />
   </div>
+  </>
 );
 };
 

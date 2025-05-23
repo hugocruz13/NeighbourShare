@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "../styles/RealizarPedidoNovoRecurso.css";
-import Navbar2 from "../components/Navbar2.js";
+import Navbar2 from "../components/Navbar2.jsx";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Textarea from '../components/Textarea.jsx';
