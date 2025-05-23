@@ -25,6 +25,7 @@ const Votacoes = () => {
           credentials: 'include'
         });
         const data = await res.json();
+        console.log(data);
         setVotacoes(data);
       } catch (error) {
         console.error('Erro ao buscar votações:', error);

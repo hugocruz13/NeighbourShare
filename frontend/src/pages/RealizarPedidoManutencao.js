@@ -63,11 +63,14 @@ const RealizarPedidoManutencao = () => {
   return (
     <div className="page-content">
       <Navbar2 />
+      <br></br>
+      <br></br>
       <ToastContainer />
       <div className="home-container">
         <div className='fundoNovosRecursos'>
           <div className='textoEsquerda'>
             <h1>Realizar Pedido de Manutenção</h1>
+            <br></br>
             <form onSubmit={handleSubmit}>
               <div>
                 <label>Id:</label><br></br>
@@ -96,8 +99,8 @@ const RealizarPedidoManutencao = () => {
             </form>
           </div>
 
-          <div className='imagemDireita'>
-            <img className='imgNovosRecursos' src="./img/fundo2.png" alt="Imagem"/>
+          <div className='imagemDireitaManu'>
+            <img className='imgNovosRecursosManu' src="./img/fundo2.png" alt="Imagem"/>
           </div>
 
         </div>

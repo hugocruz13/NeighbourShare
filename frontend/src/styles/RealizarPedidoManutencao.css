@@ -68,3 +68,17 @@
   margin-bottom: 20px;
   margin-left: 60px;
 }
+
+.imagemDireitaManu{
+  flex: 1; /* Ocupa todo o espaço disponível dentro do pai flex */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imgNovosRecursosManu{
+    width: 100%;
+  height: 100%;
+  object-fit: cover; /* ou "contain", conforme o efeito desejado */
+  border-radius: 10px; /* opcional */
+}
