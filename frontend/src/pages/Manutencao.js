@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 
@@ -19,8 +19,7 @@ const Manutencao = () => {
           method: 'GET',
           credentials: 'include'
         });
-        const data = await res.json();
-        console.log(data);
+        const data = await res.json();  
         if (data && Array.isArray(data.pedidos)) {
           // Se 'pedidos' for um array, atualize o estado
           setPedidos(data.pedidos);
@@ -61,6 +60,16 @@ const Manutencao = () => {
     fetchStatusOptions();
   }, []);
 
+  const handleStartEdit = (pedido) => {
+    setEditDateId(pedido.ManutencaoID);
+    setNewDate(pedido.DataManutencao || '');
+  };
+
+  const handleCancelEdit = () => {
+    setEditDateId(null);
+    setNewDate('');
+  };
+
   const handleStatusChange = async (manutencao_id, novo_estado_id) => {
     try {
       const res = await fetch(`http://localhost:8000/api/recursoscomuns/manutencao/update/${manutencao_id}/estado`, {
@@ -72,12 +81,12 @@ const Manutencao = () => {
 
       if (!res.ok) throw new Error();
 
-      toast.success('Estado do pedido atualizado com sucesso!');
+      ToastManager.success('Estado do pedido atualizado com sucesso!');
       setPedidos((prev) =>
         prev.map((p) => p.ManutencaoID === manutencao_id ? { ...p, estado: novo_estado_id } : p)
       );
     } catch (error) {
-      toast.error('Erro ao atualizar estado do pedido.');
+      ToastManager.error('Erro ao atualizar estado do pedido.');
     }
   };
 
@@ -97,7 +106,7 @@ const Manutencao = () => {
 
       if (!res.ok) throw new Error();
 
-      toast.success('Data de manutenção atualizada com sucesso!');
+      ToastManager.success('Data de manutenção atualizada com sucesso!');
       setPedidos((prev) =>
         prev.map((p) =>
           p.ManutencaoID === pedido.ManutencaoID ? { ...p, DataManutencao: newDate } : p
@@ -105,7 +114,7 @@ const Manutencao = () => {
       );
       setEditDateId(null);
     } catch (error) {
-      toast.error('Erro ao atualizar a data.');
+      ToastManager.error('Erro ao atualizar a data.');
     }
   };
 
@@ -115,17 +124,20 @@ const Manutencao = () => {
     
       <div className="home-container">
           <Tabela
-            titulo="Pedidos de Manutenção"
+            titulo="Manutenções"
             colunas = {[
               { accessorKey: 'NumManutencao', header: 'Nº Manutenção' },
               { accessorKey: 'Descricao', header: 'Descrição' },
-              { accessorKey: 'DataManutencao', header: 'Data Manutenção' },
+              { 
+                accessorKey: 'DataManutencao', 
+                header: 'Data Manutenção',
+        },
               { accessorKey: 'Estado', header: 'Estado' }
             ]}
             dados={pedidos}
           />
         </div>
-        <ToastContainer />
+        <Toaster />
       </div>
   );
 };

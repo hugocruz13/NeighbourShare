@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Tabela from '../components/Tabela.jsx';
 import { IoMdCloseCircle } from "react-icons/io";
 import { FaCheck } from 'react-icons/fa';
 import Button from '../components/Button.jsx';
-import ModalFrom from '../components/ModalForm.jsx';
+import ModalForm from '../components/ModalForm.jsx';
+import ToastManager from '../components/ToastManager';
+import { Toaster } from 'react-hot-toast';
 
 const ReservarRecurso = ({ match }) => {
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [idPedido, setIDPedido] = useState('');
   const [comoSolicitante, setComoSolicitante] = useState([]); // data[1]
   const [comoDono, setComoDono] = useState([]);               // data[0]
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [motivoRecusacao, setMotivoRecusacao] = useState('');
-  const [pedidoReservaID, setPedidoReservaID] = useState(null);
+  const [pedidoParaRecusar, setPedidoParaRecusar] = useState(null);
 
+  /*Obtenção dos dados dos pedidos de reserva, quer como dono quer como vizinho*/
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -28,61 +25,91 @@ const ReservarRecurso = ({ match }) => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setComoDono(data[0]);         // Dono → pedidos recebidos
         setComoSolicitante(data[1]);  // Solicitante → pedidos que fez
       } catch (error) {
         console.error('Erro ao buscar pedidos de reserva:', error);
       }
     };
-
     fetchReservations();
   }, []);
 
-  const handleReserve = async (PedidoReservaID) => {
-    try {
-      const res = await fetch(`http://localhost:8000/api/reserva/criar?pedido_reserva_id=${PedidoReservaID}`, {
-        method: 'POST',
-        credentials: 'include', // Enviar cookies
-      });
-      console.log(res);
-
-      if (res.ok) {
-        alert('Reserva realizada com sucesso!');
-      } else {
-        alert('Erro ao realizar reserva.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar reserva:', error);
-      alert('Erro ao enviar reserva.');
-    }
+  /*Função para abrir o modal de recusa de pedido*/
+  const abrirModalRecusa = (PedidoReservaID) => {
+    setPedidoParaRecusar(PedidoReservaID);
+    setShowRejectModal(true);
   };
 
-  const handleReject = async () => {
-    try {
-      const res = await fetch(`http://localhost:8000/api/reserva/pedidosreserva/recusar?pedido_reserva_id=${pedidoReservaID}&motivo_recusacao=${motivoRecusacao}`, {
-        method: 'POST',
-        credentials: 'include', // Enviar cookies
-      });
-      console.log(res);
+  /*Função para confirmar a recusa de um pedido de reserva*/
+  const confirmarRecusa = () => {
+    ToastManager.customConfirm(
+      'Tem a certeza que deseja recusar este pedido de reserva?',
+      () => handleRejeitaPedidoReserva(pedidoParaRecusar, motivoRecusacao), // Sim
+      () => {} // Não
+    );
+  };
 
+  /*Função para aceitar um pedido de reserva*/
+  const handleAceitarPedidoReserva = async (PedidoReservaID) => {
+    ToastManager.customConfirmAsync(
+  'Tem a certeza que deseja aceitar este pedido de reserva?',
+  async () => {
+        try {
+          const res = await fetch(`http://localhost:8000/api/reserva/criar?pedido_reserva_id=${PedidoReservaID}`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+
+          if (res.ok) {
+            ToastManager.success('Reserva realizada com sucesso!');
+
+            // Atualiza a lista de pedidos de reserva
+            setComoDono(prev =>
+            prev.filter(pedido => pedido.PedidoReservaID !== PedidoReservaID)
+          );
+
+          } else {
+            ToastManager.error('Erro ao realizar reserva.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar reserva:', error);
+          ToastManager.error('Erro ao enviar reserva.');
+        }
+      }
+    );
+  };
+
+  /*Função para recusar um pedido de reserva*/
+  const handleRejeitaPedidoReserva = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/reserva/pedidosreserva/recusar?pedido_reserva_id=${pedidoParaRecusar}&motivo_recusacao=${encodeURIComponent(motivoRecusacao)}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
       if (res.ok) {
-        alert('Pedido de reserva recusado com sucesso!');
+        ToastManager.success('Pedido de reserva recusado com sucesso!');
+        setComoDono(prev => prev.filter(p => p.PedidoReservaID !== pedidoParaRecusar));
         setShowRejectModal(false);
         setMotivoRecusacao('');
+        setPedidoParaRecusar(null);
       } else {
-        alert('Erro ao recusar pedido de reserva.');
+        ToastManager.error('Erro ao recusar pedido de reserva.');
+        setShowRejectModal(false);
       }
     } catch (error) {
+      ToastManager.error('Erro ao recusar pedido de reserva.');
       console.error('Erro ao recusar pedido de reserva:', error);
-      alert('Erro ao recusar pedido de reserva.');
+      setShowRejectModal(false);
     }
   };
 
+  /*Filtragem dos pedidos de reserva em análise*/
   const pedidosEmAnaliseSolicitante = Array.isArray(comoSolicitante) ? comoSolicitante.filter(reservation => reservation.EstadoPedidoReserva === "Em análise") : [];
   const pedidosEmAnaliseDono = Array.isArray(comoDono) ? comoDono.filter(reservation => reservation.EstadoPedidoReserva === "Em análise" ) : [];
 
   return (
+    <>
+    <Toaster position="top-center" />
     <div className="page-content">
       <Navbar2 />
       <div className="home-container">
@@ -116,14 +143,14 @@ const ReservarRecurso = ({ match }) => {
                   cell: ({ row }) => (
                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                       <Button
-                        variant="editar"
-                        onClick={() => {}}
+                        variant="green"
+                        onClick={() => handleAceitarPedidoReserva(row.original.PedidoReservaID)}
                       >
                         <FaCheck  color="white" size={18} />
                       </Button>
                       <Button
-                        variant="eliminar"
-                        onClick={() => {}}
+                        variant="red"
+                        onClick={() => abrirModalRecusa(row.original.PedidoReservaID)}
                       >
                         <IoMdCloseCircle  color="white" size={18} />
                       </Button>
@@ -137,7 +164,7 @@ const ReservarRecurso = ({ match }) => {
           />
       </div>
 
-      <ModalFrom
+      <ModalForm
         show={showRejectModal}
         onclose={() => setShowRejectModal(false)}
         title="Recusar Pedido de Reserva"
@@ -148,12 +175,12 @@ const ReservarRecurso = ({ match }) => {
         onChange={(e) => setMotivoRecusacao(e.target.value)}
         onSubmit={(e) => {
           e.preventDefault();
-          handleReject();
+          confirmarRecusa();
         }}
         textBotao={'Recusar Pedido'}
-      />
-      <ToastContainer />
+      />  
     </div>
+    </>
   );
 };
 

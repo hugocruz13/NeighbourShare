@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela";
 import ModalForm from "../components/ModalForm.jsx";
+import Button from "../components/Button.jsx";
+import Select from "../components/Select.jsx"; 
 
 const Votacoes = () => {
   const [votacoes, setVotacoes] = useState({
@@ -11,12 +14,13 @@ const Votacoes = () => {
     lista_votacao_pedido_novo_recurso_binarias: [],
     lista_votacao_pedido_novo_recurso_multiplas: []
   });
+
   const [orcamentos, setOrcamentos] = useState([]);
   const [votacaoAtual, setVotacaoAtual] = useState(null);
-  const [selectedOrcamento, setSelectedOrcamento] = useState('');
-  const [votoBinario, setVotoBinario] = useState('');
+  const [votoSelecionado, setVotoSelecionado] = useState('');
   const [modalAberto, setModalAberto] = useState('');
 
+  // Obter as votações ao carregar o componente
   useEffect(() => {
     const fetchVotacoes = async () => {
       try {
@@ -37,14 +41,14 @@ const Votacoes = () => {
   const abrirModal = async (votacao, tipo) => {
     setVotacaoAtual(votacao);
     setModalAberto(tipo);
-    setSelectedOrcamento('');
-    setVotoBinario('');
+    setVotoSelecionado('');
 
-    const endpoint = tipo === 'manutencao'
-      ? `http://localhost:8000/api/votacao_orcamento_pm?id_v=${votacao.votacao_id}`
-      : tipo === 'switch'
-      ? `http://localhost:8000/api/votacao_orcamento_pedido_novo_recurso?votacao_id=${votacao.votacao_id}`
-      : null;
+    let endpoint = null;
+    if (tipo === 'manutencao') {
+      endpoint = `http://localhost:8000/api/votacao_orcamento_pm?id_v=${votacao.votacao_id}`;
+    } else if (tipo === 'switch') {
+      endpoint = `http://localhost:8000/api/votacao_orcamento_pedido_novo_recurso?votacao_id=${votacao.votacao_id}`;
+    }
 
     if (endpoint) {
       try {
@@ -62,25 +66,25 @@ const Votacoes = () => {
 
   const submeterVoto = async () => {
     try {
-      const voto = modalAberto === 'binario' ? votoBinario : selectedOrcamento;
-
       const res = await fetch('http://localhost:8000/api/votar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          voto,
+          voto : votoSelecionado,
           id_votacao: votacaoAtual.votacao_id
         })
       });
 
       if (!res.ok) throw new Error('Erro ao registrar voto.');
 
-      toast.success('Voto registrado com sucesso!');
+      ToastManager.success('Voto registrado com sucesso!');
       setModalAberto('');
+      setVotacaoAtual(null);
+      setVotoSelecionado('');
     } catch (error) {
       console.error('Erro ao registrar voto:', error);
-      toast.error('Erro ao registrar voto.');
+      ToastManager.error('Erro ao registrar voto.');
     }
   };
 
@@ -91,31 +95,34 @@ const Votacoes = () => {
       { accessorKey: 'Descricao', header: 'Descrição' },
       { accessorKey: 'DataInicio', header: 'Data de Início' },
       { accessorKey: 'DataFim', header: 'Data de Fim' },
-      { accessorKey: 'Acao', header: 'Ação' }
-    ];
-
-    const dados = lista.map((v) => ({
-      ID: v.votacao_id || v.id,
-      Título: v.titulo,
-      Descrição: v.descricao,
-      'Data de Início': v.data_inicio,
-      'Data de Fim': v.data_fim,
-      Ação: {
-        acaoTexto: 'Votar',
-        tipo: 'botao',
-        disabled: false,
-        linhaOriginal: v
+      { 
+        accessorKey: 'Acao',
+        header: 'Ação',
+        cell: ({ row }) => (
+          <Button
+            variant="default"
+            onClick={() => {
+            abrirModal(row.original, tipo)
+            }}>
+            Votar
+          </Button>
+        )
       }
+    ];
+    console.log(lista);
+    const dados = lista.map((item) => ({
+      ID: item.votacao_id,
+      Titulo: item.titulo,
+      Descricao: item.descricao,
+      DataInicio: new Date(item.data_inicio).toLocaleDateString(),
+      DataFim: new Date(item.data_fim).toLocaleDateString(),
+      Acao: ''
     }));
-
     return (
         <Tabela
           titulo={titulo}
           colunas={colunas}
           dados={dados}
-          tipoAcao="botao"
-          aoClicarAcao={(linha) => abrirModal(linha.linhaOriginal, tipo)}
-          mensagemVazio="Nenhuma votação encontrada."
         />
     );
   };
@@ -123,48 +130,55 @@ const Votacoes = () => {
   const renderModal = () => {
     if (!votacaoAtual) return null;
 
+    const isBinario = modalAberto === 'binario';
+
+    const options = isBinario
+      ? [
+          { value: 'sim', label: 'Sim' },
+          { value: 'nao', label: 'Não' }
+        ]
+      : orcamentos.map((orc) => ({
+          value: orc.OrcamentoID,
+          label: orc.DescOrcamento
+        }));
+
+    const fields = [
+      {
+        name: 'voto',
+        label: isBinario ? 'Selecione o seu voto' : 'Selecione um orçamento',
+        type: 'select',
+        required: true,
+        options: options,
+        placeholder: 'Escolha uma opção',
+        variant: 'geral'
+      }
+    ];
+
+    const formData = { voto: votoSelecionado };
+
+    const handleChange = (e) => {
+      setVotoSelecionado(e.target.value);
+    };
+
     return (
-      <>
-        <ModalForm
-          show={modalAberto !== ''}
-          onclose={() => {
-            setModalAberto('');
-            setVotacaoAtual(null);
-          }}
-          title={`Votação: ${votacaoAtual.titulo}`}
-          fields={[
-            {
-              name: 'voto',
-              label: modalAberto === 'binario' ? 'Selecione o seu voto:' : 'Selecione um orçamento:',
-              type: modalAberto === 'binario' ? 'select' : 'select',
-              options: modalAberto === 'binario'
-                ? [
-                    { value: '', label: '-- Escolher --' },
-                    { value: 'sim', label: 'Sim' },
-                    { value: 'nao', label: 'Não' }
-                  ]
-                : orcamentos.map((orc) => ({
-                    value: orc.OrcamentoID,
-                    label: orc.DescOrcamento
-                  }))
-            }
-          ]}
-          formData={{ voto: modalAberto === 'binario' ? votoBinario : selectedOrcamento }}
-          onChange={(e) => {
-            if (modalAberto === 'binario') {
-              setVotoBinario(e.target.value);
-            } else {
-              setSelectedOrcamento(e.target.value);
-            }
-          }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            submeterVoto();
-          }}
-          textBotao="Votar"
-        />
-      </>
-    );
+    <ModalForm
+      show={modalAberto !== ''}
+      onclose={() => {
+        setModalAberto('');
+        setVotacaoAtual(null);
+        setVotoSelecionado('');
+      }}
+      title={`Votação: ${votacaoAtual.titulo}`}
+      textBotao="Votar"
+      fields={fields}
+      formData={formData}
+      onChange={handleChange}
+      onSubmit={(e) => {
+        e.preventDefault();
+        submeterVoto();
+      }}
+    />
+  );
   };
 
   return (
@@ -176,7 +190,7 @@ const Votacoes = () => {
         {renderTabela('Votações Novos Recursos (Múltipla Escolha)', votacoes.lista_votacao_pedido_novo_recurso_multiplas, 'switch')}
         {renderModal()}
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };
