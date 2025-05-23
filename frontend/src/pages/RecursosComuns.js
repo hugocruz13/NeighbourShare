@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
-import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Button from '../components/Button.jsx';
 import ModalForm from '../components/ModalForm.jsx';
 import Modal from '../components/ModalForm.jsx';
@@ -98,7 +97,7 @@ const MeusRecursos = () => {
           />
           <Tabela
             titulo={"Recursos Comuns"}
-            botoesOpcoes={[<Button className={styles.btnRegistar} onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>]}
+            botoesOpcoes={[<Button variant='defaultTabela' onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>]}
             colunas = {[
             { accessorKey: 'NumRecurso', header: 'Nº Recurso' },
             { accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },

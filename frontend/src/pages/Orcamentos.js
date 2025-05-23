@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from '../styles/LayoutPaginasTabelas.module.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela.jsx";
 import Button from '../components/Button.jsx';
@@ -37,7 +37,6 @@ const Orcamentos = () => {
         });
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
-        console.log(data);
         setOrcamentos(data);
       } catch (error) {
         console.error('Erro ao buscar orcamentos:', error);
@@ -62,28 +61,61 @@ const Orcamentos = () => {
     fetchFornecedores();
   }, []);
 
-  const handleAddResource = async () => {
+  const handleAddOrcamento = async () => {
     try {
+
+      if (!newResource.id_entidade_externa || isNaN(parseInt(newResource.id_entidade_externa))) {
+            ToastManager.error('ID da entidade externa deve ser um número válido');
+            return;
+          }
+          
+          if (!newResource.valor_orcamento || isNaN(parseFloat(newResource.valor_orcamento))) {
+            ToastManager.error('Valor do orçamento deve ser um número válido');
+            return;
+          }
+          
+          if (!newResource.idprocesso || isNaN(parseInt(newResource.idprocesso))) {
+            ToastManager.error('ID do processo deve ser um número válido');
+            return;
+          }
+          
+          if (!newResource.tipoorcamento) {
+            ToastManager.error('Tipo de orçamento é obrigatório');
+            return;
+          }
+          
+          if (!newResource.pdforcamento) {
+            ToastManager.error('Arquivo PDF é obrigatório');
+            return;
+          }
+
       const formData = new FormData();
-      formData.append('id_entidade_externa', newResource.id_entidade_externa);
-      formData.append('valor_orcamento', parseInt(newResource.valor_orcamento));
+
+      formData.append('id_entidade_externa', parseInt(newResource.id_entidade_externa).toString());
+      formData.append('valor_orcamento', parseFloat(newResource.valor_orcamento).toString());
       formData.append('descricao_orcamento', newResource.descricao_orcamento);
       formData.append('pdforcamento', newResource.pdforcamento);
-      formData.append('idprocesso', newResource.idprocesso);
+      formData.append('idprocesso', parseInt(newResource.idprocesso).toString());
       formData.append('tipoorcamento', newResource.tipoorcamento);
+
+      const tipoMapping = {
+        'Manutenção': 'MANUTENCAO',
+        'Aquisição': 'AQUISICAO'
+      };
+      const tipoFinal = tipoMapping[newResource.tipoorcamento] || newResource.tipoorcamento;
+      formData.append('tipoorcamento', tipoFinal);
 
       const res = await fetch('http://localhost:8000/api/orcamentos/inserir', {
         method: 'POST',
         credentials: 'include',
         body: formData,
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || 'Erro ao adicionar recurso');
       }
 
-      toast.success('Recurso adicionado com sucesso!');
+      ToastManager.success('Recurso adicionado com sucesso!');
       setShowModal(false);
       setNewResource({
         id_entidade_externa: '',
@@ -94,7 +126,9 @@ const Orcamentos = () => {
         tipoorcamento: ''
       });
     } catch (error) {
-      toast.error('Erro ao adicionar recurso: ' + error.message);
+      
+      console.error('Erro ao adicionar recurso:', error);
+      ToastManager.error('Erro ao adicionar recurso: ' + error.message);
     }
   };
 
@@ -114,7 +148,7 @@ const Orcamentos = () => {
         throw new Error(errorData.detail || 'Erro ao criar votação');
       }
 
-      toast.success('Votação criada com sucesso!');
+      ToastManager.success('Votação criada com sucesso!');
       setShowModal(false);
       setVotacao({
         titulo: '',
@@ -124,12 +158,25 @@ const Orcamentos = () => {
         tipo_votacao: '',
       });
     } catch (error) {
-      toast.error('Erro ao criar votação: ' + error.message);
+      ToastManager.error('Erro ao criar votação: ' + error.message);
     }
   };
 
-  const handleFileChange = (e) => {
-    setNewResource({ ...newResource, pdforcamento: e.target.files[0] });
+  const handleChange = (e) => {
+    const { name, value, files, type } = e.target;
+
+    if (modalType === 'orcamento') {
+      if (type === 'file') {
+        const file = files?.[0];
+        if (file) {
+          setNewResource(prev => ({ ...prev, [name]: file }));
+        }
+      } else {
+        setNewResource(prev => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setVotacao(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   return (
@@ -145,28 +192,21 @@ const Orcamentos = () => {
               { name: 'valor_orcamento', label: 'Valor', type: 'number', required: true },
               { name: 'descricao_orcamento', label: 'Descrição', type: 'text' },
               { name: 'idprocesso', label: 'ID Processo', type: 'text' },
-              { name: 'tipoorcamento', label: 'Tipo Orçamento', type: 'text' },
+              { name: 'tipoorcamento', label: 'Tipo Orçamento', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] },
               { name: 'pdforcamento', label: 'Arquivo', type: 'file' }
             ] : [
               { name: 'titulo', label: 'Título', type: 'text' },
               { name: 'descricao', label: 'Descrição', type: 'text' },
               { name: 'id_processo', label: 'ID do Processo', type: 'number' },
               { name: 'data_fim', label: 'Data de Fim', type: 'date' },
-              { name: 'tipo_votacao', label: 'Tipo Votação', type: 'text' }
+              { name: 'tipo_votacao', label: 'Tipo Votação', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] }
             ]}
             formData={modalType === 'orcamento' ? newResource : votacao}
-            onChange={(e) => {
-              const { name, value } = e.target;
-              if (modalType === 'orcamento') {
-                setNewResource({ ...newResource, [name]: value });
-              } else {
-                setVotacao({ ...votacao, [name]: value });
-              }
-            }}
+            onChange={handleChange}
             onSubmit={(e) => {
               e.preventDefault();
               if (modalType === 'orcamento') {
-                handleAddResource();
+                handleAddOrcamento();
               } else {
                 handleCreateVotacao();
               }
@@ -179,20 +219,22 @@ const Orcamentos = () => {
               { accessorKey: 'NumOrcamento', header: 'Nº Orçamento' },
               { accessorKey: 'Fornecedor', header: 'Fornecedor' },
               { accessorKey: 'Valor', header: 'Valor' },
-              { accessorKey: 'Descricao', header: 'Descrição' }
+              { accessorKey: 'Descricao', header: 'Descrição' },
+              { accessorKey: 'PDF', header: 'PDF' }
             ]}
             dados={orcamentos.map((orcamento) => ({
               'Nº Orçamento': orcamento.OrcamentoID,
               'Fornecedor': orcamento.Entidade,
               'Valor': orcamento.Valor,
               'Descrição': orcamento.DescOrcamento,
+              'PDF': <Button variant='defaultTabela' onClick={() => {}}text={"Download"}>Download</Button>
             }))}
-            botoesOpcoes={[<Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>, 
-            <Button className={styles.btnregistarRecurso} onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>]}
+            botoesOpcoes={[<Button  onClick={() => { setShowModal(true); setModalType('orcamento'); }} text={"Inserir Orçamento"}>Inserir Orçamento</Button>, 
+            <Button onClick={() => { setShowModal(true); setModalType('votacao'); }} text={"Criar Votação"}>Criar Votação</Button>]}
           />
       </div>
 
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

@@ -20,11 +20,8 @@ import Notificacoes from "./pages/Notificacoes.js";
 import Orcamentos from "./pages/Orcamentos.js";
 import Manutencao from "./pages/Manutencao.js";
 import Votacoes from "./pages/Votacoes.js";
-import ConsultarVotacao from "./pages/ConsultarVotacao.js";
-import PedidosNovosRecursosPendentesVoto from "./pages/PedidosNovosRecursosPendentesVoto.js";
 import AtualizarDados from "./pages/AtualizarDados.js";
 import RecuperarPass from "./pages/RecuperarPass.js";
-import Exemplo from "./pages/Exemplo.js";
 import EntidadeExterna from "./pages/EntidadeExterna.js";
 import RecursosComuns from "./pages/RecursosComuns.js";
 
@@ -52,12 +49,8 @@ function App() {
             <Route path="/orcamentos" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Orcamentos /></ProtectedRoute>}/>
             <Route path="/manutencao" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><Manutencao /></ProtectedRoute>}/>
             <Route path="/votacoes" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Votacoes /></ProtectedRoute>}/>
-            <Route path="/consultarVotacao/:id" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><ConsultarVotacao  /></ProtectedRoute>}/>
-            <Route path="/pedidosNovosRecursosPendentesVoto" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><PedidosNovosRecursosPendentesVoto  /></ProtectedRoute>}/>
-            <Route path="/atualizarDados" element={<AtualizarDados  />}/>
             <Route path="/recuperarPass" element={<RecuperarPass  />}/>
             <Route path="/entidadeExterna" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><EntidadeExterna /></ProtectedRoute>}/>
-            <Route path="/exemplo" element={<ProtectedRoute allowedRoles={["residente","gestor", "admin"]}><Exemplo /></ProtectedRoute>}/>
             <Route path="/recursosComuns" element={<ProtectedRoute allowedRoles={["gestor", "admin"]}><RecursosComuns /></ProtectedRoute>}/>
           </Routes>
         </Router>

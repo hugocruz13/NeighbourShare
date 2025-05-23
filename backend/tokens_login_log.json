@@ -202,5 +202,23 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDc5OTk0MTd9.SsvQsqGL5wRcQKyMm2o0mzR_2UM_gfIKW0qakof6t8s",
         "role": "gestor",
         "timestamp": 1747997617.3943913
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgwMDI1ODB9.ZJzBlmwuK4dTXkTrefjD0Z2LeoAd6hSpq_wUw9PiBXY",
+        "role": "gestor",
+        "timestamp": 1748000780.821675
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgwMDMxNjd9.WC1GHdWr91Jz-ASig--YkJiMwQSxzwxJIQBy8-y5Fp8",
+        "role": "gestor",
+        "timestamp": 1748001367.5486307
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgwMDc1NTV9.ZR03xxrdZ40iZ1w_nWv3U3Kw9EZ6Z4nT3QKycAbjUM8",
+        "role": "gestor",
+        "timestamp": 1748005755.892991
     }
 ]

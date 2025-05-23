@@ -3,6 +3,7 @@ import React from 'react';
 import styles from './ModalForm.module.css';
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';  // <-- Importa o Select custom
+import Button from './Button.jsx';
 
 const Modal = ({ show, onclose, title, fields = [], formData, onChange, onSubmit, textBotao }) => {
   return (
@@ -39,6 +40,15 @@ const Modal = ({ show, onclose, title, fields = [], formData, onChange, onSubmit
                       required={field.required}
                       {...field.props} // permite passar props extras se quiseres
                     />
+                  ) : field.type === 'file' ? (
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="file"
+                      onChange={onChange}
+                      className={styles.inputContainer}
+                      accept="application/pdf"
+                    />
                   ) : (
                     <Input
                       id={field.name}
@@ -56,7 +66,7 @@ const Modal = ({ show, onclose, title, fields = [], formData, onChange, onSubmit
               ))}
 
               <div>
-                <button type="submit">{textBotao}</button>
+                <Button type="submit">{textBotao}</Button>
               </div>
             </form>
           </motion.div>
