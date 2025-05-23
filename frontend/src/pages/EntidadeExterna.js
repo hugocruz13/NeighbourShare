@@ -4,9 +4,7 @@ import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.js";
 import Tabela from '../components/Tabela.jsx';
-import styles from '../components/Tabela.module.css';
 import ModalForm from '../components/ModalForm.jsx'; 
-import { motion } from 'framer-motion';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import { FaTrash, FaPen, FaCheck, FaTimes } from 'react-icons/fa';
@@ -22,7 +20,7 @@ const EntidadesExternas = () => {
     Nif: ''
   });
   const [ultimaEntidadeId, setUltimaEntidadeId] = useState(null);
-
+    
   const [editId, setEditId] = useState(null);
   const [editData, setEditData] = useState({});
   
@@ -102,7 +100,7 @@ const EntidadesExternas = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/entidades/update/${editId}`, {
+      const res = await fetch(`http://localhost:8000/api/entidades/update/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
