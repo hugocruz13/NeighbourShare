@@ -222,7 +222,7 @@ async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-async def listar_votacoes_ativas(db:Session):
+async def listar_votacoes_ativas(db:Session, user_id:int):
     try:
         votacoes_pedido_recurso_binarias, votacoes_pedido_recurso_mutliplas, votacoes_pedido_manutencao = await listar_votacoes_ativas_db(db)
 
@@ -237,7 +237,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio = votacao.DataInicio,
                 data_fim = votacao.DataFim,
-                pedido_recurso = pedido_id
+                pedido_recurso = pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pr_binarias.append(new_votacao)
         for votacao, pedido_id in votacoes_pedido_recurso_mutliplas:
@@ -247,7 +248,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio = votacao.DataInicio,
                 data_fim = votacao.DataFim,
-                pedido_recurso = pedido_id
+                pedido_recurso = pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pr_multiplas.append(new_votacao)
         for votacao, pedido_id in votacoes_pedido_manutencao:
@@ -257,7 +259,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio=votacao.DataInicio,
                 data_fim=votacao.DataFim,
-                pedido_recurso=pedido_id
+                pedido_recurso=pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pm.append(new_votacao)
 

@@ -6,7 +6,6 @@ import Navbar2 from "../components/Navbar2.js";
 import Tabela from "../components/Tabela";
 import ModalForm from "../components/ModalForm.jsx";
 import Button from "../components/Button.jsx";
-import Select from "../components/Select.jsx"; 
 
 const Votacoes = () => {
   const [votacoes, setVotacoes] = useState({
@@ -29,6 +28,7 @@ const Votacoes = () => {
           credentials: 'include'
         });
         const data = await res.json();
+        console.log(data);
         setVotacoes(data);
       } catch (error) {
         console.error('Erro ao buscar votações:', error);
@@ -71,16 +71,28 @@ const Votacoes = () => {
         credentials: 'include',
         body: JSON.stringify({
           voto : votoSelecionado,
-          id_votacao: votacaoAtual.votacao_id
+          id_votacao: votacaoAtual.ID
         })
       });
-
       if (!res.ok) throw new Error('Erro ao registrar voto.');
 
       ToastManager.success('Voto registrado com sucesso!');
       setModalAberto('');
       setVotacaoAtual(null);
       setVotoSelecionado('');
+      votacaoAtual.ja_votou = true;
+      setVotacoes((prevState) => ({
+        ...prevState,
+        lista_votacao_pedido_novo_recurso_binarias: prevState.lista_votacao_pedido_novo_recurso_binarias.map((item) =>
+          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+        ),
+        lista_votacao_pedido_novo_recurso_multiplas: prevState.lista_votacao_pedido_novo_recurso_multiplas.map((item) =>
+          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+        ),
+        lista_votacao_pedido_manutencao: prevState.lista_votacao_pedido_manutencao.map((item) =>
+          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+        )
+      }));
     } catch (error) {
       console.error('Erro ao registrar voto:', error);
       ToastManager.error('Erro ao registrar voto.');
@@ -98,14 +110,18 @@ const Votacoes = () => {
         accessorKey: 'Acao',
         header: 'Ação',
         cell: ({ row }) => (
+        row.original.ja_votou ? (
+          <span>Já votou!</span>
+        ) : (
           <Button
             variant="default"
             onClick={() => {
-            abrirModal(row.original, tipo)
+              abrirModal(row.original, tipo)
             }}>
             Votar
           </Button>
         )
+      )
       }
     ];
     console.log(lista);
@@ -115,6 +131,7 @@ const Votacoes = () => {
       Descricao: item.descricao,
       DataInicio: new Date(item.data_inicio).toLocaleDateString(),
       DataFim: new Date(item.data_fim).toLocaleDateString(),
+      ja_votou: item.ja_votou,  
       Acao: ''
     }));
     return (
@@ -167,7 +184,7 @@ const Votacoes = () => {
         setVotacaoAtual(null);
         setVotoSelecionado('');
       }}
-      title={`Votação: ${votacaoAtual.titulo}`}
+      title={`Votação: ${votacaoAtual.Titulo}`}
       textBotao="Votar"
       fields={fields}
       formData={formData}

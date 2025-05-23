@@ -56,6 +56,7 @@ class VotacaoGet(BaseModel):
     data_inicio: date
     data_fim: date
     pedido_recurso: conint(gt=0)
+    ja_votou: bool
 
     class Config:
         str_strip_whitespace = True
