@@ -150,16 +150,17 @@ const PedidosManutencao = () => {
                 cell: ({ row }) => {
                   const pedido = row.original;
                   return (
-                    <select className='inputGeralManu'
-                        value={pedido.estado}
-                        onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
-                      >
-                        {statusOptions.map((option) => (
-                          <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
-                            {option.DescEstadoPedidoManutencao}
-                          </option>
-                        ))}
-                      </select>
+                    <Select 
+                      value={pedido.EstadoPedManuID} 
+                      onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
+                      options={statusOptions.map(opt => ({
+                        value: opt.EstadoPedManuID,
+                        label: opt.DescEstadoPedidoManutencao
+                      }))}
+                      variant='geral'
+                    />
+
+
                   );
                 }
               }
