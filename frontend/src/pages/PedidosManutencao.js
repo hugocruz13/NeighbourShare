@@ -7,6 +7,7 @@ import Tabela from "../components/Tabela.jsx";
 import ModalForm from '../components/ModalForm.jsx';
 import Modal from '../components/ModalForm.jsx';
 import Select from '../components/Select.jsx';
+import "../styles/PedidosManutencao.css";
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -76,6 +77,8 @@ const PedidosManutencao = () => {
 
   const handleStatusChange = async (pedido_id, novo_estado_id) => {
     try {
+      console.log("Body do PUT:", JSON.stringify({ novo_estado_id: novo_estado_id }));
+
       const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedido_id}/estado`, {
         method: 'PUT',
         credentials: 'include',
@@ -147,18 +150,16 @@ const PedidosManutencao = () => {
                 cell: ({ row }) => {
                   const pedido = row.original;
                   return (
-                    <Select
-                      options={statusOptions.map((option) => ({
-                        value: option.EstadoPedManuID,
-                        label: option.DescEstadoPedidoManutencao
-                      }))}
-                      value={pedido.EstadoPedManuID}
-                      onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.value)}
-                      onClick={() => {
-                        setSelectedPedido(pedido.PMID);
-                        setShowModal(true);
-                      }}
-                    variant='geral'/>
+                    <select className='inputGeralManu'
+                        value={pedido.estado}
+                        onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
+                      >
+                        {statusOptions.map((option) => (
+                          <option key={option.EstadoPedManuID} value={option.EstadoPedManuID}>
+                            {option.DescEstadoPedidoManutencao}
+                          </option>
+                        ))}
+                      </select>
                   );
                 }
               }
