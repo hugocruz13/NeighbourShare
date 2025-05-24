@@ -158,3 +158,13 @@ async def inserir_recurso_teste(db:session, recurso:Recurso):
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+
+#Apagar recurso
+async def delete_recurso_db(db:session, id:int):
+    try:
+        db.query(Recurso).filter(Recurso.RecursoID == id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

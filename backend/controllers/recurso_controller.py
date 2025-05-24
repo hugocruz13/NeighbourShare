@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from middleware.auth_middleware import *
 from db.session import get_db
+from db.repository.recurso_repo import delete_recurso_db, existe_recurso
 from sqlalchemy.orm import Session
 from schemas.recurso_schema import *
 from typing import List
@@ -73,6 +74,21 @@ async def listar_recursos_pessoais(
 async def listar_recurso( recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
     try:
         return await lista_recurso_service(db, recurso_id)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/{recurso_id}")
+async def delete_recurso(recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
+    try:
+        if await existe_recurso(db, recurso_id):
+            if await delete_recurso_db(db, recurso_id):
+                return {"message": "Recurso deletado com sucesso"}
+            else:
+                raise HTTPException(status_code=500, detail="Erro ao apagar o recurso.")
+        else:
+            raise HTTPException(status_code=404, detail="Recurso não existe.")
     except HTTPException as e:
         raise e
     except Exception as e:
