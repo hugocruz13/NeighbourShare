@@ -25,6 +25,7 @@ const ReservarRecurso = ({ match }) => {
           credentials: 'include'
         });
         const data = await res.json();
+        console.log(data);
         setComoDono(data[0]);         // Dono → pedidos recebidos
         setComoSolicitante(data[1]);  // Solicitante → pedidos que fez
       } catch (error) {
@@ -116,12 +117,12 @@ const ReservarRecurso = ({ match }) => {
           <Tabela
             titulo={'Pedidos de Reserva - Solicitante'}
             colunas={[
-              { id: 'UtilizadorNome',accessorKey: 'UtilizadorNome', header: 'Nome Utilizador' },
+              { id: 'UtilizadorNome',accessorKey: 'NomeDono', header: 'Nome Utilizador' },
               { id: 'RecursoNome',accessorKey: 'RecursoNome', header: 'Nome do Recurso' },
               { id: 'DataInicio',accessorKey: 'DataInicio', header: 'Data Início' },
               { id: 'DataFim',accessorKey: 'DataFim', header: 'Data Fim' },
               {
-                  accessorKey: 'Estado do Pedido',
+                  accessorKey: 'EstadoPedidoReserva',
                   header: 'Estado',
                 },
             ]}

@@ -45,6 +45,9 @@
   gap: 2rem;
   margin-bottom: 2rem;
   margin-right: 4rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
 }
 
 /* Cards individuais */
