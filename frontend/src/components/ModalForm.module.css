@@ -14,7 +14,7 @@
   opacity: 0;
   transform: translateY(-10px);
   animation: fadeSlideDown 0.5s ease forwards;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   user-select: none;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

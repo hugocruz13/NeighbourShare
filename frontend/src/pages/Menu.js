@@ -94,13 +94,7 @@ function Residente() {
         </div>
         <br></br>
         <h2 className="section-title">Outros</h2><br></br>
-        <div className="dashboard-grid">
-          {/* Cards principais para todos os usuários */}
-          
-          
-          
-
-                   
+        <div className="dashboard-grid">   
           <div className="dashboard-card" onClick={() => navigateTo('/votacoes')}>
             <div className="card-icon vote-icon"></div>
             <h3>Votações Ativas</h3>
@@ -123,7 +117,7 @@ function Residente() {
         {/* Seção para Gestores */}
         {user?.role === "gestor" && (
           <div className="management-section">
-            <h2 className="section-title">Gestão do Condomínio</h2>
+            <h2 className="section-title-inside">Gestão do Condomínio</h2>
             <div className="admin-grid">
               <div className="admin-card" onClick={() => navigateTo('/manutencao')}>
                 <h3>Manutenções</h3>

@@ -124,5 +124,41 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMTA5MTB9.Gtg9g7KlFlAWXxZ8F8Pcnmm3VjLMtW8enriwymK6RCA",
         "role": "residente",
         "timestamp": 1748109110.4947035
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMjE1NjV9.DW_B8XemizfwWt8ILxe92sDgCe7C1pP8YqougjdweFM",
+        "role": "gestor",
+        "timestamp": 1748119765.715093
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMjQ4NjN9.8MttT3kpc8UWdQjE9xzw-obtJrK0ZwLXJZlcHzeZW3s",
+        "role": "gestor",
+        "timestamp": 1748123063.5732284
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMjY1NTd9.Z6w1LpVxhgaaKBIgXjiep2xI5MRTjDs9zPjdmI2VwNs",
+        "role": "gestor",
+        "timestamp": 1748124757.0445285
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMjY5Nzl9.21MVruEiDK7MZ_2HyxB-WSjST7SmRwFVSzStfSp2wbk",
+        "role": "gestor",
+        "timestamp": 1748125179.0689874
+    },
+    {
+        "user_id": 1,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBlbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTI3NTM3fQ.qQ97Q1xRkEY01yZfe8Wjb1cRhuVMNf0jlEdsSdGR99M",
+        "role": "admin",
+        "timestamp": 1748125737.8414764
+    },
+    {
+        "user_id": 3,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMjc3OTl9.NjvDYgkjk8l-L3T0IK2uMLRZBIozQjGSIb2nrqu0Pqs",
+        "role": "residente",
+        "timestamp": 1748125999.194969
     }
 ]
