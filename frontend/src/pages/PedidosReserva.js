@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "../styles/PedidosReserva.css";
 import Navbar2 from "../components/Navbar2.jsx";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 
 const ReservarRecurso = () => {
   const { id } = useParams();
@@ -48,13 +48,13 @@ const ReservarRecurso = () => {
       });
 
       if (res.ok) {
-        alert('Reserva realizada com sucesso!');
+        ToastManager.success('Pedido efetuado com sucesso!');
       } else {
-        alert('Erro ao realizar reserva.');
+        ToastManager.error('Erro ao registar o pedido.');
       }
     } catch (error) {
-      console.error('Erro ao enviar reserva:', error);
-      alert('Erro ao enviar reserva.');
+      console.error('Erro ao registar o pedido:', error);
+      ToastManager.error('Erro ao registar o pedido.');
     }
   };
 
@@ -81,8 +81,9 @@ return (
       <div className="reservar-right">
         <div className="reservar-details">
           <h2>Nome: {product.Nome}</h2>
-          <h2>Descrição: {product.Categoria_.DescCategoria}</h2>
+          <h2>Categoria: {product.Categoria_.DescCategoria}</h2>
           <h2>Caução: {product.Caucao}€</h2>
+          <h2>Dono: {product.Utilizador_.NomeUtilizador}</h2>
         </div>
 
         <label className="reservar-label">
@@ -96,10 +97,10 @@ return (
         </label>
 
         <div className="reservar-buttons">
-          <button className="reservar-button" onClick={handleReserve}>Reservar</button>
+          <Button variant='default' onClick={handleReserve}>Efetuar Pedido Reserva</Button>
         </div>
       </div>
-    <ToastContainer />
+    <Toaster />
   </div>
   </>
 );

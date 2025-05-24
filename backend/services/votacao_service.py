@@ -204,7 +204,13 @@ async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
         if not await existe_votacao(db, votacao_id):
             raise HTTPException(status_code=404, detail="Votação não encontrado")
 
-        return await get_orcamentos_pm(db, votacao_id)
+        orcamentos = await get_orcamentos_pm(db, votacao_id)
+
+        for orcamento in orcamentos:
+            orcamento.NomePDF = os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID), orcamento.NomePDF)
+
+        return orcamentos
+    
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -216,7 +222,13 @@ async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int
         if not await existe_votacao(db, votacao_id):
             raise HTTPException(status_code=404, detail="Votação não encontrado")
 
-        return await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+        orcamentos = await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+
+        for orcamento in orcamentos:
+            orcamento.NomePDF = os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID), orcamento.NomePDF)
+
+        return orcamentos
+    
     except HTTPException as e:
         raise e
     except Exception as e:

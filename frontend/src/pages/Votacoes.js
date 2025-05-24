@@ -38,10 +38,10 @@ const Votacoes = () => {
   }, []);
 
   const abrirModal = async (votacao, tipo) => {
+    console.log("Abrindo modal para votação:", votacao);
     setVotacaoAtual(votacao);
     setModalAberto(tipo);
     setVotoSelecionado('');
-
     let endpoint = null;
     if (tipo === 'manutencao') {
       endpoint = `http://localhost:8000/api/votacao_orcamento_pm?id_v=${votacao.votacao_id}`;
@@ -55,8 +55,10 @@ const Votacoes = () => {
           method: 'GET',
           credentials: 'include'
         });
+        
         const data = await res.json();
         setOrcamentos(data);
+        console.log("Orçamentos recebidos:", data);
       } catch (error) {
         console.error('Erro ao buscar orçamentos:', error);
       }
@@ -65,15 +67,17 @@ const Votacoes = () => {
 
   const submeterVoto = async () => {
     try {
+
       const res = await fetch('http://localhost:8000/api/votar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          voto : votoSelecionado,
-          id_votacao: votacaoAtual.ID
+          voto : String(votoSelecionado),
+          id_votacao: votacaoAtual.votacao_id,
         })
       });
+      console.log("Resposta do servidor:", res.text());
       if (!res.ok) throw new Error('Erro ao registrar voto.');
 
       ToastManager.success('Voto registrado com sucesso!');
@@ -84,13 +88,13 @@ const Votacoes = () => {
       setVotacoes((prevState) => ({
         ...prevState,
         lista_votacao_pedido_novo_recurso_binarias: prevState.lista_votacao_pedido_novo_recurso_binarias.map((item) =>
-          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+          item.votacao_id === votacaoAtual.votacao_id ? { ...item, ja_votou: true } : item
         ),
         lista_votacao_pedido_novo_recurso_multiplas: prevState.lista_votacao_pedido_novo_recurso_multiplas.map((item) =>
-          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+          item.votacao_id === votacaoAtual.votacao_id ? { ...item, ja_votou: true } : item
         ),
         lista_votacao_pedido_manutencao: prevState.lista_votacao_pedido_manutencao.map((item) =>
-          item.votacao_id === votacaoAtual.ID ? { ...item, ja_votou: true } : item
+          item.votacao_id === votacaoAtual.votacao_id ? { ...item, ja_votou: true } : item
         )
       }));
     } catch (error) {
@@ -123,12 +127,12 @@ const Votacoes = () => {
       )
       }
     ];
-    console.log(lista);
     const dados = lista.map((item) => ({
       Titulo: item.titulo,
       Descricao: item.descricao,
       DataInicio: new Date(item.data_inicio).toLocaleDateString(),
       DataFim: new Date(item.data_fim).toLocaleDateString(),
+      votacao_id: item.votacao_id,
       ja_votou: item.ja_votou,  
       Acao: ''
     }));
@@ -153,7 +157,8 @@ const Votacoes = () => {
         ]
       : orcamentos.map((orc) => ({
           value: orc.OrcamentoID,
-          label: orc.DescOrcamento
+          label: orc.OrcamentoID + ' - ' + orc.DescOrcamento,
+          url: `http://localhost:8000/${orc.NomePDF.replace(/\\/g, '/')}`
         }));
 
     const fields = [

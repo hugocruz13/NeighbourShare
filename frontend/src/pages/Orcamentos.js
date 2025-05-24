@@ -193,20 +193,37 @@ const Orcamentos = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value, files, type } = e.target;
+  const handleChange = (e, actionMeta) => {
+    if (e && e.target) {
+      const { name, value, files, type } = e.target;
 
-    if (modalType === 'orcamento') {
-      if (type === 'file') {
-        const file = files?.[0];
-        if (file) {
-          setNewOrcamento(prev => ({ ...prev, [name]: file }));
+      if (modalType === 'orcamento') {
+        if (type === 'file') {
+          const file = files?.[0];
+          if (file) {
+            setNewOrcamento(prev => ({ ...prev, [name]: file }));
+          }
+        } else {
+          setNewOrcamento(prev => ({ ...prev, [name]: value }));
         }
       } else {
-        setNewOrcamento(prev => ({ ...prev, [name]: value }));
+        setVotacao(prev => ({ ...prev, [name]: value }));
       }
-    } else {
-      setVotacao(prev => ({ ...prev, [name]: value }));
+    } else if (e && actionMeta && actionMeta.action === 'select-option') {
+      // Caso do react-select, que passa o objeto selecionado (e) e meta (actionMeta)
+      const name = actionMeta.name;
+      if (modalType === 'orcamento') {
+        setNewOrcamento(prev => ({ ...prev, [name]: e.value }));
+      } else {
+        setVotacao(prev => ({ ...prev, [name]: e.value }));
+      }
+    } else if (e && e.name && e.value) {
+      // Caso de um objeto simples com name e value (pode ser redundante, mas seguro)
+      if (modalType === 'orcamento') {
+        setNewOrcamento(prev => ({ ...prev, [e.name]: e.value }));
+      } else {
+        setVotacao(prev => ({ ...prev, [e.name]: e.value }));
+      }
     }
   };
 

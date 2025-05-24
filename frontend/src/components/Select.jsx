@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "./Select.module.css"; // onde defines os estilos
+import ReactSelect from "react-select";
+
 
 /**
  * Select Component
@@ -32,23 +34,62 @@ const Select = ({
 
   const baseClass = variantClasses[variant] || styles.select;
 
+  const handleChange = (selectedOption) => {
+    onChange({
+      target: {
+        name,
+        value: selectedOption ? selectedOption.value : ''
+      }
+    });
+  };
+
+  
+  const CustomOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "8px"
+        }}
+      >
+        <span>{data.label}</span>
+        {data.url && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // impede o select de fechar
+              window.open(data.url, "_blank");
+            }}
+            style={{
+              marginLeft: "10px",
+              padding: "4px 8px",
+              fontSize: "0.8rem",
+              cursor: "pointer"
+            }}
+          >
+            Ver PDF
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <select
+    <ReactSelect
       name={name}
       value={value}
-      onChange={onChange}
+      onChange={handleChange}
+      options={options}
+      placeholder={placeholder}
       className={`${baseClass} ${className}`}
+      components={{ Option: CustomOption }}
       {...props}
-    >
-      <option value="" disabled hidden>
-        {placeholder}
-      </option>
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
+    />
   );
 };
 

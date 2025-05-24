@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import "../styles/RealizarPedidoNovoRecurso.css";
 import Navbar2 from "../components/Navbar2.jsx";
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Textarea from '../components/Textarea.jsx';
 import Button from '../components/Button.jsx';
@@ -20,11 +21,11 @@ const RealizarPedidoNovoRecurso = () => {
         credentials: 'include', // importante se usares cookies httpOnly
         body: JSON.stringify({ desc_pedido_novo_recurso }),
       });
-      toast.success('Pedido de novo recurso realizado com sucesso!');
+      ToastManager.success('Pedido de novo recurso realizado com sucesso!');
       setDescricao('');
     } catch (error) {
       console.error('Erro ao realizar pedido de novo recurso:', error);
-      toast.error('Erro ao realizar pedido de novo recurso.');
+      ToastManager.error('Erro ao realizar pedido de novo recurso.');
     }
   };
 
@@ -51,7 +52,7 @@ const RealizarPedidoNovoRecurso = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

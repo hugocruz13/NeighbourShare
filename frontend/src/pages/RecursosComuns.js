@@ -97,8 +97,24 @@ const MeusRecursos = () => {
           />
           <Tabela
             titulo={"Recursos Comuns"}
-            botoesOpcoes={[<Button variant='defaultTabela' onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>]}
+            botoesOpcoes={[<Button variant='default' onClick={() => setShowModal(true)} text={"Adicionar Recurso Comum"}>Adicionar Recurso Comum</Button>]}
             colunas = {[
+            {
+              header: 'Imagem',
+              accessorKey: 'Path',
+              cell: info => (
+                <img 
+                src={info.getValue()} 
+                  alt="Recurso"
+                  style={{
+                    width: 90,
+                    height: 90,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                  }}
+                />
+              )
+            },
             { accessorKey: 'NumRecurso', header: 'Nº Recurso' },
             { accessorKey: 'NomeRecurso', header: 'Nome do Recurso' },
             { accessorKey: 'Descricao', header: 'Descrição' },
@@ -107,6 +123,7 @@ const MeusRecursos = () => {
               'NumRecurso': recurso.RecComumID,
               'NomeRecurso': recurso.Nome,
               'Descricao': recurso.DescRecursoComum,
+              'Path': recurso.Path,
             }))}
           />
       </div>

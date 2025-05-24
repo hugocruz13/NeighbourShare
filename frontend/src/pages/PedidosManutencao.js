@@ -77,8 +77,6 @@ const PedidosManutencao = () => {
 
   const handleStatusChange = async (pedido_id, novo_estado_id) => {
     try {
-      console.log("Body do PUT:", JSON.stringify({ novo_estado_id: novo_estado_id }));
-
       const res = await fetch(`http://localhost:8000/api/recursoscomuns/pedidosmanutencao/${pedido_id}/estado`, {
         method: 'PUT',
         credentials: 'include',
@@ -119,6 +117,31 @@ const PedidosManutencao = () => {
     setJustificacao('');
   };
 
+  const handleVotacaoExpirada = async (votacao_id)  => {
+    try{
+      const res = await fetch(`'http://localhost:8000/api/listar_votacaos'`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        throw new Error('Erro ao marcar votação como expirada.');
+        }
+
+        const data = await res.json();
+
+        const naoExiste = !data.lista_votacao_pedido_manutencao.some(
+          item => item.votacao_id === votacao_id
+        );
+
+        return naoExiste;
+
+    }
+    catch (error) {
+      console.error('Erro ao verificar votação expirada:', error);
+      ToastManager.error('Erro ao verificar votação expirada.');
+    }
+  }
+
   return (
     <div className="page-content">
       <Navbar2 />
@@ -152,21 +175,33 @@ const PedidosManutencao = () => {
                   const pedido = row.original;
                   return (
                     <Select 
-                      value={pedido.EstadoPedManuID} 
-                      onChange={(e) => handleStatusChange(pedido.PMID, e.target.value)}
-                      options={statusOptions.map(opt => ({
-                        value: opt.EstadoPedManuID,
-                        label: opt.DescEstadoPedidoManutencao
-                      }))}
+                      value={statusOptions.find(opt => opt.EstadoPedManuID === pedido.EstadoPedManuID) && {
+                        value: pedido.EstadoPedManuID,
+                        label: statusOptions.find(opt => opt.EstadoPedManuID === pedido.EstadoPedManuID)?.DescEstadoPedidoManutencao
+                      }}
+                      onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.value)}
+                      options={statusOptions
+                        .filter(opt => opt.EstadoPedManuID !== 5)
+                        .map(opt => ({
+                          value: opt.EstadoPedManuID,
+                          label: opt.DescEstadoPedidoManutencao
+                        }))
+                      }
                       variant='geral'
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: base => ({ ...base, zIndex: 9999 }),
+                        menu: base => ({ ...base, zIndex: 9999 }),
+                      }}
+                      isDisabled={pedido.EstadoPedManuID === 5}
                     />
-
-
                   );
                 }
               }
             ]}
-            dados={pedidos}
+            dados={pedidos.filter(
+              pedido => pedido.EstadoPedManuID !== 2 && pedido.EstadoPedManuID !== 4
+            )}
           />
       </div>
       <Toaster />

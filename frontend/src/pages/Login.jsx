@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.js";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import "../styles/Login.css";
 import Button from "../components/Button.jsx";
 import Input from '../components/Input.jsx';
@@ -48,10 +48,10 @@ function Login() {
           navigate("/login");
         }
       } else {
-        setError(data.detail);
+        ToastManager.error("Email ou password inválidos.");
       }
     } catch (error) {
-      setError("Erro");
+      ToastManager.error("Erro ao fazer login.");
     }
   };
 
@@ -65,13 +65,13 @@ function Login() {
       });
 
       if (response.ok) {
-        toast.success('Email de recuperação enviado com sucesso!');
+        ToastManager.success('Email de recuperação enviado com sucesso!');
         setShowModal(false);
       } else {
-        toast.error('Erro ao enviar email de recuperação.');
+        ToastManager.error('Erro ao enviar email de recuperação.');
       }
     } catch (error) {
-      toast.error('Erro ao enviar email de recuperação.');
+      ToastManager.error('Erro ao enviar email de recuperação.');
     }
   };
 
@@ -109,7 +109,7 @@ function Login() {
           </div>
         </>
       )}
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import "../styles/RealizarPedidoManutencao.css";
@@ -24,7 +25,7 @@ const RealizarPedidoManutencao = () => {
         setRecursos(data);
       } catch (error) {
         console.error('Erro ao buscar recursos comuns:', error);
-        toast.error('Erro ao buscar recursos comuns.');
+        ToastManager.error('Erro ao buscar recursos comuns.');
       }
     };
 
@@ -39,7 +40,7 @@ const RealizarPedidoManutencao = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // importante se usares cookies httpOnly
+        credentials: 'include',
         body: JSON.stringify({ recurso_comum_id, desc_manutencao_recurso_comum }),
       });
 
@@ -51,12 +52,12 @@ const RealizarPedidoManutencao = () => {
         throw new Error(data.detail || 'Erro ao realizar pedido.');
       }
 
-      toast.success('Pedido de manutenção realizado com sucesso!');
+      ToastManager.success('Pedido de manutenção realizado com sucesso!');
       setRecursoId('');
       setDescricao('');
     } catch (error) {
       console.error('Erro ao realizar pedido de manutenção:', error);
-      toast.error(error.message || 'Erro inesperado.');
+      ToastManager.error(error.message || 'Erro inesperado.');
     }
   };
 
@@ -65,7 +66,7 @@ const RealizarPedidoManutencao = () => {
       <Navbar2 />
       <br></br>
       <br></br>
-      <ToastContainer />
+      <Toaster />
       <div className="home-container">
         <div className='fundoNovosRecursos'>
           <div className='textoEsquerda'>
@@ -73,27 +74,40 @@ const RealizarPedidoManutencao = () => {
             <br></br>
             <form onSubmit={handleSubmit}>
               <div>
-                <label>Id:</label><br></br>
+                <label>Recurso Comum:</label><br></br>
 
-                <Select value={recurso_comum_id} onChange={(e) => setRecursoId(e.target.value)} placeholder="Escolha um recurso"
-                options={recursos.map(recurso => ({
-                  value: recurso.RecComumID,
-                  label: recurso.Nome
-                }))}
-                required variant='geral'/>
+                <Select
+                  onChange={(selected) => setRecursoId(selected.value)}
+                  placeholder="Escolha um recurso"
+                  options={recursos.map(recurso => ({
+                    value: recurso.RecComumID,
+                    label: (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src={recurso.Path}
+                          alt={recurso.Nome}
+                          style={{
+                            width: 70,
+                            height: 70,
+                            borderRadius: "50%",
+                            marginRight: 15,
+                          }}
+                        />
+                        <span>{recurso.Nome}</span>
+                      </div>
+                    ),
+                  }))}
+                  required
+                  className="seletor-com-imagem"
+                />
 
 
-
-                
               </div>
 
               <div>
                 <label>Descrição:</label><br></br>
 
                 <Textarea value={desc_manutencao_recurso_comum} onChange={(e) => setDescricao(e.target.value)} placeholder="Escreve aqui..." rows={6} variant="desc" required/>
-
-
-
               </div>
               <Button className='btnNovoRecurso' type="submit" text={"Realizar pedido"}>Realizar pedido</Button>
             </form>
@@ -105,7 +119,7 @@ const RealizarPedidoManutencao = () => {
 
         </div>
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };
