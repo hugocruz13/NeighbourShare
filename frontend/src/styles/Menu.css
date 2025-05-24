@@ -12,15 +12,14 @@
 
 /* Cabeçalho do Dashboard */
 .dashboard-header {
-  margin-bottom: 2.5rem;
   text-align: center;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-right: 0; /* Removido margin-right que causava problemas */
-  max-width: 100%;
   box-sizing: border-box;
+  margin: 2rem auto; /* Removed margin-right and added shared margin */
+  max-width: 1000px; /* Consistent width */
 }
 
 .dashboard-header h1 {
@@ -162,7 +161,8 @@
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  max-width: 100%; /* Mudado de 97% para 100% */
+  max-width: 1000px;
+  margin: 2rem auto;;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -192,7 +192,7 @@
 .admin-card {
   background: white;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -201,8 +201,9 @@
   flex-direction: column;
   justify-content: space-between;
   min-width: 250px;
-  max-width: 300px;
+  max-width: 1000px;
   box-sizing: border-box;
+  margin: 2rem auto;
 }
 
 .admin-card:hover {
