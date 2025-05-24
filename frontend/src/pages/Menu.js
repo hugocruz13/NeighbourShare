@@ -54,14 +54,25 @@ function Residente() {
           <p className="welcome-text">Bem-vindo ao seu painel de gestão NeighbourShare</p>
         </div>
         
+        <br></br>
+        <h2 className="section-title">Gestão Pessoal</h2><br></br>
         <div className="dashboard-grid">
-          {/* Cards principais para todos os usuários */}
           <div className="dashboard-card" onClick={() => navigateTo('/perfil')}>
             <div className="card-icon user-icon"></div>
             <h3>Meu Perfil</h3>
             <Button variant="default" onClick={() => navigateTo('/perfil')}>Acessar</Button>
           </div>
-          
+
+          <div className="dashboard-card" onClick={() => navigateTo('/meusRecursos')}>
+            <div className="card-icon my-resources-icon"></div>
+            <h3>Meus Recursos</h3>
+            <Button variant="default" onClick={() => navigateTo('/meusRecursos')}>Ver</Button>
+          </div> 
+        </div>
+
+        <br></br>
+        <h2 className="section-title">Gestão Reservas</h2><br></br>
+        <div className="dashboard-grid">
           <div className="dashboard-card" onClick={() => navigateTo('/recursosDisponiveis')}>
             <div className="card-icon resources-icon"></div>
             <h3>Recursos Disponíveis</h3>
@@ -80,11 +91,17 @@ function Residente() {
             <Button variant="default" onClick={() => navigateTo('/listaPedidosReserva')}>Verificar</Button>
           </div>
 
-          <div className="dashboard-card" onClick={() => navigateTo('/meusRecursos')}>
-            <div className="card-icon my-resources-icon"></div>
-            <h3>Meus Recursos</h3>
-            <Button variant="default" onClick={() => navigateTo('/meusRecursos')}>Ver</Button>
-          </div>          <div className="dashboard-card" onClick={() => navigateTo('/votacoes')}>
+        </div>
+        <br></br>
+        <h2 className="section-title">Outros</h2><br></br>
+        <div className="dashboard-grid">
+          {/* Cards principais para todos os usuários */}
+          
+          
+          
+
+                   
+          <div className="dashboard-card" onClick={() => navigateTo('/votacoes')}>
             <div className="card-icon vote-icon"></div>
             <h3>Votações Ativas</h3>
             <Button variant="default" onClick={() => navigateTo('/votacoes')}>Participar</Button>

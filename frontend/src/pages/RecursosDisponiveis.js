@@ -32,7 +32,7 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-
+        console.log(data);
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data.detail === 'Nenhum recurso encontrado') {
@@ -66,8 +66,9 @@ const RecursosDisponiveis = () => {
                 <Link to={`/pedidosReserva/${product.RecursoID}`}>
                   <img src={product.Image} alt={product.name} style={{ width: '100%' }} />
                 </Link>
-                <h2>{product.Nome}</h2>
-                <h2>{product.DescRecurso}</h2>
+                <h2>Nome: {product.Nome}</h2>
+                <h2>Desc: {product.DescRecurso}</h2>
+                <h2>Dono: {product.Utilizador_.NomeUtilizador}</h2>
               </div>
             ))}
           </div>

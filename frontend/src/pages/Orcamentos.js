@@ -82,6 +82,7 @@ const Orcamentos = () => {
       });
       if (!res.ok) throw new Error('Erro ao buscar pedidos de manutenção');
       const data = await res.json();
+      console.log(data);
       console.log('Pedidos de Manutenção:', data);
       setPedidosManutencao(data);
     } catch (error) {
@@ -165,26 +166,38 @@ const Orcamentos = () => {
 
   const handleCreateVotacao = async () => {
     try {
+      const votacaoCorrigida = {
+        ...votacao,
+        id_processo: parseInt(votacao.id_processo),
+      };
+  
+      if (!votacaoCorrigida.id_processo || isNaN(votacaoCorrigida.id_processo)) {
+        ToastManager.error('ID do processo deve ser um número válido');
+        return;
+      }
+  
       const res = await fetch('http://localhost:8000/api/criarvotacao', {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(votacao),
+        body: JSON.stringify(votacaoCorrigida),
       });
-      console.log('Resposta da criação de votação:', res.text());
+  
+      console.log("Dados da votação:", votacaoCorrigida);
+  
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || 'Erro ao criar votação');
       }
-
+  
       ToastManager.success('Votação criada com sucesso!');
       setShowModal(false);
       setVotacao({
         titulo: '',
         descricao: '',
-        id_processo: 0,
+        id_processo: '',
         data_fim: '',
         tipo_votacao: '',
       });
@@ -192,6 +205,7 @@ const Orcamentos = () => {
       ToastManager.error('Erro ao criar votação: ' + error.message);
     }
   };
+  
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -240,14 +254,22 @@ const Orcamentos = () => {
               { name: 'titulo', label: 'Título', type: 'text' },
               { name: 'descricao', label: 'Descrição', type: 'text' },
               { name: 'tipo_votacao', label: 'Tipo Votação', type: 'select', options:[{value: 'Manutenção', label:'Manutenção'}, {value: 'Aquisição', label: 'Aquisição'}] },
-              { name: 'id_processo', label: 'Processo', type: 'select',
-                options:
-                   votacao.tipo_votacao === 'Aquisição'
+              { 
+                name: 'id_processo', 
+                label: 'Processo', 
+                type: 'select',
+                options: [
+                  { value: '', label: votacao.tipo_votacao ? `Selecione o processo de ${votacao.tipo_votacao.toLowerCase()}` : 'Selecione o processo' },
+                  ...(votacao.tipo_votacao === 'Aquisição'
                     ? pedidosAquisicao.map(p => ({ value: p.PedidoNovoRecID, label: p.PedidoNovoRecID + ' - ' + p.DescPedidoNovoRecurso }))
                     : votacao.tipo_votacao === 'Manutenção'
                       ? pedidosManutencao.map(p => ({ value: p.PMID, label: p.PMID + ' - ' + p.DescPedido }))
-                      : [] },
+                      : []
+                  )
+                ] 
+              },
               { name: 'data_fim', label: 'Data de Fim', type: 'date' }
+              
               
             ]}
             formData={modalType === 'orcamento' ? newOrcamento : votacao}

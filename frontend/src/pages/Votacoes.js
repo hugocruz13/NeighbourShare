@@ -74,6 +74,7 @@ const Votacoes = () => {
           id_votacao: votacaoAtual.ID
         })
       });
+
       if (!res.ok) throw new Error('Erro ao registrar voto.');
 
       ToastManager.success('Voto registrado com sucesso!');
