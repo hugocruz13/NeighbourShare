@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from db.session import get_db
 from pathlib import Path
 import db.repository.recurso_repo as recurso_repo
+from db.repository.recurso_repo import existe_recurso, update_recurso_db
 from sqlalchemy.orm import Session
 import db.session as session
 from fastapi import HTTPException, UploadFile
@@ -191,6 +192,26 @@ def checkar_estado_recurso():
     db:session = get_db()
     try:
         recurso_repo.atualizar_disponibilidade_recurso_db(db)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def update_service(db: session, recurso: UpdateRecursoSchema, imagem: UploadFile):
+    try:
+        if not await existe_recurso(db, recurso.Id):
+            raise HTTPException(status_code=404, detail="Recurso não existe.")
+
+        if await update_recurso_db(db, recurso):
+            if imagem is not None:
+                return await guardar_imagem_recurso(imagem, recurso.Id, db)
+            return True  # Atualização feita, mas sem imagem
+        else:
+            return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
     except HTTPException as e:
         raise e
     except Exception as e:
