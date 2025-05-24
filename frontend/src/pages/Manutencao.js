@@ -4,6 +4,7 @@ import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
+import Select from '../components/Select.jsx';
 
 const Manutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -13,35 +14,35 @@ const Manutencao = () => {
   const [newDate, setNewDate] = useState('');
 
   useEffect(() => {
-    const fetchPedidos = async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao/', {
-          method: 'GET',
-          credentials: 'include'
-        });
-        const data = await res.json();  
-        if (data && Array.isArray(data.pedidos)) {
-          // Se 'pedidos' for um array, atualize o estado
-          setPedidos(data.pedidos);
-          setMensagemErro(null);  // Limpar qualquer mensagem de erro anterior
-        } else if (data && data.detail) {
-          // Caso a resposta seja um objeto com a chave 'detail', trate como erro
-          setMensagemErro(data.detail);
-          setPedidos([]);  // Não há pedidos, então esvazia o array
-        } else {
-          // Caso não se encaixe em nenhum dos cenários, definir como erro genérico
-          setMensagemErro('Erro inesperado ao carregar os dados');
-          setPedidos([]);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar os dados:', error);
-        setMensagemErro('Falha ao carregar os dados');
+  const fetchPedidos = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/recursoscomuns/manutencao/', {
+        method: 'GET',
+        credentials: 'include'
+      });
+      const data = await res.json();  
+      console.log("Dados recebidos:", data);
+
+      if (Array.isArray(data)) {
+        setPedidos(data);
+        setMensagemErro(null);
+      } else if (data && data.detail) {
+        setMensagemErro(data.detail);
+        setPedidos([]);
+      } else {
+        setMensagemErro('Erro inesperado ao carregar os dados');
         setPedidos([]);
       }
-    };
+    } catch (error) {
+      console.error('Erro ao carregar os dados:', error);
+      setMensagemErro('Falha ao carregar os dados');
+      setPedidos([]);
+    }
+  };
 
-    fetchPedidos();
-  }, []);
+  fetchPedidos();
+}, []);
+
 
   useEffect(() => {
     const fetchStatusOptions = async () => {
@@ -117,25 +118,54 @@ const Manutencao = () => {
       ToastManager.error('Erro ao atualizar a data.');
     }
   };
-
   return (
     <div className="page-content">
       <Navbar2 />
-    
+
       <div className="home-container">
+      
           <Tabela
-            titulo="Manutenções"
+            titulo={"Manutenções"}
             colunas = {[
-              { accessorKey: 'NumManutencao', header: 'Nº Manutenção' },
-              { accessorKey: 'Descricao', header: 'Descrição' },
-              { 
-                accessorKey: 'DataManutencao', 
-                header: 'Data Manutenção',
-        },
-              { accessorKey: 'Estado', header: 'Estado' }
+              { accessorKey: 'ManutencaoID', header: 'Nº Manutenção' },
+              { accessorKey: 'DescManutencao', header: 'Descrição' },
+              { accessorKey: 'DataManutencao', header: 'Data Manutenção'},
+              { accessorKey: 'EstadoManuID', 
+                header: 'Estado',
+                cell: ({ row }) => {
+                  const pedido = row.original
+                  return (
+                    <Select
+                      value={
+                        statusOptions.find(opt =>opt.EstadoManuID === pedido.EstadoManuID) && {
+                          value: pedido.EstadoManuID,
+                          label: statusOptions.find(opt => opt.EstadoManuID === pedido.EstadoManuID)?.DescEstadoManutencao
+                        }
+                      }
+                      onChange={(selectedOption) =>
+                        handleStatusChange(pedido.ManutencaoID, selectedOption.target.value)
+                      }
+                      options={statusOptions.map(opt => ({
+                        value: opt.EstadoManuID,
+                        label: opt.DescEstadoManutencao
+                      }))}
+                      isDisabled={pedido.EstadoManuID === 2}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: base => ({ ...base, zIndex: 9999}),
+                        menu: base => ({ ...base, zIndex: 9999}),
+                      }}
+                    />
+                  );
+                } }
             ]}
             dados={pedidos}
+            
           />
+
+
+
+
         </div>
         <Toaster />
       </div>
