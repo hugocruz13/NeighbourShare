@@ -79,6 +79,34 @@ async def listar_recurso( recurso_id: int, token: UserJWT = Depends(role_require
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+##Update a info de um recurso
+@router.put("/update")
+async def update_recurso(
+    id: int = Form(...),
+    nome: Optional[str] = Form(None),
+    descricao: Optional[str] = Form(None),
+    caucao: Optional[decimal.Decimal] = Form(None),
+    disponivel: Optional[str] = Form(None),
+    categoria: Optional[str] = Form(None),
+    foto: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db),
+    user: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+):
+    try:
+        cat = await get_categoria_id_service(db, categoria) if categoria is not None else None
+        disp = await get_disponibilidade_id_service(db, disponivel) if disponivel is not None else None
+        recurso = UpdateRecursoSchema(Id=id, Nome=nome, DescRecurso=descricao, Caucao=caucao, Cat=cat, Disp=disp)
+
+        if await update_service(db, recurso, foto):
+            return {"message": "Dados atualizados com sucesso."}
+        else:
+            return {"message": "Erro ao atualizar os dados."}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.delete("/{recurso_id}")
 async def delete_recurso(recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
     try:
