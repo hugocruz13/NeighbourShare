@@ -13,6 +13,7 @@
   box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
   outline-offset: 4px;
   outline-color: transparent;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .button:hover {
@@ -62,6 +63,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .button-green:hover {
@@ -88,6 +90,7 @@
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
   transition: background 0.2s;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .button-red:hover {
@@ -118,6 +121,7 @@
   margin-bottom: 10%;
   margin-top: 10%;
   box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+  font-family: 'Open Sans', sans-serif;
 }
 
 .button-login:hover {
@@ -149,6 +153,7 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   user-select: none;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .button-editar-tabela {

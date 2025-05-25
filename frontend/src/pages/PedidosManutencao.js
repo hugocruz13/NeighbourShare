@@ -179,10 +179,8 @@ const PedidosManutencao = () => {
                         value: pedido.EstadoPedManuID,
                         label: statusOptions.find(opt => opt.EstadoPedManuID === pedido.EstadoPedManuID)?.DescEstadoPedidoManutencao
                       }}
-                      onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.value)}
-                      options={statusOptions
-                        .filter(opt => opt.EstadoPedManuID !== 5)
-                        .map(opt => ({
+                      onChange={(selectedOption) => handleStatusChange(pedido.PMID, selectedOption.target.value)}
+                      options={statusOptions.map(opt => ({
                           value: opt.EstadoPedManuID,
                           label: opt.DescEstadoPedidoManutencao
                         }))

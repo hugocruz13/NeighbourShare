@@ -245,6 +245,7 @@ const Orcamentos = () => {
     const url = `http://localhost:8000/${caminho.replace(/\\/g, '/')}`;
     window.open(url, '_blank');
   };
+  
 
   return (
     <div className="page-container">

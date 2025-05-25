@@ -193,7 +193,6 @@
 .notificationList {
   max-height: 300px;
   overflow-y: auto;
-  margin-left: 0.5rem;
 }
 
 .notificationItem {
@@ -241,7 +240,6 @@
 .dropdownMenu {
     position: absolute;
     top: 60px;
-    right: 0;
     background-color: white;
     color: black;
     border: 1px solid #ccc;
@@ -252,8 +250,7 @@
 
 .dropdownItem {
     padding: 10px;
-    margin-left: 10px;
-    margin-right: 20px;
+    width: 75px;
     text-decoration: none;
     color: black;
     display: block;
