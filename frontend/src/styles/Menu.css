@@ -4,7 +4,6 @@
 .dashboard-container {
   background: linear-gradient(135deg, #f2f1ee 0%, #e9f5fa 100%);
   min-height: calc(100vh - 60px); /* Ajustar para a altura da navbar */
-  padding: 2rem;
   width: 100%;
 }
 
@@ -16,7 +15,8 @@
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-right: 4rem;
+  margin-right:2rem;
+  margin-left: 2rem;
 }
 
 .dashboard-header h1 {
@@ -41,10 +41,12 @@
 /* Grid de Cards */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, max-content));
+  justify-content: center;
   gap: 2rem;
   margin-bottom: 2rem;
-  margin-right: 4rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   background-color: white;
   padding: 2rem;
   border-radius: 10px;
@@ -147,6 +149,8 @@
 /* Seção de Gestão */
 .management-section {
   margin-top: 3rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
@@ -164,7 +168,8 @@
 /* Grid para cartões de administração */
 .admin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
   gap: 1rem;
 }
 

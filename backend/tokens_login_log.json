@@ -82,5 +82,17 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJyZXNpZGVudGVAZW1haWwuY29tIiwicm9sZSI6InJlc2lkZW50ZSIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgwOTU3MDF9.2Ak54ms6ErGW44ifjOrzbNIYbBeCVuDWmPEdFF3K0Ug",
         "role": "residente",
         "timestamp": 1748093901.2620146
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxMTk2Mzl9.zuzjvnyhyjtCAr4pISEXfmnwpXJrgaMgi3wsLjf7B3A",
+        "role": "gestor",
+        "timestamp": 1748117839.4291193
+    },
+    {
+        "user_id": 2,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJnZXN0b3JAZW1haWwuY29tIiwicm9sZSI6Imdlc3RvciIsInR5cGUiOiJhY2Nlc3MiLCJleHAiOjE3NDgxOTQ0NTJ9.bhR5Tv0E3-jZ5uq7WyFe92KI9FzAki9ZF9Y-inQ_NG4",
+        "role": "gestor",
+        "timestamp": 1748192652.2079647
     }
 ]
