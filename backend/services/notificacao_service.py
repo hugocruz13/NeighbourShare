@@ -503,7 +503,7 @@ async def cria_notificacao_nao_caucao_devolucao_pedido_reserva(db:Session, reser
             TipoProcessoID= await get_tipo_processo_id(db, TipoProcessoOpcoes.RESERVA)
         )
 
-        return await cria_notificacao_individual_db(db, notificacao, reserva.PedidoReserva_.Recurso_.Utilizador_.UtilizadorID)
+        return await cria_notificacao_individual_db(db, notificacao, reserva.PedidoReserva_.UtilizadorID)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

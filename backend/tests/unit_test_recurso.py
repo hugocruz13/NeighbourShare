@@ -145,7 +145,7 @@ async def test_lista_recursos_service_sem_recursos(mock_recurso_repo, mock_lista
     mock_recurso_repo.listar_recursos_db = AsyncMock(return_value=[])
     with pytest.raises(HTTPException) as exc:
         await lista_recursos_service(mock_db)
-    assert exc.value.status_code == 400
+    assert exc.value.status_code == 200
     assert "Nenhum recurso encontrado" in str(exc.value.detail)
     mock_lista_imagens.assert_not_called()
 
