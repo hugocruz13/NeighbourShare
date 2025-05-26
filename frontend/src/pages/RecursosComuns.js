@@ -6,7 +6,6 @@ import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
 import Button from '../components/Button.jsx';
 import ModalForm from '../components/ModalForm.jsx';
-import Modal from '../components/ModalForm.jsx';
 
 const MeusRecursos = () => {
   const [recurso, setUsers] = useState([]);
@@ -38,8 +37,8 @@ const MeusRecursos = () => {
 
     fetchUsers();
   }, []);
-
-  const handleAddResource = async () => {
+  const handleAddResource = async (e) => {
+    e.preventDefault(); // Prevenir o comportamento padrão do formulário
 
     const formData = new FormData();
     formData.append('nome_recurso', newResource.nome_recurso);
@@ -60,18 +59,35 @@ const MeusRecursos = () => {
       toast.success('Recurso adicionado com sucesso!');
       setShowModal(false);
 
+      // Limpar campos após envio
       setNewResource({ 
         nome_recurso: '', 
         descricao_recurso: '', 
         imagem: null,
-      }); // Limpar campos após envio
+      });
+
+      // Recarregar a lista de recursos
+      const refreshRes = await fetch('http://localhost:8000/api/recursoscomuns', {
+        credentials: 'include',
+      });
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        setUsers(refreshData);
+      }
     } catch (error) {
       toast.error('Erro ao adicionar recurso: ' + error.message);
     }
   };
-
   const handleFileChange = (e) => {
     setNewResource({ ...newResource, imagem: e.target.files[0] });
+  };
+
+  const handleInputChange = (e) => {
+    if (e.target.type === 'file') {
+      handleFileChange(e);
+    } else {
+      setNewResource({ ...newResource, [e.target.name]: e.target.value });
+    }
   };
 
 
@@ -80,19 +96,18 @@ const MeusRecursos = () => {
       <Navbar2 />
       <div className="home-container">
           {/* Botão para abrir o modal de adicionar recurso */} 
-          {/* Modal de Adicionar Recurso */}
-          <ModalForm
+          {/* Modal de Adicionar Recurso */}          <ModalForm
             show={showModal}
-            onClose={() => setShowModal(false)}
+            onclose={() => setShowModal(false)}
             onSubmit={handleAddResource}
             title="Adicionar Recurso Comum"
             fields={[
               { name: 'nome_recurso', label: 'Nome do Recurso', type: 'text', required: true },
               { name: 'descricao_recurso', label: 'Descrição', type: 'textarea', required: true },
-              { name: 'imagem', label: 'Imagem', type: 'file', required: true },
+              { name: 'imagem', label: 'Imagem', type: 'image', required: true },
             ]}
             formData={newResource}
-            onChange={(e) => setNewResource({ ...newResource, [e.target.name]: e.target.value })}
+            onChange={handleInputChange}
             textBotao="Adicionar"
           />
           <Tabela

@@ -41,6 +41,15 @@
                         className={styles.select}
                         required={field.required}
                         {...field.props}
+                      />                      ) : field.type === 'image' ? (
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type="file"
+                        onChange={onChange}
+                        accept="image/*"
+                        required={field.required}
+                        variant="modal"
                       />
                     ) : field.type === 'file' ? (
                       <Input
@@ -48,8 +57,8 @@
                         name={field.name}
                         type="file"
                         onChange={onChange}
-                        className={styles.inputContainer}
                         accept="application/pdf"
+                        variant="modal"
                       />
                     ) : (
                       <Input
