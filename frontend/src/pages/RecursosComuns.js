@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.jsx";
@@ -56,7 +57,7 @@ const MeusRecursos = () => {
 
       if (!res.ok) throw new Error('Erro ao adicionar recurso');
 
-      toast.success('Recurso adicionado com sucesso!');
+      ToastManager.success('Recurso adicionado com sucesso!');
       setShowModal(false);
 
       // Limpar campos após envio
@@ -75,7 +76,7 @@ const MeusRecursos = () => {
         setUsers(refreshData);
       }
     } catch (error) {
-      toast.error('Erro ao adicionar recurso: ' + error.message);
+      ToastManager.error('Erro ao adicionar recurso: ' + error.message);
     }
   };
   const handleFileChange = (e) => {
@@ -96,7 +97,8 @@ const MeusRecursos = () => {
       <Navbar2 />
       <div className="home-container">
           {/* Botão para abrir o modal de adicionar recurso */} 
-          {/* Modal de Adicionar Recurso */}          <ModalForm
+          {/* Modal de Adicionar Recurso */}          
+          <ModalForm
             show={showModal}
             onclose={() => setShowModal(false)}
             onSubmit={handleAddResource}
@@ -142,7 +144,7 @@ const MeusRecursos = () => {
             }))}
           />
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
   
