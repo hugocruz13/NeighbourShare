@@ -79,7 +79,7 @@ return (
           <h2>Nome: {product.Nome}</h2>
           <h2>Categoria: {product.Categoria_.DescCategoria}</h2>
           <h2>Caução: {product.Caucao}€</h2>
-          <h2>Dono: {product.Utilizador_.NomeUtilizador}</h2>
+          <h2>Proprietário: {product.Utilizador_.NomeUtilizador}</h2>
         </div>
 
         <label className="reservar-label">

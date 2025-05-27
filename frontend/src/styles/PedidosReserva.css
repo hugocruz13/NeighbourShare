@@ -74,15 +74,7 @@
 .reservar-buttons button {
   padding: 0.8rem 1.6rem;
   border-radius: 12px;
-  background-color: #cbd5e1;
-  color: #111827;
-  border: none;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.reservar-buttons button:hover {
-  background-color: #94a3b8;
 }
