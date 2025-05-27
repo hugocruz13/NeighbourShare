@@ -70,12 +70,8 @@ return (
   <>
   <Navbar2 />
   <div className="reservar-page">
-    
-    <div className="reservar-container">
-      
       <div className="reservar-left">
         <img src={product.Image} alt={product.name} />
-      </div>
     </div>
 
       <div className="reservar-right">

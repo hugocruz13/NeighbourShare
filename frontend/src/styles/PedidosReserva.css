@@ -1,58 +1,88 @@
+/* PedidosReserva.css */
+
 .reservar-page {
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: linear-gradient(to top, #b3e0f2, #ffffff);
-  min-height: 100vh;
-  padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.reservar-container {
-  display: flex;
-  width: 75%;
-  max-width: 100%;
-  background-color: #fefefe;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  align-items: stretch;
+  padding: 2rem 2rem 0rem 2rem; 
+  gap: 2rem;
+  height: 100vh;
   overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to top, #b3e0f2, #ffffff);
 }
 
 .reservar-left {
   flex: 2;
-  background-color: #f4f4f4;
+  max-height: 570px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  background-color: white;
 }
 
 .reservar-left img {
-  width: 50%;
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  border-radius: 8px;
+  display: block;
 }
 
 .reservar-right {
   flex: 1;
-  padding: 2rem;
+  background-color: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 550px;
+  justify-content: center;
+  max-height: 520px;
 }
 
 .reservar-details h2 {
-  font-size: 1.2rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  margin: 0.5rem 0;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 0.5rem;
 }
 
 .reservar-label {
-  font-weight: 500;
-  font-size: 0.95rem;
   display: flex;
   flex-direction: column;
+  font-size: 0.95rem;
+  color: #555;
+  font-weight: 500;
 }
 
+.reservar-label input {
+  margin-top: 0.4rem;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
 
+.reservar-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
 
+.reservar-buttons button {
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  background-color: #cbd5e1;
+  color: #111827;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reservar-buttons button:hover {
+  background-color: #94a3b8;
+}
