@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { data, useNavigate } from 'react-router-dom';
-import Navbar2 from "../components/Navbar2.jsx";
-import "../styles/Perfil.css";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Navbar2 from "../components/Navbar2.jsx";
 import Input from '../components/Input.jsx';
+import "../styles/Perfil.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);

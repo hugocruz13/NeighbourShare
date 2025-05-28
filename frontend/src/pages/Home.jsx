@@ -1,5 +1,5 @@
-import Navbar from "../components/Navbar.jsx";
 import { Img_Right, Img_Left } from "../components/Images.jsx";
+import Navbar from "../components/Navbar.jsx";
 import Funcionalidades from "../components/Funcionalidades.jsx";
 import Contactos from "../components/Contactos.jsx";
 import "../styles/Home.css";

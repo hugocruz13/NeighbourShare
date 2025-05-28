@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { FaTrash, FaPen } from 'react-icons/fa';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
-import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.jsx";
 import Button from '../components/Button.jsx';
 import Tabela from '../components/Tabela.jsx'; // importando tabela
-import { FaTrash, FaPen, FaCheck, FaTimes } from 'react-icons/fa';
 import ModalForm from '../components/ModalForm.jsx';
+import 'react-toastify/dist/ReactToastify.css';
+import "../styles/MeusRecursos.css";
 
 const MeusRecursos = () => {
   const [recursos, setRecursos] = useState([]);

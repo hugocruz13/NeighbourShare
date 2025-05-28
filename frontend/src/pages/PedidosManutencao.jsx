@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
 import ModalForm from '../components/ModalForm.jsx';
-import Modal from '../components/ModalForm.jsx';
 import Select from '../components/Select.jsx';
 import "../styles/PedidosManutencao.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);

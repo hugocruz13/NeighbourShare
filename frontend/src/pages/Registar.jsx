@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import "../styles/Registar.css";
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
 import Navbar2 from "../components/Navbar2.jsx";
 import Button from '../components/Button.jsx';
+import 'react-toastify/dist/ReactToastify.css';
+import "../styles/Registar.css";
 
 const Registar = () => {
   const [email, setEmail] = useState('');

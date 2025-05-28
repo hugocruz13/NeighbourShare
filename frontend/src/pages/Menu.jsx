@@ -1,9 +1,9 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigate } from 'react-router-dom';
-import "../styles/Menu.css";
+import { useState, useEffect } from "react";
 import Navbar2 from "../components/Navbar2.jsx";
 import Button from "../components/Button.jsx";
-import { useState, useEffect } from "react";
+import "../styles/Menu.css";
 
 function Residente() {
   const { user } = useAuth();

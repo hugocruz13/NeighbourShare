@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import "../styles/Notificacoes.css";
+import { useState, useEffect } from "react";
 import Navbar2 from "../components/Navbar2.jsx";
+import "../styles/Notificacoes.css";
 
 function Notificacoes() {
   const [notificacoes, setNotificacoes] = useState([]);
