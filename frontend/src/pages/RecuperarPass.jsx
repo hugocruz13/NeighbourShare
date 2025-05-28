@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import Navbar from "../components/Navbar.jsx";
@@ -37,7 +38,7 @@ function RecuperarPass() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Senha alterada com sucesso!');
+        ToastManager.success('Senha alterada com sucesso!');
         setPassword("");
 
         // Aguarda 2 segundos para mostrar o toast e depois redireciona
@@ -46,11 +47,11 @@ function RecuperarPass() {
         }, 2000);
       } else {
         setError(data.detail);
-        toast.error('Erro ao alterar senha.');
+        ToastManager.error('Erro ao alterar senha.');
       }
     } catch (error) {
       setError("Erro");
-      toast.error('Erro ao alterar senha.');
+      ToastManager.error('Erro ao alterar senha.');
     }
   };
 
@@ -69,7 +70,7 @@ function RecuperarPass() {
           <p className="erro">{error && error}</p>
         </div>
       </form>
-      <ToastContainer />
+      <Toaster />
     </div>
     </div>
 

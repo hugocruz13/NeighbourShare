@@ -51,7 +51,7 @@ function Notificacoes() {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="notificacoes-container">
         <div className="notificacoes-lista">
@@ -79,7 +79,7 @@ function Notificacoes() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

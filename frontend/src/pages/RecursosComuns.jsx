@@ -124,8 +124,7 @@ const MeusRecursos = () => {
   const handleSaveEdit = async (recurso_comum_id) => {
     if (
       !editData.NomeRecurso?.trim() || 
-      !editData.Descricao?.trim() || 
-      (editData.imagem === null || editData.imagem === undefined)
+      !editData.Descricao?.trim()
     ) {
       ToastManager.error('Todos os campos são obrigatórios!');
       return;
@@ -133,7 +132,10 @@ const MeusRecursos = () => {
       const formData = new FormData();
       formData.append('nome_recurso', editData.NomeRecurso);
       formData.append('descricao_recurso', editData.Descricao);
-      formData.append('imagem', editData.imagem);
+      if (editData.imagem)
+      {
+        formData.append('imagem', editData.imagem);
+      }
     try {
       const res = await fetch(`http://localhost:8000/api/recursoscomuns/update/${recurso_comum_id}`, {
         method: 'PUT',
@@ -188,7 +190,7 @@ const MeusRecursos = () => {
 
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
           {/* Botão para abrir o modal de adicionar recurso */} 
@@ -328,7 +330,7 @@ const MeusRecursos = () => {
 
       </div>
       <Toaster />
-    </div>
+    </>
   );
   
 };

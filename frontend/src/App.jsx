@@ -22,7 +22,6 @@ import Votacoes from "./pages/Votacoes.jsx";
 import RecuperarPass from "./pages/RecuperarPass.jsx";
 import EntidadeExterna from "./pages/EntidadeExterna.jsx";
 import RecursosComuns from "./pages/RecursosComuns.jsx";
-import "./App.css";
 
 function App() {
   return (

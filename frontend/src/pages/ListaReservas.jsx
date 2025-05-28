@@ -152,7 +152,7 @@ const MeusPedidosReserva = () => {
    };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
           <Tabela
@@ -274,7 +274,7 @@ const MeusPedidosReserva = () => {
         />
       </div>
       <Toaster position="top-center" />
-    </div>
+    </>
   );
 };
 

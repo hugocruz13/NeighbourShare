@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Button from "./Button";
 import styles from "./Navbar.module.css";

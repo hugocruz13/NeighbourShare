@@ -30,7 +30,7 @@ const RealizarPedidoNovoRecurso = () => {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <br></br>
       <br></br>
@@ -53,7 +53,7 @@ const RealizarPedidoNovoRecurso = () => {
         </div>
       </div>
       <Toaster />
-    </div>
+    </>
   );
 };
 

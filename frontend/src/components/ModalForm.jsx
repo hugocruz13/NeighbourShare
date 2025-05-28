@@ -4,7 +4,6 @@
   import Input from '../components/Input.jsx';
   import Select from '../components/Select.jsx';  // Select custom
   import Button from './Button.jsx';
-  import ModalForm from '../components/ModalForm.jsx';
 
   const Modal = ({ show, onclose, title, fields = [], formData, onChange, onSubmit, textBotao }) => {
     return (

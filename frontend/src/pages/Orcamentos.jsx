@@ -242,7 +242,7 @@ const Orcamentos = () => {
   
 
   return (
-    <div className="page-container">
+    <>
       <Navbar2 />
       <div className="home-container">
           <ModalForm
@@ -323,7 +323,7 @@ const Orcamentos = () => {
       </div>
 
       <Toaster />
-    </div>
+    </>
   );
 };
 

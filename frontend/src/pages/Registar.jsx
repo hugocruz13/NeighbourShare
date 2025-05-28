@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
 import Navbar2 from "../components/Navbar2.jsx";
@@ -34,11 +35,11 @@ const Registar = () => {
         throw new Error(errorData.detail || 'Erro ao registrar utilizador');
       }
 
-      toast.success('Utilizador registrado com sucesso!');
+      ToastManager.success('Utilizador registrado com sucesso!');
       setEmail('');
       setRole('');
     } catch (error) {
-      toast.error('Erro ao registrar utilizador: ' + error.message);
+      ToastManager.error('Erro ao registrar utilizador: ' + error.message);
     }
   };  return (
     <div className="registar-container">
@@ -74,7 +75,7 @@ const Registar = () => {
           <img className="registar-imagem" src="img/new.jpg" alt="Imagem" />
         </div>
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
 
         

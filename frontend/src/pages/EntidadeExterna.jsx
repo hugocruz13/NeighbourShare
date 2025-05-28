@@ -142,7 +142,7 @@ const EntidadesExternas = () => {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
           <Tabela
@@ -283,7 +283,7 @@ const EntidadesExternas = () => {
             textBotao={'Adicionar Entidade Externa'}
           />       
         <Toaster />
-      </div>
+    </>
   );
 };
 

@@ -1,5 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes popIcon {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.dashboard-card,
+.admin-card {
+  opacity: 0;
+  animation: fadeSlideUp 0.8s ease forwards;
+  animation-delay: 0.3s;
+}
+.dashboard-card:hover,
+.admin-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-card:nth-child(1) { animation-delay: 0.2s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.4s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.6s; }
+
 /* Container principal */
 .dashboard-container {
   background: linear-gradient(135deg, #f2f1ee 0%, #e9f5fa 100%);
@@ -20,6 +77,8 @@
   box-sizing: border-box;
   margin: 2rem auto; /* Removed margin-right and added shared margin */
   max-width: 90%; /* Consistent width */
+  opacity: 0;
+  animation: fadeScaleIn 1s ease forwards;
 }
 
 .dashboard-header h1 {
@@ -107,6 +166,9 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 30px;
+  opacity: 0;
+  animation: popIcon 0.7s ease forwards;
+  animation-delay: 0.5s;
 }
 
 .user-icon {

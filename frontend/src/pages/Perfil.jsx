@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import ToastManager from '../components/ToastManager.jsx';
 import Navbar2 from "../components/Navbar2.jsx";
 import Input from '../components/Input.jsx';
 import "../styles/Perfil.css";
@@ -89,15 +90,15 @@ const updatedUser = {
       setUser(updatedUser);
       setEditingField(null);
 
-      toast.success('Campo atualizado com sucesso!');
+      ToastManager.success('Campo atualizado com sucesso!');
     } catch (error) {
       console.error('Erro:', error);
-      toast.error('Não foi possível atualizar o campo.');
+      ToastManager.error('Não foi possível atualizar o campo.');
     }
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
         <div className='fundoPerfil'>
@@ -155,8 +156,8 @@ const updatedUser = {
           </>
         )}
       </div>
-      <ToastContainer />
-    </div>
+      <Toaster />
+    </>
   );
 };
 

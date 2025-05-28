@@ -53,7 +53,7 @@ const RecursosDisponiveis = () => {
   const filteredProducts = products.filter(product => product.Utilizador_.UtilizadorID !== userId && product.Disponibilidade_.DispID === 1);
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className='home-container'>
         <div className='fundoRecursos'>
@@ -72,7 +72,7 @@ const RecursosDisponiveis = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

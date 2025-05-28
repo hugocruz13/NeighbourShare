@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { FaTrash, FaPen } from 'react-icons/fa';
+import { FaTrash, FaPen, FaCheck, FaTimes  } from 'react-icons/fa';
 import ToastManager from '../components/ToastManager.jsx';
 import Navbar2 from "../components/Navbar2.jsx";
 import Button from '../components/Button.jsx';
-import Tabela from '../components/Tabela.jsx'; // importando tabela
+import Tabela from '../components/Tabela.jsx';
 import ModalForm from '../components/ModalForm.jsx';
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
@@ -167,18 +167,12 @@ const handleEditClick = (recurso) => {
     }
   };
 
-
-
-
   const handleSaveEdit = async (recurso_comum_id) => {
     console.log('handleSaveEdit:', editData);
     if (
       !editData.Nome ||
       !editData.Descricao ||
-      !editData.Caucao ||
-      !editData.DescCategoria ||
-      !editData.DescDisponibilidade ||
-      !editData.imagem
+      !editData.Caucao
     ) {
       ToastManager.error('Todos os campos são obrigatórios!');
       return;
@@ -188,9 +182,16 @@ const handleEditClick = (recurso) => {
       formData.append('nome', editData.Nome);
       formData.append('descricao', editData.Descricao);
       formData.append('caucao', editData.Caucao);
-      formData.append('categoria', editData.DescCategoria || '');
-      formData.append('disponivel', editData.DescDisponibilidade || '');
-      formData.append('foto', editData.imagem);
+      if (editData.DescCategoria) {
+        formData.append('categoria', editData.DescCategoria || '');
+      }
+      if (editData.DescDisponibilidade) {
+        formData.append('disponivel', editData.DescDisponibilidade || '');
+      }
+      if (editData.imagem)
+      {
+        formData.append('foto', editData.imagem);
+      }
     try {
       const res = await fetch(`http://localhost:8000/api/recursos/update/`, {
         method: 'PUT',
@@ -391,7 +392,7 @@ const handleEditClick = (recurso) => {
     ];
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
 
@@ -434,7 +435,7 @@ const handleEditClick = (recurso) => {
 
       </div>
       <Toaster />
-    </div>
+    </>
   );
 };
 

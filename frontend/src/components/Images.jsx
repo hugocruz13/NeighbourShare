@@ -1,6 +1,5 @@
 import styles from "./Images.module.css";
 import Button from "../components/Button.jsx";
-import { Link } from "react-router-dom";
 
 function Img_Right({ path, alt, titulo, frase }) {
   return (

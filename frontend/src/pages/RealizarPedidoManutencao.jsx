@@ -59,7 +59,7 @@ const RealizarPedidoManutencao = () => {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <br></br>
       <br></br>
@@ -117,7 +117,7 @@ const RealizarPedidoManutencao = () => {
         </div>
       </div>
       <Toaster />
-    </div>
+    </>
   );
 };
 

@@ -198,7 +198,7 @@ const Votacoes = () => {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
         {renderTabela('Votações Pedidos Manutenção', votacoes.lista_votacao_pedido_manutencao, 'manutencao')}
@@ -207,7 +207,7 @@ const Votacoes = () => {
         {renderModal()}
       </div>
       <Toaster />
-    </div>
+    </>
   );
 };
 

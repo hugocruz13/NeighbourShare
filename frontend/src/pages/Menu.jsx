@@ -45,7 +45,7 @@ function Residente() {
   };
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="dashboard-container">
         <div className="dashboard-header">
@@ -160,7 +160,7 @@ function Residente() {
         )}
 
       </div>
-    </div>
+    </>
   );
 }
 

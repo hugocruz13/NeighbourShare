@@ -93,7 +93,7 @@ const PedidosAquisicao = () => {
 
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
           <Tabela
@@ -136,7 +136,7 @@ const PedidosAquisicao = () => {
             textBotao={'Criar Votação'}
           />
       <Toaster />
-    </div>
+    </>
   );
 };
 

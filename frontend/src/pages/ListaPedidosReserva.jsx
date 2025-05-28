@@ -110,7 +110,6 @@ const ReservarRecurso = ({ match }) => {
   return (
     <>
     <Toaster position="top-center" />
-    <div className="page-content">
       <Navbar2 />
       <div className="home-container">
           <Tabela
@@ -177,7 +176,6 @@ const ReservarRecurso = ({ match }) => {
         }}
         textBotao={'Recusar Pedido'}
       />  
-    </div>
     </>
   );
 };

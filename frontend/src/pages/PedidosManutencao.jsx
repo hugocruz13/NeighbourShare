@@ -138,7 +138,7 @@ const PedidosManutencao = () => {
   }
 
   return (
-    <div className="page-content">
+    <>
       <Navbar2 />
       <div className="home-container">
   
@@ -198,7 +198,7 @@ const PedidosManutencao = () => {
           />
       </div>
       <Toaster />
-    </div>
+    </>
   );
   
 };
