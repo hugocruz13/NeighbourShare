@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { FaTrash, FaPen } from 'react-icons/fa';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
-import "../styles/MeusRecursos.css";
 import Navbar2 from "../components/Navbar2.jsx";
 import Button from '../components/Button.jsx';
 import Tabela from '../components/Tabela.jsx'; // importando tabela
-import { FaTrash, FaPen, FaCheck, FaTimes } from 'react-icons/fa';
 import ModalForm from '../components/ModalForm.jsx';
 import Input from '../components/Input.jsx';
 import Select from '../components/Select.jsx';
+import 'react-toastify/dist/ReactToastify.css';
+import "../styles/MeusRecursos.css";
 
 const MeusRecursos = () => {
   const [recursos, setRecursos] = useState([]);
@@ -37,7 +37,6 @@ const MeusRecursos = () => {
 
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
-        console.log(data);
         setRecursos(data);
       } catch (error) {
         setErro(error.message);
@@ -90,7 +89,6 @@ const MeusRecursos = () => {
         credentials: 'include',
       });
 
-      console.log(res.text());
       if (!res.ok) throw new Error('Erro ao adicionar recurso');
 
       ToastManager.success('Recurso adicionado com sucesso!');

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { FaTrash, FaPen, FaCheck, FaTimes } from 'react-icons/fa';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from '../components/Tabela.jsx';
 import ModalForm from '../components/ModalForm.jsx'; 
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
-import { FaTrash, FaPen, FaCheck, FaTimes } from 'react-icons/fa';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EntidadesExternas = () => {
   const [entidades, setEntidades] = useState([]);
@@ -31,7 +31,6 @@ const EntidadesExternas = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setEntidades(data);
       } catch (error) {
         console.error('Erro ao buscar entidades externas:', error);

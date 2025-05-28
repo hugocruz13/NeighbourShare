@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Navbar2 from "../components/Navbar2.jsx";
-import 'react-toastify/dist/ReactToastify.css';
-import Tabela from '../components/Tabela.jsx';
+import { useState, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { IoMdCloseCircle } from "react-icons/io";
 import { FaCheck } from 'react-icons/fa';
+import Navbar2 from "../components/Navbar2.jsx";
+import Tabela from '../components/Tabela.jsx';
 import Button from '../components/Button.jsx';
 import ModalForm from '../components/ModalForm.jsx';
 import ToastManager from '../components/ToastManager';
-import { Toaster } from 'react-hot-toast';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ReservarRecurso = ({ match }) => {
   const [comoSolicitante, setComoSolicitante] = useState([]); // data[1]
@@ -25,7 +25,6 @@ const ReservarRecurso = ({ match }) => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setComoDono(data[0]);         // Dono → pedidos recebidos
         setComoSolicitante(data[1]);  // Solicitante → pedidos que fez
       } catch (error) {

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela";
 import ModalForm from "../components/ModalForm.jsx";
 import Button from "../components/Button.jsx";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Votacoes = () => {
   const [votacoes, setVotacoes] = useState({
@@ -28,7 +28,6 @@ const Votacoes = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setVotacoes(data);
       } catch (error) {
         console.error('Erro ao buscar votações:', error);
@@ -38,7 +37,6 @@ const Votacoes = () => {
   }, []);
 
   const abrirModal = async (votacao, tipo) => {
-    console.log("Abrindo modal para votação:", votacao);
     setVotacaoAtual(votacao);
     setModalAberto(tipo);
     setVotoSelecionado('');
@@ -58,7 +56,6 @@ const Votacoes = () => {
         
         const data = await res.json();
         setOrcamentos(data);
-        console.log("Orçamentos recebidos:", data);
       } catch (error) {
         console.error('Erro ao buscar orçamentos:', error);
       }

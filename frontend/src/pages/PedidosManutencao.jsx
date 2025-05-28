@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
 import ModalForm from '../components/ModalForm.jsx';
-import Modal from '../components/ModalForm.jsx';
 import Select from '../components/Select.jsx';
 import "../styles/PedidosManutencao.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -29,7 +28,6 @@ const PedidosManutencao = () => {
           credentials: 'include' 
         });
         const data = await res.json();
-        console.log(data);
         if (data && Array.isArray(data)) {
           // Se for um array, atualiza os pedidos
           setPedidos(data);
@@ -64,9 +62,7 @@ const PedidosManutencao = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setStatusOptions(data); // Assuming data is an array of status options
-        console.log("Resposta dos status:", data);
       } catch (error) {
         console.error('Erro ao buscar opções de estado:', error);
       }
@@ -112,7 +108,6 @@ const PedidosManutencao = () => {
     
   const handleJustificationSubmit = () => {
     // Aqui você pode adicionar a lógica para enviar a justificação ao servidor
-    console.log('Justificação:', justificacao);
     setShowJustificationModal(false);
     setJustificacao('');
   };

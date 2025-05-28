@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import "../styles/RecuperarPass.css";
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import Navbar from "../components/Navbar.jsx";
+import 'react-toastify/dist/ReactToastify.css';
+import "../styles/RecuperarPass.css";
 
 function RecuperarPass() {
   const [password, setPassword] = useState("");

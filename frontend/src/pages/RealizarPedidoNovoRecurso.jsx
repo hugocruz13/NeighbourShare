@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import "../styles/RealizarPedidoNovoRecurso.css";
-import Navbar2 from "../components/Navbar2.jsx";
+import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import Navbar2 from "../components/Navbar2.jsx";
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Textarea from '../components/Textarea.jsx';
 import Button from '../components/Button.jsx';
+import "../styles/RealizarPedidoNovoRecurso.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const RealizarPedidoNovoRecurso = () => {
   const [desc_pedido_novo_recurso, setDescricao] = useState('');

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import "../styles/Notificacoes.css";
+import { useState, useEffect } from "react";
 import Navbar2 from "../components/Navbar2.jsx";
+import "../styles/Notificacoes.css";
 
 function Notificacoes() {
   const [notificacoes, setNotificacoes] = useState([]);
@@ -14,7 +14,6 @@ function Notificacoes() {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setNotificacoes(data);
       } catch (error) {
         console.error('Erro ao buscar notificações:', error);

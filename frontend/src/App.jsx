@@ -1,27 +1,27 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext.js";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Registar from "./pages/Registar.jsx";
-import Menu from "./pages/Menu.js"
-import ProtectedRoute from "./components/ProtectedRoute";
-import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";
-import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.js";
-import PedidosReserva from "./pages/PedidosReserva.js";
-import Perfil from "./pages/Perfil.js";
+import Menu from "./pages/Menu.jsx"
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import RecursosDisponiveis from "./pages/RecursosDisponiveis.jsx";
+import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.jsx";
+import PedidosReserva from "./pages/PedidosReserva.jsx";
+import Perfil from "./pages/Perfil.jsx";
 import MeusRecursos from "./pages/MeusRecursos.jsx";
 import ListaPedidosReserva from "./pages/ListaPedidosReserva.jsx";
 import ListaReserva from "./pages/ListaReservas.jsx";
-import RealizarPedidoNovoRecurso from "./pages/RealizarPedidoNovoRecurso.js";
-import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.js";
-import PedidosManutencao from "./pages/PedidosManutencao.js";
-import Notificacoes from "./pages/Notificacoes.js";
-import Orcamentos from "./pages/Orcamentos.js";
+import RealizarPedidoNovoRecurso from "./pages/RealizarPedidoNovoRecurso.jsx";
+import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.jsx";
+import PedidosManutencao from "./pages/PedidosManutencao.jsx";
+import Notificacoes from "./pages/Notificacoes.jsx";
+import Orcamentos from "./pages/Orcamentos.jsx";
 import Manutencao from "./pages/Manutencao.jsx";
-import Votacoes from "./pages/Votacoes.js";
-import RecuperarPass from "./pages/RecuperarPass.js";
+import Votacoes from "./pages/Votacoes.jsx";
+import RecuperarPass from "./pages/RecuperarPass.jsx";
 import EntidadeExterna from "./pages/EntidadeExterna.jsx";
-import RecursosComuns from "./pages/RecursosComuns.js";
+import RecursosComuns from "./pages/RecursosComuns.jsx";
 import "./App.css";
 
 function App() {

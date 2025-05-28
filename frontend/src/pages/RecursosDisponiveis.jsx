@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import "../styles/RecursosDisponiveis.css";
+import { useState, useEffect } from 'react';
 import Navbar2 from "../components/Navbar2.jsx";
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "../styles/RecursosDisponiveis.css";
 
 const RecursosDisponiveis = () => {
   const [products, setProducts] = useState([]);
@@ -32,7 +31,6 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-        console.log(data);
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data.detail === 'Nenhum recurso encontrado') {

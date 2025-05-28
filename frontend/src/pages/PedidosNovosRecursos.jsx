@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
 import ModalForm from '../components/ModalForm.jsx';
-import Modal from '../components/ModalForm.jsx';
 import Button from '../components/Button.jsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PedidosAquisicao = () => {
   const [pedidos, setPedidos] = useState([]);

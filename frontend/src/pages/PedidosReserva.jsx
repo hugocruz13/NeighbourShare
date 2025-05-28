@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import "../styles/PedidosReserva.css";
+import { Toaster } from 'react-hot-toast';
 import Navbar2 from "../components/Navbar2.jsx";
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
-import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
+import "../styles/PedidosReserva.css";
 
 const ReservarRecurso = () => {
   const { id } = useParams();
@@ -22,7 +22,6 @@ const ReservarRecurso = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setProduct(data);
         setLoading(false);
       } catch (error) {

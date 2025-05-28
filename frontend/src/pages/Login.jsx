@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import "../styles/Login.css";
 import Button from "../components/Button.jsx";
 import Input from '../components/Input.jsx';
+import "../styles/Login.css";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
-import "../styles/RealizarPedidoManutencao.css";
 import Select from '../components/Select.jsx';
 import Textarea from '../components/Textarea.jsx';
 import Button from '../components/Button.jsx';
+import "../styles/RealizarPedidoManutencao.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const RealizarPedidoManutencao = () => {
   const [recurso_comum_id, setRecursoId] = useState('');
@@ -21,7 +21,6 @@ const RealizarPedidoManutencao = () => {
           credentials: 'include',
         });
         const data = await response.json();
-        console.log(data);
         setRecursos(data);
       } catch (error) {
         console.error('Erro ao buscar recursos comuns:', error);
@@ -45,8 +44,6 @@ const RealizarPedidoManutencao = () => {
       });
 
       const data = await response.json();
-      console.log(data);
-      console.log(response);
 
       if (!response.ok) {
         throw new Error(data.detail || 'Erro ao realizar pedido.');

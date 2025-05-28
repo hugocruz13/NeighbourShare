@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar2 from "../components/Navbar2.jsx";
 import Tabela from "../components/Tabela.jsx";
 import Select from '../components/Select.jsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Manutencao = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -21,7 +21,6 @@ const Manutencao = () => {
         credentials: 'include'
       });
       const data = await res.json();  
-      console.log("Dados recebidos:", data);
 
       if (Array.isArray(data)) {
         setPedidos(data);
