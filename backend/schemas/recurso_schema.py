@@ -60,6 +60,7 @@ class RecursoGetTodosSchema(BaseModel):
 class RecursoGetUtilizadorSchema(BaseModel):
     RecursoID: conint(gt=0)
     Nome: constr(min_length=2, max_length=100)
+    Descricao: constr(min_length=5, max_length=500)
     Caucao: condecimal(gt=0, max_digits=10, decimal_places=2)
     Categoria_: CategoriaSchema
     Disponibilidade_: DisponibilidadeSchema
