@@ -6,7 +6,7 @@ from db.models import Recurso, Disponibilidade, Categoria, Reserva, PedidoReserv
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import date
 from schemas.reserva_schema import PedidoReservaEstadosSchema
-from schemas.recurso_schema import DisponibilidadeEstadosSchema
+from schemas.recurso_schema import DisponibilidadeEstadosSchema, UpdateRecursoSchema
 
 def get_disponibilidade_id_db(disponibilidade:str, db:session):
     try:
@@ -155,6 +155,38 @@ async def inserir_recurso_teste(db:session, recurso:Recurso):
         db.refresh(recurso)
 
         return recurso
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+#Apagar recurso
+async def delete_recurso_db(db:session, id:int):
+    try:
+        db.query(Recurso).filter(Recurso.RecursoID == id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def update_recurso_db(db:session, recurso_ex: UpdateRecursoSchema):
+    try:
+        recurso = db.query(Recurso).filter(Recurso.RecursoID == recurso_ex.Id).first()
+        if recurso:
+            if recurso_ex.Nome != None:
+                recurso.Nome = recurso_ex.Nome
+            if recurso_ex.DescRecurso != None:
+                recurso.DescRecurso = recurso_ex.DescRecurso
+            if recurso_ex.Caucao != None:
+                recurso.Caucao = recurso_ex.Caucao
+            if recurso_ex.DispId != None:
+                recurso.DispID = recurso_ex.DispID
+            if recurso_ex.CatId != None:
+                recurso.CatID = recurso_ex.CatID
+            db.commit()
+            return True
+        else:
+            raise RuntimeError("ID inválido!")
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
