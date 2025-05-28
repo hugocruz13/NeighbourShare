@@ -91,6 +91,11 @@ const EntidadesExternas = () => {
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditData(prev => ({ ...prev, [name]: value }));
+    // Coloca o foco no campo editado após renderização
+    setTimeout(() => {
+      const input = document.querySelector(`input[name="${name}"]`);
+      if (input) input.focus();
+    }, 0);
   };
 
   const handleCancelEdit = () => {
