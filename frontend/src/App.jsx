@@ -1,29 +1,28 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext.js";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Registar from "./pages/Registar.jsx";
 import Menu from "./pages/Menu.js"
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext.js";
-import "./App.css";
 import RecursosDisponiveis from "./pages/RecursosDisponiveis.js";
 import PedidosNovosRecursos from "./pages/PedidosNovosRecursos.js";
 import PedidosReserva from "./pages/PedidosReserva.js";
 import Perfil from "./pages/Perfil.js";
-import MeusRecursos from "./pages/MeusRecursos.js";
-import ListaPedidosReserva from "./pages/ListaPedidosReserva.js";
-import ListaReserva from "./pages/ListaReservas.js";
+import MeusRecursos from "./pages/MeusRecursos.jsx";
+import ListaPedidosReserva from "./pages/ListaPedidosReserva.jsx";
+import ListaReserva from "./pages/ListaReservas.jsx";
 import RealizarPedidoNovoRecurso from "./pages/RealizarPedidoNovoRecurso.js";
 import RealizarPedidoManutencao from "./pages/RealizarPedidoManutencao.js";
 import PedidosManutencao from "./pages/PedidosManutencao.js";
 import Notificacoes from "./pages/Notificacoes.js";
 import Orcamentos from "./pages/Orcamentos.js";
-import Manutencao from "./pages/Manutencao.js";
+import Manutencao from "./pages/Manutencao.jsx";
 import Votacoes from "./pages/Votacoes.js";
-import AtualizarDados from "./pages/AtualizarDados.js";
 import RecuperarPass from "./pages/RecuperarPass.js";
-import EntidadeExterna from "./pages/EntidadeExterna.js";
+import EntidadeExterna from "./pages/EntidadeExterna.jsx";
 import RecursosComuns from "./pages/RecursosComuns.js";
+import "./App.css";
 
 function App() {
   return (
