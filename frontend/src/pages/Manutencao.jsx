@@ -21,7 +21,6 @@ const Manutencao = () => {
         credentials: 'include'
       });
       const data = await res.json();  
-      console.log("Dados recebidos:", data);
 
       if (Array.isArray(data)) {
         setPedidos(data);

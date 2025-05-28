@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.js";
 import { Toaster } from 'react-hot-toast';
 import ToastManager from '../components/ToastManager.jsx';
 import "../styles/Login.css";

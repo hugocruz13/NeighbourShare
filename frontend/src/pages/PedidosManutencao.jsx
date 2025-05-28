@@ -29,7 +29,6 @@ const PedidosManutencao = () => {
           credentials: 'include' 
         });
         const data = await res.json();
-        console.log(data);
         if (data && Array.isArray(data)) {
           // Se for um array, atualiza os pedidos
           setPedidos(data);
@@ -64,9 +63,7 @@ const PedidosManutencao = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setStatusOptions(data); // Assuming data is an array of status options
-        console.log("Resposta dos status:", data);
       } catch (error) {
         console.error('Erro ao buscar opções de estado:', error);
       }
@@ -112,7 +109,6 @@ const PedidosManutencao = () => {
     
   const handleJustificationSubmit = () => {
     // Aqui você pode adicionar a lógica para enviar a justificação ao servidor
-    console.log('Justificação:', justificacao);
     setShowJustificationModal(false);
     setJustificacao('');
   };

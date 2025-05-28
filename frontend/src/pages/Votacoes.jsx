@@ -28,7 +28,6 @@ const Votacoes = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setVotacoes(data);
       } catch (error) {
         console.error('Erro ao buscar votações:', error);
@@ -38,7 +37,6 @@ const Votacoes = () => {
   }, []);
 
   const abrirModal = async (votacao, tipo) => {
-    console.log("Abrindo modal para votação:", votacao);
     setVotacaoAtual(votacao);
     setModalAberto(tipo);
     setVotoSelecionado('');
@@ -58,7 +56,6 @@ const Votacoes = () => {
         
         const data = await res.json();
         setOrcamentos(data);
-        console.log("Orçamentos recebidos:", data);
       } catch (error) {
         console.error('Erro ao buscar orçamentos:', error);
       }

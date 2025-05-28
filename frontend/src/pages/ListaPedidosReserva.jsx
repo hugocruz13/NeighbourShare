@@ -25,7 +25,6 @@ const ReservarRecurso = ({ match }) => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setComoDono(data[0]);         // Dono → pedidos recebidos
         setComoSolicitante(data[1]);  // Solicitante → pedidos que fez
       } catch (error) {

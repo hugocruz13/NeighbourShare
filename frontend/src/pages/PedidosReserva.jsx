@@ -22,7 +22,6 @@ const ReservarRecurso = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setProduct(data);
         setLoading(false);
       } catch (error) {

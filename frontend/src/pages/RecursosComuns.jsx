@@ -34,7 +34,6 @@ const MeusRecursos = () => {
 
         if (!res.ok) throw new Error('Erro ao buscar dados');
         const data = await res.json();
-        console.log(data);
         setRecursos(data);
       } catch (error) {
         setErro(error.message);

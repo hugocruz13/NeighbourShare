@@ -32,7 +32,6 @@ const RecursosDisponiveis = () => {
           credentials: 'include',
         });
         const data = await res.json();
-        console.log(data);
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data.detail === 'Nenhum recurso encontrado') {

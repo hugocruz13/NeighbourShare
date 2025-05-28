@@ -32,7 +32,6 @@ function Residente() {
         }
 
         const data = await response.json();
-        console.log(data)
         setUsr(data);
       } catch (error) {
         console.error('Erro:', error);

@@ -31,7 +31,6 @@ const EntidadesExternas = () => {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setEntidades(data);
       } catch (error) {
         console.error('Erro ao buscar entidades externas:', error);

@@ -39,7 +39,6 @@ const Orcamentos = () => {
       if (!res.ok) throw new Error('Erro ao buscar dados');
       const data = await res.json();
       setOrcamentos(data);
-      console.log('Orcamentos:', data);
     } catch (error) {
       console.error('Erro ao buscar orcamentos:', error);
     }
@@ -68,7 +67,6 @@ const Orcamentos = () => {
       if (!res.ok) throw new Error('Erro ao buscar pedidos de aquisição');
       const data = await res.json();
       setPedidosAquisicao(data);
-      console.log('Pedidos de Aquisição:', data);
     } catch (error) {
       console.error('Erro ao buscar pedidos de aquisição:', error);
     }
@@ -82,8 +80,6 @@ const Orcamentos = () => {
       });
       if (!res.ok) throw new Error('Erro ao buscar pedidos de manutenção');
       const data = await res.json();
-      console.log(data);
-      console.log('Pedidos de Manutenção:', data);
       setPedidosManutencao(data);
     } catch (error) {
       console.error('Erro ao buscar pedidos de manutenção:', error);
@@ -184,9 +180,7 @@ const Orcamentos = () => {
         },
         body: JSON.stringify(votacaoCorrigida),
       });
-  
-      console.log("Dados da votação:", votacaoCorrigida);
-  
+    
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || 'Erro ao criar votação');

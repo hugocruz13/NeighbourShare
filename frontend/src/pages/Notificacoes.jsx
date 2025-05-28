@@ -14,7 +14,6 @@ function Notificacoes() {
           credentials: 'include'
         });
         const data = await res.json();
-        console.log(data);
         setNotificacoes(data);
       } catch (error) {
         console.error('Erro ao buscar notificações:', error);

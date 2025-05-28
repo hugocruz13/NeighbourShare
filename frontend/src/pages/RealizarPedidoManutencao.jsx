@@ -21,7 +21,6 @@ const RealizarPedidoManutencao = () => {
           credentials: 'include',
         });
         const data = await response.json();
-        console.log(data);
         setRecursos(data);
       } catch (error) {
         console.error('Erro ao buscar recursos comuns:', error);
@@ -45,8 +44,6 @@ const RealizarPedidoManutencao = () => {
       });
 
       const data = await response.json();
-      console.log(data);
-      console.log(response);
 
       if (!response.ok) {
         throw new Error(data.detail || 'Erro ao realizar pedido.');

@@ -27,7 +27,6 @@ const ProfilePage = () => {
         }
 
         const data = await response.json();
-        console.log(data)
         setUser(data);
       } catch (error) {
         console.error('Erro:', error);
@@ -89,7 +88,6 @@ const updatedUser = {
 
       setUser(updatedUser);
       setEditingField(null);
-      console.log("Enviando dados:", updatedUser);
 
       toast.success('Campo atualizado com sucesso!');
     } catch (error) {
