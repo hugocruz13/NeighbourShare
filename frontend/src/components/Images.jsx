@@ -1,7 +1,7 @@
 import styles from "./Images.module.css";
 import Button from "../components/Button.jsx";
 
-function Img_Right({ path, alt, titulo, frase }) {
+function ImgRight({ path, alt, titulo, frase }) {
   return (
     <div className={styles["container-main"]}>
       <div className={styles.left}>
@@ -18,7 +18,7 @@ function Img_Right({ path, alt, titulo, frase }) {
   );
 }
 
-function Img_Left({ path, alt }) {
+function ImgLeft({ path, alt }) {
   return (
     <div className={styles["container-main"]}>
       <div className={styles.right}>
@@ -64,4 +64,4 @@ function Img_Left({ path, alt }) {
 }
 
 
-export { Img_Right, Img_Left };
+export { ImgRight, ImgLeft };

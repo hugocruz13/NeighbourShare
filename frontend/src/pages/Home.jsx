@@ -1,4 +1,4 @@
-import { Img_Right, Img_Left } from "../components/Images.jsx";
+import { ImgRight, ImgLeft } from "../components/Images.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Funcionalidades from "../components/Funcionalidades.jsx";
 import Contactos from "../components/Contactos.jsx";
@@ -16,7 +16,7 @@ function Home() {
             eficiente.
           </p>
         </header>
-        <Img_Right
+        <ImgRight
           path="/img/main.jpg"
           alt="Prédios"
           titulo="Juntos, cuidamos melhor do nosso espaço — peça, compartilhe e colabore para uma convivência mais harmoniosa."
@@ -62,7 +62,7 @@ function Home() {
         <br />
         <br />
         <div className="about" id="sobre">
-          <Img_Left path="logo512.png" alt="Prédios" />
+          <ImgLeft path="logo512.png" alt="Prédios" />
         </div>
         <div id="contacto">
           <Contactos/>

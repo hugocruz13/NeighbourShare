@@ -15,7 +15,6 @@ const MeusRecursos = () => {
   const [recursos, setRecursos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [disponibilidades, setDisponibilidades] = useState([]);
-  const [erro, setErro] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newResource, setNewResource] = useState({
     nome_recurso: '', 
@@ -39,7 +38,7 @@ const MeusRecursos = () => {
         const data = await res.json();
         setRecursos(data);
       } catch (error) {
-        setErro(error.message);
+        console.error('Erro ao buscar recursos pessoais:', error);
       }
     };
     const fetchCategorias = async () => {
@@ -52,7 +51,7 @@ const MeusRecursos = () => {
         setCategorias(categorias);
         console.log(categorias);
       } catch (error) {
-        setErro(error.message);
+        console.error('Erro ao buscar categorias:', error);
       }
     };
     const fetchDisponibilidade = async () => {
@@ -65,7 +64,7 @@ const MeusRecursos = () => {
         setDisponibilidades(disponibilidades);
         console.log(disponibilidades);
       } catch (error) {
-        setErro(error.message);
+        console.error('Erro ao buscar disponibilidades:', error);
       }
     };
     fetchDisponibilidade();

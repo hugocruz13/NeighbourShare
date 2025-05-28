@@ -9,9 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const PedidosAquisicao = () => {
   const [pedidos, setPedidos] = useState([]);
-  const [mensagemErro, setMensagemErro] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [pedidoAtual, setPedidoAtual] = useState(null);
     const [votacao, setVotacao] = useState({
       titulo: '',
       descricao: '',
@@ -31,14 +29,11 @@ const PedidosAquisicao = () => {
         if (data && Array.isArray(data)) {
           // Se for um array, atualiza os pedidos
           setPedidos(data);
-          setMensagemErro(null);  // Limpar erro caso haja pedidos
         } else if (data && data.detail) {
           // Se a resposta contiver a chave 'detail', trata como erro
-          setMensagemErro(data.detail);
           setPedidos([]);  // Limpa os pedidos
         } else {
           // Caso não seja nem um array nem um erro, define um erro genérico
-          setMensagemErro('Erro inesperado ao carregar os dados');
           setPedidos([]);
         }
       } catch (error) {

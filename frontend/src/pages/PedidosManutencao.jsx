@@ -10,12 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const PedidosManutencao = () => {
   const [pedidos, setPedidos] = useState([]);
-  const [mensagemErro, setMensagemErro] = useState(null);
   const [statusOptions, setStatusOptions] = useState([]);
-  const [selectedPedido, setSelectedPedido] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [showJustificationModal, setShowJustificationModal] = useState(false);
-  const [pedidoAtual, setPedidoAtual] = useState(null);
   const [justificacao, setJustificacao] = useState('');
   
 
@@ -31,21 +27,17 @@ const PedidosManutencao = () => {
         if (data && Array.isArray(data)) {
           // Se for um array, atualiza os pedidos
           setPedidos(data);
-          setMensagemErro(null);  // Limpar erro caso haja pedidos
         } else if (data && data.detail) {
           // Se a resposta contiver a chave 'detail', trata como erro
-          setMensagemErro(data.detail);
           setPedidos([]);  // Limpa os pedidos
         } else {
           // Caso não seja nem um array nem um erro, define um erro genérico
-          setMensagemErro('Erro inesperado ao carregar os dados');
           setPedidos([]);
         }
 
       } catch (error) {
         // Caso ocorra um erro durante a requisição
         console.error('Erro ao buscar pedidos de manutenção:', error);
-        setMensagemErro('Falha ao carregar os dados');
         setPedidos([]);
       }
     };
@@ -100,42 +92,12 @@ const PedidosManutencao = () => {
       ToastManager.error('Erro ao atualizar estado do pedido.');
     }
   };
-
-  const handleNaoClick = () => {
-    setShowModal(false);
-    setShowJustificationModal(true);
-  };
     
   const handleJustificationSubmit = () => {
     // Aqui você pode adicionar a lógica para enviar a justificação ao servidor
     setShowJustificationModal(false);
     setJustificacao('');
   };
-
-  const handleVotacaoExpirada = async (votacao_id)  => {
-    try{
-      const res = await fetch(`'http://localhost:8000/api/listar_votacaos'`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      if (!res.ok) {
-        throw new Error('Erro ao marcar votação como expirada.');
-        }
-
-        const data = await res.json();
-
-        const naoExiste = !data.lista_votacao_pedido_manutencao.some(
-          item => item.votacao_id === votacao_id
-        );
-
-        return naoExiste;
-
-    }
-    catch (error) {
-      console.error('Erro ao verificar votação expirada:', error);
-      ToastManager.error('Erro ao verificar votação expirada.');
-    }
-  }
 
   return (
     <>

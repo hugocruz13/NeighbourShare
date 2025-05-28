@@ -12,7 +12,6 @@ import "../styles/MeusRecursos.css";
 
 const MeusRecursos = () => {
   const [recurso, setRecursos] = useState([]);
-  const [erro, setErro] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newResource, setNovoRecurso] = useState({
     nome_recurso: '', 
@@ -36,7 +35,8 @@ const MeusRecursos = () => {
         const data = await res.json();
         setRecursos(data);
       } catch (error) {
-        setErro(error.message);
+        console.error('Erro ao buscar recursos comuns:', error);
+        ToastManager.error('Erro ao buscar recursos comuns: ' + error.message);
       }
     };
 

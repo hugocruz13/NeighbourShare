@@ -6,7 +6,6 @@ import "../styles/RecursosDisponiveis.css";
 
 const RecursosDisponiveis = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -38,11 +37,8 @@ const RecursosDisponiveis = () => {
         } else {
           throw new Error("Resposta inesperada da API");
         }
-
-        setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
-        setLoading(false);
       }
     };
 

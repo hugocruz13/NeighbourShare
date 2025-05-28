@@ -31,8 +31,6 @@ function Login() {
         credentials: "include",
       });
 
-      const data = await response.json();
-
       if (response.ok) {
         const res = await fetch("http://localhost:8000/api/me", {
           credentials: "include",

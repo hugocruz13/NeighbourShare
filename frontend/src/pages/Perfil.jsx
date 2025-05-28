@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
-  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [editingField, setEditingField] = useState(null);
@@ -42,7 +41,6 @@ const ProfilePage = () => {
     if (!confirm) return;
 
     try {
-      setDeleting(true);
       const response = await fetch(`http://localhost:8000/api/delete?email=${user.email}`, {
         method: 'DELETE',
         credentials: 'include',
