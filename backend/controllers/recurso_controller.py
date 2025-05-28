@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from middleware.auth_middleware import *
 from db.session import get_db
+from db.repository.recurso_repo import delete_recurso_db, existe_recurso
 from sqlalchemy.orm import Session
 from schemas.recurso_schema import *
 from typing import List
@@ -73,6 +74,49 @@ async def listar_recursos_pessoais(
 async def listar_recurso( recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
     try:
         return await lista_recurso_service(db, recurso_id)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+##Update a info de um recurso
+@router.put("/update")
+async def update_recurso(
+    id: int = Form(...),
+    nome: Optional[str] = Form(None),
+    descricao: Optional[str] = Form(None),
+    caucao: Optional[decimal.Decimal] = Form(None),
+    disponivel: Optional[str] = Form(None),
+    categoria: Optional[str] = Form(None),
+    foto: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db),
+    user: UserJWT = Depends(role_required(["admin", "residente", "gestor"]))
+):
+    try:
+        cat = await get_categoria_id_service(db, categoria) if categoria is not None else None
+        disp = await get_disponibilidade_id_service(db, disponivel) if disponivel is not None else None
+        recurso = UpdateRecursoSchema(Id=id, Nome=nome, DescRecurso=descricao, Caucao=caucao, Cat=cat, Disp=disp)
+
+        if await update_service(db, recurso, foto):
+            return {"message": "Dados atualizados com sucesso."}
+        else:
+            return {"message": "Erro ao atualizar os dados."}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/{recurso_id}")
+async def delete_recurso(recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
+    try:
+        if await existe_recurso(db, recurso_id):
+            if await delete_recurso_db(db, recurso_id):
+                return {"message": "Recurso deletado com sucesso"}
+            else:
+                raise HTTPException(status_code=500, detail="Erro ao apagar o recurso.")
+        else:
+            raise HTTPException(status_code=404, detail="Recurso não existe.")
     except HTTPException as e:
         raise e
     except Exception as e:

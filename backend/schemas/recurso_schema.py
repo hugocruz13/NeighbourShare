@@ -1,5 +1,4 @@
 from enum import Enum
-
 from pydantic import BaseModel, constr, conint, condecimal
 from typing import Optional
 import decimal
@@ -72,3 +71,11 @@ class RecursoGetUtilizadorSchema(BaseModel):
 class DisponibilidadeEstadosSchema(str, Enum):
     DISPONIVEL = 1
     INDISPONIVEL = 2
+
+class UpdateRecursoSchema(BaseModel):
+    Id: int
+    Nome: Optional[str] = None
+    DescRecurso: Optional[str] = None
+    Caucao: Optional[decimal.Decimal] = None
+    CatId: Optional[int] = None
+    DispId: Optional[int] = None
