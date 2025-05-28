@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigate } from 'react-router-dom';
 import "../styles/Menu.css";
 import Navbar2 from "../components/Navbar2.jsx";
