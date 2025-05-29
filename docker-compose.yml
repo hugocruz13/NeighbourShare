@@ -7,33 +7,27 @@ services:
       - SA_PASSWORD=DEVesi2025
       - MSSQL_PID=Developer
     ports:
-      - "1433:1433"  # Porta do SQL Server
+      - "1433:1433"
     networks:
       - app_network
     volumes:
-      - sql_data:/var/opt/mssql  # Persistir dados do SQL Server
+      - sql_data:/var/opt/mssql
 
   backend:
-    build:
-      context: ./backend
+    image: ghcr.io/hugocruz13/neighbourshare-backend:latest
     container_name: neighbourshare_backend
     environment:
       - DATABASE_URL=mssql+pyodbc://sa:DEVesi2025@db:1433/NeighbourShare?driver=ODBC+Driver+17+for+SQL+Server
     ports:
-      - "8000:8000"  # Porta do FastAPI
+      - "8000:8000"
     depends_on:
       - db
     networks:
       - app_network
-    volumes:
-      - ./backend:/app  # Montar o diretório local para desenvolvimento
 
   frontend:
-    build:
-      context: ./frontend
+    image: ghcr.io/hugocruz13/neighbourshare-frontend:latest
     container_name: neighbourshare_frontend
-    volumes:
-      - ./frontend/apache-config:/usr/local/apache2/conf/extra
     ports:
       - "80:80"
     depends_on:
