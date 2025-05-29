@@ -1,0 +1,47 @@
+.contactos-container {
+  padding: 40px 20px;
+  margin: 0;
+}
+
+.contactos-container .titulo {
+  font-size: 2rem;
+  color: #34495e;
+  margin: 0;
+  text-align: center;
+}
+
+.contactos-container p {
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.contact-info {
+  margin: 20px 0;
+  text-align: center;
+  font-size: 1rem;
+  color: #444;
+}
+
+.contact-info p {
+  margin: 8px 0;
+}
+
+.social-media {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.social-media a {
+  margin: 0 10px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+.social-media a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}

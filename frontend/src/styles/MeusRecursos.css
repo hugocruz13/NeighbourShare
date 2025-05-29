@@ -23,15 +23,7 @@
   width: 90%;
   max-width: 500px;
 }
-.input-style {
-  padding: 0.25rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  margin-bottom: 1rem;
-  width: 103%;
-  box-sizing: border-box;
-}
+
 /* Botões */
 .modal-content button {
   margin: 10px 5px 0 0;
@@ -66,6 +58,9 @@
   border-radius: 6px;
 }
 
+
+
+
 .fundoNovosRecursos {
   max-width: 90%;
   margin: 40px auto 0 auto;
@@ -86,8 +81,7 @@ table {
   overflow: hidden;
 }
 
-th,
-td {
+th, td {
   padding: 14px 20px;
   text-align: left;
 }
@@ -122,35 +116,36 @@ th {
   background-color: #0077b6;
 }
 
-.p-NovosRecursos {
+.p-NovosRecursos{
   font-size: 24px;
   margin-bottom: 20px;
   font-weight: bold;
 }
 
-.deleteIcon {
+.deleteIcon{
   width: 20px;
   height: 20px;
 }
 
-.imgNovosRecursos {
+.imgNovosRecursos{
+  width: 75%;
+  
+}
+
+.imagemDireita{
   width: 75%;
 }
 
-.imagemDireita {
-  width: 75%;
-}
-
-.textoEsquerda {
+.textoEsquerda{
   width: 50%;
 }
 
-.inputNovoRecurso {
+.inputNovoRecurso{
   width: 100%;
   border-radius: 10px;
 }
 
-.btnNovoRecurso {
+.btnNovoRecurso{
   background-color: #00b4d8;
   border: none;
   color: white;
@@ -159,6 +154,16 @@ th {
   transition: 0.2s;
 }
 
-.btnNovoRecurso:hover {
+.btnNovoRecurso:hover{
   background-color: #0077b6;
+}
+
+.input-style {
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 1rem;
+  width: 103%;
+  box-sizing: border-box;
 }

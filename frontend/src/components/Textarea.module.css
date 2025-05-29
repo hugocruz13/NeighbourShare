@@ -1,0 +1,25 @@
+.textarea_descricao {
+  width: 100%;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+
+.textareaDescricao {
+  width: 100%;
+  padding: 1px 2px;
+  border: 1.8px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+  margin-bottom: 20px;
+}
+
+.textareaDescricao:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+  outline: none;
+}
+
+

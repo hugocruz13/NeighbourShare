@@ -120,9 +120,11 @@ async def lista_recursos_utilizador_service(db:session, utilizador_id:int):
             recurso_utilizador = RecursoGetUtilizadorSchema(
                 RecursoID= recurso.RecursoID,
                 Nome=recurso.Nome,
+                Descricao=recurso.DescRecurso,
                 Caucao=recurso.Caucao,
                 Categoria_=recurso.Categoria_,
                 Disponibilidade_=recurso.Disponibilidade_,
+                Image=recurso.Path
             )
 
             lista_recursos_utilizador.append(recurso_utilizador)
@@ -212,6 +214,28 @@ async def update_service(db: session, recurso: UpdateRecursoSchema, imagem: Uplo
         raise HTTPException(status_code=500, detail=str(e))
 
 
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+async def lista_categorias_service(db: session):
+    try:
+        categorias = await recurso_repo.listar_categorias_db(db)
+        if not categorias:
+            raise HTTPException(status_code=404, detail="Nenhuma categoria encontrada.")
+        return categorias
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+async def lista_disponibilidades_service(db: session):
+    try:
+        disponibilidades = await recurso_repo.listar_disponibilidades_db(db)
+        if not disponibilidades:
+            raise HTTPException(status_code=404, detail="Nenhuma disponibilidade encontrada.")
+        return disponibilidades
     except HTTPException as e:
         raise e
     except Exception as e:

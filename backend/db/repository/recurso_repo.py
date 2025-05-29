@@ -180,13 +180,29 @@ async def update_recurso_db(db:session, recurso_ex: UpdateRecursoSchema):
             if recurso_ex.Caucao != None:
                 recurso.Caucao = recurso_ex.Caucao
             if recurso_ex.DispId != None:
-                recurso.DispID = recurso_ex.DispID
+                recurso.DispID = recurso_ex.DispId
             if recurso_ex.CatId != None:
-                recurso.CatID = recurso_ex.CatID
+                recurso.CatID = recurso_ex.CatId    
             db.commit()
             return True
         else:
             raise RuntimeError("ID inválido!")
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def listar_categorias_db(db: session):
+    try:
+        categorias = db.query(Categoria).all()
+        return categorias
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+async def listar_disponibilidades_db(db: session):
+    try:
+        disponibilidades = db.query(Disponibilidade).all()
+        return disponibilidades
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))

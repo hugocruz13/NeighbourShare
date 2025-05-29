@@ -58,7 +58,7 @@ async def gerir_votacao_pedido_manutencao(db: Session, votacao: Criar_Votacao):
             raise HTTPException(status_code=400, detail="A data de fim da votação deve ser posterior à data de início (mínimo 1 dia de duração).")
 
         await cria_notificacao_decisao_orcamento_manutencao_service(db, votacao)
-
+        await alterar_tipo_estado_pedido_manutencao(db,votacao.id_processo, EstadoPedManutencaoSchema.VOTACAO.value)
         return await criar_votacao_pedido_manutencao_db(db,votacao)
     except HTTPException as e:
         raise e
@@ -204,7 +204,13 @@ async def gerir_votacoes_orcamentos_pm(db:Session, votacao_id: int):
         if not await existe_votacao(db, votacao_id):
             raise HTTPException(status_code=404, detail="Votação não encontrado")
 
-        return await get_orcamentos_pm(db, votacao_id)
+        orcamentos = await get_orcamentos_pm(db, votacao_id)
+
+        for orcamento in orcamentos:
+            orcamento.NomePDF = os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID), orcamento.NomePDF)
+
+        return orcamentos
+    
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -216,13 +222,19 @@ async def get_orcamentos_pedido_novo_recurso_service(db:Session, votacao_id: int
         if not await existe_votacao(db, votacao_id):
             raise HTTPException(status_code=404, detail="Votação não encontrado")
 
-        return await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+        orcamentos = await get_orcamentos_pedido_novo_recurso_db(db,votacao_id)
+
+        for orcamento in orcamentos:
+            orcamento.NomePDF = os.path.join(os.getenv('UPLOAD_DIR_ORCAMENTO'), str(orcamento.OrcamentoID), orcamento.NomePDF)
+
+        return orcamentos
+    
     except HTTPException as e:
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-async def listar_votacoes_ativas(db:Session):
+async def listar_votacoes_ativas(db:Session, user_id:int):
     try:
         votacoes_pedido_recurso_binarias, votacoes_pedido_recurso_mutliplas, votacoes_pedido_manutencao = await listar_votacoes_ativas_db(db)
 
@@ -237,7 +249,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio = votacao.DataInicio,
                 data_fim = votacao.DataFim,
-                pedido_recurso = pedido_id
+                pedido_recurso = pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pr_binarias.append(new_votacao)
         for votacao, pedido_id in votacoes_pedido_recurso_mutliplas:
@@ -247,7 +260,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio = votacao.DataInicio,
                 data_fim = votacao.DataFim,
-                pedido_recurso = pedido_id
+                pedido_recurso = pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pr_multiplas.append(new_votacao)
         for votacao, pedido_id in votacoes_pedido_manutencao:
@@ -257,7 +271,8 @@ async def listar_votacoes_ativas(db:Session):
                 descricao=votacao.Descricao,
                 data_inicio=votacao.DataInicio,
                 data_fim=votacao.DataFim,
-                pedido_recurso=pedido_id
+                pedido_recurso=pedido_id,
+                ja_votou = ja_votou(db, Consulta_Votacao(id_votacao=votacao.VotacaoID, id_user=user_id))
             )
             lista_votacoes_pm.append(new_votacao)
 

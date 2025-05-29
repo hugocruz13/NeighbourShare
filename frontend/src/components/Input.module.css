@@ -1,0 +1,36 @@
+.input {
+    border-radius: 20px;
+    border: 1px solid black;
+    width: 75%;
+    padding: 10px;
+    transition: all 0.10s ease-in-out; /* Transição suave */
+    margin: 15px;
+}
+
+.input:focus {
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Aumenta o efeito ao focar */
+    border-color: #555; /* Muda a cor da borda */
+    outline: none;
+}
+
+.input-modal{
+  width: 100%;
+}
+
+
+.inputGeral {
+  width: 320px;
+  padding: 8px 14px;
+  border: 1.8px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+  margin-bottom: 20px;
+}
+
+.inputGeral:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+  outline: none;
+}

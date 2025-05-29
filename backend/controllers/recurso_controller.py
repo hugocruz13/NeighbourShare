@@ -58,6 +58,30 @@ async def listar_recursos(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/categorias")
+async def listar_categorias(
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
+        db: Session = Depends(get_db)
+):
+    try:
+        return await lista_categorias_service(db)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/disponibilidades")
+async def listar_disponibilidades(
+        token: UserJWT = Depends(role_required(["admin", "gestor", "residente"])),
+        db: Session = Depends(get_db)
+):
+    try:
+        return await lista_disponibilidades_service(db)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 #Lista os recursos de um utilizador
 @router.get("/pessoais", response_model=List[RecursoGetUtilizadorSchema])
 async def listar_recursos_pessoais(
@@ -95,7 +119,7 @@ async def update_recurso(
     try:
         cat = await get_categoria_id_service(db, categoria) if categoria is not None else None
         disp = await get_disponibilidade_id_service(db, disponivel) if disponivel is not None else None
-        recurso = UpdateRecursoSchema(Id=id, Nome=nome, DescRecurso=descricao, Caucao=caucao, Cat=cat, Disp=disp)
+        recurso = UpdateRecursoSchema(Id=id, Nome=nome, DescRecurso=descricao, Caucao=caucao, CatId=cat, DispId=disp)
 
         if await update_service(db, recurso, foto):
             return {"message": "Dados atualizados com sucesso."}
@@ -105,7 +129,6 @@ async def update_recurso(
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.delete("/{recurso_id}")
 async def delete_recurso(recurso_id: int, token: UserJWT = Depends(role_required(["admin","gestor","residente"])),db:Session = Depends(get_db)):
@@ -121,3 +144,5 @@ async def delete_recurso(recurso_id: int, token: UserJWT = Depends(role_required
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+

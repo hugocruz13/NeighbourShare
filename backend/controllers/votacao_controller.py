@@ -85,7 +85,7 @@ async def processamento_votacao(votacao_id: int,db: Session = Depends(get_db), u
 @router.get("/listar_votacaos", response_model=ObtemTodasVotacoes)
 async def listar_votacoes_abertas(db:Session = Depends(get_db), user: UserJWT = Depends(role_required(["residente","gestor", "admin"]))):
     try:
-        return await listar_votacoes_ativas(db)
+        return await listar_votacoes_ativas(db, user.id)
     except HTTPException as e:
         raise e
     except Exception as e:
