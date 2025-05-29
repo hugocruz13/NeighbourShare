@@ -1,6 +1,6 @@
 services:
   db:
-    image: ghcr.io/mtcigor/neighbourshare-db:v19.1
+    image: ghcr.io/hugocruz13/neighbourshare-db:cleanup
     container_name: sql_server
     environment:
       - ACCEPT_EULA=Y
