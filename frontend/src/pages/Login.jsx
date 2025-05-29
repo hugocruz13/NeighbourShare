@@ -24,7 +24,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -32,7 +32,7 @@ function Login() {
       });
 
       if (response.ok) {
-        const res = await fetch("http://localhost:8000/api/me", {
+        const res = await fetch("/api/me", {
           credentials: "include",
         });
         const userData = await res.json();
@@ -55,7 +55,7 @@ function Login() {
 
   const handleRecuperacaoSenha = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/password/forgot", { // endpoint para recuperação de senha
+      const response = await fetch("/api/password/forgot", { // endpoint para recuperação de senha
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailRecuperacao }),

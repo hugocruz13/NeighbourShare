@@ -43,11 +43,11 @@ function ImgLeft({ path, alt }) {
           <section className={styles.objetivos}>
             <h2>Objetivos do Projeto</h2>
             <ul className={styles.ul}>
-              <li>🔁 Promover o reaproveitamento de recursos dentro da comunidade.</li>
-              <li>🤝 Incentivar a cooperação entre vizinhos e o espírito de entreajuda.</li>
-              <li>💡 Facilitar a reserva e utilização de espaços e objetos comuns.</li>
-              <li>🛠️ Agilizar pedidos de manutenção e aquisição de novos recursos.</li>
-              <li>🗳️ Garantir transparência na tomada de decisões através de votações em orçamentos.</li>
+              <li>Promover o reaproveitamento de recursos dentro da comunidade.</li>
+              <li>Incentivar a cooperação entre vizinhos e o espírito de entreajuda.</li>
+              <li>Facilitar a reserva e utilização de espaços e objetos comuns.</li>
+              <li>Agilizar pedidos de manutenção e aquisição de novos recursos.</li>
+              <li>Garantir transparência na tomada de decisões através de votações em orçamentos.</li>
             </ul>
           </section>
 

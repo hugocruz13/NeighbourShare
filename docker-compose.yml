@@ -1,41 +1,63 @@
 services:
   db:
-    image: ghcr.io/mtcigor/neighbourshare-db:v19.1
-    container_name: sql_server
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    platform: linux/arm64
+    restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=DEVesi2025
+      - MSSQL_SA_PASSWORD=DEVesi2025
       - MSSQL_PID=Developer
-    ports:
-      - "1433:1433"  # Porta do SQL Server
+    expose:
+      - "1433"
     networks:
       - app_network
     volumes:
-      - sql_data:/var/opt/mssql  # Persistir dados do SQL Server
+      - sql_data:/var/opt/mssql # Persistir dados do SQL Server
 
   backend:
     build:
       context: ./backend
-    container_name: neighbourshare_backend
+    restart: unless-stopped
     environment:
-      - DATABASE_URL=mssql+pyodbc://sa:DEVesi2025@db:1433/NeighbourShare?driver=ODBC+Driver+17+for+SQL+Server
-    ports:
-      - "8000:8000"  # Porta do FastAPI
+      - DATABASE_URL=mssql+pyodbc://sa:DEVesi2025@db:1433/NeighbourShare?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=no&TrustServerCertificate=yes
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost,http://localhost:3000,http://127.0.0.1:3000}
+      - SECRET_KEY_LOGIN=${SECRET_KEY_LOGIN:-change-me-login-secret}
+      - SECRET_KEY_SIGNUP=${SECRET_KEY_SIGNUP:-change-me-signup-secret}
+      - SECRET_KEY_RECOVERY=${SECRET_KEY_RECOVERY:-change-me-recovery-secret}
+      - ALGORITHM=${ALGORITHM:-HS256}
+      - EXPIRE_MINUTES_LOGIN=${EXPIRE_MINUTES_LOGIN:-60}
+      - EXPIRE_MINUTES_SIGNUP=${EXPIRE_MINUTES_SIGNUP:-30}
+      - DB_HOST=db
+      - DB_PORT=1433
+      - DB_USER=sa
+      - DB_PASSWORD=DEVesi2025
+      - DB_NAME=NeighbourShare
+      - DB_ENCRYPT=no
+      - DB_WAIT_TIMEOUT=600
+    expose:
+      - "8000"
+    command:
+      [
+        "sh",
+        "-c",
+        "python -m scripts.init_db && uvicorn main:app --host 0.0.0.0 --port 8000",
+      ]
+    volumes:
+      - ./database:/sql-init:ro
     depends_on:
       - db
     networks:
       - app_network
-    volumes:
-      - ./backend:/app  # Montar o diretório local para desenvolvimento
 
   frontend:
     build:
       context: ./frontend
-    container_name: neighbourshare_frontend
+    restart: unless-stopped
     volumes:
       - ./frontend/apache-config:/usr/local/apache2/conf/extra
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:

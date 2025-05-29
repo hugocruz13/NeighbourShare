@@ -5,6 +5,15 @@ NeighbourShare é um projeto prático desenvolvido para as unidades curriculares
 
 ## Instruções para utilizar os Containers com Docker
 
+### Nota para VPS ARM64 (Dokploy)
+
+O `docker-compose.yml` está preparado para ARM64:
+- A base de dados usa `mcr.microsoft.com/azure-sql-edge:latest` com `platform: linux/arm64`.
+- O `backend` corre `scripts/init_db.py` antes de arrancar o FastAPI.
+- O bootstrap cria a base de dados `NeighbourShare` (se não existir), cria o esquema com SQLAlchemy e aplica os seeds em `database/` de forma idempotente.
+
+Isto evita problemas comuns em ARM64 com serviços one-shot de inicialização que fazem o deploy falhar no Docker Compose do Dokploy.
+
 ### Pré-requisitos
 
 Antes de executar os containers, é necessário garantir que tens os seguintes requisitos instalados na tua máquina:

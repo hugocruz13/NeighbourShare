@@ -13,13 +13,14 @@ from fastapi.staticfiles import StaticFiles
 scheduler = AsyncIOScheduler()
 app = FastAPI()
 
+os.makedirs("uploadFiles", exist_ok=True)
 app.mount("/uploadFiles", StaticFiles(directory="uploadFiles"), name="uploadFiles")
 
-allow_origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
+allow_origins_env = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost,http://localhost:3000,http://127.0.0.1:3000"
+)
+allow_origins = [origin.strip() for origin in allow_origins_env.split(",") if origin.strip()]
 
 @app.on_event("startup")
 async def startup_event():
@@ -43,4 +44,5 @@ app.add_middleware(
 )
 
 for router in routers:
+    app.include_router(router)
     app.include_router(router, prefix="/api")

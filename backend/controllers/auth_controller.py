@@ -15,6 +15,7 @@ from utils.tokens_record import validate_token_entry, mark_token_as_used
 
 # Define o tempo do token
 EXPIRE_MINUTES_LOGIN = int(os.getenv("EXPIRE_MINUTES_LOGIN"))
+APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost").rstrip("/")
 
 router = APIRouter(tags=['Autenticação'])
 
@@ -80,7 +81,7 @@ async def verificacao(token, db:Session = Depends(get_db)):
         user = UserJWT(id=payload["id"], email=payload["email"], role=payload["role"])
         if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
-            return RedirectResponse(url=f"http://localhost/AtualizarDados?{token}")
+            return RedirectResponse(url=f"{APP_BASE_URL}/AtualizarDados?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de verificação de email inválido")
     except HTTPException as e:
@@ -134,7 +135,7 @@ async def recuperar_password(token, db: Session = Depends(get_db)):
         if await verificao_utilizador(db, user):
             # Redirecionar para página de atualizar dados para completar registo
             return RedirectResponse(
-                url=f"http://localhost/recuperarPass?{token}")
+                url=f"{APP_BASE_URL}/recuperarPass?{token}")
         else:
             raise HTTPException(status_code=400, detail="Token de recuperação password inválido")
     except HTTPException as e:

@@ -1,21 +1,23 @@
 # Dockerfile
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
 
 # Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
-    curl gnupg apt-transport-https \
+    curl gnupg ca-certificates apt-transport-https wget \
     unixodbc-dev gcc g++ \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Adiciona o repositório da Microsoft
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb
 
 # Instala o driver ODBC da Microsoft
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y \
-    msodbcsql17 \
-    && apt-get clean
+    msodbcsql18 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Instala dependências Python
 COPY requirements.txt .
@@ -28,4 +30,4 @@ WORKDIR /app
 # Expõe a porta onde o FastAPI irá correr
 EXPOSE 8000
 
-CMD ["fastapi", "run", "main.py", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

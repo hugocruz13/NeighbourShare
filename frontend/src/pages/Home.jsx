@@ -32,29 +32,29 @@ function Home() {
           </p>
           <div className="cards-container">
             <Funcionalidades
-              titulo="📅 Reserva de Recursos"
+              titulo="Reserva de Recursos"
               desc=" Permite que vizinhos reservem recursos disponíveis como
                 materiais, ferramentas ou equipamentos, de forma organizada e
                 com controlo."
             />
             <Funcionalidades
-              titulo="➕ Pedido de Novos Recursos"
+              titulo="Pedido de Novos Recursos"
               desc="Os residentes podem sugerir e solicitar a aquisição de novos
                 recursos que considerem úteis para o prédio."
             />
             <Funcionalidades
-              titulo="🛠️ Manutenção de Recursos"
+              titulo="Manutenção de Recursos"
               desc="Os residentes podem reportar problemas e solicitar manutenção de
                 recursos comuns como churrasqueiras, salas, elevadores, entre
                 outros."
             />
             <Funcionalidades
-              titulo="🗳️ Votação em Orçamentos"
+              titulo="Votação em Orçamentos"
               desc="Os utilizadores podem votar nas propostas de orçamento apresentadas para aquisição ou manutenção de recursos."
             />
 
             <Funcionalidades
-              titulo="✨ Outras Funcionalidades"
+              titulo="Outras Funcionalidades"
               desc="Notificações automáticas e entre outras."
             />
           </div>

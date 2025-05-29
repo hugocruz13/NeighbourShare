@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/me", {
+    fetch("/api/me", {
       credentials: "include",
     })
       .then(res => res.ok ? res.json() : null)
