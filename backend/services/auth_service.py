@@ -1,7 +1,5 @@
 import os
 import time
-from typing import reveal_type
-
 from db.repository.user_repo import *
 from schemas.user_schemas import UserJWT, UserLogin, ResetPassword, UserUpdateInfo, ChangeRole
 from fastapi import HTTPException, UploadFile
