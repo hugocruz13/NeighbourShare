@@ -27,7 +27,6 @@ docker-compose up --build
 ```bash
 docker-compose down
 ```
----
 ## Running the Backend 
 
 1. Make sure you have your `.env` file set up (saved as `2024_2025` or as needed).
@@ -61,7 +60,7 @@ docker-compose down
 ```bash
 	uvicorn main:app --reload
 ```
----
+
 ## Running Tests
 
 1. Pull the test database image (optional if you use Docker for the DB tests):
@@ -73,8 +72,8 @@ docker-compose down
 ```bash
 	pytest tests/test_anr.py
 ```
----
-## Running the Frontend Locally
+
+## Running the Frontend 
 
 1. Install the project dependencies:
 ```bash
