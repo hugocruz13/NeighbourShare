@@ -33,56 +33,56 @@ docker-compose down
 2. Create and activate a Python virtual environment:
 
 ```bash
-	python -m venv .venv
+python -m venv .venv
 ```
 
 - On **Linux/macOS**:
 ```bash
-	source .venv/bin/activate
+source .venv/bin/activate
 ```
 
 - On **Windows (PowerShell)**:
 ```powershell
-	.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```    
 
 - On **Windows (bash)**:
 ```bash
-	source .venv/Scripts/activate
+source .venv/Scripts/activate
 ```
 
 3. Install the required dependencies:
 ```bash
-	pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 4. Run the backend API:
 ```bash
-	uvicorn main:app --reload
+uvicorn main:app --reload
 ```
 
 ## Running Tests
 
 1. Pull the test database image (optional if you use Docker for the DB tests):
 ```bash
-	docker pull ghcr.io/hugocruz13/neighbourshare-db:tests
+docker pull ghcr.io/hugocruz13/neighbourshare-db:tests
 ```
 2. Inside the `backend` folder, activate your virtual environment (same as above).
 3. Run the tests with pytest:
 ```bash
-	pytest tests/test_anr.py
+pytest tests/test_anr.py
 ```
 
 ## Running the Frontend 
 
 1. Install the project dependencies:
 ```bash
-	npm install
+npm install
 ```
 
 2. Start the frontend development server:
 ```bash
-	npm start
+npm start
 ```
 
 3. Open your browser and navigate to:  
